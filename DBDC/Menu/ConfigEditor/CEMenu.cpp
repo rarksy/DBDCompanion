@@ -17,27 +17,29 @@ bool CEMenu::Setup()
     if (!Config::LoadConfig())
     {
         MessageBoxA(nullptr, "Couldn't Load Config, Try Again Or Contact ski In The Discord", "Error...", MB_OK);
-        return 1;
+        return false;
     }
 
     // Load Image
 
     // Anti Aliasing
-    Images::LoadTextureFromMemory(antiAliasingOnRawData, sizeof antiAliasingOnRawData, &CEMenu::Image::AntiAliasing::textureOn);
-    Images::LoadTextureFromMemory(antiAliasingOffRawData, sizeof antiAliasingOffRawData, &CEMenu::Image::AntiAliasing::textureOff);
+    Images::LoadTextureFromMemory(antiAliasingOnRawData, sizeof antiAliasingOnRawData, &Image::AntiAliasing::textureOn);
+    Images::LoadTextureFromMemory(antiAliasingOffRawData, sizeof antiAliasingOffRawData, &Image::AntiAliasing::textureOff);
 
     // Resolution Quality
-    Images::LoadTextureFromMemory(resolutionQuality60RawData, sizeof resolutionQuality60RawData, &CEMenu::Image::ResolutionQuality::texture60);
-    Images::LoadTextureFromMemory(resolutionQuality80RawData, sizeof resolutionQuality80RawData, &CEMenu::Image::ResolutionQuality::texture80);
-    Images::LoadTextureFromMemory(resolutionQuality100RawData, sizeof resolutionQuality100RawData, &CEMenu::Image::ResolutionQuality::texture100);
-    Images::LoadTextureFromMemory(resolutionQuality135RawData, sizeof resolutionQuality135RawData, &CEMenu::Image::ResolutionQuality::texture135);
+    Images::LoadTextureFromMemory(resolutionQuality60RawData, sizeof resolutionQuality60RawData, &Image::ResolutionQuality::texture60);
+    Images::LoadTextureFromMemory(resolutionQuality80RawData, sizeof resolutionQuality80RawData, &Image::ResolutionQuality::texture80);
+    Images::LoadTextureFromMemory(resolutionQuality100RawData, sizeof resolutionQuality100RawData, &Image::ResolutionQuality::texture100);
+    Images::LoadTextureFromMemory(resolutionQuality135RawData, sizeof resolutionQuality135RawData, &Image::ResolutionQuality::texture135);
 
     // Texture Quality
-    Images::LoadTextureFromMemory(textureQualityVeryLowRawData, sizeof textureQualityVeryLowRawData, &CEMenu::Image::TextureQuality::textureVeryLow);
-    Images::LoadTextureFromMemory(textureQualityLowRawData, sizeof textureQualityLowRawData, &CEMenu::Image::TextureQuality::textureLow);
-    Images::LoadTextureFromMemory(textureQualityMediumRawData, sizeof textureQualityMediumRawData, &CEMenu::Image::TextureQuality::textureMedium);
-    Images::LoadTextureFromMemory(textureQualityHighRawData, sizeof textureQualityHighRawData, &CEMenu::Image::TextureQuality::textureHigh);
-    Images::LoadTextureFromMemory(textureQualityUltraRawData, sizeof textureQualityUltraRawData, &CEMenu::Image::TextureQuality::textureUltra);
+    Images::LoadTextureFromMemory(textureQualityVeryLowRawData, sizeof textureQualityVeryLowRawData, &Image::TextureQuality::textureVeryLow);
+    Images::LoadTextureFromMemory(textureQualityLowRawData, sizeof textureQualityLowRawData, &Image::TextureQuality::textureLow);
+    Images::LoadTextureFromMemory(textureQualityMediumRawData, sizeof textureQualityMediumRawData, &Image::TextureQuality::textureMedium);
+    Images::LoadTextureFromMemory(textureQualityHighRawData, sizeof textureQualityHighRawData, &Image::TextureQuality::textureHigh);
+    Images::LoadTextureFromMemory(textureQualityUltraRawData, sizeof textureQualityUltraRawData, &Image::TextureQuality::textureUltra);
+
+    return true;
 }
 
 void CEMenu::RenderUI()
