@@ -50,7 +50,6 @@
     <ClInclude Include="Dependencies\Images\AntiAliasing\On.hpp" />
     <ClInclude Include="Dependencies\Images\Images.h" />
     <ClInclude Include="Dependencies\Images\ResolutionQuality\100.hpp" />
-    <ClInclude Include="Dependencies\Images\ResolutionQuality\135.hpp" />
     <ClInclude Include="Dependencies\Images\ResolutionQuality\60.hpp" />
     <ClInclude Include="Dependencies\Images\ResolutionQuality\80.hpp" />
     <ClInclude Include="Dependencies\Images\TextureQuality\High.hpp" />

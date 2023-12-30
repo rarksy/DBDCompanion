@@ -16,7 +16,9 @@ namespace Menu
         inline constexpr int itemWidth = 120;   
     }
 
-    inline int menuToShow = 0;
+    inline ImGuiContext* mainContext = nullptr;
+
+    inline int menuToShow = 1;
     
     inline constexpr ImGuiWindowFlags menuFlags =
     ImGuiWindowFlags_NoResize |

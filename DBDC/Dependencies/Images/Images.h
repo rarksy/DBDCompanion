@@ -2,7 +2,6 @@
 
 #include "AntiAliasing\Off.hpp"
 #include "AntiAliasing\On.hpp"
-#include "ResolutionQuality\135.hpp"
 #include "ResolutionQuality\100.hpp"
 #include "ResolutionQuality\80.hpp"
 #include "ResolutionQuality\60.hpp"

@@ -11,7 +11,7 @@ bool GUI::IntCheckbox(const char* label, std::pair<std::string, int>& setting)
     const bool valueChanged = ImGui::Checkbox(label, (&isChecked));
 
     if (valueChanged)
-        setting.second = isChecked ? 1 : 0;
+        setting.second = static_cast<int>(isChecked);
 
     return valueChanged;
 }

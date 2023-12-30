@@ -24,20 +24,28 @@ bool CEMenu::Setup()
 
     // Anti Aliasing
     Images::LoadTextureFromMemory(antiAliasingOnRawData, sizeof antiAliasingOnRawData, &Image::AntiAliasing::textureOn);
-    Images::LoadTextureFromMemory(antiAliasingOffRawData, sizeof antiAliasingOffRawData, &Image::AntiAliasing::textureOff);
+    Images::LoadTextureFromMemory(antiAliasingOffRawData, sizeof antiAliasingOffRawData,
+                                  &Image::AntiAliasing::textureOff);
 
     // Resolution Quality
-    Images::LoadTextureFromMemory(resolutionQuality60RawData, sizeof resolutionQuality60RawData, &Image::ResolutionQuality::texture60);
-    Images::LoadTextureFromMemory(resolutionQuality80RawData, sizeof resolutionQuality80RawData, &Image::ResolutionQuality::texture80);
-    Images::LoadTextureFromMemory(resolutionQuality100RawData, sizeof resolutionQuality100RawData, &Image::ResolutionQuality::texture100);
-    Images::LoadTextureFromMemory(resolutionQuality135RawData, sizeof resolutionQuality135RawData, &Image::ResolutionQuality::texture135);
+    Images::LoadTextureFromMemory(resolutionQuality60RawData, sizeof resolutionQuality60RawData,
+                                  &Image::ResolutionQuality::texture60);
+    Images::LoadTextureFromMemory(resolutionQuality80RawData, sizeof resolutionQuality80RawData,
+                                  &Image::ResolutionQuality::texture80);
+    Images::LoadTextureFromMemory(resolutionQuality100RawData, sizeof resolutionQuality100RawData,
+                                  &Image::ResolutionQuality::texture100);
 
     // Texture Quality
-    Images::LoadTextureFromMemory(textureQualityVeryLowRawData, sizeof textureQualityVeryLowRawData, &Image::TextureQuality::textureVeryLow);
-    Images::LoadTextureFromMemory(textureQualityLowRawData, sizeof textureQualityLowRawData, &Image::TextureQuality::textureLow);
-    Images::LoadTextureFromMemory(textureQualityMediumRawData, sizeof textureQualityMediumRawData, &Image::TextureQuality::textureMedium);
-    Images::LoadTextureFromMemory(textureQualityHighRawData, sizeof textureQualityHighRawData, &Image::TextureQuality::textureHigh);
-    Images::LoadTextureFromMemory(textureQualityUltraRawData, sizeof textureQualityUltraRawData, &Image::TextureQuality::textureUltra);
+    Images::LoadTextureFromMemory(textureQualityVeryLowRawData, sizeof textureQualityVeryLowRawData,
+                                  &Image::TextureQuality::textureVeryLow);
+    Images::LoadTextureFromMemory(textureQualityLowRawData, sizeof textureQualityLowRawData,
+                                  &Image::TextureQuality::textureLow);
+    Images::LoadTextureFromMemory(textureQualityMediumRawData, sizeof textureQualityMediumRawData,
+                                  &Image::TextureQuality::textureMedium);
+    Images::LoadTextureFromMemory(textureQualityHighRawData, sizeof textureQualityHighRawData,
+                                  &Image::TextureQuality::textureHigh);
+    Images::LoadTextureFromMemory(textureQualityUltraRawData, sizeof textureQualityUltraRawData,
+                                  &Image::TextureQuality::textureUltra);
 
     return true;
 }
@@ -84,7 +92,7 @@ void CEMenu::RenderUI()
     if (GUI::DropDownBox("Effects", qualities, Config::Variables::effectsQuality))
         Config::Edit::ChangeValue(Config::Files::gameUserSettings, Config::Groups::scalabilityGroups,
                                   Config::Variables::effectsQuality);
-    GUI::ToolTip("Changes the quality of effects (such as fire particles etc)."); 
+    GUI::ToolTip("Changes the quality of effects (such as fire particles etc).");
 
     if (GUI::DropDownBox("Foliage", qualities, Config::Variables::foliageQuality))
         Config::Edit::ChangeValue(Config::Files::gameUserSettings, Config::Groups::scalabilityGroups,
@@ -97,15 +105,9 @@ void CEMenu::RenderUI()
     GUI::ToolTip("Changes the quality of the shading.\n"
         "(i'll be real idk what this does)");
 
-    if (GUI::DropDownBox("Animations", qualities, Config::Variables::animationQuality))
-        Config::Edit::ChangeValue(Config::Files::gameUserSettings, Config::Groups::scalabilityGroups,
-                                  Config::Variables::animationQuality);
-    GUI::ToolTip("Changes the distance at which lower quality animations are used.\n"
-        "The higher the setting, the further the distance before animations lose quality.");
-
     ImGui::NextColumn();
 
-    ImGui::SeparatorText("Other");
+    ImGui::SeparatorText("Misc");
 
     if (GUI::DropDownBox("Window Mode", windowModes, Config::Variables::windowMode))
         Config::Edit::ChangeValue(Config::Files::gameUserSettings, Config::Groups::DBDGameUserSettings,
@@ -142,7 +144,7 @@ void CEMenu::RenderUI()
     ImGui::EndDisabled();
 
     static GLuint texture = Image::ResolutionQuality::texture100;
-    if (GUI::Slider("Resolution Quality", Config::Variables::resolutionQuality, 60, 135))
+    if (GUI::Slider("Resolution Quality", Config::Variables::resolutionQuality, 60, 100))
     {
         Config::Edit::ChangeValue(Config::Files::gameUserSettings, Config::Groups::scalabilityGroups,
                                   Config::Variables::resolutionQuality);
@@ -152,10 +154,8 @@ void CEMenu::RenderUI()
             texture = Image::ResolutionQuality::texture60;
         else if (value < 99)
             texture = Image::ResolutionQuality::texture80;
-        else if (value < 119)
-            texture = Image::ResolutionQuality::texture100;
         else
-            texture = Image::ResolutionQuality::texture135;
+            texture = Image::ResolutionQuality::texture100;
     }
     GUI::ToolTip("Sets the quality at which the game is rendered.\n"
                  "Note: 100%% = native resolution", texture, ImVec2(400, 170));
@@ -185,114 +185,118 @@ void CEMenu::RenderUI()
     ImGui::NextColumn();
 
     ImGui::SeparatorText("Experimental");
-    GUI::ToolTip("Features settings that aren't guaranteed to work.\nMay require \"Read-Only\" to function.");
-    ImGui::Spacing();
-
-    if (GUI::StringCheckbox("Ambient Occlusion", Config::Variables::ambientOcclusion))
-    {
-        if (Config::Variables::ambientOcclusion.second == "False")
-            Config::Edit::ChangeValue(
-                Config::Files::engine,
-                Config::Groups::rendererOverrideSettings,
-                Config::Variables::ambientOcclusion
-            );
-        else
-        {
-            Config::Edit::RemoveValue(
-                Config::Files::engine,
-                Config::Groups::rendererOverrideSettings,
-                Config::Variables::ambientOcclusion
-            );
-
-            Config::Variables::ambientOcclusion.second = sTrue;
-        }
-    }
-
-    if (GUI::StringCheckbox("A/O Static Fraction", Config::Variables::ambientOcclusionStaticFraction))
-    {
-        if (Config::Variables::ambientOcclusionStaticFraction.second == "False")
-            Config::Edit::ChangeValue(
-                Config::Files::engine,
-                Config::Groups::rendererOverrideSettings,
-                Config::Variables::ambientOcclusionStaticFraction
-            );
-        else
-        {
-            Config::Edit::RemoveValue(
-                Config::Files::engine,
-                Config::Groups::rendererOverrideSettings,
-                Config::Variables::ambientOcclusionStaticFraction
-            );
-
-            Config::Variables::ambientOcclusionStaticFraction.second = sTrue;
-        }
-    }
-
-    if (GUI::StringCheckbox("Bloom", Config::Variables::bloom))
-    {
-        if (Config::Variables::bloom.second == "False")
-            Config::Edit::ChangeValue(
-                Config::Files::engine,
-                Config::Groups::rendererOverrideSettings,
-                Config::Variables::bloom
-            );
-        else
-        {
-            Config::Edit::RemoveValue(
-                Config::Files::engine,
-                Config::Groups::rendererOverrideSettings,
-                Config::Variables::bloom
-            );
-
-            Config::Variables::bloom.second = sTrue;
-        }
-    }
-
-    if (GUI::StringCheckbox("Lens Flare", Config::Variables::lensFlare))
-    {
-        if (Config::Variables::lensFlare.second == "False")
-            Config::Edit::ChangeValue(
-                Config::Files::engine,
-                Config::Groups::rendererOverrideSettings,
-                Config::Variables::lensFlare
-            );
-        else
-        {
-            Config::Edit::RemoveValue(
-                Config::Files::engine,
-                Config::Groups::rendererOverrideSettings,
-                Config::Variables::lensFlare
-            );
-
-            Config::Variables::lensFlare.second = sTrue;
-        }
-    }
-
-    if (GUI::StringCheckbox("Motion Blur", Config::Variables::motionBlur))
-    {
-        if (Config::Variables::motionBlur.second == "False")
-            Config::Edit::ChangeValue(
-                Config::Files::engine,
-                Config::Groups::rendererOverrideSettings,
-                Config::Variables::motionBlur
-            );
-        else
-        {
-            Config::Edit::RemoveValue(
-                Config::Files::engine,
-                Config::Groups::rendererOverrideSettings,
-                Config::Variables::motionBlur
-            );
-
-            Config::Variables::motionBlur.second = sTrue;
-        }
-    }
+    GUI::ToolTip("Features settings that modify the way the game renders.\nRequires \"Read-Only\" to function.");
 
     if (ImGui::Checkbox("Read-Only", &Config::Variables::engineReadOnly))
         Config::SetReadOnly(Config::Files::engine,
                             Config::Variables::engineReadOnly);
     GUI::ToolTip("Stops Dead By Daylight from resetting any chosen settings."
         "\nSome Options Require This To Work.");
+
+    ImGui::BeginDisabled(!Config::Variables::engineReadOnly);
+    {
+        if (GUI::StringCheckbox("Ambient Occlusion", Config::Variables::ambientOcclusion))
+        {
+            if (Config::Variables::ambientOcclusion.second == "False")
+                Config::Edit::ChangeValue(
+                    Config::Files::engine,
+                    Config::Groups::rendererOverrideSettings,
+                    Config::Variables::ambientOcclusion
+                );
+            else
+            {
+                Config::Edit::RemoveValue(
+                    Config::Files::engine,
+                    Config::Groups::rendererOverrideSettings,
+                    Config::Variables::ambientOcclusion
+                );
+
+                Config::Variables::ambientOcclusion.second = sTrue;
+            }
+        }
+
+        if (GUI::StringCheckbox("A/O Static Fraction", Config::Variables::ambientOcclusionStaticFraction))
+        {
+            if (Config::Variables::ambientOcclusionStaticFraction.second == "False")
+                Config::Edit::ChangeValue(
+                    Config::Files::engine,
+                    Config::Groups::rendererOverrideSettings,
+                    Config::Variables::ambientOcclusionStaticFraction
+                );
+            else
+            {
+                Config::Edit::RemoveValue(
+                    Config::Files::engine,
+                    Config::Groups::rendererOverrideSettings,
+                    Config::Variables::ambientOcclusionStaticFraction
+                );
+
+                Config::Variables::ambientOcclusionStaticFraction.second = sTrue;
+            }
+        }
+
+        if (GUI::StringCheckbox("Bloom", Config::Variables::bloom))
+        {
+            if (Config::Variables::bloom.second == "False")
+                Config::Edit::ChangeValue(
+                    Config::Files::engine,
+                    Config::Groups::rendererOverrideSettings,
+                    Config::Variables::bloom
+                );
+            else
+            {
+                Config::Edit::RemoveValue(
+                    Config::Files::engine,
+                    Config::Groups::rendererOverrideSettings,
+                    Config::Variables::bloom
+                );
+
+                Config::Variables::bloom.second = sTrue;
+            }
+        }
+
+        if (GUI::StringCheckbox("Lens Flare", Config::Variables::lensFlare))
+        {
+            if (Config::Variables::lensFlare.second == "False")
+                Config::Edit::ChangeValue(
+                    Config::Files::engine,
+                    Config::Groups::rendererOverrideSettings,
+                    Config::Variables::lensFlare
+                );
+            else
+            {
+                Config::Edit::RemoveValue(
+                    Config::Files::engine,
+                    Config::Groups::rendererOverrideSettings,
+                    Config::Variables::lensFlare
+                );
+
+                Config::Variables::lensFlare.second = sTrue;
+            }
+        }
+
+        if (GUI::StringCheckbox("Motion Blur", Config::Variables::motionBlur))
+        {
+            if (Config::Variables::motionBlur.second == "False")
+                Config::Edit::ChangeValue(
+                    Config::Files::engine,
+                    Config::Groups::rendererOverrideSettings,
+                    Config::Variables::motionBlur
+                );
+            else
+            {
+                Config::Edit::RemoveValue(
+                    Config::Files::engine,
+                    Config::Groups::rendererOverrideSettings,
+                    Config::Variables::motionBlur
+                );
+
+                Config::Variables::motionBlur.second = sTrue;
+            }
+        }
+    }
+    ImGui::EndDisabled();
+    ImGui::Spacing();
 
     ImGui::SeparatorText("Other");
 

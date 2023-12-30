@@ -4,28 +4,31 @@
 #include <chrono>
 #include "ConfigEditor/CEMenu.hpp"
 #include "HookCounter/HCMenu.h"
+#include <Windows.h>
 
 void Menu::RunLoop()
 {
+    
     while (!glfwWindowShouldClose(window))
     {
         const double startTime = glfwGetTime();
 
-        glfwPollEvents();
+        glfwMakeContextCurrent(window);
 
+        glfwPollEvents();
+        
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
-
+        
         RenderUI();
-
+        
         ImGui::Render();
         glViewport(0, 0, 800, 600);
         glClear(GL_COLOR_BUFFER_BIT);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
+        
         glfwSwapBuffers(window);
-
         const double entTime = glfwGetTime();
         const double elapsedTime = entTime - startTime;
 
@@ -45,9 +48,9 @@ void Menu::RenderUI()
     ImGui::SetNextWindowSize(ImVec2(Styling::menuWidth, Styling::menuHeight), ImGuiCond_Once);
     ImGui::Begin("menu", nullptr, menuFlags);
 
-    if (menuToShow != 0)
-        if (ImGui::Button("<--"))
-            menuToShow = 0;
+    // if (menuToShow != 0)
+    //     if (ImGui::Button("<--"))
+    //         menuToShow = 0;
 
     if (menuToShow == 0)
     {
@@ -67,7 +70,26 @@ void Menu::RenderUI()
     }
 
     else if (menuToShow == 2)
+    {
+        if (!HCMenu::hasCreatedOverlay)
+        {
+            int screenWidth = GetSystemMetrics(SM_CXSCREEN);
+            int screenHeight = GetSystemMetrics(SM_CYSCREEN);
+            glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, true);
+            glfwWindowHint(GLFW_DECORATED, false);
+            glfwWindowHint(GLFW_MOUSE_PASSTHROUGH, true);
+            glfwWindowHint(GLFW_FLOATING, true);
+            HCMenu::overlayWindow = glfwCreateWindow(screenWidth / 3, screenHeight, "Hook Counter", nullptr, nullptr);
+            glfwSetWindowPos(HCMenu::overlayWindow, 0, 0);
+            glfwFocusWindow(window);
+
+            HCMenu::overlayContext = ImGui::CreateContext();
+            
+            HCMenu::hasCreatedOverlay = true;
+        }
+        
         HCMenu::RenderUI();
+    }
 
     ImGui::End();
 }

@@ -75,7 +75,6 @@ bool Config::LoadConfig()
     LoadSetting(Files::gameUserSettings, Groups::scalabilityGroups, Variables::effectsQuality);
     LoadSetting(Files::gameUserSettings, Groups::scalabilityGroups, Variables::foliageQuality);
     LoadSetting(Files::gameUserSettings, Groups::scalabilityGroups, Variables::shadingQuality);
-    LoadSetting(Files::gameUserSettings, Groups::scalabilityGroups, Variables::animationQuality);
 
     LoadSetting(Files::gameUserSettings, Groups::DBDGameUserSettings, Variables::windowMode);
     

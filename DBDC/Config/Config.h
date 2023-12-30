@@ -52,7 +52,6 @@ namespace Config
         inline intSetting effectsQuality = {"sg.EffectsQuality", 0};
         inline intSetting foliageQuality = {"sg.FoliageQuality", 0};
         inline intSetting shadingQuality = {"sg.ShadingQuality", 0};
-        inline intSetting animationQuality = {"sg.AnimationQuality", 0};
 
         inline intSetting windowMode = {"FullscreenMode", 1};
         inline intSetting desiredScreenWidth = {"DesiredScreenWidth", 1920};
