@@ -2,6 +2,8 @@
 #include "ImGui/imgui_impl_glfw.h"
 #include "ImGui/imgui_impl_opengl3.h"
 #include <chrono>
+#include <thread>
+
 #include "ConfigEditor/CEMenu.hpp"
 #include "HookCounter/HCMenu.h"
 #include <Windows.h>

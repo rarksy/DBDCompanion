@@ -4,7 +4,7 @@
 
 bool Config::InitializeConfig()
 {
-    auto path = GetSettingsFolderLocation();
+    const auto path = GetSettingsFolderLocation();
 
     if (exists(path))
     {
@@ -12,8 +12,12 @@ bool Config::InitializeConfig()
         return true;
     }
 
-    MessageBoxA(nullptr, "Unable To Locate Settings Folder, Please Locate Manually.", "Notice...", MB_OK);
+    const auto result = MessageBoxA(
+        nullptr, "Un able To Locate Settings Folder\nPlease Locate Manually Or Press No To Exit.", "Notice...", MB_YESNO);
 
+    if (result == IDNO)
+        exit(1);
+    
     {
         CoInitialize(NULL);
         IFileDialog* pfd;
@@ -77,12 +81,12 @@ bool Config::LoadConfig()
     LoadSetting(Files::gameUserSettings, Groups::scalabilityGroups, Variables::shadingQuality);
 
     LoadSetting(Files::gameUserSettings, Groups::DBDGameUserSettings, Variables::windowMode);
-    
+
     LoadSetting(Files::gameUserSettings, Groups::DBDGameUserSettings, Variables::resolutionWidth);
     LoadSetting(Files::gameUserSettings, Groups::DBDGameUserSettings, Variables::resolutionHeight);
     LoadSetting(Files::gameUserSettings, Groups::DBDGameUserSettings, Variables::desiredScreenWidth);
     LoadSetting(Files::gameUserSettings, Groups::DBDGameUserSettings, Variables::desiredScreenHeight);
-    
+
     LoadSetting(Files::gameUserSettings, Groups::DBDGameUserSettings, Variables::fpsLimitMode);
     LoadSetting(Files::gameUserSettings, Groups::DBDGameUserSettings, Variables::useVSync);
 
@@ -175,7 +179,8 @@ bool Config::SetReadOnly(const std::string& file, const bool value)
 
 bool Config::GetReadOnly(const std::string& file)
 {
-    const bool readOnly = GetFileAttributesA((SettingsFolderLocation.string() + file).c_str()) & FILE_ATTRIBUTE_READONLY;
+    const bool readOnly = GetFileAttributesA((SettingsFolderLocation.string() + file).c_str()) &
+        FILE_ATTRIBUTE_READONLY;
 
     return readOnly;
 }
