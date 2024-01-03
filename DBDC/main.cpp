@@ -11,7 +11,6 @@
 
 int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
 {
-    std::cout << Scripts::DisableTextureStreaming::script << std::endl;
     
     if (Backend::InitGLFW() != GLFW_TRUE)
         return 2;
