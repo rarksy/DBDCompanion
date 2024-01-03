@@ -50,10 +50,6 @@ void Menu::RenderUI()
     ImGui::SetNextWindowSize(ImVec2(Styling::menuWidth, Styling::menuHeight), ImGuiCond_Once);
     ImGui::Begin("menu", nullptr, menuFlags);
 
-    // if (menuToShow != 0)
-    //     if (ImGui::Button("<--"))
-    //         menuToShow = 0;
-
     if (menuToShow == 0)
     {
         if (ImGui::Button("Config Editor"))

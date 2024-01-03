@@ -7,21 +7,6 @@
 #include "Menu/Menu.h"
 #include <Fonts/Rethink.hpp>
 
-void renderUI(GLFWwindow* window) {
-    // Start the ImGui frame
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    ImGui::NewFrame();
-
-    // ImGui rendering code specific to each window goes here
-
-    window == Menu::window ? ImGui::Begin("test") : ImGui::Begin("sEST");
-    ImGui::End();
-
-    ImGui::Render();
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-}
-
 int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
 {
     if (Backend::InitGLFW() != GLFW_TRUE)
