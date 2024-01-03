@@ -240,3 +240,24 @@ bool Config::Edit::RemoveValue(std::string _file, std::string group, std::pair<s
 
     return removed;
 }
+
+bool Config::Edit::RemoveGroup(std::string _file, std::string group)
+{
+    if (GetReadOnly(_file))
+        SetReadOnly(_file, false);
+
+    mINI::INIFile file(SettingsFolderLocation.string() + _file);
+
+    mINI::INIStructure ini;
+
+    file.read(ini);
+
+    const bool removed = ini.remove(group);
+
+    file.write(ini);
+
+    if (Variables::engineReadOnly)
+        SetReadOnly(_file, true);
+
+    return removed;
+}

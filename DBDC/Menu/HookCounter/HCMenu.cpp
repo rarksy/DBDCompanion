@@ -2,7 +2,6 @@
 #include "HCMenu.h"
 
 #include "ImGui/imgui.h"
-#include <opencv2/opencv.hpp>
 
 #include "../Menu.h"
 
