@@ -343,12 +343,12 @@ void CEMenu::CreateStyle()
     colors[ImGuiCol_ButtonHovered] = RGBToImVec4(255, 153, 153);
 
     // Main Window
-    colors[ImGuiCol_Border] = RGBToImVec4(255, 83, 83);
     colors[ImGuiCol_FrameBg] = RGBToImVec4(255, 83, 83);
     colors[ImGuiCol_FrameBgHovered] = RGBToImVec4(255, 153, 153);
     colors[ImGuiCol_FrameBgActive] = RGBToImVec4(255, 203, 203);
     style.FrameRounding = 2.F;
     style.DisabledAlpha = 0.3F;
+    style.FrameBorderSize = 1.7F;
 
     // Slider
     colors[ImGuiCol_Slider] = RGBToImVec4(255, 83, 83);
@@ -364,4 +364,12 @@ void CEMenu::CreateStyle()
     colors[ImGuiCol_Combo] = RGBToImVec4(255, 83, 83);
     colors[ImGuiCol_ComboActive] = RGBToImVec4(255, 203, 203);
     colors[ImGuiCol_ComboHovered] = RGBToImVec4(255, 153, 153);
+
+    // Header ( Selectables Etc )
+    colors[ImGuiCol_Header] = RGBToImVec4(255, 83, 83);
+    colors[ImGuiCol_HeaderHovered] = RGBToImVec4(255, 153, 153);
+    colors[ImGuiCol_HeaderActive] = RGBToImVec4(255, 203, 203);
+
+    // Separator
+    colors[ImGuiCol_Separator] = RGBToImVec4(255, 83, 83);
 }
