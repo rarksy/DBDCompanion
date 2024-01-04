@@ -7,7 +7,6 @@
 #include "Backend/Backend.hpp"
 #include "Menu/Menu.h"
 #include <Fonts/Rethink.hpp>
-#include "Scripts/Scripts.hpp"
 
 int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
 {
