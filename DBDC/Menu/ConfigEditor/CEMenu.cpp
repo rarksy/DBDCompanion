@@ -52,6 +52,8 @@ bool CEMenu::Setup()
 
 void CEMenu::RenderUI()
 {
+    CEMenu::CreateStyle();
+    
     ImGui::Columns(3, nullptr, false);
 
     ImGui::SeparatorText("Graphics Quality");
@@ -182,6 +184,7 @@ void CEMenu::RenderUI()
                  Config::Variables::antiAliasMode.second == 1
                      ? Image::AntiAliasing::textureOn
                      : Image::AntiAliasing::textureOff, ImVec2(400, 250));
+    
     ImGui::NextColumn();
 
     ImGui::SeparatorText("Experimental");
@@ -311,7 +314,16 @@ void CEMenu::RenderUI()
     ImGui::SetCursorPos({720, 470});
     ImGui::TextColored(ImVec4(0.8F, 0.8F, 0.8F, 0.5F), "(?)");
     GUI::ToolTip("Hold right click when hovering an option to view information about it.\n"
-                 "Tip: Some options have images associated to assist in selection.", false);
+                 "Tip: Some options have images associated to assist in selection."
+                 "\n\nDead By Daylight Companion By rarksy/ski\n\n"
+                 "Build Version: Early Access "
+#ifdef _DEBUG
+                 "Debug"
+#else
+                 "Release"
+#endif
+                 "\nBuild Date: " + std::string(__DATE__) +
+                 "\nBuild Time: " + std::string(__TIME__), false);
 }
 
 ImVec4 RGBToImVec4(int r, int g, int b, int a = 255)
@@ -323,6 +335,9 @@ void CEMenu::CreateStyle()
 {
     ImGuiStyle& style = ImGui::GetStyle();
     auto& colors = style.Colors;
+    
     colors[ImGuiCol_Button] = RGBToImVec4(175, 3, 3);
     colors[ImGuiCol_ButtonHovered] = RGBToImVec4(255, 83, 83);
+
+    style.FrameRounding = 2.F;
 }
