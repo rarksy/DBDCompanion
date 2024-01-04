@@ -52,6 +52,8 @@ bool CEMenu::Setup()
 
 void CEMenu::RenderUI()
 {
+    CEMenu::CreateStyle();
+    
     ImGui::Columns(3, nullptr, false);
 
     ImGui::SeparatorText("Graphics Quality");
@@ -333,6 +335,9 @@ void CEMenu::CreateStyle()
 {
     ImGuiStyle& style = ImGui::GetStyle();
     auto& colors = style.Colors;
+    
     colors[ImGuiCol_Button] = RGBToImVec4(175, 3, 3);
     colors[ImGuiCol_ButtonHovered] = RGBToImVec4(255, 83, 83);
+
+    style.FrameRounding = 2.F;
 }
