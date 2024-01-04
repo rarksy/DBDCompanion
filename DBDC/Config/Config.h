@@ -69,24 +69,6 @@ namespace Config
         inline stringSetting useVSync = {"bUseVSync", sTrue};
         inline intSetting antiAliasMode = {"AntiAliasingMode", 1};
 
-        namespace TextureStreaming
-        {
-            inline stringSetting useTextureStreaming = {"bUseTextureStreaming", sFalse};
-            inline intSetting gpuLUIDLow = {"r.GPULUIDLow", 68947};
-            inline intSetting gpuLUIDHigh = {"r.GPULUIDHigh", 0};
-            inline intSetting textureStreaming = {"r.TextureStreaming", 0};
-            inline intSetting poolSize = {"r.Streaming.PoolSize", 0};
-            inline intSetting hlodStrategy = {"r.Streaming.HLODStrategy", 2};
-
-            inline stringSetting allowStreaming = {"AllowStreaming", sFalse};
-
-            inline intSetting maxAnisotropy = {"r.MaxAnisotropy", 32};
-            inline intSetting mipBias = {"r.Streaming.MipBias", 0};
-            inline intSetting boost = {"r.Streaming.Boost", -1};
-            inline intSetting poolSizeAt = {"r.Streaming.PoolSize", 32768};
-            inline intSetting limitPoolSizeToVRAM = {"r.Streaming.LimitPoolSizeToVRAM", 0};
-        }
-
         inline stringSetting bloom = {"r.DefaultFeature.Bloom", sFalse};
         inline stringSetting ambientOcclusion = {"r.DefaultFeature.AmbientOcclusion", sFalse};
         inline stringSetting ambientOcclusionStaticFraction = {
@@ -96,6 +78,7 @@ namespace Config
         inline stringSetting lensFlare = {"r.DefaultFeature.LensFlare", sFalse};
 
         inline bool engineReadOnly = false;
+        inline bool removeIntroCutscene = false;
     }
 
     namespace Files

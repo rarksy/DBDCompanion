@@ -1,6 +1,7 @@
 ﻿#include "Config.h"
 #include <ShlObj_core.h>
 #include "mINI/ini.h"
+#include "../Misc/Misc.hpp"
 
 bool Config::InitializeConfig()
 {
@@ -13,11 +14,12 @@ bool Config::InitializeConfig()
     }
 
     const auto result = MessageBoxA(
-        nullptr, "Un able To Locate Settings Folder\nPlease Locate Manually Or Press No To Exit.", "Notice...", MB_YESNO);
+        nullptr, "Un able To Locate Settings Folder\nPlease Locate Manually Or Press No To Exit.", "Notice...",
+        MB_YESNO);
 
     if (result == IDNO)
         exit(1);
-    
+
     {
         CoInitialize(NULL);
         IFileDialog* pfd;
@@ -98,6 +100,11 @@ bool Config::LoadConfig()
     LoadSettingFind(Files::engine, Variables::bloom);
     LoadSettingFind(Files::engine, Variables::lensFlare);
     LoadSettingFind(Files::engine, Variables::motionBlur);
+
+    Variables::removeIntroCutscene =
+        !std::filesystem::exists(
+            Misc::GetGameRootDirectory() + "DeadByDaylight\\Content\\Movies\\AdditionalLoadingScreen"
+        );
 
     return true;
 }

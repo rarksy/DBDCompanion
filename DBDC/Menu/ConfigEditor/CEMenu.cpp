@@ -6,6 +6,8 @@
 #include "../GUI/GUI.h"
 #include <Windows.h>
 #include <Images/Images.h>
+#include <fstream>
+#include <iostream>
 
 bool CEMenu::Setup()
 {
@@ -304,7 +306,27 @@ void CEMenu::RenderUI()
     ImGui::Spacing();
 
     ImGui::SeparatorText("Other");
+    if (ImGui::Checkbox("Remove Intro Cutscene", &Config::Variables::removeIntroCutscene))
+    {
+        std::string gameDir = Misc::GetGameRootDirectory();
+        std::string moviesDir = gameDir + "DeadByDaylight\\Content\\Movies\\";
 
+        std::cout << moviesDir << std::endl;
+
+        if (Config::Variables::removeIntroCutscene)
+        {
+            if (std::rename(
+                (moviesDir + "AdditionalLoadingScreen").c_str(),  
+                (moviesDir + "disabled_AdditionalLoadingScreen").c_str()) != 0)
+                std::perror("Error renaming file");
+        }
+        else
+        {
+            std::rename(
+                (moviesDir + "disabled_AdditionalLoadingScreen").c_str(),
+                (moviesDir + "AdditionalLoadingScreen").c_str());
+        }
+    }
     if (ImGui::Button("Restart Game"))
         Misc::RestartGame();
     GUI::ToolTip("Will Close and reopen Dead By Daylight to apply any changed settings.");
@@ -341,6 +363,7 @@ void CEMenu::CreateStyle()
     // Button
     colors[ImGuiCol_Button] = RGBToImVec4(255, 83, 83);
     colors[ImGuiCol_ButtonHovered] = RGBToImVec4(255, 153, 153);
+    colors[ImGuiCol_ButtonHovered] = RGBToImVec4(255, 203, 203);
 
     // Main Window
     colors[ImGuiCol_FrameBg] = RGBToImVec4(255, 83, 83);

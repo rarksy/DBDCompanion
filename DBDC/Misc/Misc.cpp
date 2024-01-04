@@ -77,6 +77,13 @@ std::vector<std::string> Misc::GetAllLibraryDirectories()
         {
             // Extract the path from the match
             std::string path = match[1].str();
+
+            std::string::size_type pos = 0;
+            while ((pos = path.find("\\\\", pos)) != std::string::npos) {
+                path.replace(pos, 2, "\\");
+                pos += 1; // Move past the replaced backslash
+            }
+            
             paths.push_back(path);
         }
     }
@@ -91,6 +98,17 @@ std::string Misc::GetGameRootDirectory()
     // C:\Program Files (x86)\Steam\steamapps/libraryfolders.vdf
     // use it to check all steam libraries for dbd root directory
 
+    const std::vector<std::string> allPaths = GetAllLibraryDirectories();
+
+    for (const auto& path : allPaths)
+    {
+        std::filesystem::path gameRootDir(path + "\\steamapps\\common\\Dead By Daylight\\");
+
+        if (!std::filesystem::exists(gameRootDir))
+            continue;
+
+        return gameRootDir.string();
+    }
     
     return "";
 }
