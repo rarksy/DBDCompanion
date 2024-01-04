@@ -31,7 +31,7 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
     ImGui_ImplOpenGL3_Init("#version 330"); 
     
     // Load Font
-    ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(Rethink_compressed_data, Rethink_compressed_size, 18.F);
+    ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(Rethink_compressed_data, Rethink_compressed_size, Menu::Styling::fontSize);
     
     ImGui::GetIO().IniFilename = nullptr;
     

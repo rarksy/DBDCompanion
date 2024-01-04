@@ -53,7 +53,7 @@ bool CEMenu::Setup()
 void CEMenu::RenderUI()
 {
     CEMenu::CreateStyle();
-    
+
     ImGui::Columns(3, nullptr, false);
 
     ImGui::SeparatorText("Graphics Quality");
@@ -184,7 +184,7 @@ void CEMenu::RenderUI()
                  Config::Variables::antiAliasMode.second == 1
                      ? Image::AntiAliasing::textureOn
                      : Image::AntiAliasing::textureOff, ImVec2(400, 250));
-    
+
     ImGui::NextColumn();
 
     ImGui::SeparatorText("Experimental");
@@ -195,6 +195,8 @@ void CEMenu::RenderUI()
                             Config::Variables::engineReadOnly);
     GUI::ToolTip("Stops Dead By Daylight from resetting any chosen settings."
         "\nSome Options Require This To Work.");
+    ImGui::Spacing();
+    ImGui::Spacing();
 
     ImGui::BeginDisabled(!Config::Variables::engineReadOnly);
     {
@@ -308,7 +310,7 @@ void CEMenu::RenderUI()
     GUI::ToolTip("Will Close and reopen Dead By Daylight to apply any changed settings.");
 
     ImGui::SameLine();
-    if (ImGui::Button("Open Setting Folder"))
+    if (ImGui::Button("Open Folder"))
         Misc::OpenSettingsFolder();
 
     ImGui::SetCursorPos({720, 470});
@@ -335,9 +337,31 @@ void CEMenu::CreateStyle()
 {
     ImGuiStyle& style = ImGui::GetStyle();
     auto& colors = style.Colors;
-    
-    colors[ImGuiCol_Button] = RGBToImVec4(175, 3, 3);
-    colors[ImGuiCol_ButtonHovered] = RGBToImVec4(255, 83, 83);
 
+    // Button
+    colors[ImGuiCol_Button] = RGBToImVec4(255, 83, 83);
+    colors[ImGuiCol_ButtonHovered] = RGBToImVec4(255, 153, 153);
+
+    // Main Window
+    colors[ImGuiCol_Border] = RGBToImVec4(255, 83, 83);
+    colors[ImGuiCol_FrameBg] = RGBToImVec4(255, 83, 83);
+    colors[ImGuiCol_FrameBgHovered] = RGBToImVec4(255, 153, 153);
+    colors[ImGuiCol_FrameBgActive] = RGBToImVec4(255, 203, 203);
     style.FrameRounding = 2.F;
+    style.DisabledAlpha = 0.3F;
+
+    // Slider
+    colors[ImGuiCol_Slider] = RGBToImVec4(255, 83, 83);
+    colors[ImGuiCol_SliderActive] = RGBToImVec4(255, 203, 203);
+    colors[ImGuiCol_SliderHovered] = RGBToImVec4(255, 153, 153);
+    colors[ImGuiCol_SliderGrab] = RGBToImVec4(255, 83, 83);
+    style.GrabRounding = style.FrameRounding;
+
+    // Checkbox
+    colors[ImGuiCol_CheckMark] = RGBToImVec4(255, 83, 83);
+
+    // Combo
+    colors[ImGuiCol_Combo] = RGBToImVec4(255, 83, 83);
+    colors[ImGuiCol_ComboActive] = RGBToImVec4(255, 203, 203);
+    colors[ImGuiCol_ComboHovered] = RGBToImVec4(255, 153, 153);
 }

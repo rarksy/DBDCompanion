@@ -13,7 +13,9 @@ namespace Menu
     {
         inline constexpr int menuWidth = 750;
         inline constexpr int menuHeight = 500;
-        inline constexpr int itemWidth = 120;   
+        inline constexpr int itemWidth = 95;
+
+        inline constexpr float fontSize = 22.F;
     }
 
     inline ImGuiContext* mainContext = nullptr;
