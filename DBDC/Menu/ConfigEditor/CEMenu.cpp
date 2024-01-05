@@ -22,7 +22,7 @@ bool CEMenu::Setup()
         return false;
     }
 
-    // Load Image
+    // Load Images
 
     // Anti Aliasing
     Images::LoadTextureFromMemory(antiAliasingOnRawData, sizeof antiAliasingOnRawData, &Image::AntiAliasing::textureOn);
@@ -363,7 +363,7 @@ void CEMenu::CreateStyle()
     // Button
     colors[ImGuiCol_Button] = RGBToImVec4(255, 83, 83);
     colors[ImGuiCol_ButtonHovered] = RGBToImVec4(255, 153, 153);
-    colors[ImGuiCol_ButtonHovered] = RGBToImVec4(255, 203, 203);
+    colors[ImGuiCol_ButtonActive] = RGBToImVec4(255, 203, 203);
 
     // Main Window
     colors[ImGuiCol_FrameBg] = RGBToImVec4(255, 83, 83);
