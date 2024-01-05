@@ -1,16 +1,14 @@
 ﻿#include "CEMenu.hpp"
 
-#include "../Menu.h"
 #include "../Config/Config.h"
 #include "../Misc/Misc.hpp"
 #include "../GUI/GUI.h"
 #include <Windows.h>
 #include <Images/Images.h>
-#include <fstream>
-#include <iostream>
 
 bool CEMenu::Setup()
 {
+    // Initialize
     do
     {
     }
@@ -54,6 +52,7 @@ bool CEMenu::Setup()
 
 void CEMenu::RenderUI()
 {
+    // Style Menu
     CEMenu::CreateStyle();
 
     ImGui::Columns(3, nullptr, false);
