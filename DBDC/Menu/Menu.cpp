@@ -50,6 +50,8 @@ void Menu::RenderUI()
     ImGui::SetNextWindowSize(ImVec2(Styling::menuWidth, Styling::menuHeight), ImGuiCond_Once);
     ImGui::Begin("menu", nullptr, menuFlags);
 
+    // Main Menu Is Disabled At The Moment Due To Hook Counter Not Being Implemented
+    
     // if (menuToShow != 0)
     //     if (ImGui::Button("<--"))
     //         menuToShow = 0;
@@ -65,6 +67,7 @@ void Menu::RenderUI()
 
     else if (menuToShow == 1)
     {
+        // Setup Config Editor Menu
         static std::once_flag flag;
         std::call_once(flag, CEMenu::Setup);
 
