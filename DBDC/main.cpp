@@ -1,16 +1,10 @@
-#include <iostream>
-#include <ImGui/imgui.h>
-#include <ImGui/imgui_impl_glfw.h>
-#include <ImGui/imgui_impl_opengl3.h>
 #include <Windows.h>
-#include "Config/Config.h"
 #include "Backend/Backend.hpp"
 #include "Menu/Menu.h"
-#include <Fonts/Rethink.hpp>
 
 int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
 {
-    
+    // Setup GLFW Window
     if (Backend::InitGLFW() != GLFW_TRUE)
         return 2;
     
@@ -22,26 +16,17 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
     Menu::window = window;
     
     glfwMakeContextCurrent(window);
-    
-    Menu::mainContext = ImGui::CreateContext();
-    ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init("#version 330"); 
-    
-    ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(Rethink_compressed_data, Rethink_compressed_size, Menu::Styling::fontSize);
-    
-    ImGui::GetIO().IniFilename = nullptr;
+
+    Backend::SetupImGui();
     
     glfwSetWindowAttrib(window, GLFW_RESIZABLE, false);
     glfwSwapInterval(2);
-    
+
+    // Start Menu Loop
     Menu::RunLoop();
-    
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
-    
-    glfwDestroyWindow(window);
-    glfwTerminate();
+
+    Backend::ShutdownImGui();
+    Backend::ShutdownGLFW();
     
     return 0;
 }
