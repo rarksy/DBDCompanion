@@ -14,55 +14,54 @@ bool Config::InitializeConfig()
     }
 
     const auto result = MessageBoxA(
-        nullptr, "Un able To Locate Settings Folder\nPlease Locate Manually Or Press No To Exit.", "Notice...",
+        nullptr, "Unable To Locate Settings Folder\nPlease Locate Manually Or Press No To Exit.", "Notice...",
         MB_YESNO);
 
     if (result == IDNO)
         exit(1);
 
+
+    CoInitialize(NULL);
+    IFileDialog* pfd;
+    if (SUCCEEDED(CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pfd))))
     {
-        CoInitialize(NULL);
-        IFileDialog* pfd;
-        if (SUCCEEDED(CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pfd))))
+        DWORD dwOptions;
+        if (FAILED(pfd->GetOptions(&dwOptions)))
+            return false;
+
+        pfd->SetOptions(dwOptions | FOS_PICKFOLDERS);
+
+        if (FAILED(pfd->Show(NULL)))
         {
-            DWORD dwOptions;
-            if (FAILED(pfd->GetOptions(&dwOptions)))
-                return false;
+            pfd->Release();
+            return false;
+        }
 
-            pfd->SetOptions(dwOptions | FOS_PICKFOLDERS);
+        IShellItem* psi;
+        if (FAILED(pfd->GetResult(&psi)))
+        {
+            psi->Release();
+            pfd->Release();
+            return false;
+        }
 
-            if (FAILED(pfd->Show(NULL)))
-            {
-                pfd->Release();
-                return false;
-            }
-
-            IShellItem* psi;
-            if (FAILED(pfd->GetResult(&psi)))
-            {
-                psi->Release();
-                pfd->Release();
-                return false;
-            }
-
-            PWSTR pszPath;
-            if (FAILED(psi->GetDisplayName(SIGDN_FILESYSPATH, &pszPath)))
-            {
-                psi->Release();
-                pfd->Release();
-            }
-
-
-            SettingsFolderLocation = pszPath;
-            // Add your code here to work with the selected folder path
-            CoTaskMemFree(pszPath);
-
+        PWSTR pszPath;
+        if (FAILED(psi->GetDisplayName(SIGDN_FILESYSPATH, &pszPath)))
+        {
             psi->Release();
             pfd->Release();
         }
 
-        CoUninitialize();
+        SettingsFolderLocation = pszPath;
+        // Add your code here to work with the selected folder path
+        CoTaskMemFree(pszPath);
+
+        psi->Release();
+        pfd->Release();
     }
+
+    CoUninitialize();
+
 
     return std::filesystem::exists(SettingsFolderLocation.string() + "\\GameUserSettings.ini");
 }
