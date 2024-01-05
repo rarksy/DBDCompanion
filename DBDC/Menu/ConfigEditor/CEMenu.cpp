@@ -308,23 +308,28 @@ void CEMenu::RenderUI()
     ImGui::SeparatorText("Other");
     if (ImGui::Checkbox("Remove Intro Cutscene", &Config::Variables::removeIntroCutscene))
     {
-        std::string gameDir = Misc::GetGameRootDirectory();
-        std::string moviesDir = gameDir + "DeadByDaylight\\Content\\Movies\\";
-
-        std::cout << moviesDir << std::endl;
+        const std::string gameDir = Misc::GetGameRootDirectory();
+        const std::string moviesDir = gameDir + "DeadByDaylight\\Content\\Movies\\";
 
         if (Config::Variables::removeIntroCutscene)
         {
             if (std::rename(
                 (moviesDir + "AdditionalLoadingScreen").c_str(),  
                 (moviesDir + "disabled_AdditionalLoadingScreen").c_str()) != 0)
-                std::perror("Error renaming file");
+            {
+                MessageBoxA(nullptr, "Error...", "Couldn't Disable Intro Cutscene.", MB_OK);
+                Config::Variables::removeIntroCutscene = false;
+            }
         }
         else
         {
-            std::rename(
+            if (std::rename(
                 (moviesDir + "disabled_AdditionalLoadingScreen").c_str(),
-                (moviesDir + "AdditionalLoadingScreen").c_str());
+                (moviesDir + "AdditionalLoadingScreen").c_str()) != 0)
+            {
+                MessageBoxA(nullptr, "Error...", "Couldn't Enable Intro Cutscene.", MB_OK);
+                Config::Variables::removeIntroCutscene = true;
+            }
         }
     }
     if (ImGui::Button("Restart Game"))
