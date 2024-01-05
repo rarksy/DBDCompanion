@@ -1,6 +1,8 @@
 ﻿#pragma once
 #include <string>
 
+// Experimental, Still Yet To Test What Works, What Doesn't
+
 namespace Scripts
 {
     namespace DisableTextureStreaming
