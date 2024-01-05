@@ -65,6 +65,7 @@ std::vector<std::string> Misc::GetAllLibraryDirectories()
 
     std::string line;
 
+    // i have no clue how regular expressions work, thanks chatgpt
     // Define a regex pattern for extracting paths
     std::regex pathPattern("\"path\"\\s+\"([^\"]+)\"");
 
