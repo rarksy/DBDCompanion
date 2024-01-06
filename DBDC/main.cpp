@@ -1,3 +1,4 @@
+#include <iostream>
 #include <ImGui/imgui.h>
 #include <ImGui/imgui_impl_glfw.h>
 #include <ImGui/imgui_impl_opengl3.h>
@@ -9,10 +10,10 @@
 
 int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
 {
+    
     if (Backend::InitGLFW() != GLFW_TRUE)
         return 2;
     
-    // Create GLFW Window
     GLFWwindow* window = Backend::SetupWindow("Dead By Daylight Companion", Menu::Styling::menuWidth,
                                               Menu::Styling::menuHeight);
     if (!window)
@@ -22,13 +23,11 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
     
     glfwMakeContextCurrent(window);
     
-    // Create ImGui Context
     Menu::mainContext = ImGui::CreateContext();
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 330"); 
     
-    // Load Font
-    ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(Rethink_compressed_data, Rethink_compressed_size, 18.F);
+    ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(Rethink_compressed_data, Rethink_compressed_size, Menu::Styling::fontSize);
     
     ImGui::GetIO().IniFilename = nullptr;
     

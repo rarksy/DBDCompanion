@@ -1,8 +1,11 @@
 ﻿#include "Misc.hpp"
+
+#include <regex>
 #include <Windows.h>
 #include <TlHelp32.h>
 #include <shellapi.h>
 #include "../Config/Config.h"
+#include <fstream>
 
 LPCWSTR exe = L"DeadByDaylight-Win64-Shipping.exe";
 
@@ -11,13 +14,17 @@ DWORD GetProcessId(LPCWSTR ProcessName)
     PROCESSENTRY32 pt;
     HANDLE hsnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
     pt.dwSize = sizeof(PROCESSENTRY32);
-    if (Process32First(hsnap, &pt)) {
-        do {
-            if (!wcscmp(pt.szExeFile, ProcessName)) {
+    if (Process32First(hsnap, &pt))
+    {
+        do
+        {
+            if (!wcscmp(pt.szExeFile, ProcessName))
+            {
                 CloseHandle(hsnap);
                 return pt.th32ProcessID;
             }
-        } while (Process32Next(hsnap, &pt));
+        }
+        while (Process32Next(hsnap, &pt));
     }
     CloseHandle(hsnap);
     return 0;
@@ -44,11 +51,70 @@ void Misc::RestartGame()
             CloseHandle(handle);
         }
     }
-    
+
     ShellExecuteA(NULL, "open", "\"steam://rungameid/381210\"", NULL, NULL, SW_SHOWDEFAULT);
+}
+
+std::vector<std::string> Misc::GetAllLibraryDirectories()
+{
+    std::vector<std::string> paths;
+    std::ifstream configFile("C:\\Program Files (x86)\\Steam\\steamapps\\libraryfolders.vdf");
+
+    if (configFile.fail())
+        return paths;
+
+    std::string line;
+
+    // i have no clue how regular expressions work, thanks chatgpt
+    // Define a regex pattern for extracting paths
+    std::regex pathPattern("\"path\"\\s+\"([^\"]+)\"");
+
+    while (std::getline(configFile, line))
+    {
+        std::smatch match;
+
+        // Check if the line matches the pattern
+        if (std::regex_search(line, match, pathPattern))
+        {
+            // Extract the path from the match
+            std::string path = match[1].str();
+
+            std::string::size_type pos = 0;
+            while ((pos = path.find("\\\\", pos)) != std::string::npos) {
+                path.replace(pos, 2, "\\");
+                pos += 1; // Move past the replaced backslash
+            }
+            
+            paths.push_back(path);
+        }
+    }
+
+    return paths;
+}
+
+
+std::string Misc::GetGameRootDirectory()
+{
+    // library paths are located in:
+    // C:\Program Files (x86)\Steam\steamapps/libraryfolders.vdf
+    // use it to check all steam libraries for dbd root directory
+
+    const std::vector<std::string> allPaths = GetAllLibraryDirectories();
+
+    for (const auto& path : allPaths)
+    {
+        std::filesystem::path gameRootDir(path + "\\steamapps\\common\\Dead By Daylight\\");
+
+        if (!std::filesystem::exists(gameRootDir))
+            continue;
+
+        return gameRootDir.string();
+    }
+    
+    return "";
 }
 
 void Misc::OpenSettingsFolder()
 {
-    ShellExecuteA(NULL,  "open", Config::SettingsFolderLocation.string().c_str(), NULL, NULL, SW_SHOWDEFAULT);
+    ShellExecuteA(NULL, "open", Config::SettingsFolderLocation.string().c_str(), NULL, NULL, SW_SHOWDEFAULT);
 }

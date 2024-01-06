@@ -6,6 +6,8 @@
 #include "../GUI/GUI.h"
 #include <Windows.h>
 #include <Images/Images.h>
+#include <fstream>
+#include <iostream>
 
 bool CEMenu::Setup()
 {
@@ -20,7 +22,7 @@ bool CEMenu::Setup()
         return false;
     }
 
-    // Load Image
+    // Load Images
 
     // Anti Aliasing
     Images::LoadTextureFromMemory(antiAliasingOnRawData, sizeof antiAliasingOnRawData, &Image::AntiAliasing::textureOn);
@@ -52,6 +54,8 @@ bool CEMenu::Setup()
 
 void CEMenu::RenderUI()
 {
+    CEMenu::CreateStyle();
+
     ImGui::Columns(3, nullptr, false);
 
     ImGui::SeparatorText("Graphics Quality");
@@ -182,6 +186,7 @@ void CEMenu::RenderUI()
                  Config::Variables::antiAliasMode.second == 1
                      ? Image::AntiAliasing::textureOn
                      : Image::AntiAliasing::textureOff, ImVec2(400, 250));
+
     ImGui::NextColumn();
 
     ImGui::SeparatorText("Experimental");
@@ -192,6 +197,8 @@ void CEMenu::RenderUI()
                             Config::Variables::engineReadOnly);
     GUI::ToolTip("Stops Dead By Daylight from resetting any chosen settings."
         "\nSome Options Require This To Work.");
+    ImGui::Spacing();
+    ImGui::Spacing();
 
     ImGui::BeginDisabled(!Config::Variables::engineReadOnly);
     {
@@ -299,19 +306,53 @@ void CEMenu::RenderUI()
     ImGui::Spacing();
 
     ImGui::SeparatorText("Other");
+    if (ImGui::Checkbox("Remove Intro Cutscene", &Config::Variables::removeIntroCutscene))
+    {
+        const std::string gameDir = Misc::GetGameRootDirectory();
+        const std::string moviesDir = gameDir + "DeadByDaylight\\Content\\Movies\\";
 
+        if (Config::Variables::removeIntroCutscene)
+        {
+            if (std::rename(
+                (moviesDir + "AdditionalLoadingScreen").c_str(),  
+                (moviesDir + "disabled_AdditionalLoadingScreen").c_str()) != 0)
+            {
+                MessageBoxA(nullptr, "Error...", "Couldn't Disable Intro Cutscene.", MB_OK);
+                Config::Variables::removeIntroCutscene = false;
+            }
+        }
+        else
+        {
+            if (std::rename(
+                (moviesDir + "disabled_AdditionalLoadingScreen").c_str(),
+                (moviesDir + "AdditionalLoadingScreen").c_str()) != 0)
+            {
+                MessageBoxA(nullptr, "Error...", "Couldn't Enable Intro Cutscene.", MB_OK);
+                Config::Variables::removeIntroCutscene = true;
+            }
+        }
+    }
     if (ImGui::Button("Restart Game"))
         Misc::RestartGame();
     GUI::ToolTip("Will Close and reopen Dead By Daylight to apply any changed settings.");
 
     ImGui::SameLine();
-    if (ImGui::Button("Open Setting Folder"))
+    if (ImGui::Button("Open Folder"))
         Misc::OpenSettingsFolder();
 
     ImGui::SetCursorPos({720, 470});
     ImGui::TextColored(ImVec4(0.8F, 0.8F, 0.8F, 0.5F), "(?)");
     GUI::ToolTip("Hold right click when hovering an option to view information about it.\n"
-                 "Tip: Some options have images associated to assist in selection.", false);
+                 "Tip: Some options have images associated to assist in selection."
+                 "\n\nDead By Daylight Companion By rarksy/ski\n\n"
+                 "Build Version: Early Access "
+#ifdef _DEBUG
+                 "Debug"
+#else
+                 "Release"
+#endif
+                 "\nBuild Date: " + std::string(__DATE__) +
+                 "\nBuild Time: " + std::string(__TIME__), false);
 }
 
 ImVec4 RGBToImVec4(int r, int g, int b, int a = 255)
@@ -323,6 +364,40 @@ void CEMenu::CreateStyle()
 {
     ImGuiStyle& style = ImGui::GetStyle();
     auto& colors = style.Colors;
-    colors[ImGuiCol_Button] = RGBToImVec4(175, 3, 3);
-    colors[ImGuiCol_ButtonHovered] = RGBToImVec4(255, 83, 83);
+
+    // Button
+    colors[ImGuiCol_Button] = RGBToImVec4(255, 83, 83);
+    colors[ImGuiCol_ButtonHovered] = RGBToImVec4(255, 153, 153);
+    colors[ImGuiCol_ButtonActive] = RGBToImVec4(255, 203, 203);
+
+    // Main Window
+    colors[ImGuiCol_FrameBg] = RGBToImVec4(255, 83, 83);
+    colors[ImGuiCol_FrameBgHovered] = RGBToImVec4(255, 153, 153);
+    colors[ImGuiCol_FrameBgActive] = RGBToImVec4(255, 203, 203);
+    style.FrameRounding = 2.F;
+    style.DisabledAlpha = 0.3F;
+    style.FrameBorderSize = 1.7F;
+
+    // Slider
+    colors[ImGuiCol_Slider] = RGBToImVec4(255, 83, 83);
+    colors[ImGuiCol_SliderActive] = RGBToImVec4(255, 203, 203);
+    colors[ImGuiCol_SliderHovered] = RGBToImVec4(255, 153, 153);
+    colors[ImGuiCol_SliderGrab] = RGBToImVec4(255, 83, 83);
+    style.GrabRounding = style.FrameRounding;
+
+    // Checkbox
+    colors[ImGuiCol_CheckMark] = RGBToImVec4(255, 83, 83);
+
+    // Combo
+    colors[ImGuiCol_Combo] = RGBToImVec4(255, 83, 83);
+    colors[ImGuiCol_ComboActive] = RGBToImVec4(255, 203, 203);
+    colors[ImGuiCol_ComboHovered] = RGBToImVec4(255, 153, 153);
+
+    // Header ( Selectables Etc )
+    colors[ImGuiCol_Header] = RGBToImVec4(255, 83, 83);
+    colors[ImGuiCol_HeaderHovered] = RGBToImVec4(255, 153, 153);
+    colors[ImGuiCol_HeaderActive] = RGBToImVec4(255, 203, 203);
+
+    // Separator
+    colors[ImGuiCol_Separator] = RGBToImVec4(255, 83, 83);
 }

@@ -13,10 +13,10 @@ namespace Config
     bool LoadSetting(const std::string& _file, const std::string& group, std::pair<std::string, std::string>& setting);
     bool LoadSettingFind(const std::string& _file, std::pair<std::string, int>& setting);
     bool LoadSettingFind(const std::string& _file, std::pair<std::string, std::string>& setting);
-    
+
     bool SetReadOnly(const std::string& file, const bool value);
     bool GetReadOnly(const std::string& file);
-    
+
     std::filesystem::path GetSettingsFolderLocation();
 
     namespace Edit
@@ -26,6 +26,8 @@ namespace Config
 
         bool RemoveValue(std::string _file, std::string group, std::pair<std::string, int> intSetting);
         bool RemoveValue(std::string _file, std::string group, std::pair<std::string, std::string> stringSetting);
+
+        bool RemoveGroup(std::string _file, std::string group);
     }
 
     inline std::filesystem::path SettingsFolderLocation;
@@ -35,14 +37,17 @@ namespace Config
         inline std::string scalabilityGroups = "ScalabilityGroups";
         inline std::string DBDGameUserSettings = "/Script/DeadByDaylight.DBDGameUserSettings";
         inline std::string rendererOverrideSettings = "/script/engine.rendereroverridesettings";
+        inline std::string Systemsettings = "Systemsettings";
+        inline std::string TextureQualityAt = "TextureQuality@";
+        inline std::string TextureStreaming = "TextureStreaming";
     }
-    
+
     namespace Variables
     {
         // Variable Name | Value
         using intSetting = std::pair<std::string, int>;
         using stringSetting = std::pair<std::string, std::string>;
-        
+
         inline intSetting resolutionQuality = {"sg.ResolutionQuality", 100};
         inline intSetting viewDistanceQuality = {"sg.ViewDistanceQuality", 0};
         inline intSetting antiAliasQuality = {"sg.AntiAliasingQuality", 0};
@@ -66,16 +71,19 @@ namespace Config
 
         inline stringSetting bloom = {"r.DefaultFeature.Bloom", sFalse};
         inline stringSetting ambientOcclusion = {"r.DefaultFeature.AmbientOcclusion", sFalse};
-        inline stringSetting ambientOcclusionStaticFraction = {"r.DefaultFeature.AmbientOcclusionStaticFraction", sFalse};
+        inline stringSetting ambientOcclusionStaticFraction = {
+            "r.DefaultFeature.AmbientOcclusionStaticFraction", sFalse
+        };
         inline stringSetting motionBlur = {"r.DefaultFeature.MotionBlur", sFalse};
         inline stringSetting lensFlare = {"r.DefaultFeature.LensFlare", sFalse};
 
         inline bool engineReadOnly = false;
+        inline bool removeIntroCutscene = false;
     }
 
     namespace Files
     {
         inline std::string gameUserSettings = "\\GameUserSettings.ini";
-        inline std::string engine = "\\Engine.ini";   
+        inline std::string engine = "\\Engine.ini";
     }
 }
