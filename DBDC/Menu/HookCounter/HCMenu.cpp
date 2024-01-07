@@ -12,10 +12,8 @@ void HCMenu::RenderUI()
     ImGui::SameLine();
     if (ImGui::Button("Kill Hook Counter"))
     {
-        glfwDestroyWindow(overlayWindow);
+        Menu::Overlay::DestroyOverlay();
         Menu::menuToShow = 0;
-        HCMenu::hasCreatedOverlay = false;
-        HCMenu::overlayWindow = nullptr;
     }
     
     ImGui::Text("hook counter menu");
