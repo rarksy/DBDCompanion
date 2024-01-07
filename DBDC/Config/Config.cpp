@@ -106,6 +106,9 @@ bool Config::LoadConfig()
             Misc::GetGameRootDirectory() + "DeadByDaylight\\Content\\Movies\\AdditionalLoadingScreen"
         );
 
+    if (Misc::IsGameRunning())
+        MessageBoxA(nullptr, "Notice...", "Game Is Running, Changes Won't Apply Until It Is Restarted.", MB_OK);
+
     return true;
 }
 
