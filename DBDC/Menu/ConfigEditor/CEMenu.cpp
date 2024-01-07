@@ -7,7 +7,6 @@
 #include <Windows.h>
 #include <Images/Images.h>
 #include <fstream>
-#include <iostream>
 
 bool CEMenu::Setup()
 {
