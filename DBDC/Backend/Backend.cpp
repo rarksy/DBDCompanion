@@ -20,7 +20,7 @@ int Backend::InitGLFW()
 
 void Backend::ShutdownGLFW()
 {
-    glfwDestroyWindow(Menu::window);
+    glfwDestroyWindow(Menu::mainWindow);
     glfwTerminate();
 }
 
@@ -33,7 +33,7 @@ void Backend::SetupImGui()
 {
     // Setup ImGui
     Menu::mainContext = ImGui::CreateContext();
-    ImGui_ImplGlfw_InitForOpenGL(Menu::window, true);
+    ImGui_ImplGlfw_InitForOpenGL(Menu::mainWindow, true);
     ImGui_ImplOpenGL3_Init("#version 330"); 
     
     ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(Rethink_compressed_data, Rethink_compressed_size, Menu::Styling::fontSize);
