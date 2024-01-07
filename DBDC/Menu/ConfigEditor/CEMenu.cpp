@@ -357,7 +357,7 @@ void CEMenu::RenderUI()
         ShellExecuteA(NULL, "open", "https://discord.gg/vKjjS8yazu", NULL, NULL, SW_SHOWNORMAL);
 }
 
-ImVec4 RGBToImVec4(int r, int g, int b, int a = 255)
+inline ImVec4 RGBToImVec4(int r, int g, int b, int a = 255)
 {
     return {r / 255.F, g / 255.F, b / 255.F, a / 255.F};
 }

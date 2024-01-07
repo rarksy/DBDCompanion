@@ -17,24 +17,34 @@ void Menu::RunLoop()
         glfwMakeContextCurrent(mainWindow);
 
         glfwPollEvents();
+
+        ImGui::SetCurrentContext(Menu::mainContext);
         
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
-        
+
         CreateGlobalStyle();
         RenderUI();
 
-        
-        
         ImGui::Render();
         glViewport(0, 0, 800, 600);
         glClear(GL_COLOR_BUFFER_BIT);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-        
+
+        if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+        {
+            GLFWwindow* backupCurrentContext = glfwGetCurrentContext();
+            ImGui::UpdatePlatformWindows();
+            ImGui::RenderPlatformWindowsDefault();
+            glfwMakeContextCurrent(backupCurrentContext);
+        }
+
         glfwSwapBuffers(mainWindow);
-        const double entTime = glfwGetTime();
-        const double elapsedTime = entTime - startTime;
+        
+
+        const double endTime = glfwGetTime();
+        const double elapsedTime = endTime - startTime;
 
         constexpr double targetFrameTime = 1.0 / static_cast<double>(80);
 
@@ -86,7 +96,7 @@ void Menu::RenderUI()
     ImGui::End();
 }
 
-ImVec4 RGBToImVec4(int r, int g, int b, int a = 255)
+inline ImVec4 RGBToImVec4(int r, int g, int b, int a = 255)
 {
     return {r / 255.F, g / 255.F, b / 255.F, a / 255.F};
 }
