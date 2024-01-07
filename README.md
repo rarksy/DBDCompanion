@@ -22,3 +22,6 @@ This part of DBDC is not yet implemented but will be soon! more info coming in t
 
 # Crosshair Overlay
 This part of DBDC is not yet implemented but will be soon! more info coming in time :)
+
+# Socials
+[Twitch](https://twitch.tv/rarksy] | [Discord](https://discord.gg/vKjjS8yazu)
