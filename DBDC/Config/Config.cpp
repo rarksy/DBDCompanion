@@ -14,7 +14,7 @@ bool Config::InitializeConfig()
     }
 
     const auto result = MessageBoxA(
-        nullptr, "Un able To Locate Settings Folder\nPlease Locate Manually Or Press No To Exit.", "Notice...",
+        nullptr, "Unable To Locate Settings Folder\nPlease Locate Manually Or Press No To Exit.", "Notice...",
         MB_YESNO);
 
     if (result == IDNO)
