@@ -24,4 +24,4 @@ This part of DBDC is not yet implemented but will be soon! more info coming in t
 This part of DBDC is not yet implemented but will be soon! more info coming in time :)
 
 # Socials
-[Twitch](https://twitch.tv/rarksy] | [Discord](https://discord.gg/vKjjS8yazu)
+[Twitch](https://twitch.tv/rarksy) | [Discord](https://discord.gg/vKjjS8yazu)
