@@ -6,16 +6,15 @@
 
 #include "ConfigEditor/CEMenu.hpp"
 #include "HookCounter/HCMenu.h"
-#include <Windows.h>
 
 void Menu::RunLoop()
 {
     
-    while (!glfwWindowShouldClose(window))
+    while (!glfwWindowShouldClose(mainWindow))
     {
         const double startTime = glfwGetTime();
 
-        glfwMakeContextCurrent(window);
+        glfwMakeContextCurrent(mainWindow);
 
         glfwPollEvents();
         
@@ -23,14 +22,17 @@ void Menu::RunLoop()
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
         
+        CreateGlobalStyle();
         RenderUI();
+
+        
         
         ImGui::Render();
         glViewport(0, 0, 800, 600);
         glClear(GL_COLOR_BUFFER_BIT);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         
-        glfwSwapBuffers(window);
+        glfwSwapBuffers(mainWindow);
         const double entTime = glfwGetTime();
         const double elapsedTime = entTime - startTime;
 
@@ -50,9 +52,9 @@ void Menu::RenderUI()
     ImGui::SetNextWindowSize(ImVec2(Styling::menuWidth, Styling::menuHeight), ImGuiCond_Once);
     ImGui::Begin("menu", nullptr, menuFlags);
 
-    // if (menuToShow != 0)
-    //     if (ImGui::Button("<--"))
-    //         menuToShow = 0;
+    if (menuToShow != 0)
+        if (ImGui::Button("<--"))
+            menuToShow = 0;
 
     if (menuToShow == 0)
     {
@@ -73,25 +75,60 @@ void Menu::RenderUI()
 
     else if (menuToShow == 2)
     {
-        if (!HCMenu::hasCreatedOverlay)
+        if (!Overlay::IsOverlayCreated())
         {
-            int screenWidth = GetSystemMetrics(SM_CXSCREEN);
-            int screenHeight = GetSystemMetrics(SM_CYSCREEN);
-            glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, true);
-            glfwWindowHint(GLFW_DECORATED, false);
-            glfwWindowHint(GLFW_MOUSE_PASSTHROUGH, true);
-            glfwWindowHint(GLFW_FLOATING, true);
-            HCMenu::overlayWindow = glfwCreateWindow(screenWidth / 3, screenHeight, "Hook Counter", nullptr, nullptr);
-            glfwSetWindowPos(HCMenu::overlayWindow, 0, 0);
-            glfwFocusWindow(window);
-
-            HCMenu::overlayContext = ImGui::CreateContext();
-            
-            HCMenu::hasCreatedOverlay = true;
+            Overlay::CreateOverlay();
         }
         
         HCMenu::RenderUI();
     }
 
     ImGui::End();
+}
+
+ImVec4 RGBToImVec4(int r, int g, int b, int a = 255)
+{
+    return {r / 255.F, g / 255.F, b / 255.F, a / 255.F};
+}
+
+void Menu::CreateGlobalStyle()
+{
+    ImGuiStyle& style = ImGui::GetStyle();
+    auto& colors = style.Colors;
+
+    // Button
+    colors[ImGuiCol_Button] = RGBToImVec4(255, 83, 83);
+    colors[ImGuiCol_ButtonHovered] = RGBToImVec4(255, 153, 153);
+    colors[ImGuiCol_ButtonActive] = RGBToImVec4(255, 203, 203);
+
+    // Main Window
+    colors[ImGuiCol_FrameBg] = RGBToImVec4(255, 83, 83);
+    colors[ImGuiCol_FrameBgHovered] = RGBToImVec4(255, 153, 153);
+    colors[ImGuiCol_FrameBgActive] = RGBToImVec4(255, 203, 203);
+    style.FrameRounding = 2.F;
+    style.DisabledAlpha = 0.3F;
+    style.FrameBorderSize = 1.7F;
+
+    // Slider
+    colors[ImGuiCol_Slider] = RGBToImVec4(255, 83, 83);
+    colors[ImGuiCol_SliderActive] = RGBToImVec4(255, 203, 203);
+    colors[ImGuiCol_SliderHovered] = RGBToImVec4(255, 153, 153);
+    colors[ImGuiCol_SliderGrab] = RGBToImVec4(255, 83, 83);
+    style.GrabRounding = style.FrameRounding;
+
+    // Checkbox
+    colors[ImGuiCol_CheckMark] = RGBToImVec4(255, 83, 83);
+
+    // Combo
+    colors[ImGuiCol_Combo] = RGBToImVec4(255, 83, 83);
+    colors[ImGuiCol_ComboActive] = RGBToImVec4(255, 203, 203);
+    colors[ImGuiCol_ComboHovered] = RGBToImVec4(255, 153, 153);
+
+    // Header ( Selectables Etc )
+    colors[ImGuiCol_Header] = RGBToImVec4(255, 83, 83);
+    colors[ImGuiCol_HeaderHovered] = RGBToImVec4(255, 153, 153);
+    colors[ImGuiCol_HeaderActive] = RGBToImVec4(255, 203, 203);
+
+    // Separator
+    colors[ImGuiCol_Separator] = RGBToImVec4(255, 83, 83);
 }

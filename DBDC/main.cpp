@@ -19,7 +19,7 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
     if (!window)
         return 3;
     
-    Menu::window = window;
+    Menu::mainWindow = window;
     
     glfwMakeContextCurrent(window);
     

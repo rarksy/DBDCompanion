@@ -53,7 +53,6 @@ bool CEMenu::Setup()
 
 void CEMenu::RenderUI()
 {
-    CEMenu::CreateStyle();
 
     ImGui::Columns(3, nullptr, false);
 

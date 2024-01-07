@@ -11,4 +11,5 @@ namespace Misc
     std::string GetGameRootDirectory();
 
     void OpenSettingsFolder();
+    
 }
