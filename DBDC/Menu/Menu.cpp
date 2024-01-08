@@ -52,7 +52,7 @@ void Menu::RunLoop()
                 Crosshair::DrawCrosshair();
 
             ImGui::Render();
-            glClear(GL_COLOR_BUFFER_BIT);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
             glfwSwapBuffers(Menu::Overlay::window);
         }

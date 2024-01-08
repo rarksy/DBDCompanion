@@ -39,9 +39,10 @@ namespace Menu
             glfwWindowHint(GLFW_DECORATED, false);
             glfwWindowHint(GLFW_MOUSE_PASSTHROUGH, true);
             glfwWindowHint(GLFW_FLOATING, true);
-            Overlay::window = Backend::SetupWindow("Overlay", Overlay::windowWidth, Overlay::windowHeight);
+            glfwWindowHint(GLFW_MAXIMIZED, true);
+            Overlay::window = Backend::SetupWindow("Overlay", Backend::screenWidth, Backend::screenHeight);
             glfwSetWindowPos(Overlay::window, 0, 0);
-            glfwFocusWindow(mainWindow);
+            glfwSwapBuffers(Overlay::window);
 
             // Hide Overlay From Taskbar
             HWND hwnd = glfwGetWin32Window(Overlay::window);
@@ -49,6 +50,8 @@ namespace Menu
             windowStyle |= WS_EX_TOOLWINDOW; 
             ShowWindow(hwnd, SW_HIDE);
             SetWindowLong(hwnd, GWL_STYLE, windowStyle);
+            
+            glfwFocusWindow(mainWindow);
 
             Backend::SetupImGui(Menu::Overlay::window, Menu::Overlay::context);
         }
