@@ -5,6 +5,10 @@
 #include "Menu.h"
 #include <Windows.h>
 
+#include "../Backend/Backend.hpp"
+#include "ImGui/imgui_impl_glfw.h"
+#include "ImGui/imgui_impl_opengl3.h"
+
 namespace Menu
 {
     void RunLoop();
@@ -12,13 +16,17 @@ namespace Menu
     void CreateGlobalStyle();
 
     inline GLFWwindow* mainWindow = nullptr;
+    inline ImGuiContext* mainContext = nullptr;
 
     namespace Overlay
     {
+        inline int windowWidth;
+        inline int windowHeight;
+        
         inline GLFWwindow* window = nullptr;
         inline ImGuiContext* context = nullptr;
-        
-        
+
+
         inline bool IsOverlayCreated()
         {
             return window != nullptr;
@@ -26,24 +34,21 @@ namespace Menu
 
         inline void CreateOverlay()
         {
-            const int screenWidth = GetSystemMetrics(SM_CXSCREEN);
-            const int screenHeight = GetSystemMetrics(SM_CYSCREEN);
             glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, true);
             glfwWindowHint(GLFW_DECORATED, false);
             glfwWindowHint(GLFW_MOUSE_PASSTHROUGH, true);
             glfwWindowHint(GLFW_FLOATING, true);
-            Overlay::window = glfwCreateWindow(screenWidth / 3, screenHeight, "Hook Counter", nullptr, nullptr);
+            Overlay::window = Backend::SetupWindow("Overlay", Overlay::windowWidth, Overlay::windowHeight);
             glfwSetWindowPos(Overlay::window, 0, 0);
             glfwFocusWindow(mainWindow);
 
-            Overlay::context = ImGui::CreateContext();
+            Backend::SetupImGui(Menu::Overlay::window, Menu::Overlay::context);
         }
 
         inline void DestroyOverlay()
         {
-            glfwDestroyWindow(Overlay::window);
-            ImGui::DestroyContext(Overlay::context);
-            Overlay::window = nullptr;
+            glfwDestroyWindow(Menu::Overlay::window);
+            Menu::Overlay::window = nullptr;
         }
     }
 
@@ -56,12 +61,16 @@ namespace Menu
         inline constexpr float fontSize = 22.F;
     }
 
-    inline ImGuiContext* mainContext = nullptr;
+    namespace Icons
+    {
+        inline GLuint ConfigEditor;
+    }
+
 
     inline int menuToShow = 0;
-    
+
     inline constexpr ImGuiWindowFlags menuFlags =
-    ImGuiWindowFlags_NoResize |
-    ImGuiWindowFlags_NoTitleBar |
-    ImGuiWindowFlags_NoMove;
+        ImGuiWindowFlags_NoResize |
+        ImGuiWindowFlags_NoTitleBar |
+        ImGuiWindowFlags_NoMove;
 }

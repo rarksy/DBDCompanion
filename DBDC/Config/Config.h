@@ -64,6 +64,8 @@ namespace Config
         inline intSetting resolutionWidth = {"ResolutionSizeX", 1080};
         inline intSetting resolutionHeight = {"ResolutionSizeY", 1080};
 
+        inline std::string resolution;
+
         // 
         inline intSetting fpsLimitMode = {"FPSLimitMode", 120};
         inline stringSetting useVSync = {"bUseVSync", sTrue};
