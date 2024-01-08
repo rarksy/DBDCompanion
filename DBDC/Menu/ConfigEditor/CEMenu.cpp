@@ -7,6 +7,7 @@
 #include <Windows.h>
 #include <Images/Images.h>
 #include <fstream>
+#include <iostream>
 
 bool CEMenu::Setup()
 {
@@ -48,12 +49,21 @@ bool CEMenu::Setup()
     Images::LoadTextureFromMemory(textureQualityUltraRawData, sizeof textureQualityUltraRawData,
                                   &Image::TextureQuality::textureUltra);
 
+    DEVMODE dm = {0};
+    dm.dmSize = sizeof dm;
+
+    for (int i = 0; EnumDisplaySettings(NULL, i, &dm) != 0; i++)
+    {
+        resolutionModes.push_back(std::to_string(dm.dmPelsWidth) + "x" + std::to_string(dm.dmPelsHeight));
+    }
+    std::sort(resolutionModes.begin(), resolutionModes.end());
+    resolutionModes.erase(std::unique(resolutionModes.begin(), resolutionModes.end()), resolutionModes.end());
+
     return true;
 }
 
 void CEMenu::RenderUI()
 {
-
     ImGui::Columns(3, nullptr, false);
 
     ImGui::SeparatorText("Graphics Quality");
@@ -129,7 +139,8 @@ void CEMenu::RenderUI()
         GUI::ToolTip("Sets the desired width for the game window.");
         ImGui::SameLine();
         ImGui::Text("x");
-        GUI::ToolTip("Sets the desired resolution for the game window.");
+        GUI::ToolTip("Sets the desired resolution for the game window."
+            "\n\n Note: There is a bug preventing keyboard input while the hook/crosshair overlay is active.");
         ImGui::SameLine();
         ImGui::SetNextItemWidth(48);
         if (ImGui::InputInt("##ResolutionH", &Config::Variables::resolutionHeight.second, 0))
@@ -139,6 +150,7 @@ void CEMenu::RenderUI()
             Config::Edit::ChangeValue(Config::Files::gameUserSettings, Config::Groups::DBDGameUserSettings,
                                       Config::Variables::desiredScreenHeight);
         }
+
         GUI::ToolTip("Sets the desired height for the game window.");
         ImGui::SameLine(133);
         ImGui::Text("Resolution");
@@ -312,7 +324,7 @@ void CEMenu::RenderUI()
         if (Config::Variables::removeIntroCutscene)
         {
             if (std::rename(
-                (moviesDir + "AdditionalLoadingScreen").c_str(),  
+                (moviesDir + "AdditionalLoadingScreen").c_str(),
                 (moviesDir + "disabled_AdditionalLoadingScreen").c_str()) != 0)
             {
                 MessageBoxA(nullptr, "Error...", "Couldn't Disable Intro Cutscene.", MB_OK);
@@ -352,7 +364,7 @@ void CEMenu::RenderUI()
 #endif
                  "\nBuild Date: " + std::string(__DATE__) +
                  "\nBuild Time: " + std::string(__TIME__), false);
-    
+
     if (ImGui::IsItemHovered() && ImGui::IsKeyPressed(ImGuiKey_Enter, false))
         ShellExecuteA(NULL, "open", "https://discord.gg/vKjjS8yazu", NULL, NULL, SW_SHOWNORMAL);
 }

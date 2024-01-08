@@ -4,44 +4,57 @@
 #include <chrono>
 #include <thread>
 
+#include "../Backend/Backend.hpp"
 #include "ConfigEditor/CEMenu.hpp"
+#include "Crosshair/CMenu.h"
+#include "Crosshair/Crosshair.h"
 #include "HookCounter/HCMenu.h"
 
 void Menu::RunLoop()
 {
-    
     while (!glfwWindowShouldClose(mainWindow))
     {
         const double startTime = glfwGetTime();
 
-        glfwMakeContextCurrent(mainWindow);
+        glfwMakeContextCurrent(Menu::mainWindow);
 
         glfwPollEvents();
 
+        glfwMakeContextCurrent(Menu::mainWindow);
         ImGui::SetCurrentContext(Menu::mainContext);
-        
+        glfwPollEvents();
+        Backend::ProcessInput(Menu::mainWindow);
+
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        CreateGlobalStyle();
-        RenderUI();
+        Menu::CreateGlobalStyle();
+        Menu::RenderUI();
 
         ImGui::Render();
-        glViewport(0, 0, 800, 600);
         glClear(GL_COLOR_BUFFER_BIT);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        glfwSwapBuffers(Menu::mainWindow);
 
-        if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+        if (Menu::Overlay::window != nullptr)
         {
-            GLFWwindow* backupCurrentContext = glfwGetCurrentContext();
-            ImGui::UpdatePlatformWindows();
-            ImGui::RenderPlatformWindowsDefault();
-            glfwMakeContextCurrent(backupCurrentContext);
-        }
+            glfwMakeContextCurrent(Menu::Overlay::window);
+            ImGui::SetCurrentContext(Menu::Overlay::context);
+            glfwPollEvents();
 
-        glfwSwapBuffers(mainWindow);
-        
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplGlfw_NewFrame();
+            ImGui::NewFrame();
+
+            if (Crosshair::masterSwitch)
+                Crosshair::DrawCrosshair();
+
+            ImGui::Render();
+            glClear(GL_COLOR_BUFFER_BIT);
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+            glfwSwapBuffers(Menu::Overlay::window);
+        }
 
         const double endTime = glfwGetTime();
         const double elapsedTime = endTime - startTime;
@@ -63,16 +76,22 @@ void Menu::RenderUI()
     ImGui::Begin("menu", nullptr, menuFlags);
 
     if (menuToShow != 0)
-        if (ImGui::Button("<--"))
+        if (ImGui::Button("<- Back"))
             menuToShow = 0;
 
     if (menuToShow == 0)
     {
+        //ImGui::SetCursorPos({250, 250});
+        // if (ImGui::ImageButton("Config Editor", (void*)Icons::ConfigEditor, ImVec2(75, 75)))
+        //     menuToShow = 1;
         if (ImGui::Button("Config Editor"))
             menuToShow = 1;
 
-        if (ImGui::Button("Hook Counter"))
-            menuToShow = 2;
+        // if (ImGui::Button("Hook Counter"))
+        //     menuToShow = 2;
+
+        if (ImGui::Button("Crosshair Menu"))
+            menuToShow = 3;
     }
 
     else if (menuToShow == 1)
@@ -87,10 +106,19 @@ void Menu::RenderUI()
     {
         if (!Overlay::IsOverlayCreated())
         {
+            Menu::Overlay::windowWidth = GetSystemMetrics(SM_CXSCREEN) / 3;
+            Menu::Overlay::windowHeight = GetSystemMetrics(SM_CYSCREEN);
             Overlay::CreateOverlay();
+            ImGui::SetCurrentContext(Menu::mainContext);
+            glfwMakeContextCurrent(Menu::mainWindow);
         }
-        
+
         HCMenu::RenderUI();
+    }
+
+    else if (menuToShow == 3)
+    {
+        CMenu::RenderUI();
     }
 
     ImGui::End();

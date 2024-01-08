@@ -1,8 +1,6 @@
 ﻿#pragma once
 
-namespace HCMenu
+namespace CMenu
 {
     void RenderUI();
-    void CreateStyle();
-
 }

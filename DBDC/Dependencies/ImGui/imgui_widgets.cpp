@@ -1158,6 +1158,27 @@ bool ImGui::Checkbox(const char* label, bool* v)
     return pressed;
 }
 
+bool ImGui::CheckboxWithColorPicker(const char* label, const char* hint, bool* v, ImColor& color)
+{
+    ImGui::PushID(label);
+    
+    bool checkboxPressedOrActive = ImGui::Checkbox(label, v);
+
+    if (*v)
+    {
+        ImGui::SameLine();
+        ImVec4 colorVec4 = color.Value;
+        if (ImGui::ColorEdit4(hint, &colorVec4.x, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel))
+        {
+            color = ImColor(colorVec4);
+        }
+    }
+
+    ImGui::PopID();
+    
+    return checkboxPressedOrActive;
+}
+
 template<typename T>
 bool ImGui::CheckboxFlagsT(const char* label, T* flags, T flags_value)
 {
@@ -6618,7 +6639,12 @@ bool ImGui::Selectable(const char* label, bool selected, ImGuiSelectableFlags fl
     if (hovered || selected)
     {
         const ImU32 col = GetColorU32((held && hovered) ? ImGuiCol_HeaderActive : hovered ? ImGuiCol_HeaderHovered : ImGuiCol_Header);
-        RenderFrame(bb.Min, bb.Max, col, false, 0.0f);
+        
+        const ImVec2 textSize = CalcTextSize(label);
+        const int framePadding = 2;
+        const ImVec2 renderStartPos(pos.x - 2, pos.y - framePadding);
+        const ImVec2 renderEndPos(pos.x + textSize.x + framePadding, pos.y + textSize.y);
+        window->DrawList->AddRect(renderStartPos, renderEndPos, col, style.FrameRounding, NULL, style.FrameBorderSize);
     }
     if (g.NavId == id)
         RenderNavHighlight(bb, id, ImGuiNavHighlightFlags_TypeThin | ImGuiNavHighlightFlags_NoRounding);
