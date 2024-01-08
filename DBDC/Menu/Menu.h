@@ -1,4 +1,5 @@
 ﻿#pragma once
+#define GLFW_EXPOSE_NATIVE_WIN32
 #include "GLFW/glfw3.h"
 #include "GLFW/glfw3native.h"
 #include "ImGui/imgui.h"
@@ -41,6 +42,13 @@ namespace Menu
             Overlay::window = Backend::SetupWindow("Overlay", Overlay::windowWidth, Overlay::windowHeight);
             glfwSetWindowPos(Overlay::window, 0, 0);
             glfwFocusWindow(mainWindow);
+
+            // Hide Overlay From Taskbar
+            HWND hwnd = glfwGetWin32Window(Overlay::window);
+            long windowStyle = GetWindowLong(hwnd, GWL_STYLE); 
+            windowStyle |= WS_EX_TOOLWINDOW; 
+            ShowWindow(hwnd, SW_HIDE);
+            SetWindowLong(hwnd, GWL_STYLE, windowStyle);
 
             Backend::SetupImGui(Menu::Overlay::window, Menu::Overlay::context);
         }
