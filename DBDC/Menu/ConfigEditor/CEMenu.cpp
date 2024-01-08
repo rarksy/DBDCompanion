@@ -349,24 +349,6 @@ void CEMenu::RenderUI()
     ImGui::SameLine();
     if (ImGui::Button("Open Folder"))
         Misc::OpenSettingsFolder();
-
-    ImGui::SetCursorPos({720, 470});
-    ImGui::TextColored(ImVec4(0.8F, 0.8F, 0.8F, 0.5F), "(?)");
-    GUI::ToolTip("Hold right click when hovering an option to view information about it.\n"
-                 "Tip: Some options have images associated to assist in selection."
-                 "\n\nDead By Daylight Companion By rarksy/ski\n"
-                 "Press Enter To Join The Discord Server.\n\n"
-                 "Build Version: Early Access "
-#ifdef _DEBUG
-                 "Debug"
-#else
-                 "Release"
-#endif
-                 "\nBuild Date: " + std::string(__DATE__) +
-                 "\nBuild Time: " + std::string(__TIME__), false);
-
-    if (ImGui::IsItemHovered() && ImGui::IsKeyPressed(ImGuiKey_Enter, false))
-        ShellExecuteA(NULL, "open", "https://discord.gg/vKjjS8yazu", NULL, NULL, SW_SHOWNORMAL);
 }
 
 inline ImVec4 RGBToImVec4(int r, int g, int b, int a = 255)
