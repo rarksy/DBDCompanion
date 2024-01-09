@@ -68,7 +68,7 @@ void CMenu::RenderUI()
         
         ImGui::NextColumn();
 
-        ImGui::SeparatorText("Other");
+        ImGui::SeparatorText("Center Dot");
         
         ImGui::CheckboxWithColorPicker("Center Dot", "Center Dot Color", &CVars.enableCenterDot,
                                        CVars.centerDotColor);
