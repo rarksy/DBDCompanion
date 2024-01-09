@@ -77,22 +77,21 @@ void Menu::RenderUI()
     ImGui::Begin("menu", nullptr, menuFlags);
 
     if (menuToShow != 0)
+    {
         if (ImGui::Button("<- Back"))
             menuToShow = 0;
+    }
 
     if (menuToShow == 0)
     {
-        //ImGui::SetCursorPos({250, 250});
-        // if (ImGui::ImageButton("Config Editor", (void*)Icons::ConfigEditor, ImVec2(75, 75)))
-        //     menuToShow = 1;
         if (ImGui::Button("Config Editor"))
             menuToShow = 1;
 
-        // if (ImGui::Button("Hook Counter"))
-        //     menuToShow = 2;
-
         if (ImGui::Button("Crosshair Menu"))
             menuToShow = 3;
+
+        ImGui::SetCursorPos({10, 470});
+        ImGui::TextColored(ImVec4(0.1F, 0.1F, 0.1F, 0.3F), "I DONT KNOW HOW TO MAKE A GOOD MAIN MENU");
     }
 
     else if (menuToShow == 1)
