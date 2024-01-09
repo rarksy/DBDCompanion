@@ -63,7 +63,7 @@ bool Config::InitializeConfig()
     CoUninitialize();
 
 
-    return std::filesystem::exists(SettingsFolderLocation.string() + "\\GameUserSettings.ini");
+    return std::filesystem::exists(SettingsFolderLocation.string() + Files::gameUserSettings);
 }
 
 bool Config::LoadConfig()

@@ -1168,7 +1168,7 @@ bool ImGui::CheckboxWithColorPicker(const char* label, const char* hint, bool* v
     {
         ImGui::SameLine();
         ImVec4 colorVec4 = color.Value;
-        if (ImGui::ColorEdit4(hint, &colorVec4.x, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel))
+        if (ImGui::ColorEdit4(hint, &colorVec4.x, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_NoTooltip))
         {
             color = ImColor(colorVec4);
         }
@@ -5204,77 +5204,77 @@ bool ImGui::ColorEdit4(const char* label, float col[4], ImGuiColorEditFlags flag
     const float inputs_offset_x = (style.ColorButtonPosition == ImGuiDir_Left) ? w_button : 0.0f;
     window->DC.CursorPos.x = pos.x + inputs_offset_x;
 
-    if ((flags & (ImGuiColorEditFlags_DisplayRGB | ImGuiColorEditFlags_DisplayHSV)) != 0 && (flags & ImGuiColorEditFlags_NoInputs) == 0)
-    {
-        // RGB/HSV 0..255 Sliders
-        const float w_items = w_inputs - style.ItemInnerSpacing.x * (components - 1);
-
-        const bool hide_prefix = (IM_TRUNC(w_items / components) <= CalcTextSize((flags & ImGuiColorEditFlags_Float) ? "M:0.000" : "M:000").x);
-        static const char* ids[4] = { "##X", "##Y", "##Z", "##W" };
-        static const char* fmt_table_int[3][4] =
-        {
-            {   "%3d",   "%3d",   "%3d",   "%3d" }, // Short display
-            { "R:%3d", "G:%3d", "B:%3d", "A:%3d" }, // Long display for RGBA
-            { "H:%3d", "S:%3d", "V:%3d", "A:%3d" }  // Long display for HSVA
-        };
-        static const char* fmt_table_float[3][4] =
-        {
-            {   "%0.3f",   "%0.3f",   "%0.3f",   "%0.3f" }, // Short display
-            { "R:%0.3f", "G:%0.3f", "B:%0.3f", "A:%0.3f" }, // Long display for RGBA
-            { "H:%0.3f", "S:%0.3f", "V:%0.3f", "A:%0.3f" }  // Long display for HSVA
-        };
-        const int fmt_idx = hide_prefix ? 0 : (flags & ImGuiColorEditFlags_DisplayHSV) ? 2 : 1;
-
-        float prev_split = 0.0f;
-        for (int n = 0; n < components; n++)
-        {
-            if (n > 0)
-                SameLine(0, style.ItemInnerSpacing.x);
-            float next_split = IM_TRUNC(w_items * (n + 1) / components);
-            SetNextItemWidth(ImMax(next_split - prev_split, 1.0f));
-            prev_split = next_split;
-
-            // FIXME: When ImGuiColorEditFlags_HDR flag is passed HS values snap in weird ways when SV values go below 0.
-            if (flags & ImGuiColorEditFlags_Float)
-            {
-                value_changed |= DragFloat(ids[n], &f[n], 1.0f / 255.0f, 0.0f, hdr ? 0.0f : 1.0f, fmt_table_float[fmt_idx][n]);
-                value_changed_as_float |= value_changed;
-            }
-            else
-            {
-                value_changed |= DragInt(ids[n], &i[n], 1.0f, 0, hdr ? 0 : 255, fmt_table_int[fmt_idx][n]);
-            }
-            if (!(flags & ImGuiColorEditFlags_NoOptions))
-                OpenPopupOnItemClick("context", ImGuiPopupFlags_MouseButtonRight);
-        }
-    }
-    else if ((flags & ImGuiColorEditFlags_DisplayHex) != 0 && (flags & ImGuiColorEditFlags_NoInputs) == 0)
-    {
-        // RGB Hexadecimal Input
-        char buf[64];
-        if (alpha)
-            ImFormatString(buf, IM_ARRAYSIZE(buf), "#%02X%02X%02X%02X", ImClamp(i[0], 0, 255), ImClamp(i[1], 0, 255), ImClamp(i[2], 0, 255), ImClamp(i[3], 0, 255));
-        else
-            ImFormatString(buf, IM_ARRAYSIZE(buf), "#%02X%02X%02X", ImClamp(i[0], 0, 255), ImClamp(i[1], 0, 255), ImClamp(i[2], 0, 255));
-        SetNextItemWidth(w_inputs);
-        if (InputText("##Text", buf, IM_ARRAYSIZE(buf), ImGuiInputTextFlags_CharsUppercase))
-        {
-            value_changed = true;
-            char* p = buf;
-            while (*p == '#' || ImCharIsBlankA(*p))
-                p++;
-            i[0] = i[1] = i[2] = 0;
-            i[3] = 0xFF; // alpha default to 255 is not parsed by scanf (e.g. inputting #FFFFFF omitting alpha)
-            int r;
-            if (alpha)
-                r = sscanf(p, "%02X%02X%02X%02X", (unsigned int*)&i[0], (unsigned int*)&i[1], (unsigned int*)&i[2], (unsigned int*)&i[3]); // Treat at unsigned (%X is unsigned)
-            else
-                r = sscanf(p, "%02X%02X%02X", (unsigned int*)&i[0], (unsigned int*)&i[1], (unsigned int*)&i[2]);
-            IM_UNUSED(r); // Fixes C6031: Return value ignored: 'sscanf'.
-        }
-        if (!(flags & ImGuiColorEditFlags_NoOptions))
-            OpenPopupOnItemClick("context", ImGuiPopupFlags_MouseButtonRight);
-    }
+    // if ((flags & (ImGuiColorEditFlags_DisplayRGB | ImGuiColorEditFlags_DisplayHSV)) != 0 && (flags & ImGuiColorEditFlags_NoInputs) == 0)
+    // {
+    //     // RGB/HSV 0..255 Sliders
+    //     const float w_items = w_inputs - style.ItemInnerSpacing.x * (components - 1);
+    //
+    //     const bool hide_prefix = (IM_TRUNC(w_items / components) <= CalcTextSize((flags & ImGuiColorEditFlags_Float) ? "M:0.000" : "M:000").x);
+    //     static const char* ids[4] = { "##X", "##Y", "##Z", "##W" };
+    //     static const char* fmt_table_int[3][4] =
+    //     {
+    //         {   "%3d",   "%3d",   "%3d",   "%3d" }, // Short display
+    //         { "R:%3d", "G:%3d", "B:%3d", "A:%3d" }, // Long display for RGBA
+    //         { "H:%3d", "S:%3d", "V:%3d", "A:%3d" }  // Long display for HSVA
+    //     };
+    //     static const char* fmt_table_float[3][4] =
+    //     {
+    //         {   "%0.3f",   "%0.3f",   "%0.3f",   "%0.3f" }, // Short display
+    //         { "R:%0.3f", "G:%0.3f", "B:%0.3f", "A:%0.3f" }, // Long display for RGBA
+    //         { "H:%0.3f", "S:%0.3f", "V:%0.3f", "A:%0.3f" }  // Long display for HSVA
+    //     };
+    //     const int fmt_idx = hide_prefix ? 0 : (flags & ImGuiColorEditFlags_DisplayHSV) ? 2 : 1;
+    //
+    //     float prev_split = 0.0f;
+    //     for (int n = 0; n < components; n++)
+    //     {
+    //         if (n > 0)
+    //             SameLine(0, style.ItemInnerSpacing.x);
+    //         float next_split = IM_TRUNC(w_items * (n + 1) / components);
+    //         SetNextItemWidth(ImMax(next_split - prev_split, 1.0f));
+    //         prev_split = next_split;
+    //
+    //         // FIXME: When ImGuiColorEditFlags_HDR flag is passed HS values snap in weird ways when SV values go below 0.
+    //         if (flags & ImGuiColorEditFlags_Float)
+    //         {
+    //             value_changed |= DragFloat(ids[n], &f[n], 1.0f / 255.0f, 0.0f, hdr ? 0.0f : 1.0f, fmt_table_float[fmt_idx][n]);
+    //             value_changed_as_float |= value_changed;
+    //         }
+    //         else
+    //         {
+    //             value_changed |= DragInt(ids[n], &i[n], 1.0f, 0, hdr ? 0 : 255, fmt_table_int[fmt_idx][n]);
+    //         }
+    //         if (!(flags & ImGuiColorEditFlags_NoOptions))
+    //             OpenPopupOnItemClick("context", ImGuiPopupFlags_MouseButtonRight);
+    //     }
+    // }
+    // else if ((flags & ImGuiColorEditFlags_DisplayHex) != 0 && (flags & ImGuiColorEditFlags_NoInputs) == 0)
+    // {
+    //     // RGB Hexadecimal Input
+    //     char buf[64];
+    //     if (alpha)
+    //         ImFormatString(buf, IM_ARRAYSIZE(buf), "#%02X%02X%02X%02X", ImClamp(i[0], 0, 255), ImClamp(i[1], 0, 255), ImClamp(i[2], 0, 255), ImClamp(i[3], 0, 255));
+    //     else
+    //         ImFormatString(buf, IM_ARRAYSIZE(buf), "#%02X%02X%02X", ImClamp(i[0], 0, 255), ImClamp(i[1], 0, 255), ImClamp(i[2], 0, 255));
+    //     SetNextItemWidth(w_inputs);
+    //     if (InputText("##Text", buf, IM_ARRAYSIZE(buf), ImGuiInputTextFlags_CharsUppercase))
+    //     {
+    //         value_changed = true;
+    //         char* p = buf;
+    //         while (*p == '#' || ImCharIsBlankA(*p))
+    //             p++;
+    //         i[0] = i[1] = i[2] = 0;
+    //         i[3] = 0xFF; // alpha default to 255 is not parsed by scanf (e.g. inputting #FFFFFF omitting alpha)
+    //         int r;
+    //         if (alpha)
+    //             r = sscanf(p, "%02X%02X%02X%02X", (unsigned int*)&i[0], (unsigned int*)&i[1], (unsigned int*)&i[2], (unsigned int*)&i[3]); // Treat at unsigned (%X is unsigned)
+    //         else
+    //             r = sscanf(p, "%02X%02X%02X", (unsigned int*)&i[0], (unsigned int*)&i[1], (unsigned int*)&i[2]);
+    //         IM_UNUSED(r); // Fixes C6031: Return value ignored: 'sscanf'.
+    //     }
+    //     if (!(flags & ImGuiColorEditFlags_NoOptions))
+    //         OpenPopupOnItemClick("context", ImGuiPopupFlags_MouseButtonRight);
+    // }
 
     ImGuiWindow* picker_active_window = NULL;
     if (!(flags & ImGuiColorEditFlags_NoSmallPreview))

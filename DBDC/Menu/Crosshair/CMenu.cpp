@@ -8,8 +8,6 @@
 
 void CMenu::RenderUI()
 {
-    ImGui::Spacing();
-    ImGui::Spacing();
     
     if (ImGui::Checkbox("Enable", &Crosshair::masterSwitch))
     {
@@ -23,10 +21,8 @@ void CMenu::RenderUI()
             }
         }
         else
-        {
-    
             Menu::Overlay::DestroyOverlay();
-        }
+        
     }
         
     ImGui::Spacing();
@@ -38,6 +34,8 @@ void CMenu::RenderUI()
         ImGui::Columns(3, nullptr, false);
         ImGui::SetColumnWidth(0, 260);
         ImGui::SetColumnWidth(1, 260);
+
+        ImGui::SeparatorText("Lines");
         
         ImGui::CheckboxWithColorPicker("Lines", "Line Color", &Crosshair::enableLines, Crosshair::lineColor);
         ImGui::BeginDisabled(!Crosshair::enableLines);
@@ -58,7 +56,7 @@ void CMenu::RenderUI()
             ImGui::Spacing();
             ImGui::Spacing();
             ImGui::Spacing();
-        
+            
             ImGui::CheckboxWithColorPicker("Outline", "Outline Color", &Crosshair::enableOutline, Crosshair::outlineColor);
             ImGui::BeginDisabled(!Crosshair::enableOutline);
             {
@@ -69,6 +67,8 @@ void CMenu::RenderUI()
         ImGui::EndDisabled();
         
         ImGui::NextColumn();
+
+        ImGui::SeparatorText("Other");
         
         ImGui::CheckboxWithColorPicker("Center Dot", "Center Dot Color", &Crosshair::enableCenterDot,
                                        Crosshair::centerDotColor);
