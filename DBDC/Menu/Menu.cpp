@@ -44,7 +44,7 @@ void Menu::RunLoop()
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
 
-            if (Crosshair::masterSwitch)
+            if (CVars.masterSwitch)
                 Crosshair::DrawCrosshair();
 
             ImGui::Render();
