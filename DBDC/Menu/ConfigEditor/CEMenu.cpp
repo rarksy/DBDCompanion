@@ -65,7 +65,7 @@ bool CEMenu::Setup()
 void CEMenu::RenderUI()
 {
     ImGui::Columns(3, nullptr, false);
-
+    ImGui::SetColumnWidth(0, 240);
     ImGui::SeparatorText("Graphics Quality");
     GUI::ToolTip("Features settings that affect the graphical fidelity of Dead By Daylight.");
 
