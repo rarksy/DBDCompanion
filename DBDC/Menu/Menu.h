@@ -43,6 +43,7 @@ namespace Menu
             glfwSwapBuffers(Overlay::window);
 
             glfwSetWindowPos(Overlay::window, 0, 0);
+            glfwFocusWindow(Menu::mainWindow);
 
             Backend::SetupImGui(Menu::Overlay::window, Menu::Overlay::context);
         }
