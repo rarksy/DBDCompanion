@@ -6,6 +6,7 @@
 #include "ImGui/imgui_impl_opengl3.h"
 #include "Menu/Menu.h"
 #include "Dependencies/Images/Icons/ConfigEditor.hpp"
+#include "ImGui/imgui_impl_glfw.h"
 
 int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
 {

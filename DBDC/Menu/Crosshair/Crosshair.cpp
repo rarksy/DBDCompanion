@@ -1,8 +1,4 @@
 ﻿#include "Crosshair.h"
-
-#include <random>
-#include <Windows.h>
-
 #include "../../Backend/Backend.hpp"
 
 void Crosshair::DrawCrosshair()

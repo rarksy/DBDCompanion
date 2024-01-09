@@ -3,13 +3,12 @@
 #include "ImGui/imgui_impl_opengl3.h"
 #include <chrono>
 #include <thread>
-
-#include "../Backend/Backend.hpp"
 #include "ConfigEditor/CEMenu.hpp"
 #include "Crosshair/CMenu.h"
 #include "Crosshair/Crosshair.h"
 #include "GUI/GUI.h"
 #include "HookCounter/HCMenu.h"
+#include <Windows.h>
 
 void Menu::RunLoop()
 {

@@ -1,8 +1,6 @@
 ﻿#include "CMenu.h"
-
 #include "Crosshair.h"
 #include "../Menu.h"
-#include "../../Config/Config.h"
 #include "GLFW/glfw3.h"
 #include "ImGui/imgui.h"
 

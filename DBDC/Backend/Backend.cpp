@@ -6,11 +6,6 @@
 #include <ImGui/imgui_impl_glfw.h>
 #include <ImGui/imgui_impl_opengl3.h>
 
-static void GLFWErrorCallback(int error, const char* description)
-{
-    std::cerr << "GLFW Error: " << error << "Description: " << description;
-}
-
 int Backend::InitGLFW()
 {
     if (!glfwInit())
