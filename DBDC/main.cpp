@@ -25,9 +25,8 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
                                             Menu::Styling::menuHeight);
     
     if (!Menu::mainWindow)
-    {
         return -1;
-    }
+    
     
     Backend::SetupImGui(Menu::mainWindow, Menu::mainContext);
     
