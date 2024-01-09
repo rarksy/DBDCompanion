@@ -18,13 +18,9 @@ void Menu::RunLoop()
         const double startTime = glfwGetTime();
 
         glfwMakeContextCurrent(Menu::mainWindow);
-
-        glfwPollEvents();
-
-        glfwMakeContextCurrent(Menu::mainWindow);
+        
         ImGui::SetCurrentContext(Menu::mainContext);
         glfwPollEvents();
-        Backend::ProcessInput(Menu::mainWindow);
 
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();

@@ -139,8 +139,7 @@ void CEMenu::RenderUI()
         GUI::ToolTip("Sets the desired width for the game window.");
         ImGui::SameLine();
         ImGui::Text("x");
-        GUI::ToolTip("Sets the desired resolution for the game window."
-            "\n\n Note: There is a bug preventing keyboard input while the hook/crosshair overlay is active.");
+        GUI::ToolTip("Sets the desired resolution for the game window.");
         ImGui::SameLine();
         ImGui::SetNextItemWidth(48);
         if (ImGui::InputInt("##ResolutionH", &Config::Variables::resolutionHeight.second, 0))

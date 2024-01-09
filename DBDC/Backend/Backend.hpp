@@ -15,9 +15,6 @@ namespace Backend
 
     void ShutdownImGui();
 
-    void ProcessInput(GLFWwindow* window);
-
-
     inline int screenWidth;
     inline int screenHeight;
 }
