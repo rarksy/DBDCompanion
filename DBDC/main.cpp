@@ -11,9 +11,8 @@
 int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
 {
     if (!Backend::InitGLFW())
-    {
         return -1;
-    }
+    
     
     Backend::screenWidth = GetSystemMetrics(SM_CXSCREEN);
     Backend::screenHeight = GetSystemMetrics(SM_CYSCREEN);
