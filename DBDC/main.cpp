@@ -1,56 +1,47 @@
-#include <cstdio>
-#include <iostream>
+#include <ImGui/imgui.h>
+#include <ImGui/imgui_impl_glfw.h>
+#include <ImGui/imgui_impl_opengl3.h>
 #include <Windows.h>
+#include "Config/Config.h"
 #include "Backend/Backend.hpp"
-#include "Images/Images.h"
-#include "ImGui/imgui_impl_opengl3.h"
 #include "Menu/Menu.h"
-#include "Dependencies/Images/Icons/ConfigEditor.hpp"
+#include <Fonts/Rethink.hpp>
 
 int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
 {
-    if (!Backend::InitGLFW())
-    {
-        return -1;
-    }
+    if (Backend::InitGLFW() != GLFW_TRUE)
+        return 2;
     
-    Backend::screenWidth = GetSystemMetrics(SM_CXSCREEN);
-    Backend::screenHeight = GetSystemMetrics(SM_CYSCREEN);
+    // Create GLFW Window
+    GLFWwindow* window = Backend::SetupWindow("Dead By Daylight Companion", Menu::Styling::menuWidth,
+                                              Menu::Styling::menuHeight);
+    if (!window)
+        return 3;
     
-    Menu::Overlay::windowWidth = Backend::screenWidth;
-    Menu::Overlay::windowHeight = Backend::screenHeight;
+    Menu::mainWindow = window;
     
-    Menu::mainWindow = Backend::SetupWindow("Dead By Daylight Companion", Menu::Styling::menuWidth,
-                                            Menu::Styling::menuHeight);
+    glfwMakeContextCurrent(window);
     
-    if (!Menu::mainWindow)
-    {
-        return -1;
-    }
+    // Create ImGui Context
+    Menu::mainContext = ImGui::CreateContext();
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init("#version 330"); 
     
-    Backend::SetupImGui(Menu::mainWindow, Menu::mainContext);
+    // Load Font
+    ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF(Rethink_compressed_data, Rethink_compressed_size, 18.F);
     
-    Images::LoadTextureFromMemory(configEditorIconRawData, sizeof configEditorIconRawData, &Menu::Icons::ConfigEditor);
+    ImGui::GetIO().IniFilename = nullptr;
+    
+    glfwSetWindowAttrib(window, GLFW_RESIZABLE, false);
+    glfwSwapInterval(2);
     
     Menu::RunLoop();
     
-    if (Menu::Overlay::window != nullptr)
-    {
-        Menu::Overlay::DestroyOverlay();
-        ImGui::SetCurrentContext(Menu::Overlay::context);
-        ImGui_ImplGlfw_Shutdown();
-        ImGui_ImplOpenGL3_Shutdown();
-        ImGui::DestroyContext(Menu::Overlay::context);
-    }
-    
-    ImGui::SetCurrentContext(Menu::mainContext);
-    
-    ImGui_ImplGlfw_Shutdown();
     ImGui_ImplOpenGL3_Shutdown();
-    ImGui::DestroyContext(Menu::mainContext);
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
     
-    glfwDestroyWindow(Menu::mainWindow);
-    
+    glfwDestroyWindow(window);
     glfwTerminate();
     
     return 0;
