@@ -3,13 +3,12 @@
 #include "ImGui/imgui_impl_opengl3.h"
 #include <chrono>
 #include <thread>
-
-#include "../Backend/Backend.hpp"
 #include "ConfigEditor/CEMenu.hpp"
 #include "Crosshair/CMenu.h"
 #include "Crosshair/Crosshair.h"
 #include "GUI/GUI.h"
 #include "HookCounter/HCMenu.h"
+#include <Windows.h>
 
 void Menu::RunLoop()
 {
@@ -18,13 +17,9 @@ void Menu::RunLoop()
         const double startTime = glfwGetTime();
 
         glfwMakeContextCurrent(Menu::mainWindow);
-
-        glfwPollEvents();
-
-        glfwMakeContextCurrent(Menu::mainWindow);
+        
         ImGui::SetCurrentContext(Menu::mainContext);
         glfwPollEvents();
-        Backend::ProcessInput(Menu::mainWindow);
 
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
@@ -42,13 +37,12 @@ void Menu::RunLoop()
         {
             glfwMakeContextCurrent(Menu::Overlay::window);
             ImGui::SetCurrentContext(Menu::Overlay::context);
-            glfwPollEvents();
 
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
 
-            if (Crosshair::masterSwitch)
+            if (CVars.masterSwitch)
                 Crosshair::DrawCrosshair();
 
             ImGui::Render();

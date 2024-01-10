@@ -1,8 +1,5 @@
-﻿
-#include "HCMenu.h"
-
+﻿#include "HCMenu.h"
 #include "ImGui/imgui.h"
-
 #include "../Menu.h"
 
 // not implemented yet

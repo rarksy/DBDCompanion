@@ -6,8 +6,6 @@
 #include "../GUI/GUI.h"
 #include <Windows.h>
 #include <Images/Images.h>
-#include <fstream>
-#include <iostream>
 
 bool CEMenu::Setup()
 {
@@ -139,8 +137,7 @@ void CEMenu::RenderUI()
         GUI::ToolTip("Sets the desired width for the game window.");
         ImGui::SameLine();
         ImGui::Text("x");
-        GUI::ToolTip("Sets the desired resolution for the game window."
-            "\n\n Note: There is a bug preventing keyboard input while the hook/crosshair overlay is active.");
+        GUI::ToolTip("Sets the desired resolution for the game window.");
         ImGui::SameLine();
         ImGui::SetNextItemWidth(48);
         if (ImGui::InputInt("##ResolutionH", &Config::Variables::resolutionHeight.second, 0))
@@ -197,6 +194,10 @@ void CEMenu::RenderUI()
                      ? Image::AntiAliasing::textureOn
                      : Image::AntiAliasing::textureOff, ImVec2(400, 250));
 
+    if (GUI::Slider("Killer FOV", Config::Variables::killerFOV, 67, 103, false))
+        Config::Edit::ChangeValue(Config::Files::gameUserSettings, Config::Groups::DBDGameUserSettings,
+                                  Config::Variables::killerFOV);
+    
     ImGui::NextColumn();
 
     ImGui::SeparatorText("Experimental");

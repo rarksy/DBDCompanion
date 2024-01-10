@@ -1,6 +1,5 @@
 ﻿#pragma once
 #include <GLFW/glfw3.h>
-
 #include "ImGui/imgui_internal.h"
 
 namespace Backend
@@ -14,9 +13,6 @@ namespace Backend
     bool SetupImageTextures();
 
     void ShutdownImGui();
-
-    void ProcessInput(GLFWwindow* window);
-
 
     inline int screenWidth;
     inline int screenHeight;

@@ -1,13 +1,8 @@
 ﻿#pragma once
 #include "GLFW/glfw3.h"
-#include "GLFW/glfw3native.h"
 #include "ImGui/imgui.h"
 #include "Menu.h"
-#include <Windows.h>
-
 #include "../Backend/Backend.hpp"
-#include "ImGui/imgui_impl_glfw.h"
-#include "ImGui/imgui_impl_opengl3.h"
 
 namespace Menu
 {
@@ -43,6 +38,7 @@ namespace Menu
             glfwSwapBuffers(Overlay::window);
 
             glfwSetWindowPos(Overlay::window, 0, 0);
+            glfwFocusWindow(Menu::mainWindow);
 
             Backend::SetupImGui(Menu::Overlay::window, Menu::Overlay::context);
         }

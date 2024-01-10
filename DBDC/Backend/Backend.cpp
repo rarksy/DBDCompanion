@@ -6,14 +6,8 @@
 #include <ImGui/imgui_impl_glfw.h>
 #include <ImGui/imgui_impl_opengl3.h>
 
-static void GLFWErrorCallback(int error, const char* description)
-{
-    std::cerr << "GLFW Error: " << error << "Description: " << description;
-}
-
 int Backend::InitGLFW()
 {
-    
     if (!glfwInit())
     {
         fprintf(stderr, "Error: Failed to initialize GLFW.\n");
@@ -52,10 +46,10 @@ void Backend::SetupImGui(GLFWwindow* window, ImGuiContext*& context)
     ImGui::SetCurrentContext(context);
     auto& io = ImGui::GetIO();
     (void)io;
-    
+
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 330");
-    
+
 
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
     io.Fonts->AddFontFromMemoryCompressedTTF(Rethink_compressed_data, Rethink_compressed_size, Menu::Styling::fontSize);
@@ -67,33 +61,4 @@ void Backend::ShutdownImGui()
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
-}
-
-void Backend::ProcessInput(GLFWwindow* window)
-{
-    ImGuiIO& io = ImGui::GetIO();
-
-    // Update ImGui input state
-    io.DeltaTime = 1.0f / 60.0f; // You may adjust this based on your frame rate
-
-    double mouseX, mouseY;
-    glfwGetCursorPos(window, &mouseX, &mouseY);
-    io.MousePos = ImVec2(static_cast<float>(mouseX), static_cast<float>(mouseY));
-
-    int leftMouseState = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
-    io.MouseDown[0] = leftMouseState == GLFW_PRESS;
-
-    int rightMouseState = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT);
-    io.MouseDown[1] = rightMouseState == GLFW_PRESS;
-
-    // Clear previous input characters
-    io.ClearInputCharacters();
-
-    // Other mouse buttons can be handled similarly
-
-    // Modifiers (Ctrl, Shift, Alt)
-    io.KeyCtrl = io.KeysDown[GLFW_KEY_LEFT_CONTROL] || io.KeysDown[GLFW_KEY_RIGHT_CONTROL];
-    io.KeyShift = io.KeysDown[GLFW_KEY_LEFT_SHIFT] || io.KeysDown[GLFW_KEY_RIGHT_SHIFT];
-    io.KeyAlt = io.KeysDown[GLFW_KEY_LEFT_ALT] || io.KeysDown[GLFW_KEY_RIGHT_ALT];
-    io.KeySuper = io.KeysDown[GLFW_KEY_LEFT_SUPER] || io.KeysDown[GLFW_KEY_RIGHT_SUPER];
 }

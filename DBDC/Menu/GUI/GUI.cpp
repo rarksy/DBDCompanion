@@ -28,11 +28,11 @@ bool GUI::StringCheckbox(const char* label, std::pair<std::string, std::string>&
     return valueChanged;
 }
 
-bool GUI::Slider(const char* label, std::pair<std::string, int>& setting, int vMin, int vMax)
+bool GUI::Slider(const char* label, std::pair<std::string, int>& setting, int vMin, int vMax, bool clamp)
 {
     ImGui::SetNextItemWidth(static_cast<float>(Menu::Styling::itemWidth));
 
-    return ImGui::SliderInt(label, &setting.second, vMin, vMax, "%d", ImGuiSliderFlags_AlwaysClamp);
+    return ImGui::SliderInt(label, &setting.second, vMin, vMax, "%d", clamp ? ImGuiSliderFlags_AlwaysClamp : 0);
 }
 
 bool GUI::DropDownBox(const char* label, std::vector<std::string> listItems,

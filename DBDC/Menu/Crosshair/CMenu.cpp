@@ -1,17 +1,15 @@
 ﻿#include "CMenu.h"
-
 #include "Crosshair.h"
 #include "../Menu.h"
-#include "../../Config/Config.h"
 #include "GLFW/glfw3.h"
 #include "ImGui/imgui.h"
 
 void CMenu::RenderUI()
 {
     
-    if (ImGui::Checkbox("Enable", &Crosshair::masterSwitch))
+    if (ImGui::Checkbox("Enable", &CVars.masterSwitch))
     {
-        if (Crosshair::masterSwitch)
+        if (CVars.masterSwitch)
         {
             if (!Menu::Overlay::IsOverlayCreated())
             {
@@ -29,7 +27,7 @@ void CMenu::RenderUI()
     ImGui::Spacing();
     ImGui::Spacing();
         
-    ImGui::BeginDisabled(!Crosshair::masterSwitch);
+    ImGui::BeginDisabled(!CVars.masterSwitch);
     {
         ImGui::Columns(3, nullptr, false);
         ImGui::SetColumnWidth(0, 260);
@@ -37,30 +35,30 @@ void CMenu::RenderUI()
 
         ImGui::SeparatorText("Lines");
         
-        ImGui::CheckboxWithColorPicker("Lines", "Line Color", &Crosshair::enableLines, Crosshair::lineColor);
-        ImGui::BeginDisabled(!Crosshair::enableLines);
+        ImGui::CheckboxWithColorPicker("Lines", "Line Color", &CVars.enableLines, CVars.lineColor);
+        ImGui::BeginDisabled(!CVars.enableLines);
         {
             if (ImGui::BeginCombo("##Lines", "Lines"))
             {
-                ImGui::Selectable("Top", &Crosshair::enableTopLine, ImGuiSelectableFlags_DontClosePopups);
-                ImGui::Selectable("Left", &Crosshair::enableLeftLine, ImGuiSelectableFlags_DontClosePopups);
-                ImGui::Selectable("Right", &Crosshair::enableRightLine, ImGuiSelectableFlags_DontClosePopups);
-                ImGui::Selectable("Bottom", &Crosshair::enableBottomLine, ImGuiSelectableFlags_DontClosePopups);
+                ImGui::Selectable("Top", &CVars.enableTopLine, ImGuiSelectableFlags_DontClosePopups);
+                ImGui::Selectable("Left", &CVars.enableLeftLine, ImGuiSelectableFlags_DontClosePopups);
+                ImGui::Selectable("Right", &CVars.enableRightLine, ImGuiSelectableFlags_DontClosePopups);
+                ImGui::Selectable("Bottom", &CVars.enableBottomLine, ImGuiSelectableFlags_DontClosePopups);
         
                 ImGui::EndCombo();
             }
-            ImGui::SliderInt("Length", &Crosshair::lineLength, 1, 100);
-            ImGui::SliderInt("Thickness", &Crosshair::lineThickness, 1, 10);
-            ImGui::SliderInt("Gap", &Crosshair::lineGap, 0, 100);
+            ImGui::SliderInt("Length", &CVars.lineLength, 1, 100);
+            ImGui::SliderInt("Thickness", &CVars.lineThickness, 1, 10);
+            ImGui::SliderInt("Gap", &CVars.lineGap, 0, 100);
         
             ImGui::Spacing();
             ImGui::Spacing();
             ImGui::Spacing();
             
-            ImGui::CheckboxWithColorPicker("Outline", "Outline Color", &Crosshair::enableOutline, Crosshair::outlineColor);
-            ImGui::BeginDisabled(!Crosshair::enableOutline);
+            ImGui::CheckboxWithColorPicker("Outline", "Outline Color", &CVars.enableOutline, CVars.outlineColor);
+            ImGui::BeginDisabled(!CVars.enableOutline);
             {
-                ImGui::SliderInt("Thickness##", &Crosshair::outlineThickness, 1, 10);
+                ImGui::SliderInt("Thickness##", &CVars.outlineThickness, 1, 10);
             }
             ImGui::EndDisabled();
         }
@@ -68,21 +66,34 @@ void CMenu::RenderUI()
         
         ImGui::NextColumn();
 
-        ImGui::SeparatorText("Other");
+        ImGui::SeparatorText("Center Dot");
         
-        ImGui::CheckboxWithColorPicker("Center Dot", "Center Dot Color", &Crosshair::enableCenterDot,
-                                       Crosshair::centerDotColor);
-        ImGui::BeginDisabled(!Crosshair::enableCenterDot);
+        ImGui::CheckboxWithColorPicker("Center Dot", "Center Dot Color", &CVars.enableCenterDot,
+                                       CVars.centerDotColor);
+        ImGui::BeginDisabled(!CVars.enableCenterDot);
         {
-            ImGui::Checkbox("Filled", &Crosshair::filledCenterDot);
-            ImGui::SliderInt("Size", &Crosshair::centerDotSize, 1, 20);
-            ImGui::BeginDisabled(Crosshair::filledCenterDot);
-            ImGui::SliderInt("Thickness###", &Crosshair::centerDotThickness, 1, 5);
+            ImGui::Checkbox("Filled", &CVars.filledCenterDot);
+            ImGui::SliderInt("Size", &CVars.centerDotSize, 1, 20);
+            ImGui::BeginDisabled(CVars.filledCenterDot);
+            ImGui::SliderInt("Thickness###", &CVars.centerDotThickness, 1, 5);
             ImGui::EndDisabled();
-            ImGui::SliderInt("Segments", &Crosshair::centerDotSegments, 4, 48);
+            ImGui::SliderInt("Segments", &CVars.centerDotSegments, 4, 48);
             ImGui::Spacing();
         }
         ImGui::EndDisabled();
+
+        ImGui::NextColumn();
+
+        ImGui::SeparatorText("Settings");
+        if (ImGui::Button("Save Settings"))
+            CVars.Save(CVars);
+        
+        if (ImGui::Button("Load Settings"))
+            CVars.Load(CVars);
+
+        if (ImGui::Button("Reset Settings"))
+            CVars.Reset(CVars);
+        
         ImGui::EndColumns();
     }
     ImGui::EndDisabled();
