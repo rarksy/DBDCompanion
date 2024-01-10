@@ -194,11 +194,10 @@ void CEMenu::RenderUI()
                      ? Image::AntiAliasing::textureOn
                      : Image::AntiAliasing::textureOff, ImVec2(400, 250));
 
-    if (GUI::Slider("Killer FOV", Config::Variables::killerFOV, 67, 103))
+    if (GUI::Slider("Killer FOV", Config::Variables::killerFOV, 67, 103, false))
         Config::Edit::ChangeValue(Config::Files::gameUserSettings, Config::Groups::DBDGameUserSettings,
                                   Config::Variables::killerFOV);
-
-    ImGui::EndDisabled();
+    
     ImGui::NextColumn();
 
     ImGui::SeparatorText("Experimental");
