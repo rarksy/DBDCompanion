@@ -71,6 +71,9 @@ namespace Config
         inline stringSetting useVSync = {"bUseVSync", sTrue};
         inline intSetting antiAliasMode = {"AntiAliasingMode", 1};
 
+        //ptb
+        inline intSetting killerFOV = {"FieldOfView", 67};
+
         inline stringSetting bloom = {"r.DefaultFeature.Bloom", sFalse};
         inline stringSetting ambientOcclusion = {"r.DefaultFeature.AmbientOcclusion", sFalse};
         inline stringSetting ambientOcclusionStaticFraction = {

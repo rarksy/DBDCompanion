@@ -91,6 +91,8 @@ bool Config::LoadConfig()
     LoadSetting(Files::gameUserSettings, Groups::DBDGameUserSettings, Variables::fpsLimitMode);
     LoadSetting(Files::gameUserSettings, Groups::DBDGameUserSettings, Variables::useVSync);
 
+    LoadSetting(Files::gameUserSettings, Groups::DBDGameUserSettings, Variables::killerFOV);
+
     if (GetReadOnly(Files::engine))
         Variables::engineReadOnly = true;
 
@@ -106,7 +108,7 @@ bool Config::LoadConfig()
         );
 
     if (Misc::IsGameRunning())
-        MessageBoxA(nullptr, "Notice...", "Game Is Running, Changes Won't Apply Until It Is Restarted.", MB_OK);
+        MessageBoxA(nullptr, "Game Is Running, Changes Won't Apply Until It Is Restarted.", "Notice...", MB_OK);
 
     return true;
 }
