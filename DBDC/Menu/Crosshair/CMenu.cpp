@@ -89,9 +89,13 @@ void CMenu::RenderUI()
         if (ImGui::Button("Reset"))
             CVars.screenCenterPoint.x = Backend::screenWidth / 2;
         ImGui::SameLine();
-        if (ImGui::Button("-", ImVec2(20, 0))) CVars.screenCenterPoint.x--;
+        ImGui::Button("-", ImVec2(20, 0));
+        if (ImGui::IsItemActive())
+            CVars.screenCenterPoint.x--;
         ImGui::SameLine();
-        if (ImGui::Button("+", ImVec2(20, 0))) CVars.screenCenterPoint.x++;
+        ImGui::Button("+", ImVec2(20, 0));
+        if (ImGui::IsItemActive())
+            CVars.screenCenterPoint.x++;
         ImGui::SameLine();
         ImGui::SetNextItemWidth(80);
         ImGui::SliderFloat("X", &CVars.screenCenterPoint.x, 0, Backend::screenWidth, "%.0f");
@@ -100,9 +104,13 @@ void CMenu::RenderUI()
         if (ImGui::Button("Reset##"))
             CVars.screenCenterPoint.y = Backend::screenHeight / 2;
         ImGui::SameLine();
-        if (ImGui::Button("-##", ImVec2(20, 0))) CVars.screenCenterPoint.y--;
+        ImGui::Button("-##", ImVec2(20, 0));
+        if (ImGui::IsItemActive())
+            CVars.screenCenterPoint.y--;
         ImGui::SameLine();
-        if (ImGui::Button("+##", ImVec2(20, 0))) CVars.screenCenterPoint.y++;
+        ImGui::Button("+##", ImVec2(20, 0));
+        if (ImGui::IsItemActive())
+            CVars.screenCenterPoint.y++;
         ImGui::SameLine();
         ImGui::SetNextItemWidth(80);
         ImGui::SliderFloat("Y", &CVars.screenCenterPoint.y, 0, Backend::screenHeight, "%.0f");

@@ -147,7 +147,7 @@ void CEMenu::RenderUI()
             Config::Edit::ChangeValue(Config::Files::gameUserSettings, Config::Groups::DBDGameUserSettings,
                                       Config::Variables::desiredScreenHeight);
         }
-
+        
         GUI::ToolTip("Sets the desired height for the game window.");
         ImGui::SameLine(133);
         ImGui::Text("Resolution");
@@ -194,7 +194,7 @@ void CEMenu::RenderUI()
                      ? Image::AntiAliasing::textureOn
                      : Image::AntiAliasing::textureOff, ImVec2(400, 250));
 
-    if (GUI::Slider("Killer FOV", Config::Variables::killerFOV, 67, 103, false))
+    if (GUI::Slider("Killer FOV", Config::Variables::killerFOV, 87, 103, false))
         Config::Edit::ChangeValue(Config::Files::gameUserSettings, Config::Groups::DBDGameUserSettings,
                                   Config::Variables::killerFOV);
     
