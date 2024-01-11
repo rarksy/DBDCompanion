@@ -90,11 +90,11 @@ void CMenu::RenderUI()
             CVars.screenCenterPoint.x = Backend::screenWidth / 2;
         ImGui::SameLine();
         ImGui::Button("-", ImVec2(20, 0));
-        if (ImGui::IsItemActive())
+        if (ImGui::IsItemActive() && ImGui::IsItemHovered())
             CVars.screenCenterPoint.x--;
         ImGui::SameLine();
         ImGui::Button("+", ImVec2(20, 0));
-        if (ImGui::IsItemActive())
+        if (ImGui::IsItemActive() && ImGui::IsItemHovered())
             CVars.screenCenterPoint.x++;
         ImGui::SameLine();
         ImGui::SetNextItemWidth(80);
@@ -105,11 +105,11 @@ void CMenu::RenderUI()
             CVars.screenCenterPoint.y = Backend::screenHeight / 2;
         ImGui::SameLine();
         ImGui::Button("-##", ImVec2(20, 0));
-        if (ImGui::IsItemActive())
+        if (ImGui::IsItemActive() && ImGui::IsItemHovered())
             CVars.screenCenterPoint.y--;
         ImGui::SameLine();
         ImGui::Button("+##", ImVec2(20, 0));
-        if (ImGui::IsItemActive())
+        if (ImGui::IsItemActive() && ImGui::IsItemHovered())
             CVars.screenCenterPoint.y++;
         ImGui::SameLine();
         ImGui::SetNextItemWidth(80);
