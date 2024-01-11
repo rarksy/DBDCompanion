@@ -1,11 +1,13 @@
 ﻿#pragma once
 #include "ImGui/imgui.h"
+#include "../Backend/Backend.hpp"
 #include <fstream>
 #include <filesystem>
 #include <iostream>
 
 namespace Crosshair
 {
+    void Setup();
     void DrawCrosshair();
     void DrawLines();
     void DrawOutline();
@@ -15,6 +17,8 @@ namespace Crosshair
 
     struct Variables
     {
+        ImVec2 screenCenterPoint;
+        
         bool setCustom = false;
 
         bool masterSwitch = false;
@@ -81,6 +85,7 @@ namespace Crosshair
         {
             Variables newCVars;
             newCVars.masterSwitch = true;
+            newCVars.screenCenterPoint = ImVec2(Backend::screenWidth / 2, Backend::screenHeight / 2);
             cfg = newCVars;
 
             return true;

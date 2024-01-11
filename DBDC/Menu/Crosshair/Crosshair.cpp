@@ -1,6 +1,11 @@
 ﻿#include "Crosshair.h"
 #include "../../Backend/Backend.hpp"
 
+void Crosshair::Setup()
+{
+    CVars.screenCenterPoint = ImVec2(Backend::screenWidth / 2, Backend::screenHeight / 2);
+}
+
 void Crosshair::DrawCrosshair()
 {
     if (CVars.enableCenterDot)
@@ -23,7 +28,7 @@ bool isEven(int number)
 void Crosshair::DrawLines()
 {
     ImDrawList* drawList = ImGui::GetBackgroundDrawList();
-    ImVec2 center = ImVec2(Backend::screenWidth / 2, Backend::screenHeight / 2);
+    ImVec2 center = CVars.screenCenterPoint;
     int thickness = CVars.lineThickness;
     float halfThickness = thickness / 2;
 
@@ -108,7 +113,7 @@ void Crosshair::DrawLines()
 void Crosshair::DrawOutline()
 {
     ImDrawList* drawList = ImGui::GetBackgroundDrawList();
-    ImVec2 center = ImVec2(Backend::screenWidth / 2, Backend::screenHeight / 2);
+    ImVec2 center = CVars.screenCenterPoint;
     int lineThickness = CVars.lineThickness;
     int outlineThickness = CVars.outlineThickness;
     int halfThickness = lineThickness / 2;
@@ -209,7 +214,7 @@ void Crosshair::DrawOutline()
 void Crosshair::DrawCenterDot()
 {
     // Get Relevant Variables 
-    ImVec2 center = ImVec2(Backend::screenWidth / 2, Backend::screenHeight / 2);
+    ImVec2 center = CVars.screenCenterPoint;
     ImDrawList* drawList = ImGui::GetBackgroundDrawList();
 
     if (CVars.filledCenterDot) // Draw A Filled Circle Since The Filled Checkbox Is Ticked

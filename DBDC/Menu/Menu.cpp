@@ -112,6 +112,9 @@ void Menu::RenderUI()
 
     else if (menuToShow == 3)
     {
+        static std::once_flag flag;
+        std::call_once(flag, Crosshair::Setup);
+        
         CMenu::RenderUI();
     }
 
@@ -181,4 +184,7 @@ void Menu::CreateGlobalStyle()
 
     // Separator
     colors[ImGuiCol_Separator] = RGBToImVec4(255, 83, 83);
+
+
+    colors[ImGuiCol_TextSelectedBg] = RGBToImVec4(225, 63, 63, 150);
 }
