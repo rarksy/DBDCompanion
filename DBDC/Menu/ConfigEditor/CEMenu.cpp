@@ -324,11 +324,14 @@ void CEMenu::RenderUI()
 
         if (Config::Variables::removeIntroCutscene)
         {
+            if (std::filesystem::exists(moviesDir + "disabled_AdditionalLoadingScreen"))
+                std::filesystem::remove(moviesDir + "disabled_AdditionalLoadingScreen");
+            
             if (std::rename(
                 (moviesDir + "AdditionalLoadingScreen").c_str(),
                 (moviesDir + "disabled_AdditionalLoadingScreen").c_str()) != 0)
             {
-                MessageBoxA(nullptr, "Error...", "Couldn't Disable Intro Cutscene.", MB_OK);
+                MessageBoxA(nullptr, "Couldn't Disable Intro Cutscene.", "Error...", MB_OK);
                 Config::Variables::removeIntroCutscene = false;
             }
         }
@@ -338,7 +341,7 @@ void CEMenu::RenderUI()
                 (moviesDir + "disabled_AdditionalLoadingScreen").c_str(),
                 (moviesDir + "AdditionalLoadingScreen").c_str()) != 0)
             {
-                MessageBoxA(nullptr, "Error...", "Couldn't Enable Intro Cutscene.", MB_OK);
+                MessageBoxA(nullptr, "Couldn't Enable Intro Cutscene.", "Error...", MB_OK);
                 Config::Variables::removeIntroCutscene = true;
             }
         }
