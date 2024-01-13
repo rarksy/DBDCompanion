@@ -47,16 +47,7 @@ bool CEMenu::Setup()
     Images::LoadTextureFromMemory(textureQualityUltraRawData, sizeof textureQualityUltraRawData,
                                   &Image::TextureQuality::textureUltra);
 
-    DEVMODE dm = {0};
-    dm.dmSize = sizeof dm;
-
-    for (int i = 0; EnumDisplaySettings(NULL, i, &dm) != 0; i++)
-    {
-        resolutionModes.push_back(std::to_string(dm.dmPelsWidth) + "x" + std::to_string(dm.dmPelsHeight));
-    }
-    std::sort(resolutionModes.begin(), resolutionModes.end());
-    resolutionModes.erase(std::unique(resolutionModes.begin(), resolutionModes.end()), resolutionModes.end());
-
+    CEMenu::isSetup = true;
     return true;
 }
 

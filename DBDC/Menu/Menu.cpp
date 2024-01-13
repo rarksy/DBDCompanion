@@ -98,15 +98,7 @@ void Menu::RenderUI()
 
     else if (menuToShow == 2)
     {
-        if (!Overlay::IsOverlayCreated())
-        {
-            Menu::Overlay::windowWidth = GetSystemMetrics(SM_CXSCREEN) / 3;
-            Menu::Overlay::windowHeight = GetSystemMetrics(SM_CYSCREEN);
-            Overlay::CreateOverlay();
-            ImGui::SetCurrentContext(Menu::mainContext);
-            glfwMakeContextCurrent(Menu::mainWindow);
-        }
-
+        
         HCMenu::RenderUI();
     }
 
