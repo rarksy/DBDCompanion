@@ -5,6 +5,8 @@
 
 namespace CEMenu
 {
+    inline bool isSetup = false;
+    
     bool Setup();
     void RenderUI();
     void CreateStyle();
@@ -49,5 +51,4 @@ namespace CEMenu
     inline std::vector<std::string> qualities = {"Very Low", "Low", "Medium", "High", "Ultra"};
     inline std::vector<std::string> qualitiesWithOff = {"Off", "Very Low", "Low", "Medium", "High", "Ultra"};
     inline std::vector<std::string> fpsLimitModes = {"30", "59", "60", "100", "120"};
-    inline std::vector<std::string> resolutionModes = {};
 }
