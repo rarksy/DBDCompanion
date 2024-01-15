@@ -3089,7 +3089,9 @@ bool ImGui::SliderScalar(const char* label, ImGuiDataType data_type, void* p_dat
     // Render grab
     float clampedValue = std::min(std::max(*(float*)p_data, *(float*)p_min), *(float*)p_max);  // Ensure value is within the range
     ImRect filledBarRect(frame_bb.Min, ImVec2(frame_bb.Min.x + (frame_bb.Max.x - frame_bb.Min.x) * (clampedValue - *(float*)p_min) / (*(float*)p_max - *(float*)p_min), frame_bb.Max.y));
-    window->DrawList->AddRectFilled(filledBarRect.Min, filledBarRect.Max, GetColorU32(ImGuiCol_SliderGrab), style.GrabRounding);
+
+    if (*(float*)p_data != *(float*)p_min)
+        window->DrawList->AddRectFilled(filledBarRect.Min, filledBarRect.Max, GetColorU32(ImGuiCol_SliderGrab), style.GrabRounding);
 
 
     // Display value using user-provided display format so user can add prefix/suffix/decorations to the value.
