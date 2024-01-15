@@ -1,7 +1,5 @@
 ﻿#include "HCMenu.h"
-
 #include <ranges>
-
 #include "ImGui/imgui.h"
 #include "../Menu.h"
 #include "../../Config/Config.h"
@@ -10,6 +8,7 @@
 #include "../Misc/Misc.hpp"
 #include "Images/HookCounter/Hook.hpp"
 #include "Images/HookCounter/Stage2.hpp"
+#include <Windows.h>
 
 void HCMenu::Setup()
 {
@@ -34,7 +33,11 @@ void HCMenu::RenderUI()
             loopThread.detach();
         }
         else if (!CVars.enabled)
+        {
             Menu::Overlay::DestroyOverlay();
+            Internal::survivorLocations.clear();
+            Internal::survivorLocationsStage2.clear();
+        }
     }
 
     ImGui::Spacing();
@@ -43,6 +46,26 @@ void HCMenu::RenderUI()
 
     ImGui::Columns(3, nullptr, false);
     ImGui::SetColumnWidth(0, 240);
+
+
+    ImGui::SeparatorText("Options");
+
+    ImGui::Checkbox("Track 2nd Stage Hooks", &HCVars.track2ndStage);
+
+    ImGui::Checkbox("Play Sound On Hook", &HCVars.playSoundOnHook);
+    GUI::ToolTip("LOUD LOUD LOUD LOUD LOUD", false);
+
+    ImGui::NextColumn();
+
+    ImGui::SeparatorText("Customization");
+
+    ImGui::BeginDisabled(!HCVars.playSoundOnHook);
+    ImGui::SetNextItemWidth(140);
+    ImGui::InputText("Sound Path", HCVars.soundFilePath, sizeof HCVars.soundFilePath);
+    ImGui::EndDisabled();
+
+    ImGui::NextColumn();
+
 
     ImGui::SeparatorText("Settings");
 
@@ -80,7 +103,7 @@ void HCMenu::DetectionLoop()
 
     if (Backend::screenHeight == 1080)
         cv::resize(hookImage, hookImage, cv::Size(), 1.0 / 1.3, 1.0 / 1.3, cv::INTER_AREA);
-    
+
     cv::resize(hookImage, hookImage, cv::Size(static_cast<int>(hookImage.cols * HCVars.HudScaleFactor.second / 100.0),
                                               static_cast<int>(hookImage.rows * HCVars.HudScaleFactor.second / 100.0)));
 
@@ -95,24 +118,40 @@ void HCMenu::DetectionLoop()
         {
             if (Internal::survivorLocations.empty())
             {
-                Internal::survivorLocations.push_back({ImVec2(foundLocation.x, foundLocation.y), true}); ///
+                Internal::survivorLocations.push_back({ImVec2(foundLocation.x, foundLocation.y), true});
+                
+                if (HCVars.playSoundOnHook)
+                {
+                    PlaySoundA(HCVars.soundFilePath, NULL, SND_ASYNC);
+                }
+                
                 continue;
             }
 
-
+            bool addSurvivor = true;
             const int survivorLocationsSize = Internal::survivorLocations.size();
             for (int i = 0; i < survivorLocationsSize; i++)
             {
                 const auto survivor = Internal::survivorLocations[i];
 
                 if (foundLocation.y > survivor.first.y - 15 && foundLocation.y < survivor.first.y + 15)
+                {
+                    addSurvivor = false;
                     break;
+                }
+            }
 
-                Internal::survivorLocations.push_back({ImVec2(foundLocation.x, foundLocation.y), true}); ///
+            if (addSurvivor)
+            {
+                Internal::survivorLocations.push_back({ImVec2(foundLocation.x, foundLocation.y), true});
+
+                if (HCVars.playSoundOnHook)
+                    PlaySoundA(HCVars.soundFilePath, NULL, SND_ASYNC);
+                
             }
         }
 
-        if (TemplateMatch(frame, stage2Image, 0.9, foundLocation))
+        if (HCVars.track2ndStage && TemplateMatch(frame, stage2Image, 0.9, foundLocation))
         {
             if (Internal::survivorLocationsStage2.empty())
             {

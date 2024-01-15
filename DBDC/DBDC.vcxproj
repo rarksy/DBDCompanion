@@ -138,7 +138,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Dependencies\opencv2\lib\opencv_world481d.lib;opengl32.lib;Dependencies\GLFW\lib\glew32s.lib;Dependencies\GLFW\lib\glfw3.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>winmm.lib;Dependencies\opencv2\lib\opencv_world481d.lib;opengl32.lib;Dependencies\GLFW\lib\glew32s.lib;Dependencies\GLFW\lib\glfw3.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -160,7 +160,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Dependencies\opencv2\lib\opencv_world481.lib;opengl32.lib;Dependencies\GLFW\lib\glew32s.lib;Dependencies\GLFW\lib\glfw3.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>winmm.lib;Dependencies\opencv2\lib\opencv_world481.lib;opengl32.lib;Dependencies\GLFW\lib\glew32s.lib;Dependencies\GLFW\lib\glfw3.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

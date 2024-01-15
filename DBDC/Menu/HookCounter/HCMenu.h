@@ -17,6 +17,10 @@ namespace HCMenu
     struct Variables
     {
         bool enabled = false;
+
+        bool track2ndStage = false;
+        bool playSoundOnHook = false;
+        char soundFilePath[128];
         
         // Variable Name | Value
         using intSetting = std::pair<std::string, int>;
