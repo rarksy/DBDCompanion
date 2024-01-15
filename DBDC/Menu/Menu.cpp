@@ -84,8 +84,9 @@ void Menu::RenderUI()
         if (ImGui::Button("Config Editor"))
             menuToShow = 1;
 
-        if (ImGui::Button("Hook Counter"))
+        if (ImGui::Button("Hook Counter (ALPHA)"))
             menuToShow = 2;
+        GUI::ToolTip("This is a pre-release alpha of the hook counter\nIt is not finished and WILL contain bugs");
 
         if (ImGui::Button("Crosshair Menu"))
             menuToShow = 3;
