@@ -58,7 +58,7 @@ void Misc::RestartGame()
 std::vector<std::string> Misc::GetAllLibraryDirectories()
 {
     std::vector<std::string> paths;
-    std::ifstream configFile("C:\\Program Files (x86)\\Steam\\steamapps\\libraryfolders.vdf");
+    std::ifstream configFile("C:\\Program Files (x86)\\Steam\\steamapps\\libraryfolders.vdf"); // HATE this
 
     if (configFile.fail())
         return paths;
