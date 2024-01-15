@@ -1,15 +1,16 @@
 ﻿#include "CMenu.h"
 #include "Crosshair.h"
 #include "../Menu.h"
+#include "../HookCounter/HCMenu.h"
 #include "GLFW/glfw3.h"
 #include "ImGui/imgui.h"
 
 void CMenu::RenderUI()
 {
     
-    if (ImGui::Checkbox("Enable", &CVars.masterSwitch))
+    if (ImGui::Checkbox("Enable", &CVars.enabled))
     {
-        if (CVars.masterSwitch)
+        if (CVars.enabled)
         {
             if (!Menu::Overlay::IsOverlayCreated())
             {
@@ -18,7 +19,7 @@ void CMenu::RenderUI()
                 glfwMakeContextCurrent(Menu::mainWindow);
             }
         }
-        else
+        else if (!HCVars.enabled)
             Menu::Overlay::DestroyOverlay();
         
     }
@@ -27,7 +28,7 @@ void CMenu::RenderUI()
     ImGui::Spacing();
     ImGui::Spacing();
         
-    ImGui::BeginDisabled(!CVars.masterSwitch);
+    ImGui::BeginDisabled(!CVars.enabled);
     {
         ImGui::Columns(3, nullptr, false);
         ImGui::SetColumnWidth(0, 260);

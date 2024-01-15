@@ -21,7 +21,7 @@ namespace Crosshair
         
         bool setCustom = false;
 
-        bool masterSwitch = false;
+        bool enabled = false;
 
         bool enableLines = false;
         bool enableTopLine = true;
@@ -84,7 +84,7 @@ namespace Crosshair
         bool Reset(T& cfg)
         {
             Variables newCVars;
-            newCVars.masterSwitch = true;
+            newCVars.enabled = true;
             newCVars.screenCenterPoint = ImVec2(Backend::screenWidth / 2, Backend::screenHeight / 2);
             cfg = newCVars;
 
