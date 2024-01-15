@@ -42,7 +42,7 @@ void Menu::RunLoop()
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
 
-            if (CVars.masterSwitch)
+            if (CVars.enabled)
                 Crosshair::DrawCrosshair();
 
             ImGui::Render();
@@ -81,6 +81,9 @@ void Menu::RenderUI()
         if (ImGui::Button("Config Editor"))
             menuToShow = 1;
 
+        if (ImGui::Button("Hook Counter"))
+            menuToShow = 2;
+
         if (ImGui::Button("Crosshair Menu"))
             menuToShow = 3;
 
@@ -98,6 +101,8 @@ void Menu::RenderUI()
 
     else if (menuToShow == 2)
     {
+        static std::once_flag flag;
+        std::call_once(flag, HCMenu::Setup);
         
         HCMenu::RenderUI();
     }
