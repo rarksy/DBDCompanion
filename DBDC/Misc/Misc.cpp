@@ -55,6 +55,41 @@ void Misc::RestartGame()
     ShellExecuteA(NULL, "open", "\"steam://rungameid/381210\"", NULL, NULL, SW_SHOWDEFAULT);
 }
 
+cv::Mat Misc::GetScreenshot(const cv::Rect& region, bool grayscale)
+{
+    const int regionWidth = region.width;
+    const int regionHeight = region.height;
+
+    const auto hdc = GetDC(HWND_DESKTOP);
+
+    const auto hbitmap = CreateCompatibleBitmap(hdc, regionWidth, regionHeight);
+
+    const auto memdc = CreateCompatibleDC(hdc);
+
+    const auto oldbmp = SelectObject(memdc, hbitmap);
+
+    BitBlt(memdc, 0, 0, regionWidth, regionHeight, hdc, region.x, region.y, SRCCOPY);
+    
+    cv::Mat screenshot(regionHeight, regionWidth, CV_8UC4);
+
+    BITMAPINFOHEADER bi = {sizeof(bi), regionWidth, -regionHeight, 1, 32, BI_RGB};
+    GetDIBits(hdc, hbitmap, 0, regionHeight, screenshot.data, (BITMAPINFO*)&bi, DIB_RGB_COLORS);
+    
+    SelectObject(memdc, oldbmp);
+    DeleteDC(memdc);
+    DeleteObject(hbitmap);
+    ReleaseDC(HWND_DESKTOP, hdc);
+    
+    if (grayscale)
+    {
+        cv::Mat grayScreenshot;
+        cv::cvtColor(screenshot, grayScreenshot, cv::COLOR_BGR2GRAY);
+        return grayScreenshot;
+    }
+
+    return screenshot;
+}
+
 std::vector<std::string> Misc::GetAllLibraryDirectories()
 {
     std::vector<std::string> paths;
@@ -80,11 +115,12 @@ std::vector<std::string> Misc::GetAllLibraryDirectories()
             std::string path = match[1].str();
 
             std::string::size_type pos = 0;
-            while ((pos = path.find("\\\\", pos)) != std::string::npos) {
+            while ((pos = path.find("\\\\", pos)) != std::string::npos)
+            {
                 path.replace(pos, 2, "\\");
                 pos += 1; // Move past the replaced backslash
             }
-            
+
             paths.push_back(path);
         }
     }
@@ -110,7 +146,7 @@ std::string Misc::GetGameRootDirectory()
 
         return gameRootDir.string();
     }
-    
+
     return "";
 }
 

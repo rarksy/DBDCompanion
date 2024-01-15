@@ -1,12 +1,18 @@
 ﻿#pragma once
+#include <map>
 #include <string>
 #include <vector>
+
+#include "ImGui/imgui.h"
 
 namespace HCMenu
 {
     void Setup();
     void RenderUI();
-    void CreateStyle();
+
+    void DetectionLoop();
+
+    void RenderDetection();
 
     struct Variables
     {
@@ -20,8 +26,14 @@ namespace HCMenu
         intSetting HudScaleFactor = {"HudScaleFactor", 100};
     };
 
+    namespace Internal
+    {
+        inline std::vector<std::pair<ImVec2, bool>> survivorLocations;
+        inline std::vector<std::pair<ImVec2, bool>> survivorLocationsStage2;
+    };
 
-    inline std::vector<std::string> UIScales = {"60", "65", "70", "75", "80", "85", "90", "95", "100"};
+
+    inline std::vector<std::string> UIScales = {"70", "75", "80", "85", "90", "95", "100"};
 }
 
 inline HCMenu::Variables HCVars;

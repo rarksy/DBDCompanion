@@ -42,6 +42,9 @@ void Menu::RunLoop()
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
 
+            if (HCVars.enabled)
+                HCMenu::RenderDetection();
+
             if (CVars.enabled)
                 Crosshair::DrawCrosshair();
 

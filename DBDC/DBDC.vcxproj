@@ -42,6 +42,8 @@
     <ClInclude Include="Dependencies\GLFW\GL\wglew.h" />
     <ClInclude Include="Dependencies\Images\AntiAliasing\Off.hpp" />
     <ClInclude Include="Dependencies\Images\AntiAliasing\On.hpp" />
+    <ClInclude Include="Dependencies\Images\HookCounter\Hook.hpp" />
+    <ClInclude Include="Dependencies\Images\HookCounter\Stage2.hpp" />
     <ClInclude Include="Dependencies\Images\Icons\ConfigEditor.hpp" />
     <ClInclude Include="Dependencies\Images\Images.h" />
     <ClInclude Include="Dependencies\Images\ResolutionQuality\100.hpp" />
@@ -136,7 +138,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;Dependencies\GLFW\lib\glew32s.lib;Dependencies\GLFW\lib\glfw3.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Dependencies\opencv2\lib\opencv_world481d.lib;opengl32.lib;Dependencies\GLFW\lib\glew32s.lib;Dependencies\GLFW\lib\glfw3.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -158,7 +160,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;Dependencies\GLFW\lib\glew32s.lib;Dependencies\GLFW\lib\glfw3.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Dependencies\opencv2\lib\opencv_world481.lib;opengl32.lib;Dependencies\GLFW\lib\glew32s.lib;Dependencies\GLFW\lib\glfw3.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
