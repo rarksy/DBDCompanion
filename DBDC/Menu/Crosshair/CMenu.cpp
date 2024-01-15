@@ -39,7 +39,7 @@ void CMenu::RenderUI()
         ImGui::CheckboxWithColorPicker("Lines", "Line Color", &CVars.enableLines, CVars.lineColor);
         ImGui::BeginDisabled(!CVars.enableLines);
         {
-            if (ImGui::BeginCombo("##Lines", "Lines"))
+            if (ImGui::BeginCombo("##Lines", "Lines", ImGuiComboFlags_NoArrowButton))
             {
                 ImGui::Selectable("Top", &CVars.enableTopLine, ImGuiSelectableFlags_DontClosePopups);
                 ImGui::Selectable("Left", &CVars.enableLeftLine, ImGuiSelectableFlags_DontClosePopups);
