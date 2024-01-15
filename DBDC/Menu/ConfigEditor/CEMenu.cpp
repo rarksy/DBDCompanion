@@ -54,9 +54,26 @@ bool CEMenu::Setup()
 void CEMenu::RenderUI()
 {
     ImGui::Columns(3, nullptr, false);
-    ImGui::SetColumnWidth(0, 240);
+    ImGui::SetColumnWidth(0, 250);
     ImGui::SeparatorText("Graphics Quality");
     GUI::ToolTip("Features settings that affect the graphical fidelity of Dead By Daylight.");
+
+    static GLuint texture = Image::ResolutionQuality::texture100;
+    if (GUI::Slider("Resolution Quality", Config::Variables::resolutionQuality, 60, 100))
+    {
+        Config::Edit::ChangeValue(Config::Files::gameUserSettings, Config::Groups::scalabilityGroups,
+                                  Config::Variables::resolutionQuality);
+
+        const auto value = Config::Variables::resolutionQuality.second;
+        if (value < 79)
+            texture = Image::ResolutionQuality::texture60;
+        else if (value < 99)
+            texture = Image::ResolutionQuality::texture80;
+        else
+            texture = Image::ResolutionQuality::texture100;
+    }
+    GUI::ToolTip("Sets the quality at which the game is rendered.\n"
+                 "Note: 100%% = native resolution", texture, ImVec2(400, 170));
 
     if (GUI::DropDownBox("View Distance", qualities, Config::Variables::viewDistanceQuality))
         Config::Edit::ChangeValue(Config::Files::gameUserSettings, Config::Groups::scalabilityGroups,
@@ -108,69 +125,9 @@ void CEMenu::RenderUI()
 
     ImGui::NextColumn();
 
-    ImGui::SeparatorText("Misc");
+    ImGui::SeparatorText("Rendering");
+    GUI::ToolTip("Features settings that modify the way the game renders.");
 
-    if (GUI::DropDownBox("Window Mode", windowModes, Config::Variables::windowMode))
-        Config::Edit::ChangeValue(Config::Files::gameUserSettings, Config::Groups::DBDGameUserSettings,
-                                  Config::Variables::windowMode);
-    GUI::ToolTip("Changes the rendering mode used to display the game.");
-
-    ImGui::BeginDisabled(Config::Variables::windowMode.second == 1);
-    {
-        ImGui::SetNextItemWidth(49);
-        if (ImGui::InputInt("##ResolutionW", &Config::Variables::resolutionWidth.second, 0))
-        {
-            Config::Edit::ChangeValue(Config::Files::gameUserSettings, Config::Groups::DBDGameUserSettings,
-                                      Config::Variables::resolutionWidth);
-            Config::Edit::ChangeValue(Config::Files::gameUserSettings, Config::Groups::DBDGameUserSettings,
-                                      Config::Variables::desiredScreenWidth);
-        }
-        GUI::ToolTip("Sets the desired width for the game window.");
-        ImGui::SameLine();
-        ImGui::Text("x");
-        GUI::ToolTip("Sets the desired resolution for the game window.");
-        ImGui::SameLine();
-        ImGui::SetNextItemWidth(48);
-        if (ImGui::InputInt("##ResolutionH", &Config::Variables::resolutionHeight.second, 0))
-        {
-            Config::Edit::ChangeValue(Config::Files::gameUserSettings, Config::Groups::DBDGameUserSettings,
-                                      Config::Variables::resolutionHeight);
-            Config::Edit::ChangeValue(Config::Files::gameUserSettings, Config::Groups::DBDGameUserSettings,
-                                      Config::Variables::desiredScreenHeight);
-        }
-        
-        GUI::ToolTip("Sets the desired height for the game window.");
-        ImGui::SameLine(133);
-        ImGui::Text("Resolution");
-    }
-    ImGui::EndDisabled();
-
-    static GLuint texture = Image::ResolutionQuality::texture100;
-    if (GUI::Slider("Resolution Quality", Config::Variables::resolutionQuality, 60, 100))
-    {
-        Config::Edit::ChangeValue(Config::Files::gameUserSettings, Config::Groups::scalabilityGroups,
-                                  Config::Variables::resolutionQuality);
-
-        const auto value = Config::Variables::resolutionQuality.second;
-        if (value < 79)
-            texture = Image::ResolutionQuality::texture60;
-        else if (value < 99)
-            texture = Image::ResolutionQuality::texture80;
-        else
-            texture = Image::ResolutionQuality::texture100;
-    }
-    GUI::ToolTip("Sets the quality at which the game is rendered.\n"
-                 "Note: 100%% = native resolution", texture, ImVec2(400, 170));
-
-    ImGui::BeginDisabled(Config::Variables::useVSync.second == "True");
-    {
-        if (GUI::DropDownBox("FPS Limit Mode", fpsLimitModes, Config::Variables::fpsLimitMode, true))
-            Config::Edit::ChangeValue(Config::Files::gameUserSettings, Config::Groups::DBDGameUserSettings,
-                                      Config::Variables::fpsLimitMode);
-    }
-    ImGui::EndDisabled();
-    GUI::ToolTip("Sets the maximum achievable framerate.\n"
-        "Values are clamped and cannot go above/below the available options.");
     if (GUI::StringCheckbox("VSync", Config::Variables::useVSync))
         Config::Edit::ChangeValue(Config::Files::gameUserSettings, Config::Groups::DBDGameUserSettings,
                                   Config::Variables::useVSync);
@@ -184,23 +141,15 @@ void CEMenu::RenderUI()
                  Config::Variables::antiAliasMode.second == 1
                      ? Image::AntiAliasing::textureOn
                      : Image::AntiAliasing::textureOff, ImVec2(400, 250));
-
-    if (GUI::Slider("Killer FOV", Config::Variables::killerFOV, 87, 103, false))
-        Config::Edit::ChangeValue(Config::Files::gameUserSettings, Config::Groups::DBDGameUserSettings,
-                                  Config::Variables::killerFOV);
     
-    ImGui::NextColumn();
-
-    ImGui::SeparatorText("Experimental");
-    GUI::ToolTip("Features settings that modify the way the game renders.\nRequires \"Read-Only\" to function.");
+    ImGui::Spacing();
+    ImGui::Spacing();
 
     if (ImGui::Checkbox("Read-Only", &Config::Variables::engineReadOnly))
         Config::SetReadOnly(Config::Files::engine,
                             Config::Variables::engineReadOnly);
     GUI::ToolTip("Stops Dead By Daylight from resetting any chosen settings."
         "\nSome Options Require This To Work.");
-    ImGui::Spacing();
-    ImGui::Spacing();
 
     ImGui::BeginDisabled(!Config::Variables::engineReadOnly);
     {
@@ -307,6 +256,59 @@ void CEMenu::RenderUI()
     ImGui::EndDisabled();
     ImGui::Spacing();
 
+    ImGui::NextColumn();
+
+    ImGui::SeparatorText("Misc");
+
+    if (GUI::DropDownBox("Window Mode", windowModes, Config::Variables::windowMode))
+        Config::Edit::ChangeValue(Config::Files::gameUserSettings, Config::Groups::DBDGameUserSettings,
+                                  Config::Variables::windowMode);
+    GUI::ToolTip("Changes the rendering mode used to display the game.");
+
+    ImGui::BeginDisabled(Config::Variables::windowMode.second == 1);
+    {
+        ImGui::SetNextItemWidth(49);
+        if (ImGui::InputInt("##ResolutionW", &Config::Variables::resolutionWidth.second, 0))
+        {
+            Config::Edit::ChangeValue(Config::Files::gameUserSettings, Config::Groups::DBDGameUserSettings,
+                                      Config::Variables::resolutionWidth);
+            Config::Edit::ChangeValue(Config::Files::gameUserSettings, Config::Groups::DBDGameUserSettings,
+                                      Config::Variables::desiredScreenWidth);
+        }
+        GUI::ToolTip("Sets the desired width for the game window.");
+        ImGui::SameLine();
+        ImGui::Text("x");
+        GUI::ToolTip("Sets the desired resolution for the game window.");
+        ImGui::SameLine();
+        ImGui::SetNextItemWidth(48);
+        if (ImGui::InputInt("##ResolutionH", &Config::Variables::resolutionHeight.second, 0))
+        {
+            Config::Edit::ChangeValue(Config::Files::gameUserSettings, Config::Groups::DBDGameUserSettings,
+                                      Config::Variables::resolutionHeight);
+            Config::Edit::ChangeValue(Config::Files::gameUserSettings, Config::Groups::DBDGameUserSettings,
+                                      Config::Variables::desiredScreenHeight);
+        }
+        
+        GUI::ToolTip("Sets the desired height for the game window.");
+        ImGui::SameLine(133);
+        ImGui::Text("Resolution");
+    }
+    ImGui::EndDisabled();
+
+    ImGui::BeginDisabled(Config::Variables::useVSync.second == "True");
+    {
+        if (GUI::DropDownBox("FPS Limit Mode", fpsLimitModes, Config::Variables::fpsLimitMode, true))
+            Config::Edit::ChangeValue(Config::Files::gameUserSettings, Config::Groups::DBDGameUserSettings,
+                                      Config::Variables::fpsLimitMode);
+    }
+    ImGui::EndDisabled();
+    GUI::ToolTip("Sets the maximum achievable framerate.\n"
+        "Values are clamped and cannot go above/below the available options.");
+
+    if (GUI::Slider("Killer FOV", Config::Variables::killerFOV, 87, 103, false))
+        Config::Edit::ChangeValue(Config::Files::gameUserSettings, Config::Groups::DBDGameUserSettings,
+                                  Config::Variables::killerFOV);
+
     ImGui::SeparatorText("Other");
     if (ImGui::Checkbox("Remove Intro Cutscene", &Config::Variables::removeIntroCutscene))
     {
@@ -385,8 +387,7 @@ void CEMenu::CreateStyle()
     colors[ImGuiCol_ComboHovered] = RGBToImVec4(255, 153, 153);
 
     // Header ( Selectables Etc )
-    colors[ImGuiCol_Header] = RGBToImVec4(255, 83, 83);
-    colors[ImGuiCol_HeaderHovered] = RGBToImVec4(255, 153, 153);
+    colors[ImGuiCol_HeaderHovered] = RGBToImVec4(255, 83, 83);
     colors[ImGuiCol_HeaderActive] = RGBToImVec4(255, 203, 203);
 
     // Separator
