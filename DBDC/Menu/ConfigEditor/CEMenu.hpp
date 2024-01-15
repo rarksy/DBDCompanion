@@ -51,4 +51,5 @@ namespace CEMenu
     inline std::vector<std::string> qualities = {"Very Low", "Low", "Medium", "High", "Ultra"};
     inline std::vector<std::string> qualitiesWithOff = {"Off", "Very Low", "Low", "Medium", "High", "Ultra"};
     inline std::vector<std::string> fpsLimitModes = {"30", "59", "60", "100", "120"};
+    inline std::vector<std::string> colorBlindModes = {"Off", "Deuteranopia (Red-Green)", "Protanopia (Red-Green)", "Tritanopia (Blue-Yellow)"};
 }

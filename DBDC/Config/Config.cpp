@@ -70,10 +70,7 @@ bool Config::LoadConfig()
 {
     LoadSetting(Files::gameUserSettings, Groups::scalabilityGroups, Variables::resolutionQuality);
     LoadSetting(Files::gameUserSettings, Groups::scalabilityGroups, Variables::viewDistanceQuality);
-
     LoadSetting(Files::gameUserSettings, Groups::scalabilityGroups, Variables::antiAliasQuality);
-    LoadSetting(Files::gameUserSettings, Groups::DBDGameUserSettings, Variables::antiAliasMode);
-
     LoadSetting(Files::gameUserSettings, Groups::scalabilityGroups, Variables::shadowQuality);
     LoadSetting(Files::gameUserSettings, Groups::scalabilityGroups, Variables::postProcessQuality);
     LoadSetting(Files::gameUserSettings, Groups::scalabilityGroups, Variables::textureQuality);
@@ -81,26 +78,30 @@ bool Config::LoadConfig()
     LoadSetting(Files::gameUserSettings, Groups::scalabilityGroups, Variables::foliageQuality);
     LoadSetting(Files::gameUserSettings, Groups::scalabilityGroups, Variables::shadingQuality);
 
+    LoadSetting(Files::gameUserSettings, Groups::DBDGameUserSettings, Variables::useVSync);
+    LoadSetting(Files::gameUserSettings, Groups::DBDGameUserSettings, Variables::antiAliasMode);
+
+    if (GetReadOnly(Files::engine))
+        Variables::engineReadOnly = true;
+    
+    LoadSettingFind(Files::engine, Variables::ambientOcclusion);
+    LoadSettingFind(Files::engine, Variables::ambientOcclusionStaticFraction);
+    LoadSettingFind(Files::engine, Variables::bloom);
+    LoadSettingFind(Files::engine, Variables::lensFlare);
+    LoadSettingFind(Files::engine, Variables::motionBlur);
+
     LoadSetting(Files::gameUserSettings, Groups::DBDGameUserSettings, Variables::windowMode);
 
     LoadSetting(Files::gameUserSettings, Groups::DBDGameUserSettings, Variables::resolutionWidth);
     LoadSetting(Files::gameUserSettings, Groups::DBDGameUserSettings, Variables::resolutionHeight);
     LoadSetting(Files::gameUserSettings, Groups::DBDGameUserSettings, Variables::desiredScreenWidth);
     LoadSetting(Files::gameUserSettings, Groups::DBDGameUserSettings, Variables::desiredScreenHeight);
-
     LoadSetting(Files::gameUserSettings, Groups::DBDGameUserSettings, Variables::fpsLimitMode);
-    LoadSetting(Files::gameUserSettings, Groups::DBDGameUserSettings, Variables::useVSync);
-
     LoadSetting(Files::gameUserSettings, Groups::DBDGameUserSettings, Variables::killerFOV);
-
-    if (GetReadOnly(Files::engine))
-        Variables::engineReadOnly = true;
-
-    LoadSettingFind(Files::engine, Variables::ambientOcclusion);
-    LoadSettingFind(Files::engine, Variables::ambientOcclusionStaticFraction);
-    LoadSettingFind(Files::engine, Variables::bloom);
-    LoadSettingFind(Files::engine, Variables::lensFlare);
-    LoadSettingFind(Files::engine, Variables::motionBlur);
+    
+    LoadSetting(Files::gameUserSettings, Groups::DBDGameUserSettings, Variables::terrorRadiusVisual);
+    LoadSetting(Files::gameUserSettings, Groups::DBDGameUserSettings, Variables::colorBlindMode);
+    LoadSetting(Files::gameUserSettings, Groups::DBDGameUserSettings, Variables::colorBlindModeStrength);
 
     Variables::removeIntroCutscene =
         !std::filesystem::exists(

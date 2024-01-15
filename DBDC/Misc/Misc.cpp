@@ -37,7 +37,7 @@ bool Misc::IsGameRunning()
     return pid != 0;
 }
 
-void Misc::RestartGame()
+void Misc::RestartGame(bool dx12)
 {
     if (IsGameRunning())
     {
@@ -52,7 +52,10 @@ void Misc::RestartGame()
         }
     }
 
-    ShellExecuteA(NULL, "open", "\"steam://rungameid/381210\"", NULL, NULL, SW_SHOWDEFAULT);
+    std::string renderApi = dx12 ? " -DX12\"" : "\"";
+    std::string runString = "\"steam://rungameid/381210" + renderApi;
+
+    ShellExecuteA(NULL, "open", runString.c_str(), NULL, NULL, SW_SHOWDEFAULT);
 }
 
 cv::Mat Misc::GetScreenshot(const cv::Rect& region, bool grayscale)

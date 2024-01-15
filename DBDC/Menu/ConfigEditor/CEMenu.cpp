@@ -124,6 +124,7 @@ void CEMenu::RenderUI()
         "(i'll be real idk what this does)");
 
     ImGui::NextColumn();
+    ImGui::SetColumnWidth(1, 230);
 
     ImGui::SeparatorText("Rendering");
     GUI::ToolTip("Features settings that modify the way the game renders.");
@@ -309,6 +310,18 @@ void CEMenu::RenderUI()
         Config::Edit::ChangeValue(Config::Files::gameUserSettings, Config::Groups::DBDGameUserSettings,
                                   Config::Variables::killerFOV);
 
+    ImGui::SeparatorText("Accessibility");
+
+    if (GUI::StringCheckbox("Terror Radius Visual", Config::Variables::terrorRadiusVisual))
+        Config::Edit::ChangeValue(Config::Files::gameUserSettings, Config::Groups::DBDGameUserSettings, Config::Variables::terrorRadiusVisual);
+    GUI::ToolTip("Adds a visual heartbeat whenever inside the killers terror radius");
+
+    if (GUI::DropDownBox("Colorblind Mode", colorBlindModes, Config::Variables::colorBlindMode))
+        Config::Edit::ChangeValue(Config::Files::gameUserSettings, Config::Groups::DBDGameUserSettings, Config::Variables::colorBlindMode);
+
+    if (GUI::Slider("Colorblind Strength", Config::Variables::colorBlindModeStrength, 0, 100))
+        Config::Edit::ChangeValue(Config::Files::gameUserSettings, Config::Groups::DBDGameUserSettings, Config::Variables::colorBlindModeStrength);
+
     ImGui::SeparatorText("Other");
     if (ImGui::Checkbox("Remove Intro Cutscene", &Config::Variables::removeIntroCutscene))
     {
@@ -341,11 +354,18 @@ void CEMenu::RenderUI()
     }
     if (ImGui::Button("Restart Game"))
         Misc::RestartGame();
-    GUI::ToolTip("Will Close and reopen Dead By Daylight to apply any changed settings.");
+    GUI::ToolTip("Will close and reopen Dead By Daylight to apply any changed settings.");
 
     ImGui::SameLine();
-    if (ImGui::Button("Open Folder"))
+
+    if (ImGui::Button("Start In DX12"))
+        Misc::RestartGame(true);
+    GUI::ToolTip("Will close and reopen Dead By Daylight Using DirectX 12.\nThis will also apply any changed settings.");
+    
+    if (ImGui::Button("Open Config Settings Folder"))
         Misc::OpenSettingsFolder();
+    
+        
 }
 
 inline ImVec4 RGBToImVec4(int r, int g, int b, int a = 255)

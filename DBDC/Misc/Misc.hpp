@@ -6,7 +6,7 @@
 namespace Misc
 {
     bool IsGameRunning();
-    void RestartGame();
+    void RestartGame(bool dx12 = false);
 
     cv::Mat GetScreenshot(const cv::Rect& region, bool grayscale = true);
 
