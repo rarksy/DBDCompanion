@@ -1,7 +1,7 @@
 ﻿#include "CMenu.h"
 #include "Crosshair.h"
 #include "../Menu.h"
-#include "../HookCounter/HCMenu.h"
+#include "../HookCounter/HookCounter.h"
 #include "GLFW/glfw3.h"
 #include "ImGui/imgui.h"
 

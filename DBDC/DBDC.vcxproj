@@ -27,6 +27,7 @@
     <ClCompile Include="Menu\Crosshair\Crosshair.cpp" />
     <ClCompile Include="Menu\GUI\GUI.cpp" />
     <ClCompile Include="Menu\HookCounter\HCMenu.cpp" />
+    <ClCompile Include="Menu\HookCounter\HookCounter.cpp" />
     <ClCompile Include="Menu\Menu.cpp" />
     <ClCompile Include="Misc\Misc.cpp" />
   </ItemGroup>
@@ -70,6 +71,7 @@
     <ClInclude Include="Menu\Crosshair\Crosshair.h" />
     <ClInclude Include="Menu\GUI\GUI.h" />
     <ClInclude Include="Menu\HookCounter\HCMenu.h" />
+    <ClInclude Include="Menu\HookCounter\HookCounter.h" />
     <ClInclude Include="Menu\Menu.h" />
     <ClInclude Include="Misc\Misc.hpp" />
     <ClInclude Include="Scripts\Scripts.hpp" />

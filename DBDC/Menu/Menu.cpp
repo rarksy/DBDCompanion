@@ -10,6 +10,8 @@
 #include "HookCounter/HCMenu.h"
 #include <Windows.h>
 
+#include "HookCounter/HookCounter.h"
+
 void Menu::RunLoop()
 {
     while (!glfwWindowShouldClose(mainWindow))
@@ -43,7 +45,7 @@ void Menu::RunLoop()
             ImGui::NewFrame();
 
             if (HCVars.enabled)
-                HCMenu::RenderDetection();
+                HookCounter::RenderDetection();
 
             if (CVars.enabled)
                 Crosshair::DrawCrosshair();
