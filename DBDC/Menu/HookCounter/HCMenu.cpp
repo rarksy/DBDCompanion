@@ -2,18 +2,17 @@
 #include <ranges>
 #include "ImGui/imgui.h"
 #include "../Menu.h"
-#include "../../Config/Config.h"
 #include "../Crosshair/Crosshair.h"
 #include "../GUI/GUI.h"
-#include "../Misc/Misc.hpp"
 #include "HookCounter.h"
 #include "../ConfigEditor/CEMenu.hpp"
+#include "../ConfigEditor/ConfigEditor.hpp"
 
 void HCMenu::Setup()
 {
-    Config::InitializeConfig();
-    Config::LoadSetting(Config::Files::gameUserSettings, Config::Groups::DBDGameUserSettings, HCVars.MenuScaleFactor);
-    Config::LoadSetting(Config::Files::gameUserSettings, Config::Groups::DBDGameUserSettings, HCVars.HudScaleFactor);
+    ConfigEditor::InitializeConfig();
+    ConfigEditor::LoadSetting(ConfigEditor::Files::gameUserSettings, ConfigEditor::Groups::DBDGameUserSettings, HCVars.MenuScaleFactor);
+    ConfigEditor::LoadSetting(ConfigEditor::Files::gameUserSettings, ConfigEditor::Groups::DBDGameUserSettings, HCVars.HudScaleFactor);
 }
 
 void HCMenu::RenderUI()
