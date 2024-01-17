@@ -1,5 +1,4 @@
 ﻿#include <chrono>
-#include <opencv2/opencv.hpp>
 #include <Windows.h>
 
 #include "HookCounter.h"
@@ -43,13 +42,13 @@ void HookCounter::DetectionLoop()
     }
 
     cv::resize(stage1Image, stage1Image, cv::Size(
-                   static_cast<int>(stage1Image.cols * HCMenu::HudScaleFactor.second / 100.0),
-                   static_cast<int>(stage1Image.rows * HCMenu::HudScaleFactor.second / 100.0))
+                   static_cast<int>(stage1Image.cols * HCVars.HudScaleFactor.second / 100.0),
+                   static_cast<int>(stage1Image.rows * HCVars.HudScaleFactor.second / 100.0))
     );
 
     cv::resize(stage2Image, stage2Image, cv::Size(
-                   static_cast<int>(stage2Image.cols * HCMenu::HudScaleFactor.second / 100.0),
-                   static_cast<int>(stage2Image.rows * HCMenu::HudScaleFactor.second / 100.0))
+                   static_cast<int>(stage2Image.cols * HCVars.HudScaleFactor.second / 100.0),
+                   static_cast<int>(stage2Image.rows * HCVars.HudScaleFactor.second / 100.0))
     );
     
     cv::Rect region(0, 0, Backend::screenWidth / 3, Backend::screenHeight);
@@ -123,7 +122,7 @@ void HookCounter::RenderDetection()
     for (const auto& location : Internal::survivorLocationsStage2)
     {
         if (location.x != 0.F && location.y != 0.F)
-            ImGui::GetBackgroundDrawList()->AddRect(location, ImVec2(location.x + 10, location.y + 10),
+            ImGui::GetBackgroundDrawList()->AddRectFilled(location, ImVec2(location.x + 10, location.y + 10),
                                                     ImColor(255, 0, 0));
     }
 }

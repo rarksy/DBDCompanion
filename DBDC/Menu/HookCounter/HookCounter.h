@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "ImGui/imgui.h"
+#include <opencv2/opencv.hpp>
 
 namespace HookCounter
 {
