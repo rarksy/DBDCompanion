@@ -14,5 +14,13 @@ namespace Misc
     std::string GetGameRootDirectory();
 
     void OpenSettingsFolder();
+
+    bool SetClipboardText(std::string input);
+    std::string GetClipboardText();
+
+    std::string Base64Encode(std::string input);
+    std::string Base64Decode(std::string input);
+    std::string CompressString(const std::string& input);
+    std::string DecompressString(const std::string& input);
     
 }
