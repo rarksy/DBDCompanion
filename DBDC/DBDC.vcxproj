@@ -12,7 +12,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Backend\Backend.cpp" />
-    <ClCompile Include="Config\Config.cpp" />
     <ClCompile Include="Dependencies\Images\Images.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui_demo.cpp" />
@@ -23,6 +22,7 @@
     <ClCompile Include="Dependencies\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Menu\ConfigEditor\CEMenu.cpp" />
+    <ClCompile Include="Menu\ConfigEditor\ConfigEditor.cpp" />
     <ClCompile Include="Menu\Crosshair\CMenu.cpp" />
     <ClCompile Include="Menu\Crosshair\Crosshair.cpp" />
     <ClCompile Include="Menu\GUI\GUI.cpp" />
@@ -33,7 +33,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Backend\Backend.hpp" />
-    <ClInclude Include="Config\Config.h" />
+    <ClInclude Include="Dependencies\Base64\Base64.hpp" />
     <ClInclude Include="Dependencies\Fonts\Rethink.hpp" />
     <ClInclude Include="Dependencies\GLFW\glfw3.h" />
     <ClInclude Include="Dependencies\GLFW\glfw3native.h" />
@@ -66,7 +66,10 @@
     <ClInclude Include="Dependencies\ImGui\imstb_truetype.h" />
     <ClInclude Include="Dependencies\mINI\ini.h" />
     <ClInclude Include="Dependencies\stb_image.h" />
+    <ClInclude Include="Dependencies\zlib\zconf.h" />
+    <ClInclude Include="Dependencies\zlib\zlib.h" />
     <ClInclude Include="Menu\ConfigEditor\CEMenu.hpp" />
+    <ClInclude Include="Menu\ConfigEditor\ConfigEditor.hpp" />
     <ClInclude Include="Menu\Crosshair\CMenu.h" />
     <ClInclude Include="Menu\Crosshair\Crosshair.h" />
     <ClInclude Include="Menu\GUI\GUI.h" />
@@ -140,7 +143,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>winmm.lib;Dependencies\opencv2\lib\opencv_world481d.lib;opengl32.lib;Dependencies\GLFW\lib\glew32s.lib;Dependencies\GLFW\lib\glfw3.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Dependencies\zlib\lib\zlibd.lib;winmm.lib;Dependencies\opencv2\lib\opencv_world481d.lib;opengl32.lib;Dependencies\GLFW\lib\glew32s.lib;Dependencies\GLFW\lib\glfw3.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -162,7 +165,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>winmm.lib;Dependencies\opencv2\lib\opencv_world481.lib;opengl32.lib;Dependencies\GLFW\lib\glew32s.lib;Dependencies\GLFW\lib\glfw3.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Dependencies\zlib\lib\zlib.lib;winmm.lib;Dependencies\opencv2\lib\opencv_world481.lib;opengl32.lib;Dependencies\GLFW\lib\glew32s.lib;Dependencies\GLFW\lib\glfw3.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
