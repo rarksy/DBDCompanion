@@ -7,9 +7,11 @@
 #include "../GUI/GUI.h"
 #include "../Misc/Misc.hpp"
 #include "HookCounter.h"
+#include "../ConfigEditor/CEMenu.hpp"
 
 void HCMenu::Setup()
 {
+    Config::InitializeConfig();
     Config::LoadSetting(Config::Files::gameUserSettings, Config::Groups::DBDGameUserSettings, HCVars.MenuScaleFactor);
     Config::LoadSetting(Config::Files::gameUserSettings, Config::Groups::DBDGameUserSettings, HCVars.HudScaleFactor);
 }
@@ -77,84 +79,3 @@ void HCMenu::RenderUI()
 
     ImGui::EndColumns();
 }
-
-
-    
-    //     if (TemplateMatch(frame, hookImage, 0.9, foundLocation))
-    //     {
-    //         if (Internal::survivorLocations.empty())
-    //         {
-    //             Internal::survivorLocations.push_back({ImVec2(foundLocation.x, foundLocation.y), true});
-    //             
-    //             if (HCVars.playSoundOnHook)
-    //                 PlaySoundA(HCVars.soundFilePath, NULL, SND_ASYNC);
-    //             
-    //             continue;
-    //         }
-    //
-    //         bool addSurvivor = true;
-    //         const int survivorLocationsSize = Internal::survivorLocations.size();
-    //         for (int i = 0; i < survivorLocationsSize; i++)
-    //         {
-    //             const auto survivor = Internal::survivorLocations[i];
-    //
-    //             if (foundLocation.y > survivor.first.y - 15 && foundLocation.y < survivor.first.y + 15)
-    //             {
-    //                 addSurvivor = false;
-    //                 break;
-    //             }
-    //         }
-    //
-    //         if (addSurvivor)
-    //         {
-    //             Internal::survivorLocations.push_back({ImVec2(foundLocation.x, foundLocation.y), true});
-    //
-    //             if (HCVars.playSoundOnHook)
-    //                 PlaySoundA(HCVars.soundFilePath, NULL, SND_ASYNC);
-    //         }
-    //     }
-    //
-    //     if (HCVars.track2ndStage && TemplateMatch(frame, stage2Image, 0.9, foundLocation))
-    //     {
-    //         if (Internal::survivorLocationsStage2.empty())
-    //         {
-    //             Internal::survivorLocationsStage2.push_back({ImVec2(foundLocation.x, foundLocation.y), true});
-    //
-    //             if (HCVars.playSoundOnHook)
-    //                 PlaySoundA(HCVars.soundFilePath, NULL, SND_ASYNC);
-    //             
-    //             continue;
-    //         }
-    //
-    //         bool addSurvivor = true;
-    //         const int survivorLocationsSize = Internal::survivorLocationsStage2.size();
-    //         for (int i = 0; i < survivorLocationsSize; i++)
-    //         {
-    //             const auto survivor = Internal::survivorLocationsStage2[i];
-    //
-    //             if (foundLocation.y > survivor.first.y - 15 && foundLocation.y < survivor.first.y + 15)
-    //             {
-    //                 addSurvivor = false;
-    //                 break;
-    //             }
-    //         }
-    //
-    //         if (addSurvivor)
-    //         {
-    //             Internal::survivorLocationsStage2.push_back({ImVec2(foundLocation.x, foundLocation.y), true});
-    //
-    //             if (HCVars.playSoundOnHook)
-    //                 PlaySoundA(HCVars.soundFilePath, NULL, SND_ASYNC);
-    //         }
-    //         
-    //     }
-    //
-    //     const auto endTime = std::chrono::steady_clock::now();
-    //     const std::chrono::duration<double> elapsedTime = endTime - startTime;
-    //     const auto sleepDuration = targetFrameDuration - elapsedTime;
-    //
-    //     if (sleepDuration > std::chrono::duration<double>(0))
-    //     {
-    //         std::this_thread::sleep_until(startTime + targetFrameDuration);
-    //     }
-    // }
