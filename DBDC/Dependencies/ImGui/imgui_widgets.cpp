@@ -41,6 +41,7 @@ Index of this file:
 #include <algorithm>
 
 #include "imgui.h"
+#include "../../Menu/Menu.h"
 #ifndef IMGUI_DISABLE
 #include "imgui_internal.h"
 
@@ -3023,6 +3024,8 @@ bool ImGui::SliderBehavior(const ImRect& bb, ImGuiID id, ImGuiDataType data_type
 // Read code of e.g. SliderFloat(), SliderInt() etc. or examples in 'Demo->Widgets->Data Types' to understand how to use this function directly.
 bool ImGui::SliderScalar(const char* label, ImGuiDataType data_type, void* p_data, const void* p_min, const void* p_max, const char* format, ImGuiSliderFlags flags)
 {
+    SetNextItemWidth(Menu::Styling::itemWidth);
+    
     ImGuiWindow* window = GetCurrentWindow();
     if (window->SkipItems)
         return false;
