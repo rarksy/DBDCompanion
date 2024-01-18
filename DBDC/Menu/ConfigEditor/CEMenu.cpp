@@ -51,7 +51,9 @@ bool CEMenu::Setup()
 void CEMenu::RenderUI()
 {
     ImGui::Columns(3, nullptr, false);
-    ImGui::SetColumnWidth(0, 250);
+    ImGui::SetColumnWidth(0, 270);
+    ImGui::SetColumnWidth(1, 200);
+    
     ImGui::SeparatorText("Graphics Quality");
     GUI::ToolTip("Features settings that affect the graphical fidelity of Dead By Daylight.");
 
@@ -121,7 +123,6 @@ void CEMenu::RenderUI()
         "(i'll be real idk what this does)");
 
     ImGui::NextColumn();
-    ImGui::SetColumnWidth(1, 230);
 
     ImGui::SeparatorText("Rendering");
     GUI::ToolTip("Features settings that modify the way the game renders.");
@@ -361,14 +362,14 @@ void CEMenu::RenderUI()
     
     if (ImGui::Button("Open Folder"))
         Misc::OpenSettingsFolder();
-
-    if (ImGui::Button("Copy Settings"))
-        ConfigEditor::CopyConfig();
-
-    ImGui::SameLine();
-    
-    if (ImGui::Button("Import Settings"))
-        ConfigEditor::ImportConfig();
+    //
+    // if (ImGui::Button("Copy Settings"))
+    //     ConfigEditor::CopyConfig();
+    //
+    // ImGui::SameLine();
+    //
+    // if (ImGui::Button("Import Settings"))
+    //     ConfigEditor::ImportConfig();
 }
 
 inline ImVec4 RGBToImVec4(int r, int g, int b, int a = 255)
