@@ -45,6 +45,7 @@ void HCMenu::RenderUI()
 
     ImGui::Columns(3, nullptr, false);
     ImGui::SetColumnWidth(0, 240);
+    ImGui::SetColumnWidth(1, 245);
 
 
     ImGui::SeparatorText("Options");
