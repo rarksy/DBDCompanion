@@ -72,7 +72,7 @@ bool GUI::DropDownBox(const char* label, std::vector<std::string> listItems,
 
 bool GUI::DropDownBox(const char* label, std::vector<std::string> listItems, int& index)
 {
-    bool itemSelected;
+    bool itemSelected = false;
     ImGui::SetNextItemWidth(Menu::Styling::itemWidth);
     if (ImGui::BeginCombo(label, listItems[index].c_str(), ImGuiComboFlags_NoArrowButton))
     {
