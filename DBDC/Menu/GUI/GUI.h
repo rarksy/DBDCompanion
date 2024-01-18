@@ -13,6 +13,8 @@ namespace GUI
     bool DropDownBox(const char* label, std::vector<std::string> listItems, std::pair<std::string, int>& setting, bool accessValue = false,
         std::string toolTipCaption = "", std::vector<unsigned*> textures = {}, ImVec2 textureSize = ImVec2(250, 100));
 
+    bool DropDownBox(const char* label, std::vector<std::string> listItems, int& index);
+
     void ToolTip(std::string message, bool holdRightClick = true);
     void ToolTip(std::string message, unsigned int texture, const ImVec2& size, bool holdRightClick = true);
 }

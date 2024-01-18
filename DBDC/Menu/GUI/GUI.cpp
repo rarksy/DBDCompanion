@@ -70,6 +70,29 @@ bool GUI::DropDownBox(const char* label, std::vector<std::string> listItems,
     return itemSelected;
 }
 
+bool GUI::DropDownBox(const char* label, std::vector<std::string> listItems, int& index)
+{
+    bool itemSelected;
+    ImGui::SetNextItemWidth(Menu::Styling::itemWidth);
+    if (ImGui::BeginCombo(label, listItems[index].c_str(), ImGuiComboFlags_NoArrowButton))
+    {
+        for (int i = 0; i < listItems.size(); i++)
+        {
+            const bool isSelected = (index == i);
+            if (ImGui::Selectable(listItems[i].c_str(), isSelected))
+            {
+                index = i;
+
+                itemSelected = true;
+            }
+        }
+
+        ImGui::EndCombo();
+    }
+
+    return itemSelected;
+}
+
 void GUI::ToolTip(std::string message, bool holdRightClick)
 {
     if (holdRightClick && (!ImGui::IsKeyDown(ImGuiKey_MouseRight)))
