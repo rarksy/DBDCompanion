@@ -13,12 +13,11 @@ namespace Crosshair
     void DrawOutline();
     void DrawCenterDot();
 
+    void ModifyDynamicCenterPoint();
     
 
     struct Variables
     {
-        ImVec2 screenCenterPoint;
-        
         bool setCustom = false;
 
         bool enabled = false;
@@ -43,6 +42,13 @@ namespace Crosshair
         int centerDotThickness = 2;
         int centerDotSegments = 12;
         ImColor centerDotColor = ImColor(255, 74, 74);
+
+        ImVec2 screenCenterPoint;
+        ImVec2 trueScreenCenterPoint;
+        ImVec2 savedScreenCenterPoint;
+        
+        bool useDynamicCenterPoint = false;
+        int dynamicCenterPointIndex = 0;
         
         template<typename T>
         bool Save(T& cfg)

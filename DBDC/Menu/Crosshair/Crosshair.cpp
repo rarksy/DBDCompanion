@@ -1,13 +1,18 @@
 ﻿#include "Crosshair.h"
 #include "../../Backend/Backend.hpp"
+#include <Windows.h>
 
 void Crosshair::Setup()
 {
     CVars.screenCenterPoint = ImVec2(Backend::screenWidth / 2, Backend::screenHeight / 2);
+    CVars.trueScreenCenterPoint = CVars.screenCenterPoint;
 }
 
 void Crosshair::DrawCrosshair()
 {
+    if (CVars.useDynamicCenterPoint)
+        ModifyDynamicCenterPoint();
+
     if (CVars.enableCenterDot)
         DrawCenterDot();
 
@@ -15,7 +20,7 @@ void Crosshair::DrawCrosshair()
     {
         if (CVars.enableOutline)
             DrawOutline();
-        
+
         DrawLines();
     }
 }
@@ -223,4 +228,68 @@ void Crosshair::DrawCenterDot()
     else // No Fill
         drawList->AddCircle(center, CVars.centerDotSize, CVars.centerDotColor,
                             CVars.centerDotSegments, CVars.centerDotThickness);
+}
+
+void Crosshair::ModifyDynamicCenterPoint()
+{
+    static std::chrono::steady_clock::time_point startTime;
+    static bool isRButtonDown;
+
+    switch (CVars.dynamicCenterPointIndex)
+    {
+    default:
+        CVars.screenCenterPoint = CVars.trueScreenCenterPoint;
+        break;
+
+    case 0: // Huntress
+
+        if (GetAsyncKeyState(VK_RBUTTON))
+        {
+            if (!isRButtonDown)
+            {
+                startTime = std::chrono::steady_clock::now();
+                isRButtonDown = true;
+            }
+
+            const auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
+                std::chrono::steady_clock::now() - startTime).count();
+
+            if (CVars.screenCenterPoint.y < CVars.trueScreenCenterPoint.y + 30 && duration >= 2000)
+                CVars.screenCenterPoint.y++;
+        }
+        else
+        {
+            if (isRButtonDown)
+                isRButtonDown = false;
+
+            CVars.screenCenterPoint = CVars.trueScreenCenterPoint;
+        }
+        break;
+
+    case 1: // Deathslinger
+
+        if (GetAsyncKeyState(VK_RBUTTON))
+        {
+            if (!isRButtonDown)
+            {
+                startTime = std::chrono::steady_clock::now();
+                isRButtonDown = true;
+            }
+            const auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
+                std::chrono::steady_clock::now() - startTime).count();
+
+            if (duration > 400)
+                CVars.screenCenterPoint.y = 9999; // off screen;
+        }
+        else
+        {
+            if (isRButtonDown)
+                isRButtonDown = false;
+
+            CVars.screenCenterPoint.x = Backend::screenWidth / 2 + 3;
+            CVars.screenCenterPoint.y = CVars.trueScreenCenterPoint.y;
+        }
+
+        break;
+    }
 }
