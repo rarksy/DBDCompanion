@@ -80,14 +80,13 @@ void HookCounter::DetectionLoop()
 
         if (timeToSleep > std::chrono::duration<double>(0))
             std::this_thread::sleep_until(frameStartTime + targetFrameDuration);
-        
     }
 }
 
 void HookCounter::HandleDetection(const cv::Point& detectedLocation, std::vector<ImVec2>& locations)
 {
     bool addSurvivor = true;
-                
+
     const int stage1LocationsSize = locations.size();
     for (int i = 0; i < stage1LocationsSize; i++)
     {
@@ -112,17 +111,20 @@ void HookCounter::HandleDetection(const cv::Point& detectedLocation, std::vector
 
 void HookCounter::RenderDetection()
 {
-    for (const auto& location : Internal::survivorLocationsStage1)
+    const int stage1Size = Internal::survivorLocationsStage1.size();
+    const int stage2Size = Internal::survivorLocationsStage2.size();
+
+    for (int i = 0; i < stage1Size; i++)
     {
-        if (location.x != 0.F && location.y != 0.F)
-            ImGui::GetBackgroundDrawList()->AddRect(location, ImVec2(location.x + 10, location.y + 10),
-                                                    ImColor(255, 0, 0));
+        const auto location = Internal::survivorLocationsStage1[i];
+        ImGui::GetBackgroundDrawList()->AddRect(location, ImVec2(location.x + 10, location.y + 10),
+                                                ImColor(255, 0, 0));
     }
 
-    for (const auto& location : Internal::survivorLocationsStage2)
+    for (int i = 0; i < stage2Size; i++)
     {
-        if (location.x != 0.F && location.y != 0.F)
-            ImGui::GetBackgroundDrawList()->AddRectFilled(location, ImVec2(location.x + 10, location.y + 10),
-                                                    ImColor(255, 0, 0));
+        const auto location = Internal::survivorLocationsStage2[i];
+        ImGui::GetBackgroundDrawList()->AddRectFilled(location, ImVec2(location.x + 10, location.y + 10),
+                                                ImColor(255, 0, 0));
     }
 }
