@@ -152,7 +152,7 @@ bool ConfigEditor::ImportConfig()
 {
     const std::string config = Misc::GetClipboardText();
 
-    for (const auto& c : config) // make sure its actually base64
+    for (const auto& c : config) // make sure the config is actually base64
         if (!(isalnum(c) || c == '+' || c == '/'))
             return false;
 
@@ -162,7 +162,32 @@ bool ConfigEditor::ImportConfig()
     const std::string gameUserSettingsContent = decompressed.substr(0, decompressed.find("ENDFILE"));
     const std::string engineContent = decompressed.substr(decompressed.find("ENDFILE") + 7);
 
-    // explore potential alternative to entire file copy as it will overwrite EVERYthing in the gameusersettings
+    const std::string tempGameUserSettingsFile = "ImportedGameUserSettings.ini";
+    std::ofstream tempFile(tempGameUserSettingsFile);
+    tempFile << gameUserSettingsContent;
+    tempFile.close();
+
+    mINI::INIStructure importedIni;
+    mINI::INIFile importedGameUserSettings(tempGameUserSettingsFile);
+    importedGameUserSettings.read(importedIni);
+
+    mINI::INIStructure ini;
+    mINI::INIFile gameUserSettings(SettingsFolderLocation.string() + Files::gameUserSettings);
+    gameUserSettings.read(ini);
+
+    ini[Groups::scalabilityGroups][CEVars.resolutionQuality.first] = importedIni[Groups::scalabilityGroups][CEVars.resolutionQuality.first];
+
+    if (GetReadOnly(Files::gameUserSettings))
+        SetReadOnly(Files::gameUserSettings, false);
+    
+    gameUserSettings.write(ini);
+    
+    LoadConfig();
+
+    if (CEVars.engineReadOnly)
+        SetReadOnly(Files::gameUserSettings, true);
+
+    std::remove(tempGameUserSettingsFile.c_str());
     
     return true;
 }
