@@ -69,22 +69,18 @@ cv::Mat Misc::GetScreenshot(const cv::Rect& region, bool grayscale)
 
     const auto hdc = GetDC(HWND_DESKTOP);
 
-    const auto hbitmap = CreateCompatibleBitmap(hdc, regionWidth, regionHeight);
+    std::unique_ptr<HDC__, decltype(&DeleteDC)> memdc(CreateCompatibleDC(hdc), DeleteDC);
+    std::unique_ptr<HBITMAP__, decltype(&DeleteObject)> bitmap(CreateCompatibleBitmap(hdc, regionWidth, regionHeight), DeleteObject);
 
-    const auto memdc = CreateCompatibleDC(hdc);
-
-    const auto oldbmp = SelectObject(memdc, hbitmap);
-
-    BitBlt(memdc, 0, 0, regionWidth, regionHeight, hdc, region.x, region.y, SRCCOPY);
+    const auto oldbmp = SelectObject(memdc.get(), bitmap.get());
+    BitBlt(memdc.get(), 0, 0, regionWidth, regionHeight, hdc, region.x, region.y, SRCCOPY);
     
     cv::Mat screenshot(regionHeight, regionWidth, CV_8UC4);
 
     BITMAPINFOHEADER bi = {sizeof(bi), regionWidth, -regionHeight, 1, 32, BI_RGB};
-    GetDIBits(hdc, hbitmap, 0, regionHeight, screenshot.data, (BITMAPINFO*)&bi, DIB_RGB_COLORS);
+    GetDIBits(hdc, bitmap.get(), 0, regionHeight, screenshot.data, (BITMAPINFO*)&bi, DIB_RGB_COLORS);
     
-    SelectObject(memdc, oldbmp);
-    DeleteDC(memdc);
-    DeleteObject(hbitmap);
+    SelectObject(memdc.get(), oldbmp);
     ReleaseDC(HWND_DESKTOP, hdc);
     
     if (grayscale)
