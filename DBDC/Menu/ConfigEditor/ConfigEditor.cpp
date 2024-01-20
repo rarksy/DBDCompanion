@@ -1,4 +1,7 @@
 ﻿#include "ConfigEditor.hpp"
+
+#include <regex>
+
 #include "../Misc/Misc.hpp"
 #include "mINI/ini.h"
 
@@ -257,12 +260,12 @@ bool ConfigEditor::ImportConfig()
     
     const std::string config = Misc::GetClipboardText();
 
-    for (char c : config) // make sure the config is actually base64
-        if (!(isalnum(c) || c == '+' || c == '/'))
-        {
-            MessageBoxA(NULL, "Invalid Config", "Error...", MB_OK);
-            return false;
-        }
+    std::regex base64Regex("^[A-Za-z0-9+/]*={0,2}$"); // still dont know how regex works, thanks stackoverflow
+    if (!std::regex_match(config, base64Regex))
+    {
+        MessageBoxA(NULL, "Invalid Config", "Error...", MB_OK);
+        return false;
+    }
 
     const std::string unbase64 = Misc::Base64Decode(config);
     const std::string decompressed = Misc::DecompressString(unbase64);
