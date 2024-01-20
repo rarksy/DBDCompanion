@@ -1,6 +1,19 @@
 ﻿#include "GUI.h"
-#include "../Config/Config.h"
 #include  "../Menu.h"
+#include "..\ConfigEditor\ConfigEditor.hpp"
+
+bool GUI::boolCheckbox(const char* label, std::pair<std::string, std::pair<bool, std::pair<std::string, std::string>>>& setting)
+{
+    ImGui::SetNextItemWidth(static_cast<float>(Menu::Styling::itemWidth));
+    
+    bool isChecked = setting.second.first;
+    const bool valueChanged = ImGui::Checkbox(label, (&isChecked));
+
+    if (valueChanged)
+        setting.second.first = isChecked;
+    
+    return valueChanged;
+}
 
 bool GUI::IntCheckbox(const char* label, std::pair<std::string, int>& setting)
 {
@@ -19,11 +32,11 @@ bool GUI::StringCheckbox(const char* label, std::pair<std::string, std::string>&
 {
     ImGui::SetNextItemWidth(static_cast<float>(Menu::Styling::itemWidth));
 
-    bool isChecked = (setting.second != sFalse);
+    bool isChecked = (setting.second != vFalse);
     const bool valueChanged = ImGui::Checkbox(label, &isChecked);
 
     if (valueChanged)
-        setting.second = isChecked ? sTrue : sFalse;
+        setting.second = isChecked ? vTrue : vFalse;
 
     return valueChanged;
 }
@@ -62,6 +75,29 @@ bool GUI::DropDownBox(const char* label, std::vector<std::string> listItems,
 
             if (!textures.empty())
                 GUI::ToolTip(toolTipCaption, *textures[i], textureSize);
+        }
+
+        ImGui::EndCombo();
+    }
+
+    return itemSelected;
+}
+
+bool GUI::DropDownBox(const char* label, std::vector<std::string> listItems, int& index)
+{
+    bool itemSelected = false;
+    ImGui::SetNextItemWidth(Menu::Styling::itemWidth);
+    if (ImGui::BeginCombo(label, listItems[index].c_str(), ImGuiComboFlags_NoArrowButton))
+    {
+        for (int i = 0; i < listItems.size(); i++)
+        {
+            const bool isSelected = (index == i);
+            if (ImGui::Selectable(listItems[i].c_str(), isSelected))
+            {
+                index = i;
+
+                itemSelected = true;
+            }
         }
 
         ImGui::EndCombo();

@@ -54,7 +54,7 @@ namespace Menu
     {
         inline constexpr int menuWidth = 750;
         inline constexpr int menuHeight = 500;
-        inline constexpr int itemWidth = 95;
+        inline constexpr int itemWidth = 105;
 
         inline constexpr float fontSize = 22.F;
     }

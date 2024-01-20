@@ -10,6 +10,8 @@
 #include "HookCounter/HCMenu.h"
 #include <Windows.h>
 
+#include "HookCounter/HookCounter.h"
+
 void Menu::RunLoop()
 {
     while (!glfwWindowShouldClose(mainWindow))
@@ -42,7 +44,10 @@ void Menu::RunLoop()
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
 
-            if (CVars.masterSwitch)
+            if (HCVars.enabled)
+                HookCounter::RenderDetection();
+
+            if (CVars.enabled)
                 Crosshair::DrawCrosshair();
 
             ImGui::Render();
@@ -81,6 +86,10 @@ void Menu::RenderUI()
         if (ImGui::Button("Config Editor"))
             menuToShow = 1;
 
+        if (ImGui::Button("Hook Counter (ALPHA)"))
+            menuToShow = 2;
+        GUI::ToolTip("This is a pre-release alpha of the hook counter\nIt is not finished and WILL contain bugs");
+
         if (ImGui::Button("Crosshair Menu"))
             menuToShow = 3;
 
@@ -98,20 +107,17 @@ void Menu::RenderUI()
 
     else if (menuToShow == 2)
     {
-        if (!Overlay::IsOverlayCreated())
-        {
-            Menu::Overlay::windowWidth = GetSystemMetrics(SM_CXSCREEN) / 3;
-            Menu::Overlay::windowHeight = GetSystemMetrics(SM_CYSCREEN);
-            Overlay::CreateOverlay();
-            ImGui::SetCurrentContext(Menu::mainContext);
-            glfwMakeContextCurrent(Menu::mainWindow);
-        }
-
+        static std::once_flag flag;
+        std::call_once(flag, HCMenu::Setup);
+        
         HCMenu::RenderUI();
     }
 
     else if (menuToShow == 3)
     {
+        static std::once_flag flag;
+        std::call_once(flag, Crosshair::Setup);
+        
         CMenu::RenderUI();
     }
 
@@ -181,4 +187,7 @@ void Menu::CreateGlobalStyle()
 
     // Separator
     colors[ImGuiCol_Separator] = RGBToImVec4(255, 83, 83);
+
+
+    colors[ImGuiCol_TextSelectedBg] = RGBToImVec4(225, 63, 63, 150);
 }

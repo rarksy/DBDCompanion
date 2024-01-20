@@ -41,6 +41,7 @@ Index of this file:
 #include <algorithm>
 
 #include "imgui.h"
+#include "../../Menu/Menu.h"
 #ifndef IMGUI_DISABLE
 #include "imgui_internal.h"
 
@@ -3023,6 +3024,8 @@ bool ImGui::SliderBehavior(const ImRect& bb, ImGuiID id, ImGuiDataType data_type
 // Read code of e.g. SliderFloat(), SliderInt() etc. or examples in 'Demo->Widgets->Data Types' to understand how to use this function directly.
 bool ImGui::SliderScalar(const char* label, ImGuiDataType data_type, void* p_data, const void* p_min, const void* p_max, const char* format, ImGuiSliderFlags flags)
 {
+    SetNextItemWidth(Menu::Styling::itemWidth);
+    
     ImGuiWindow* window = GetCurrentWindow();
     if (window->SkipItems)
         return false;
@@ -3089,7 +3092,9 @@ bool ImGui::SliderScalar(const char* label, ImGuiDataType data_type, void* p_dat
     // Render grab
     float clampedValue = std::min(std::max(*(float*)p_data, *(float*)p_min), *(float*)p_max);  // Ensure value is within the range
     ImRect filledBarRect(frame_bb.Min, ImVec2(frame_bb.Min.x + (frame_bb.Max.x - frame_bb.Min.x) * (clampedValue - *(float*)p_min) / (*(float*)p_max - *(float*)p_min), frame_bb.Max.y));
-    window->DrawList->AddRectFilled(filledBarRect.Min, filledBarRect.Max, GetColorU32(ImGuiCol_SliderGrab), style.GrabRounding);
+
+    if (*(float*)p_data != *(float*)p_min)
+        window->DrawList->AddRectFilled(filledBarRect.Min, filledBarRect.Max, GetColorU32(ImGuiCol_SliderGrab), style.GrabRounding);
 
 
     // Display value using user-provided display format so user can add prefix/suffix/decorations to the value.

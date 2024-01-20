@@ -1,8 +1,13 @@
 ﻿#pragma once
+#include <string>
+#include <vector>
+
+#include "ImGui/imgui.h"
 
 namespace HCMenu
 {
+    void Setup();
     void RenderUI();
-    void CreateStyle();
 
+    inline std::vector<std::string> UIScales = {"70", "75", "80", "85", "90", "95", "100"};
 }

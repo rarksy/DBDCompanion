@@ -1,15 +1,16 @@
 ﻿#include "CMenu.h"
 #include "Crosshair.h"
 #include "../Menu.h"
+#include "../GUI/GUI.h"
+#include "../HookCounter/HookCounter.h"
 #include "GLFW/glfw3.h"
 #include "ImGui/imgui.h"
 
 void CMenu::RenderUI()
 {
-    
-    if (ImGui::Checkbox("Enable", &CVars.masterSwitch))
+    if (ImGui::Checkbox("Enable", &CVars.enabled))
     {
-        if (CVars.masterSwitch)
+        if (CVars.enabled)
         {
             if (!Menu::Overlay::IsOverlayCreated())
             {
@@ -18,43 +19,42 @@ void CMenu::RenderUI()
                 glfwMakeContextCurrent(Menu::mainWindow);
             }
         }
-        else
+        else if (!HCVars.enabled)
             Menu::Overlay::DestroyOverlay();
-        
     }
-        
+
     ImGui::Spacing();
     ImGui::Spacing();
     ImGui::Spacing();
-        
-    ImGui::BeginDisabled(!CVars.masterSwitch);
+
+    ImGui::BeginDisabled(!CVars.enabled);
     {
         ImGui::Columns(3, nullptr, false);
-        ImGui::SetColumnWidth(0, 260);
+        ImGui::SetColumnWidth(0, 225);
         ImGui::SetColumnWidth(1, 260);
 
         ImGui::SeparatorText("Lines");
-        
+
         ImGui::CheckboxWithColorPicker("Lines", "Line Color", &CVars.enableLines, CVars.lineColor);
         ImGui::BeginDisabled(!CVars.enableLines);
         {
-            if (ImGui::BeginCombo("##Lines", "Lines"))
+            if (ImGui::BeginCombo("##Lines", "Lines", ImGuiComboFlags_NoArrowButton))
             {
                 ImGui::Selectable("Top", &CVars.enableTopLine, ImGuiSelectableFlags_DontClosePopups);
                 ImGui::Selectable("Left", &CVars.enableLeftLine, ImGuiSelectableFlags_DontClosePopups);
                 ImGui::Selectable("Right", &CVars.enableRightLine, ImGuiSelectableFlags_DontClosePopups);
                 ImGui::Selectable("Bottom", &CVars.enableBottomLine, ImGuiSelectableFlags_DontClosePopups);
-        
+
                 ImGui::EndCombo();
             }
             ImGui::SliderInt("Length", &CVars.lineLength, 1, 100);
             ImGui::SliderInt("Thickness", &CVars.lineThickness, 1, 10);
             ImGui::SliderInt("Gap", &CVars.lineGap, 0, 100);
-        
+
             ImGui::Spacing();
             ImGui::Spacing();
             ImGui::Spacing();
-            
+
             ImGui::CheckboxWithColorPicker("Outline", "Outline Color", &CVars.enableOutline, CVars.outlineColor);
             ImGui::BeginDisabled(!CVars.enableOutline);
             {
@@ -63,11 +63,11 @@ void CMenu::RenderUI()
             ImGui::EndDisabled();
         }
         ImGui::EndDisabled();
-        
+
         ImGui::NextColumn();
 
         ImGui::SeparatorText("Center Dot");
-        
+
         ImGui::CheckboxWithColorPicker("Center Dot", "Center Dot Color", &CVars.enableCenterDot,
                                        CVars.centerDotColor);
         ImGui::BeginDisabled(!CVars.enableCenterDot);
@@ -84,16 +84,67 @@ void CMenu::RenderUI()
 
         ImGui::NextColumn();
 
+        ImGui::SeparatorText("Center Point");
+
+        ImGui::BeginDisabled(CVars.useDynamicCenterPoint);
+
+        if (ImGui::Button("Reset"))
+            CVars.screenCenterPoint.x = Backend::screenWidth / 2;
+        ImGui::SameLine();
+        ImGui::Button("-", ImVec2(20, 0));
+        if (ImGui::IsItemActive() && ImGui::IsItemHovered())
+            CVars.screenCenterPoint.x--;
+        ImGui::SameLine();
+        ImGui::Button("+", ImVec2(20, 0));
+        if (ImGui::IsItemActive() && ImGui::IsItemHovered())
+            CVars.screenCenterPoint.x++;
+        ImGui::SameLine();
+        ImGui::SetNextItemWidth(80);
+        ImGui::SliderFloat("X", &CVars.screenCenterPoint.x, 0, Backend::screenWidth, "%.0f");
+
+
+        if (ImGui::Button("Reset##"))
+            CVars.screenCenterPoint.y = Backend::screenHeight / 2;
+        ImGui::SameLine();
+        ImGui::Button("-##", ImVec2(20, 0));
+        if (ImGui::IsItemActive() && ImGui::IsItemHovered())
+            CVars.screenCenterPoint.y--;
+        ImGui::SameLine();
+        ImGui::Button("+##", ImVec2(20, 0));
+        if (ImGui::IsItemActive() && ImGui::IsItemHovered())
+            CVars.screenCenterPoint.y++;
+        ImGui::SameLine();
+        ImGui::SetNextItemWidth(80);
+        ImGui::SliderFloat("Y", &CVars.screenCenterPoint.y, 0, Backend::screenHeight, "%.0f");
+
+        ImGui::EndDisabled();
+
+        if (ImGui::Checkbox("Dynamic Killer Crosshair", &CVars.useDynamicCenterPoint))
+        {
+            if (CVars.useDynamicCenterPoint)
+                CVars.savedScreenCenterPoint = CVars.screenCenterPoint;
+            else
+                CVars.screenCenterPoint = CVars.savedScreenCenterPoint;
+            
+        }
+
+        ImGui::BeginDisabled(!CVars.useDynamicCenterPoint);
+
+        GUI::DropDownBox("Killer", dynamicKillers, CVars.dynamicCenterPointIndex);
+        
+        ImGui::EndDisabled();
+
         ImGui::SeparatorText("Settings");
+
         if (ImGui::Button("Save Settings"))
             CVars.Save(CVars);
-        
+
         if (ImGui::Button("Load Settings"))
             CVars.Load(CVars);
 
         if (ImGui::Button("Reset Settings"))
             CVars.Reset(CVars);
-        
+
         ImGui::EndColumns();
     }
     ImGui::EndDisabled();
