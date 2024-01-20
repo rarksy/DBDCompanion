@@ -2,6 +2,19 @@
 #include  "../Menu.h"
 #include "..\ConfigEditor\ConfigEditor.hpp"
 
+bool GUI::boolCheckbox(const char* label, std::pair<std::string, std::pair<bool, std::pair<std::string, std::string>>>& setting)
+{
+    ImGui::SetNextItemWidth(static_cast<float>(Menu::Styling::itemWidth));
+    
+    bool isChecked = setting.second.first;
+    const bool valueChanged = ImGui::Checkbox(label, (&isChecked));
+
+    if (valueChanged)
+        setting.second.first = isChecked;
+    
+    return valueChanged;
+}
+
 bool GUI::IntCheckbox(const char* label, std::pair<std::string, int>& setting)
 {
     ImGui::SetNextItemWidth(static_cast<float>(Menu::Styling::itemWidth));

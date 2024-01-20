@@ -5,6 +5,7 @@
 
 namespace GUI
 {
+    bool boolCheckbox(const char* label, std::pair<std::string, std::pair<bool, std::pair<std::string, std::string>>>& setting);
     bool IntCheckbox(const char* label, std::pair<std::string, int>& setting);
     bool StringCheckbox(const char* label, std::pair<std::string, std::string>& setting);
 

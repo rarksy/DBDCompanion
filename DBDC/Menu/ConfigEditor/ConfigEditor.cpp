@@ -69,50 +69,148 @@ bool ConfigEditor::InitializeConfig()
 
 void ConfigEditor::LoadConfig()
 {
-    LoadSetting(Files::gameUserSettings, Groups::scalabilityGroups, CEVars.resolutionQuality);
-    LoadSetting(Files::gameUserSettings, Groups::scalabilityGroups, CEVars.viewDistanceQuality);
-    LoadSetting(Files::gameUserSettings, Groups::scalabilityGroups, CEVars.antiAliasQuality);
-    LoadSetting(Files::gameUserSettings, Groups::scalabilityGroups, CEVars.shadowQuality);
-    LoadSetting(Files::gameUserSettings, Groups::scalabilityGroups, CEVars.postProcessQuality);
-    LoadSetting(Files::gameUserSettings, Groups::scalabilityGroups, CEVars.textureQuality);
-    LoadSetting(Files::gameUserSettings, Groups::scalabilityGroups, CEVars.effectsQuality);
-    LoadSetting(Files::gameUserSettings, Groups::scalabilityGroups, CEVars.foliageQuality);
-    LoadSetting(Files::gameUserSettings, Groups::scalabilityGroups, CEVars.shadingQuality);
-
-    LoadSetting(Files::gameUserSettings, Groups::DBDGameUserSettings, CEVars.useVSync);
-    LoadSetting(Files::gameUserSettings, Groups::DBDGameUserSettings, CEVars.antiAliasMode);
-
+    LoadSettingInt(Files::gameUserSettings, Groups::scalabilityGroups, CEVars.resolutionQuality);
+    LoadSettingInt(Files::gameUserSettings, Groups::scalabilityGroups, CEVars.viewDistanceQuality);
+    LoadSettingInt(Files::gameUserSettings, Groups::scalabilityGroups, CEVars.antiAliasQuality);
+    LoadSettingInt(Files::gameUserSettings, Groups::scalabilityGroups, CEVars.shadowQuality);
+    LoadSettingInt(Files::gameUserSettings, Groups::scalabilityGroups, CEVars.postProcessQuality);
+    LoadSettingInt(Files::gameUserSettings, Groups::scalabilityGroups, CEVars.textureQuality);
+    LoadSettingInt(Files::gameUserSettings, Groups::scalabilityGroups, CEVars.effectsQuality);
+    LoadSettingInt(Files::gameUserSettings, Groups::scalabilityGroups, CEVars.foliageQuality);
+    LoadSettingInt(Files::gameUserSettings, Groups::scalabilityGroups, CEVars.shadingQuality);
+    
+    LoadSettingInt(Files::gameUserSettings, Groups::DBDGameUserSettings, CEVars.antiAliasMode);
+    
+    LoadSettingString(Files::gameUserSettings, Groups::DBDGameUserSettings, CEVars.useVSync);
+    LoadSettingInt(Files::gameUserSettings, Groups::DBDGameUserSettings, CEVars.antiAliasMode);
+    
     if (GetReadOnly(Files::engine))
         CEVars.engineReadOnly = true;
-
+    
     LoadSettingFind(Files::engine, CEVars.ambientOcclusion);
     LoadSettingFind(Files::engine, CEVars.ambientOcclusionStaticFraction);
     LoadSettingFind(Files::engine, CEVars.bloom);
     LoadSettingFind(Files::engine, CEVars.lensFlare);
     LoadSettingFind(Files::engine, CEVars.motionBlur);
-
-    LoadSetting(Files::gameUserSettings, Groups::DBDGameUserSettings, CEVars.windowMode);
-
-    LoadSetting(Files::gameUserSettings, Groups::DBDGameUserSettings, CEVars.resolutionWidth);
-    LoadSetting(Files::gameUserSettings, Groups::DBDGameUserSettings, CEVars.resolutionHeight);
-    LoadSetting(Files::gameUserSettings, Groups::DBDGameUserSettings, CEVars.desiredScreenWidth);
-    LoadSetting(Files::gameUserSettings, Groups::DBDGameUserSettings, CEVars.desiredScreenHeight);
-    LoadSetting(Files::gameUserSettings, Groups::DBDGameUserSettings, CEVars.fpsLimitMode);
-    LoadSetting(Files::gameUserSettings, Groups::DBDGameUserSettings, CEVars.killerFOV);
-
-    LoadSetting(Files::gameUserSettings, Groups::DBDGameUserSettings, CEVars.terrorRadiusVisual);
-    LoadSetting(Files::gameUserSettings, Groups::DBDGameUserSettings, CEVars.colorBlindMode);
-    LoadSetting(Files::gameUserSettings, Groups::DBDGameUserSettings, CEVars.colorBlindModeStrength);
-
+    
+    LoadSettingInt(Files::gameUserSettings, Groups::DBDGameUserSettings, CEVars.windowMode);
+    
+    LoadSettingInt(Files::gameUserSettings, Groups::DBDGameUserSettings, CEVars.resolutionWidth);
+    LoadSettingInt(Files::gameUserSettings, Groups::DBDGameUserSettings, CEVars.resolutionHeight);
+    LoadSettingInt(Files::gameUserSettings, Groups::DBDGameUserSettings, CEVars.desiredScreenWidth);
+    LoadSettingInt(Files::gameUserSettings, Groups::DBDGameUserSettings, CEVars.desiredScreenHeight);
+    LoadSettingInt(Files::gameUserSettings, Groups::DBDGameUserSettings, CEVars.fpsLimitMode);
+    LoadSettingInt(Files::gameUserSettings, Groups::DBDGameUserSettings, CEVars.killerFOV);
+    
+    LoadSettingString(Files::gameUserSettings, Groups::DBDGameUserSettings, CEVars.terrorRadiusVisual);
+    LoadSettingInt(Files::gameUserSettings, Groups::DBDGameUserSettings, CEVars.colorBlindMode);
+    LoadSettingInt(Files::gameUserSettings, Groups::DBDGameUserSettings, CEVars.colorBlindModeStrength);
+    
     CEVars.removeIntroCutscene =
         !std::filesystem::exists(
             Misc::GetGameRootDirectory() + Files::AdditionalLoadingScreen
         );
 
+    LoadSettingBool(Files::gameUserSettings, Groups::DBDGameUserSettings, CEVars.skipNewsPopup);
+
+    LoadSettingInt(Files::gameUserSettings, Groups::scalabilityGroups, CEVars.resolutionQuality);
+
     if (Misc::IsGameRunning())
         MessageBoxA(nullptr, "Game Is Running, Changes Won't Apply Until It Is Restarted.", "Notice...", MB_OK);
 }
 
+bool ConfigEditor::LoadSettingBool(const std::string& _file, const std::string& group,
+    std::pair<std::string, std::pair<bool, std::pair<std::string, std::string>>>& setting)
+{
+    mINI::INIStructure ini;
+    mINI::INIFile file(SettingsFolderLocation.string() + _file);
+
+    const bool readSuccess = file.read(ini);
+
+    if (GetReadOnly(_file))
+        SetReadOnly(_file, false);
+
+    setting.second.first = ini[group][setting.first] == setting.second.second.first;
+
+    if (CEVars.engineReadOnly)
+        SetReadOnly(_file, true);
+
+    return readSuccess;
+}
+
+bool ConfigEditor::LoadSettingInt(const std::string& _file, const std::string& group,
+                                  std::pair<std::string, int>& setting)
+{
+    mINI::INIStructure ini;
+    mINI::INIFile file(SettingsFolderLocation.string() + _file);
+    
+    const bool readSuccess = file.read(ini);
+    
+    if (GetReadOnly(_file))
+        SetReadOnly(_file, false);
+    
+    setting.second = std::atoi(ini[group][setting.first].c_str());
+    
+    if (CEVars.engineReadOnly)
+        SetReadOnly(_file, true);
+    
+    return readSuccess;
+}
+
+bool ConfigEditor::LoadSettingString(const std::string& _file, const std::string& group,
+    std::pair<std::string, std::string>& setting)
+{
+    mINI::INIStructure ini;
+    mINI::INIFile file(SettingsFolderLocation.string() + _file);
+
+    const bool readSuccess = file.read(ini);
+
+    if (GetReadOnly(_file))
+        SetReadOnly(_file, false);
+    
+    setting.second = ini[group][setting.first];
+
+    if (CEVars.engineReadOnly)
+        SetReadOnly(_file, true);
+
+    return readSuccess;
+}
+
+bool ConfigEditor::LoadSettingFind(const std::string& _file, std::pair<std::string, int>& setting, bool invertValue)
+{
+    std::ifstream file(SettingsFolderLocation.string() + _file);
+    
+    std::string line;
+    while (std::getline(file, line))
+    {
+        if (line.find(setting.first + "=") != std::string::npos)
+        {
+            setting.second = invertValue ? 0 : 1;
+            return true;
+        }
+    }
+    
+    setting.second = invertValue ? 1 : 0;
+    return true;
+}
+
+bool ConfigEditor::LoadSettingFind(const std::string& _file, std::pair<std::string, std::string>& setting, bool invertValue)
+{
+    std::ifstream file(SettingsFolderLocation.string() + _file);
+    
+    std::string line;
+    while (std::getline(file, line))
+    {
+        if (line.find(setting.first + "=") != std::string::npos)
+        {
+            setting.second = invertValue ? vFalse : vTrue;
+            return true;
+        }
+    }
+    
+    setting.second = invertValue ? vTrue : vFalse;
+    return true;
+}
 
 bool ConfigEditor::CopyConfig()
 {
@@ -192,69 +290,6 @@ bool ConfigEditor::ImportConfig()
     return true;
 }
 
-bool ConfigEditor::LoadSetting(const std::string& _file, const std::string& group, std::pair<std::string, int>& setting)
-{
-    mINI::INIFile file(SettingsFolderLocation.string() + _file);
-    mINI::INIStructure ini;
-
-    const bool readSuccess = file.read(ini);
-
-    if (readSuccess)
-        setting.second = std::atoi(ini[group][setting.first].c_str());
-
-    return readSuccess;
-}
-
-bool ConfigEditor::LoadSetting(const std::string& _file, const std::string& group,
-                               std::pair<std::string, std::string>& setting)
-{
-    mINI::INIFile file(SettingsFolderLocation.string() + _file);
-    mINI::INIStructure ini;
-
-    const bool readSuccess = file.read(ini);
-
-    if (readSuccess)
-        setting.second = ini[group][setting.first];
-
-    return readSuccess;
-}
-
-bool ConfigEditor::LoadSettingFind(const std::string& _file, std::pair<std::string, int>& setting)
-{
-    std::ifstream file(SettingsFolderLocation.string() + _file);
-
-    std::string line;
-    while (std::getline(file, line))
-    {
-        if (line.find(setting.first + "=") != std::string::npos)
-        {
-            setting.second = 0;
-            return true;
-        }
-    }
-
-    setting.second = 1;
-    return true;
-}
-
-bool ConfigEditor::LoadSettingFind(const std::string& _file, std::pair<std::string, std::string>& setting)
-{
-    std::ifstream file(SettingsFolderLocation.string() + _file);
-
-    std::string line;
-    while (std::getline(file, line))
-    {
-        if (line.find(setting.first + "=") != std::string::npos)
-        {
-            setting.second = vFalse;
-            return true;
-        }
-    }
-
-    setting.second = vTrue;
-    return true;
-}
-
 bool ConfigEditor::SetReadOnly(const std::string& file, const bool value)
 {
     DWORD attributes = GetFileAttributesA((SettingsFolderLocation.string() + file).c_str());
@@ -308,6 +343,30 @@ bool ConfigEditor::ChangeValue(std::string _file, std::string group, std::pair<s
     return writeSuccess;
 }
 
+bool ConfigEditor::ChangeValue(std::string _file, std::string group,
+    std::pair<std::string, std::pair<bool, std::pair<std::string, std::string>>> boolSetting)
+{
+    if (GetReadOnly(_file))
+        SetReadOnly(_file, false);
+
+    mINI::INIFile file(SettingsFolderLocation.string() + _file);
+
+    mINI::INIStructure ini;
+
+    file.read(ini);
+
+    if (boolSetting.second.first)
+        ini[group][boolSetting.first] = boolSetting.second.second.first;
+    else ini[group][boolSetting.first] = boolSetting.second.second.second;
+
+    bool writeSuccess = file.write(ini);
+
+    if (CEVars.engineReadOnly)
+        SetReadOnly(_file, true);
+
+    return writeSuccess;
+}
+
 bool ConfigEditor::RemoveValue(std::string _file, std::string group, std::pair<std::string, int> intSetting)
 {
     return RemoveValue(_file, group, std::pair(intSetting.first, std::to_string(intSetting.second)));
@@ -325,27 +384,6 @@ bool ConfigEditor::RemoveValue(std::string _file, std::string group, std::pair<s
     file.read(ini);
 
     bool removed = ini[group].remove(stringSetting.first);
-
-    file.write(ini);
-
-    if (CEVars.engineReadOnly)
-        SetReadOnly(_file, true);
-
-    return removed;
-}
-
-bool ConfigEditor::RemoveGroup(std::string _file, std::string group)
-{
-    if (GetReadOnly(_file))
-        SetReadOnly(_file, false);
-
-    mINI::INIFile file(SettingsFolderLocation.string() + _file);
-
-    mINI::INIStructure ini;
-
-    file.read(ini);
-
-    const bool removed = ini.remove(group);
 
     file.write(ini);
 
