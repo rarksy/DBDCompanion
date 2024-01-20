@@ -56,8 +56,8 @@ void Misc::RestartGame(bool dx12)
         }
     }
 
-    std::string renderApi = dx12 ? " -DX12\"" : "\"";
-    std::string runString = "\"steam://rungameid/381210" + renderApi;
+    std::string renderApi = dx12 ? " -DX12" : "";
+    std::string runString = "steam://rungameid/381210" + renderApi;
 
     ShellExecuteA(NULL, "open", runString.c_str(), NULL, NULL, SW_SHOWDEFAULT);
 }
