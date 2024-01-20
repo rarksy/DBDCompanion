@@ -11,8 +11,8 @@
 void HCMenu::Setup()
 {
     ConfigEditor::InitializeConfig();
-    ConfigEditor::LoadSetting(ConfigEditor::Files::gameUserSettings, ConfigEditor::Groups::DBDGameUserSettings, HCVars.MenuScaleFactor);
-    ConfigEditor::LoadSetting(ConfigEditor::Files::gameUserSettings, ConfigEditor::Groups::DBDGameUserSettings, HCVars.HudScaleFactor);
+    ConfigEditor::LoadSettingInt(ConfigEditor::Files::gameUserSettings, ConfigEditor::Groups::DBDGameUserSettings, HCVars.MenuScaleFactor);
+    ConfigEditor::LoadSettingInt(ConfigEditor::Files::gameUserSettings, ConfigEditor::Groups::DBDGameUserSettings, HCVars.HudScaleFactor);
 }
 
 void HCMenu::RenderUI()
