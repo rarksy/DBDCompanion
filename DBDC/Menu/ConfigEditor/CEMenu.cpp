@@ -355,18 +355,11 @@ void CEMenu::RenderUI()
     
     ImGui::SeparatorText("Other");
     
-    if (ImGui::Button("Restart Game"))
-        Misc::RestartGame();
-    GUI::ToolTip("Will close and reopen Dead By Daylight to apply any changed settings.");
     
-    ImGui::SameLine();
     //if (ImGui::Button("Start In DX12")) // doesnt actually work, malding
         //Misc::RestartGame(true);
     //GUI::ToolTip("Will close and reopen Dead By Daylight Using DirectX 12.\nThis will also apply any changed settings.");
-    
-    if (ImGui::Button("Open Folder"))
-        Misc::OpenSettingsFolder();
-    //
+
     if (ImGui::Button("Copy Settings"))
         ConfigEditor::CopyConfig();
     
@@ -374,6 +367,15 @@ void CEMenu::RenderUI()
     
     if (ImGui::Button("Import Settings"))
         ConfigEditor::ImportConfig();
+    
+    if (ImGui::Button("Open Folder"))
+        Misc::OpenSettingsFolder();
+
+    ImGui::SameLine();
+
+    if (ImGui::Button("Restart Game"))
+        Misc::RestartGame();
+    GUI::ToolTip("Will close and reopen Dead By Daylight to apply any changed settings.");
 }
 
 inline ImVec4 RGBToImVec4(int r, int g, int b, int a = 255)

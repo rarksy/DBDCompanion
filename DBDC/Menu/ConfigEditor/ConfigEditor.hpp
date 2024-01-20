@@ -1,6 +1,8 @@
 ﻿#pragma once
 #include <filesystem>
 
+#include "mINI/ini.h"
+
 #define vFalse std::string("False")
 #define vTrue std::string("True")
 
@@ -8,8 +10,6 @@ namespace ConfigEditor
 {
     bool InitializeConfig();
     void LoadConfig();
-    bool CopyConfig();
-    bool ImportConfig();
 
     bool LoadSettingBool(const std::string& _file, const std::string& group, std::pair<std::string, std::pair<bool, std::pair<std::string, std::string>>>& setting);
     bool LoadSettingInt(const std::string& _file, const std::string& group, std::pair<std::string, int>& setting);
@@ -98,6 +98,14 @@ namespace ConfigEditor
         
         bool removeIntroCutscene = false;
     };
+
+    bool CopyConfig();
+    bool ImportConfig();
+    void ImportSettingInt(mINI::INIStructure& ini, mINI::INIStructure& importedIni, std::string group, std::pair<std::string, int> setting);
+    void ImportSettingString(mINI::INIStructure& ini, mINI::INIStructure& importedIni, std::string group, std::pair<std::string, std::string> setting);
+    void ImportSettingBool(mINI::INIStructure& ini, mINI::INIStructure& importedIni, std::string group, std::pair<std::string, std::pair<bool, std::pair<std::string, std::string>>> setting);
+    void ImportSettingFindString(mINI::INIStructure& ini, mINI::INIStructure& importedIni, std::string group, std::pair<std::string, std::string> setting, std
+                                 ::string file = Files::gameUserSettings);
 };
 
 inline ConfigEditor::Variables CEVars;
