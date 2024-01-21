@@ -5,19 +5,19 @@ DBDC is in early access and still has a long road of updates, features and suppo
 **DBDC is entirely free to use**, although any support is greatly appreciated!  
 # Config Editor
 
-![image](https://github.com/rarksy/DBDCompanion/assets/70506725/1fa7ee2c-0c28-4ede-8007-13b70bf6e294)
+![image](https://github.com/rarksy/DBDCompanion/assets/70506725/1fa7ee2c-0c28-4ede-8007-13b70bf6e294)  
 
 The config editor features the most extensive range of options that allow you to customize the look and graphical fidelity of your game to your liking!  
 The config editor is always being updated and plans to feature things i **didn't even know were possible** until looking into them recently ;) stay tuned for that!
 
 # Crosshair Overlay
-![image](https://github.com/rarksy/DBDCompanion/assets/70506725/bc07b9c3-5cc9-42c8-b62e-88a18b992188)
+![image](https://github.com/rarksy/DBDCompanion/assets/70506725/bc07b9c3-5cc9-42c8-b62e-88a18b992188)  
 
 A basic crosshair overlay allowing you to use and customize a crosshair in game!  
 The crosshair overlay is always open to suggestions for features and other ideas.
 
 # Hook Counter
-![image](https://github.com/rarksy/DBDCompanion/assets/70506725/4ef4f359-3127-4250-95da-a20b6913537b)
+![image](https://github.com/rarksy/DBDCompanion/assets/70506725/4ef4f359-3127-4250-95da-a20b6913537b)  
 The hook counter uses image recognition to detect when a survivor has been hooked, when a detection is made a pip icon will be rendered next to the corresponding survivors portrait just like when you're playing survivor!  
 This part of DBDC is still in prototype alpha so it is not polished and WILL contain bugs.  
 
