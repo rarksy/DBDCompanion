@@ -44,6 +44,7 @@
     <ClInclude Include="Dependencies\Images\AntiAliasing\Off.hpp" />
     <ClInclude Include="Dependencies\Images\AntiAliasing\On.hpp" />
     <ClInclude Include="Dependencies\Images\HookCounter\Hook.hpp" />
+    <ClInclude Include="Dependencies\Images\HookCounter\pip.hpp" />
     <ClInclude Include="Dependencies\Images\HookCounter\Stage2.hpp" />
     <ClInclude Include="Dependencies\Images\Icons\ConfigEditor.hpp" />
     <ClInclude Include="Dependencies\Images\Images.h" />
