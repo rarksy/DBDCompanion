@@ -4,6 +4,7 @@
 
 #include "ImGui/imgui.h"
 #include <opencv2/opencv.hpp>
+#include <GLFW/glfw3.h>
 
 namespace HookCounter
 {
@@ -32,6 +33,7 @@ namespace HookCounter
     {
         inline std::vector<ImVec2> survivorLocationsStage1;
         inline std::vector<ImVec2> survivorLocationsStage2;
+        inline GLuint pipIconTexture;
     };
 }
 
