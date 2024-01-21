@@ -1,5 +1,4 @@
 ﻿#include "CEMenu.hpp"
-
 #include "../Menu.h"
 #include "../Misc/Misc.hpp"
 #include "../GUI/GUI.h"
@@ -43,8 +42,6 @@ bool CEMenu::Setup()
     Images::LoadTextureFromMemory(textureQualityUltraRawData, sizeof textureQualityUltraRawData,
                                   &Image::TextureQuality::textureUltra);
 
-    CEMenu::isSetup = true;
-    
     return true;
 }
 
@@ -125,7 +122,7 @@ void CEMenu::RenderUI()
     ImGui::NextColumn();
     
     ImGui::SeparatorText("Rendering");
-    GUI::ToolTip("Features settings that modify the way the game renders.");
+    GUI::ToolTip("Features settings that affect the way the game renders.");
     
     if (GUI::StringCheckbox("VSync", CEVars.useVSync))
         ConfigEditor::ChangeValue(ConfigEditor::Files::gameUserSettings, ConfigEditor::Groups::DBDGameUserSettings,
@@ -257,6 +254,7 @@ void CEMenu::RenderUI()
     ImGui::NextColumn();
     
     ImGui::SeparatorText("Misc");
+    GUI::ToolTip("Features settings that affect the user experience.");
     
     if (GUI::DropDownBox("Window Mode", windowModes, CEVars.windowMode))
         ConfigEditor::ChangeValue(ConfigEditor::Files::gameUserSettings, ConfigEditor::Groups::DBDGameUserSettings,
@@ -306,6 +304,7 @@ void CEMenu::RenderUI()
     if (GUI::Slider("Killer FOV", CEVars.killerFOV, 87, 103, false))
         ConfigEditor::ChangeValue(ConfigEditor::Files::gameUserSettings, ConfigEditor::Groups::DBDGameUserSettings,
                                   CEVars.killerFOV);
+    GUI::ToolTip("Changes the FOV used for 1st person killers.");
     
     if (ImGui::Checkbox("Remove Intro Cutscene", &CEVars.removeIntroCutscene))
     {
@@ -336,10 +335,13 @@ void CEMenu::RenderUI()
             }
         }
     }
+    GUI::ToolTip("Skips the cutscene that plays after launching the game.");
+    
     if (GUI::boolCheckbox("Skip News Popup", CEVars.skipNewsPopup))
     {
         ConfigEditor::ChangeValue(ConfigEditor::Files::gameUserSettings, ConfigEditor::Groups::DBDGameUserSettings, CEVars.skipNewsPopup);
     }
+    GUI::ToolTip("Disables the news popup that appears after launching the game.");
     
     ImGui::SeparatorText("Accessibility");
     
@@ -349,9 +351,11 @@ void CEMenu::RenderUI()
     
     if (GUI::DropDownBox("Colorblind Mode", colorBlindModes, CEVars.colorBlindMode))
         ConfigEditor::ChangeValue(ConfigEditor::Files::gameUserSettings, ConfigEditor::Groups::DBDGameUserSettings, CEVars.colorBlindMode);
+    GUI::ToolTip("Adjusts the games color pallet.");
     
     if (GUI::Slider("Colorblind Strength", CEVars.colorBlindModeStrength, 0, 100))
         ConfigEditor::ChangeValue(ConfigEditor::Files::gameUserSettings, ConfigEditor::Groups::DBDGameUserSettings, CEVars.colorBlindModeStrength);
+    GUI::ToolTip("Adjusts the strength of the changed color pallet.");
     
     ImGui::SeparatorText("Other");
     
@@ -362,11 +366,13 @@ void CEMenu::RenderUI()
 
     if (ImGui::Button("Copy Settings"))
         ConfigEditor::CopyConfig();
+    GUI::ToolTip("Will copy your settings to clipboard, you can send it to anyone else using DBDC.");
     
     ImGui::SameLine();
     
     if (ImGui::Button("Import Settings"))
         ConfigEditor::ImportConfig();
+    GUI::ToolTip("Will import settings copied to clipboard.");
     
     if (ImGui::Button("Open Folder"))
         Misc::OpenSettingsFolder();
