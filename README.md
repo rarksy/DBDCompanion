@@ -1,7 +1,7 @@
 # Dead By Daylight Companion
 The Dead By Daylight Companion (DBDC) is a program i created to assist with DBD's sub-par features regarding accessibility/ease of access.  
 The goal of this project is to provide a simple and intuitive way to use commonly requested features that usually require alot of effort / multiple other programs.  
-DBDCE is in early access and still has a long road of updates, features and support to go.  
+DBDC is in early access and still has a long road of updates, features and support to go.  
 **DBDC is entirely free to use**, although any support is greatly appreciated!  
 # Config Editor
 
