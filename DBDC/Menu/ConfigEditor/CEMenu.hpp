@@ -5,8 +5,6 @@
 
 namespace CEMenu
 {
-    inline bool isSetup = false;
-    
     bool Setup();
     void RenderUI();
     void CreateStyle();
