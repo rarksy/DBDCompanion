@@ -5,7 +5,6 @@
 #include "../Crosshair/Crosshair.h"
 #include "../GUI/GUI.h"
 #include "HookCounter.h"
-#include "../ConfigEditor/CEMenu.hpp"
 #include "../ConfigEditor/ConfigEditor.hpp"
 
 void HCMenu::Setup()
