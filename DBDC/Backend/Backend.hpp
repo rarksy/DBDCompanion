@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include <filesystem>
 #include <GLFW/glfw3.h>
 #include "ImGui/imgui_internal.h"
 
@@ -16,4 +17,5 @@ namespace Backend
 
     inline int screenWidth;
     inline int screenHeight;
+    inline std::filesystem::path exeDirectory;
 }

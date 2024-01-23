@@ -12,26 +12,32 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
 {
     if (!Backend::InitGLFW())
         return -1;
-    
+
     Backend::screenWidth = GetSystemMetrics(SM_CXSCREEN);
     Backend::screenHeight = GetSystemMetrics(SM_CYSCREEN);
-    
+
     Menu::Overlay::windowWidth = Backend::screenWidth;
     Menu::Overlay::windowHeight = Backend::screenHeight;
-    
+
+    char pathBuffer[MAX_PATH];
+    GetModuleFileNameA(NULL, pathBuffer, MAX_PATH);
+    const std::filesystem::path exePath(pathBuffer);
+
+    Backend::exeDirectory = exePath.parent_path();
+
     Menu::mainWindow = Backend::SetupWindow("Dead By Daylight Companion", Menu::Styling::menuWidth,
                                             Menu::Styling::menuHeight);
-    
+
     if (!Menu::mainWindow)
         return -1;
-    
-    
+
+
     Backend::SetupImGui(Menu::mainWindow, Menu::mainContext);
-    
+
     Images::LoadTextureFromMemory(configEditorIconRawData, sizeof configEditorIconRawData, &Menu::Icons::ConfigEditor);
-    
+
     Menu::RunLoop();
-    
+
     if (Menu::Overlay::window != nullptr)
     {
         Menu::Overlay::DestroyOverlay();
@@ -40,18 +46,16 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
         ImGui_ImplOpenGL3_Shutdown();
         ImGui::DestroyContext(Menu::Overlay::context);
     }
-    
+
     ImGui::SetCurrentContext(Menu::mainContext);
-    
+
     ImGui_ImplGlfw_Shutdown();
     ImGui_ImplOpenGL3_Shutdown();
     ImGui::DestroyContext(Menu::mainContext);
-    
+
     glfwDestroyWindow(Menu::mainWindow);
-    
+
     glfwTerminate();
-    
+
     return 0;
 }
-        
-       
