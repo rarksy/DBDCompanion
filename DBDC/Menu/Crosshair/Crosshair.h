@@ -54,16 +54,19 @@ namespace Crosshair
     namespace ProfileHandling
     {
         inline int currentSelectedProfile = -1;
+        inline int loadedProfile = -1;
         inline std::string profileFolder = "\\Crosshair Profiles\\";
         inline std::vector<std::string> allProfiles;
         inline std::string selectedProfileName;
+        inline std::string loadedProfileName;
     }
 
     inline bool CheckProfileDirectory()
     {
         if (!std::filesystem::exists(Backend::exeDirectory.string() + ProfileHandling::profileFolder))
         {
-            const bool directoryCreated = std::filesystem::create_directory(Backend::exeDirectory.string() + ProfileHandling::profileFolder);
+            const bool directoryCreated = std::filesystem::create_directory(
+                Backend::exeDirectory.string() + ProfileHandling::profileFolder);
 
             return directoryCreated;
         }
@@ -73,7 +76,7 @@ namespace Crosshair
     inline void ReloadProfiles()
     {
         CheckProfileDirectory();
-        
+
         for (int i = 0; i < ProfileHandling::allProfiles.size(); i++)
         {
             const auto profile = ProfileHandling::allProfiles[i];
@@ -86,7 +89,8 @@ namespace Crosshair
             }
         }
 
-        for (const auto& entry : std::filesystem::directory_iterator(Backend::exeDirectory.string() + ProfileHandling::profileFolder))
+        for (const auto& entry : std::filesystem::directory_iterator(
+                 Backend::exeDirectory.string() + ProfileHandling::profileFolder))
         {
             if (entry.path().has_extension())
                 continue;
@@ -145,6 +149,10 @@ namespace Crosshair
         if (!removed)
             return false;
 
+        if (ProfileHandling::loadedProfileName == ProfileHandling::selectedProfileName)
+            ProfileHandling::loadedProfileName = "";
+
+
         ProfileHandling::selectedProfileName = "";
         ProfileHandling::currentSelectedProfile = -1;
 
@@ -152,11 +160,12 @@ namespace Crosshair
 
         return true;
     }
-    
-    template<typename T>
+
+    template <typename T>
     bool SaveProfile(std::string fileName, T& cfg)
     {
-        std::ofstream filePath(Backend::exeDirectory.string() + ProfileHandling::profileFolder + fileName, std::ios::binary);
+        std::ofstream filePath(Backend::exeDirectory.string() + ProfileHandling::profileFolder + fileName,
+                               std::ios::binary);
 
         if (!filePath.is_open())
         {
@@ -173,16 +182,18 @@ namespace Crosshair
     template <typename T>
     bool LoadProfile(std::string fileName, T& cfg)
     {
-        std::ifstream file(Backend::exeDirectory.string() + ProfileHandling::profileFolder + fileName, std::ios::binary);
+        std::ifstream file(Backend::exeDirectory.string() + ProfileHandling::profileFolder + fileName,
+                           std::ios::binary);
 
         if (!file)
-        {
-            std::cerr << "Failed to open file for reading" << std::endl;
             return false;
-        }
+
 
         file.read(reinterpret_cast<char*>(&cfg), sizeof(T));
         file.close();
+
+        ProfileHandling::loadedProfile = ProfileHandling::currentSelectedProfile;
+        ProfileHandling::loadedProfileName = ProfileHandling::selectedProfileName;
 
         return true;
     }
