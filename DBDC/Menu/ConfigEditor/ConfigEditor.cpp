@@ -72,20 +72,20 @@ bool ConfigEditor::InitializeConfig()
 
 void ConfigEditor::LoadConfig()
 {
-    LoadSettingInt(Files::gameUserSettings, Groups::scalabilityGroups, CEVars.resolutionQuality);
-    LoadSettingInt(Files::gameUserSettings, Groups::scalabilityGroups, CEVars.viewDistanceQuality);
-    LoadSettingInt(Files::gameUserSettings, Groups::scalabilityGroups, CEVars.antiAliasQuality);
-    LoadSettingInt(Files::gameUserSettings, Groups::scalabilityGroups, CEVars.shadowQuality);
-    LoadSettingInt(Files::gameUserSettings, Groups::scalabilityGroups, CEVars.postProcessQuality);
-    LoadSettingInt(Files::gameUserSettings, Groups::scalabilityGroups, CEVars.textureQuality);
-    LoadSettingInt(Files::gameUserSettings, Groups::scalabilityGroups, CEVars.effectsQuality);
-    LoadSettingInt(Files::gameUserSettings, Groups::scalabilityGroups, CEVars.foliageQuality);
-    LoadSettingInt(Files::gameUserSettings, Groups::scalabilityGroups, CEVars.shadingQuality);
+    LoadSettingInt(Files::gameUserSettings, Sections::scalabilityGroups, CEVars.resolutionQuality);
+    LoadSettingInt(Files::gameUserSettings, Sections::scalabilityGroups, CEVars.viewDistanceQuality);
+    LoadSettingInt(Files::gameUserSettings, Sections::scalabilityGroups, CEVars.antiAliasQuality);
+    LoadSettingInt(Files::gameUserSettings, Sections::scalabilityGroups, CEVars.shadowQuality);
+    LoadSettingInt(Files::gameUserSettings, Sections::scalabilityGroups, CEVars.postProcessQuality);
+    LoadSettingInt(Files::gameUserSettings, Sections::scalabilityGroups, CEVars.textureQuality);
+    LoadSettingInt(Files::gameUserSettings, Sections::scalabilityGroups, CEVars.effectsQuality);
+    LoadSettingInt(Files::gameUserSettings, Sections::scalabilityGroups, CEVars.foliageQuality);
+    LoadSettingInt(Files::gameUserSettings, Sections::scalabilityGroups, CEVars.shadingQuality);
 
-    LoadSettingInt(Files::gameUserSettings, Groups::DBDGameUserSettings, CEVars.antiAliasMode);
+    LoadSettingInt(Files::gameUserSettings, Sections::DBDGameUserSettings, CEVars.antiAliasMode);
 
-    LoadSettingString(Files::gameUserSettings, Groups::DBDGameUserSettings, CEVars.useVSync);
-    LoadSettingInt(Files::gameUserSettings, Groups::DBDGameUserSettings, CEVars.antiAliasMode);
+    LoadSettingString(Files::gameUserSettings, Sections::DBDGameUserSettings, CEVars.useVSync);
+    LoadSettingInt(Files::gameUserSettings, Sections::DBDGameUserSettings, CEVars.antiAliasMode);
 
     if (GetReadOnly(Files::engine))
         CEVars.engineReadOnly = true;
@@ -96,27 +96,27 @@ void ConfigEditor::LoadConfig()
     LoadSettingFind(Files::engine, CEVars.lensFlare, true);
     LoadSettingFind(Files::engine, CEVars.motionBlur, true);
 
-    LoadSettingInt(Files::gameUserSettings, Groups::DBDGameUserSettings, CEVars.windowMode);
+    LoadSettingInt(Files::gameUserSettings, Sections::DBDGameUserSettings, CEVars.windowMode);
 
-    LoadSettingInt(Files::gameUserSettings, Groups::DBDGameUserSettings, CEVars.resolutionWidth);
-    LoadSettingInt(Files::gameUserSettings, Groups::DBDGameUserSettings, CEVars.resolutionHeight);
-    LoadSettingInt(Files::gameUserSettings, Groups::DBDGameUserSettings, CEVars.desiredScreenWidth);
-    LoadSettingInt(Files::gameUserSettings, Groups::DBDGameUserSettings, CEVars.desiredScreenHeight);
-    LoadSettingInt(Files::gameUserSettings, Groups::DBDGameUserSettings, CEVars.fpsLimitMode);
-    LoadSettingInt(Files::gameUserSettings, Groups::DBDGameUserSettings, CEVars.killerFOV);
+    LoadSettingInt(Files::gameUserSettings, Sections::DBDGameUserSettings, CEVars.resolutionWidth);
+    LoadSettingInt(Files::gameUserSettings, Sections::DBDGameUserSettings, CEVars.resolutionHeight);
+    LoadSettingInt(Files::gameUserSettings, Sections::DBDGameUserSettings, CEVars.desiredScreenWidth);
+    LoadSettingInt(Files::gameUserSettings, Sections::DBDGameUserSettings, CEVars.desiredScreenHeight);
+    LoadSettingInt(Files::gameUserSettings, Sections::DBDGameUserSettings, CEVars.fpsLimitMode);
+    LoadSettingInt(Files::gameUserSettings, Sections::DBDGameUserSettings, CEVars.killerFOV);
 
-    LoadSettingString(Files::gameUserSettings, Groups::DBDGameUserSettings, CEVars.terrorRadiusVisual);
-    LoadSettingInt(Files::gameUserSettings, Groups::DBDGameUserSettings, CEVars.colorBlindMode);
-    LoadSettingInt(Files::gameUserSettings, Groups::DBDGameUserSettings, CEVars.colorBlindModeStrength);
+    LoadSettingString(Files::gameUserSettings, Sections::DBDGameUserSettings, CEVars.terrorRadiusVisual);
+    LoadSettingInt(Files::gameUserSettings, Sections::DBDGameUserSettings, CEVars.colorBlindMode);
+    LoadSettingInt(Files::gameUserSettings, Sections::DBDGameUserSettings, CEVars.colorBlindModeStrength);
 
     CEVars.removeIntroCutscene =
         !std::filesystem::exists(
             Misc::GetGameRootDirectory() + Files::AdditionalLoadingScreen
         );
 
-    LoadSettingBool(Files::gameUserSettings, Groups::DBDGameUserSettings, CEVars.skipNewsPopup);
+    LoadSettingBool(Files::gameUserSettings, Sections::DBDGameUserSettings, CEVars.skipNewsPopup);
 
-    LoadSettingInt(Files::gameUserSettings, Groups::scalabilityGroups, CEVars.resolutionQuality);
+    LoadSettingInt(Files::gameUserSettings, Sections::scalabilityGroups, CEVars.resolutionQuality);
 
     if (Misc::IsGameRunning())
         MessageBoxA(nullptr, "Game Is Running, Changes Won't Apply Until It Is Restarted.", "Notice...", MB_OK);
@@ -305,36 +305,36 @@ bool ConfigEditor::ImportConfig()
     mINI::INIFile engine(SettingsFolderLocation.string() + Files::engine);
     engine.read(engineIni);
 
-    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Groups::scalabilityGroups, CEVars.resolutionQuality);
-    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Groups::scalabilityGroups, CEVars.viewDistanceQuality);
-    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Groups::scalabilityGroups, CEVars.antiAliasQuality);
-    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Groups::scalabilityGroups, CEVars.shadowQuality);
-    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Groups::scalabilityGroups, CEVars.postProcessQuality);
-    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Groups::scalabilityGroups, CEVars.textureQuality);
-    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Groups::scalabilityGroups, CEVars.effectsQuality);
-    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Groups::scalabilityGroups, CEVars.foliageQuality);
-    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Groups::scalabilityGroups, CEVars.shadingQuality);
+    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Sections::scalabilityGroups, CEVars.resolutionQuality);
+    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Sections::scalabilityGroups, CEVars.viewDistanceQuality);
+    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Sections::scalabilityGroups, CEVars.antiAliasQuality);
+    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Sections::scalabilityGroups, CEVars.shadowQuality);
+    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Sections::scalabilityGroups, CEVars.postProcessQuality);
+    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Sections::scalabilityGroups, CEVars.textureQuality);
+    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Sections::scalabilityGroups, CEVars.effectsQuality);
+    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Sections::scalabilityGroups, CEVars.foliageQuality);
+    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Sections::scalabilityGroups, CEVars.shadingQuality);
 
-    ImportSettingString(gameUserSettingsIni, importedGameUserSettingsIni, Groups::DBDGameUserSettings, CEVars.useVSync);
-    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Groups::DBDGameUserSettings, CEVars.antiAliasMode);
+    ImportSettingString(gameUserSettingsIni, importedGameUserSettingsIni, Sections::DBDGameUserSettings, CEVars.useVSync);
+    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Sections::DBDGameUserSettings, CEVars.antiAliasMode);
 
-    ImportSettingFindString(engineIni, importedEngineIni, Groups::rendererOverrideSettings, CEVars.ambientOcclusion, Files::engine);
-    ImportSettingFindString(engineIni, importedEngineIni, Groups::rendererOverrideSettings, CEVars.ambientOcclusionStaticFraction, Files::engine);
-    ImportSettingFindString(engineIni, importedEngineIni, Groups::rendererOverrideSettings, CEVars.bloom, Files::engine);
-    ImportSettingFindString(engineIni, importedEngineIni, Groups::rendererOverrideSettings, CEVars.lensFlare, Files::engine);
-    ImportSettingFindString(engineIni, importedEngineIni, Groups::rendererOverrideSettings, CEVars.motionBlur, Files::engine);
+    ImportSettingFindString(engineIni, importedEngineIni, Sections::rendererOverrideSettings, CEVars.ambientOcclusion, Files::engine);
+    ImportSettingFindString(engineIni, importedEngineIni, Sections::rendererOverrideSettings, CEVars.ambientOcclusionStaticFraction, Files::engine);
+    ImportSettingFindString(engineIni, importedEngineIni, Sections::rendererOverrideSettings, CEVars.bloom, Files::engine);
+    ImportSettingFindString(engineIni, importedEngineIni, Sections::rendererOverrideSettings, CEVars.lensFlare, Files::engine);
+    ImportSettingFindString(engineIni, importedEngineIni, Sections::rendererOverrideSettings, CEVars.motionBlur, Files::engine);
 
-    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Groups::DBDGameUserSettings, CEVars.windowMode);
-    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Groups::DBDGameUserSettings, CEVars.resolutionWidth);
-    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Groups::DBDGameUserSettings, CEVars.resolutionHeight);
-    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Groups::DBDGameUserSettings, CEVars.fpsLimitMode);
-    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Groups::DBDGameUserSettings, CEVars.killerFOV);
+    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Sections::DBDGameUserSettings, CEVars.windowMode);
+    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Sections::DBDGameUserSettings, CEVars.resolutionWidth);
+    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Sections::DBDGameUserSettings, CEVars.resolutionHeight);
+    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Sections::DBDGameUserSettings, CEVars.fpsLimitMode);
+    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Sections::DBDGameUserSettings, CEVars.killerFOV);
     
-    ImportSettingBool(gameUserSettingsIni, importedGameUserSettingsIni, Groups::DBDGameUserSettings, CEVars.skipNewsPopup);
+    ImportSettingBool(gameUserSettingsIni, importedGameUserSettingsIni, Sections::DBDGameUserSettings, CEVars.skipNewsPopup);
 
-    ImportSettingString(gameUserSettingsIni, importedGameUserSettingsIni, Groups::DBDGameUserSettings, CEVars.terrorRadiusVisual);
-    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Groups::DBDGameUserSettings, CEVars.colorBlindMode);
-    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Groups::DBDGameUserSettings, CEVars.colorBlindModeStrength);
+    ImportSettingString(gameUserSettingsIni, importedGameUserSettingsIni, Sections::DBDGameUserSettings, CEVars.terrorRadiusVisual);
+    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Sections::DBDGameUserSettings, CEVars.colorBlindMode);
+    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Sections::DBDGameUserSettings, CEVars.colorBlindModeStrength);
 
     if (GetReadOnly(Files::gameUserSettings))
         SetReadOnly(Files::gameUserSettings, false);
@@ -421,20 +421,18 @@ bool ConfigEditor::ChangeValue(std::string _file, std::string group, std::pair<s
     return ChangeValue(_file, group, std::pair(intSetting.first, std::to_string(intSetting.second)));
 }
 
-bool ConfigEditor::ChangeValue(std::string _file, std::string group, std::pair<std::string, std::string> stringSetting)
+bool ConfigEditor::ChangeValue(std::string _file, std::string section, std::pair<std::string, std::string> stringSetting)
 {
     if (GetReadOnly(_file))
         SetReadOnly(_file, false);
 
     mINI::INIFile file(SettingsFolderLocation.string() + _file);
-
     mINI::INIStructure ini;
-
     file.read(ini);
 
-    ini[group][stringSetting.first] = stringSetting.second;
-
-    bool writeSuccess = file.write(ini);
+    ini[section][stringSetting.first] = stringSetting.second;
+    
+    bool writeSuccess = file.write(ini, true);
 
     if (CEVars.engineReadOnly)
         SetReadOnly(_file, true);
@@ -449,9 +447,7 @@ bool ConfigEditor::ChangeValue(std::string _file, std::string group,
         SetReadOnly(_file, false);
 
     mINI::INIFile file(SettingsFolderLocation.string() + _file);
-
     mINI::INIStructure ini;
-
     file.read(ini);
 
     if (boolSetting.second.first)
@@ -477,9 +473,7 @@ bool ConfigEditor::RemoveValue(std::string _file, std::string group, std::pair<s
         SetReadOnly(_file, false);
 
     mINI::INIFile file(SettingsFolderLocation.string() + _file);
-
     mINI::INIStructure ini;
-
     file.read(ini);
 
     bool removed = ini[group].remove(stringSetting.first);

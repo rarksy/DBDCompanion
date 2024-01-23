@@ -24,7 +24,7 @@ namespace ConfigEditor
     inline std::filesystem::path SettingsFolderLocation;
     
     bool ChangeValue(std::string _file, std::string group, std::pair<std::string, int> intSetting);
-    bool ChangeValue(std::string _file, std::string group, std::pair<std::string, std::string> stringSetting);
+    bool ChangeValue(std::string _file, std::string section, std::pair<std::string, std::string> stringSetting);
     bool ChangeValue(std::string _file, std::string group, std::pair<std::string, std::pair<bool, std::pair<std::string, std::string>>> boolSetting);
     
     bool RemoveValue(std::string _file, std::string group, std::pair<std::string, int> intSetting);
@@ -37,11 +37,11 @@ namespace ConfigEditor
         inline std::string engine = "\\Engine.ini";
     }
 
-    namespace Groups
+    namespace Sections
     {
         inline std::string scalabilityGroups = "ScalabilityGroups";
         inline std::string DBDGameUserSettings = "/Script/DeadByDaylight.DBDGameUserSettings";
-        inline std::string rendererOverrideSettings = "/script/engine.rendereroverridesettings";
+        inline std::string rendererOverrideSettings = "/Script/Engine.RendererOverrideSettings";
         inline std::string Systemsettings = "Systemsettings";
         inline std::string TextureQualityAt = "TextureQuality@";
         inline std::string TextureStreaming = "TextureStreaming";
