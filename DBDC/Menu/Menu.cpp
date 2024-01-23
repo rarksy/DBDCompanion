@@ -115,8 +115,10 @@ void Menu::RenderUI()
 
     else if (menuToShow == 3)
     {
-        static std::once_flag flag;
-        std::call_once(flag, Crosshair::Setup);
+        static std::once_flag flagCrosshair;
+        static std::once_flag flagMenu;
+        std::call_once(flagCrosshair, Crosshair::Setup);
+        std::call_once(flagMenu, CMenu::Setup);
         
         CMenu::RenderUI();
     }
@@ -158,7 +160,8 @@ void Menu::CreateGlobalStyle()
     colors[ImGuiCol_ButtonActive] = RGBToImVec4(255, 203, 203);
 
     // Main Window
-    colors[ImGuiCol_FrameBg] = RGBToImVec4(255, 83, 83);
+    colors[ImGuiCol_FrameBg] = RGBToImVec4(20, 20, 20);
+    //colors[ImGuiCol_Border] = RGBToImVec4(255, 83, 83);
     colors[ImGuiCol_FrameBgHovered] = RGBToImVec4(255, 153, 153);
     colors[ImGuiCol_FrameBgActive] = RGBToImVec4(255, 203, 203);
     style.FrameRounding = 2.F;
@@ -174,6 +177,8 @@ void Menu::CreateGlobalStyle()
 
     // Checkbox
     colors[ImGuiCol_CheckMark] = RGBToImVec4(255, 83, 83);
+    colors[ImGuiCol_CheckMarkHovered] = RGBToImVec4(255, 153, 153);
+    colors[ImGuiCol_CheckMarkActive] = RGBToImVec4(255, 203, 203);
 
     // Combo
     colors[ImGuiCol_Combo] = RGBToImVec4(255, 83, 83);
@@ -188,6 +193,9 @@ void Menu::CreateGlobalStyle()
     // Separator
     colors[ImGuiCol_Separator] = RGBToImVec4(255, 83, 83);
 
-
+    // Input Text
+    colors[ImGuiCol_InputText] = RGBToImVec4(255, 83, 83);
+    
     colors[ImGuiCol_TextSelectedBg] = RGBToImVec4(225, 63, 63, 150);
+
 }
