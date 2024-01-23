@@ -4,6 +4,7 @@
 
 namespace CMenu
 {
+    void Setup();
     void RenderUI();
 
 
