@@ -57,7 +57,6 @@ bool ConfigEditor::InitializeConfig()
         }
 
         SettingsFolderLocation = pszPath;
-        // Add your code here to work with the selected folder path
         CoTaskMemFree(pszPath);
 
         psi->Release();
@@ -389,7 +388,7 @@ void ConfigEditor::ImportSettingFindString(mINI::INIStructure& ini, mINI::INIStr
     }
 }
 
-bool ConfigEditor::SetReadOnly(const std::string& file, const bool value)
+bool ConfigEditor::SetReadOnly(const std::string& file, bool value)
 {
     DWORD attributes = GetFileAttributesA((SettingsFolderLocation.string() + file).c_str());
 
