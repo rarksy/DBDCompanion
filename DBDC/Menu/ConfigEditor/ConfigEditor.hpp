@@ -43,9 +43,6 @@ namespace ConfigEditor
         inline std::string scalabilityGroups = "ScalabilityGroups";
         inline std::string DBDGameUserSettings = "/Script/DeadByDaylight.DBDGameUserSettings";
         inline std::string rendererOverrideSettings = "/Script/Engine.RendererOverrideSettings";
-        inline std::string Systemsettings = "Systemsettings";
-        inline std::string TextureQualityAt = "TextureQuality@";
-        inline std::string TextureStreaming = "TextureStreaming";
     }
 
     struct Setting
@@ -65,23 +62,62 @@ namespace ConfigEditor
             value = _value;
         }
 
-        std::string GetValue() const
-        {
-            return std::visit([](const auto& v) -> std::string
-            {
-                return std::to_string(v);
+        std::string GetValue() const {
+            return std::visit([](const auto& v) -> std::string {
+                if constexpr (std::is_same_v<decltype(v), int>) {
+                    return std::to_string(v);
+                } else if constexpr (std::is_same_v<decltype(v), std::string>) {
+                    return v;
+                } else {
+                    return "Unsupported Type";
+                }
             }, value);
         }
     };
-
-
+    
     class Var2
     {
     public:
-        
-        Setting resolutionQuality = Setting(Files::gameUserSettings, Sections::scalabilityGroups, "sg.ResolutionQuality", 100);
 
+        // Graphics Quality
+        Setting resolutionQuality = Setting(Files::gameUserSettings, Sections::scalabilityGroups, "sg.ResolutionQuality", 100);
         Setting viewDistanceQuality = Setting(Files::gameUserSettings, Sections::scalabilityGroups, "sg.ViewDistanceQuality", 0);
+        Setting antiAliasQuality = Setting(Files::gameUserSettings, Sections::scalabilityGroups, "sg.AntiAliasingQuality", 0);
+        Setting shadowQuality = Setting(Files::gameUserSettings, Sections::scalabilityGroups, "sg.ShadowQuality", 0);
+        Setting postProcessQuality = Setting(Files::gameUserSettings, Sections::scalabilityGroups, "sg.PostProcessQuality", 0);
+        Setting textureQuality = Setting(Files::gameUserSettings, Sections::scalabilityGroups, "sg.TextureQuality", 0);
+        Setting effectsQuality = Setting(Files::gameUserSettings, Sections::scalabilityGroups, "sg.EffectsQuality", 0);
+        Setting foliageQuality = Setting(Files::gameUserSettings, Sections::scalabilityGroups, "sg.FoliageQuality", 0);
+        Setting shadingQuality = Setting(Files::gameUserSettings, Sections::scalabilityGroups, "sg.ShadingQuality", 0);
+        Setting animationQuality = Setting(Files::gameUserSettings, Sections::scalabilityGroups, "sg.AnimationQuality", 0);
+
+        // Rendering
+        Setting useVSync = Setting(Files::gameUserSettings, Sections::scalabilityGroups, "sg.bUseVSync", "True");
+        Setting antiAliasMode = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "AntiAliasingMode", 1);
+
+        bool engineReadOnly = false;
+
+        Setting ambientOcclusion = Setting(Files::engine, Sections::rendererOverrideSettings, "r.DefaultFeature.AmbientOcclusion", "True");
+        Setting ambientOcclusionStaticFraction = Setting(Files::engine, Sections::rendererOverrideSettings, "r.DefaultFeature.AmbientOcclusionStaticFraction", "True");
+        Setting bloom = Setting(Files::engine, Sections::rendererOverrideSettings, "r.DefaultFeature.Bloom", "True");
+        Setting lensFlare = Setting(Files::engine, Sections::rendererOverrideSettings, "r.DefaultFeature.LensFlare", "True");
+        Setting motionBlur = Setting(Files::engine, Sections::rendererOverrideSettings, "r.DefaultFeature.MotionBlur", "True");
+
+        // Misc
+        Setting windowMode = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "FullscreenMode", 1);
+        Setting desiredScreenWidth = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "DesiredScreenWidth", 1920);
+        Setting desiredScreenHeight = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "DesiredScreenHeight", 1080);
+        Setting resolutionWidth = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "ResolutionSizeX", 1920);
+        Setting resolutionHeight = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "ResolutionSizeY", 1080);
+        Setting fpsLimitMode = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "FPSLimitMode", 60);
+        Setting killerFOV = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "FieldOfView", 87);
+        bool removeIntroCutscene = false;
+        Setting skipNewsPopup = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "HighestWeightSeenNews", 0);
+
+        // Accessibility
+        Setting terrorRadiusVisual = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "TerrorRadiusVisualFeedback", "False");
+        Setting colorBlindMode = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "ColorBlindMode", 0);
+        Setting colorBlindModeStrength = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "ColorBlindModeIntensity", 0);
     };
 
     struct Variables
