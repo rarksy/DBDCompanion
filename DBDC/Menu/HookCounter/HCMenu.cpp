@@ -38,6 +38,8 @@ void HCMenu::RenderUI()
         }
     }
 
+    ImGui::BeginDisabled(!HCVars.enabled);
+
     ImGui::Spacing();
     ImGui::Spacing();
     ImGui::Spacing();
@@ -45,8 +47,7 @@ void HCMenu::RenderUI()
     ImGui::Columns(3, nullptr, false);
     ImGui::SetColumnWidth(0, 240);
     ImGui::SetColumnWidth(1, 245);
-
-
+    
     ImGui::SeparatorText("Options");
 
     ImGui::Checkbox("Track 1st Stage Hooks", &HCVars.track1stStage);
@@ -61,13 +62,12 @@ void HCMenu::RenderUI()
 
     ImGui::BeginDisabled(!HCVars.playSoundOnHook);
     ImGui::SetNextItemWidth(140);
-    ImGui::InputText("Sound Path", HCVars.soundFilePath, sizeof HCVars.soundFilePath);
+    ImGui::InputTextWithHint("Sound Path", "C:/Path/To/File.wav", HCVars.soundFilePath, sizeof HCVars.soundFilePath);
     GUI::ToolTip("Only .wav files are supported in this version.");
     ImGui::EndDisabled();
 
     ImGui::NextColumn();
-
-
+    
     ImGui::SeparatorText("Settings");
 
     GUI::DropDownBox("Menu UI Scale", HCMenu::UIScales, HCVars.MenuScaleFactor, true);
@@ -75,6 +75,8 @@ void HCMenu::RenderUI()
 
     GUI::DropDownBox("In-Game UI Scale", HCMenu::UIScales, HCVars.HudScaleFactor, true);
     GUI::ToolTip("Set This To Whatever Your \"In-Game UI Scale\" Setting Is Set To In Game.");
+
+    ImGui::EndDisabled();
 
     ImGui::EndColumns();
 }
