@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include <filesystem>
+#include <variant>
 
 #include "mINI/ini.h"
 
@@ -46,6 +47,42 @@ namespace ConfigEditor
         inline std::string TextureQualityAt = "TextureQuality@";
         inline std::string TextureStreaming = "TextureStreaming";
     }
+
+    struct Setting
+    {
+        std::string file;
+        std::string section;
+        std::string variable;
+        std::variant<int, std::string> value;
+        
+        Setting(std::string _file, std::string _section, std::string _variable, std::variant<int, std::string> _value)
+            : file(_file), section(_section), variable(_variable), value(_value)
+        {
+        }
+        
+        void SetValue(std::variant<int, std::string> _value)
+        {
+            value = _value;
+        }
+
+        std::string GetValue() const
+        {
+            return std::visit([](const auto& v) -> std::string
+            {
+                return std::to_string(v);
+            }, value);
+        }
+    };
+
+
+    class Var2
+    {
+    public:
+        
+        Setting resolutionQuality = Setting(Files::gameUserSettings, Sections::scalabilityGroups, "sg.ResolutionQuality", 100);
+
+        Setting viewDistanceQuality = Setting(Files::gameUserSettings, Sections::scalabilityGroups, "sg.ViewDistanceQuality", 0);
+    };
 
     struct Variables
     {
