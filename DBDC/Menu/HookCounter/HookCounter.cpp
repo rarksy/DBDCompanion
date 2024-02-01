@@ -42,13 +42,13 @@ void HookCounter::DetectionLoop()
     }
 
     cv::resize(stage1Image, stage1Image, cv::Size(
-                   static_cast<int>(stage1Image.cols * HCVars.HudScaleFactor.second / 100.0),
-                   static_cast<int>(stage1Image.rows * HCVars.HudScaleFactor.second / 100.0))
+                   static_cast<int>(stage1Image.cols * HCVars.hudScaleFactor.value / 100.0),
+                   static_cast<int>(stage1Image.rows * HCVars.hudScaleFactor.value / 100.0))
     );
 
     cv::resize(stage2Image, stage2Image, cv::Size(
-                   static_cast<int>(stage2Image.cols * HCVars.HudScaleFactor.second / 100.0),
-                   static_cast<int>(stage2Image.rows * HCVars.HudScaleFactor.second / 100.0))
+                   static_cast<int>(stage2Image.cols * HCVars.hudScaleFactor.value / 100.0),
+                   static_cast<int>(stage2Image.rows * HCVars.hudScaleFactor.value / 100.0))
     );
     
     cv::Rect region(0, 0, Backend::screenWidth / 3, Backend::screenHeight);

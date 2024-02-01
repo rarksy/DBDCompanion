@@ -1,20 +1,20 @@
 ﻿#pragma once
 #include <vector>
 #include <string>
+#include "../Menu.h"
 #include "ImGui/imgui.h"
+#include "../ConfigEditor/ConfigEditor.hpp"
 
 namespace GUI
 {
-    bool boolCheckbox(const char* label, std::pair<std::string, std::pair<bool, std::pair<std::string, std::string>>>& setting);
-    bool IntCheckbox(const char* label, std::pair<std::string, int>& setting);
-    bool StringCheckbox(const char* label, std::pair<std::string, std::string>& setting);
-
-    bool Slider(const char* label, std::pair<std::string, int>& setting, int vMin, int vMax, bool clamp = true);
-    
-    bool DropDownBox(const char* label, std::vector<std::string> listItems, std::pair<std::string, int>& setting, bool accessValue = false,
-        std::string toolTipCaption = "", std::vector<unsigned*> textures = {}, ImVec2 textureSize = ImVec2(250, 100));
-
-    bool DropDownBox(const char* label, std::vector<std::string> listItems, int& index);
+    bool Checkbox(const char* label, ConfigEditor::Setting& setting, bool invert = false);
+    bool Checkbox(const char* label, ConfigEditor::Setting& setting, int disabledValue, int enabledValue, bool invert = false);
+    bool Slider(const char* label, ConfigEditor::Setting& setting, int minValue, int maxValue, bool clampMinMax = true);
+    bool DropDownBox(const char* label, ConfigEditor::Setting& setting, std::vector<std::string> items, bool useIndex = true, float widgetSize = Menu::Styling::itemWidth,
+                     std::string caption = "", std::vector<unsigned*> textures = {}, ImVec2 textureSize = ImVec2(250, 100));
+    bool DropDownBox(const char* label, int& index, std::vector<std::string> items, bool useIndex = true, float widgetSize = Menu::Styling::itemWidth, std::string caption = "", std::vector<unsigned*> textures = {},
+                 ImVec2 textureSize = ImVec2(250, 100));
+    bool InputInt(const char* label, ConfigEditor::Setting& setting, float widgetWidth = Menu::Styling::itemWidth);
 
     void ToolTip(std::string message, bool holdRightClick = true);
     void ToolTip(std::string message, unsigned int texture, const ImVec2& size, bool holdRightClick = true);

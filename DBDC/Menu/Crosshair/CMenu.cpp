@@ -133,7 +133,7 @@ void CMenu::RenderUI()
 
         ImGui::BeginDisabled(!CVars.useDynamicCenterPoint);
 
-        GUI::DropDownBox("Killer", dynamicKillers, CVars.dynamicCenterPointIndex);
+        GUI::DropDownBox("Killer", CVars.dynamicCenterPointIndex, dynamicKillers);
 
         ImGui::EndDisabled();
 

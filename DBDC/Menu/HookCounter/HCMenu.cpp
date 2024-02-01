@@ -10,8 +10,8 @@
 void HCMenu::Setup()
 {
     ConfigEditor::InitializeConfig();
-    ConfigEditor::LoadSettingInt(ConfigEditor::Files::gameUserSettings, ConfigEditor::Sections::DBDGameUserSettings, HCVars.MenuScaleFactor);
-    ConfigEditor::LoadSettingInt(ConfigEditor::Files::gameUserSettings, ConfigEditor::Sections::DBDGameUserSettings, HCVars.HudScaleFactor);
+    HCVars.menuScaleFactor.LoadValue();
+    HCVars.hudScaleFactor.LoadValue();
 }
 
 void HCMenu::RenderUI()
@@ -70,10 +70,10 @@ void HCMenu::RenderUI()
     
     ImGui::SeparatorText("Settings");
 
-    GUI::DropDownBox("Menu UI Scale", HCMenu::UIScales, HCVars.MenuScaleFactor, true);
+    GUI::DropDownBox("Menu UI Scale", HCVars.menuScaleFactor, UIScales, false);
     GUI::ToolTip("Set This To Whatever Your \"UI Scale\" Setting Is Set To In Game.");
 
-    GUI::DropDownBox("In-Game UI Scale", HCMenu::UIScales, HCVars.HudScaleFactor, true);
+    GUI::DropDownBox("In-Game UI Scale", HCVars.hudScaleFactor, UIScales, false);
     GUI::ToolTip("Set This To Whatever Your \"In-Game UI Scale\" Setting Is Set To In Game.");
 
     ImGui::EndDisabled();
