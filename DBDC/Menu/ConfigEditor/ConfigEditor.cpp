@@ -91,7 +91,13 @@ void ConfigEditor::LoadConfig()
     CEVars.lensFlare.LoadValue();
     CEVars.motionBlur.LoadValue();
 
+    
     CEVars.windowMode.LoadValue();
+    CEVars.resolutionWidth.LoadValue();
+    CEVars.resolutionHeight.LoadValue();
+    CEVars.fpsLimitMode.LoadValue();
+    CEVars.killerFOV.LoadValue();
+    CEVars.removeIntroCutscene = std::filesystem::exists(Misc::GetGameRootDirectory() + "DeadByDaylight\\Content\\Movies\\" + "disabled_AdditionalLoadingScreen");
     CEVars.skipNewsPopup.LoadValue();
 
     CEVars.terrorRadiusVisual.LoadValue();
