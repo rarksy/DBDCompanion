@@ -1,10 +1,10 @@
 ﻿#pragma once
-#include <string>
 #include <vector>
 
 #include "ImGui/imgui.h"
 #include <opencv2/opencv.hpp>
 #include <GLFW/glfw3.h>
+#include "../ConfigEditor/ConfigEditor.hpp"
 
 namespace HookCounter
 {
@@ -20,13 +20,9 @@ namespace HookCounter
         bool track2ndStage = false;
         bool playSoundOnHook = false;
         char soundFilePath[128];
-        
-        // Variable Name | Value
-        using intSetting = std::pair<std::string, int>;
-        using stringSetting = std::pair<std::string, std::string>;
 
-        intSetting MenuScaleFactor = {"MenuScaleFactor", 100};
-        intSetting HudScaleFactor = {"HudScaleFactor", 100};
+        ConfigEditor::Setting menuScaleFactor = ConfigEditor::Setting(ConfigEditor::Files::gameUserSettings, ConfigEditor::Sections::DBDGameUserSettings, "MenuScaleFactor", 100);
+        ConfigEditor::Setting hudScaleFactor = ConfigEditor::Setting(ConfigEditor::Files::gameUserSettings, ConfigEditor::Sections::DBDGameUserSettings, "HudScaleFactor", 100);
     };
 
     namespace Internal

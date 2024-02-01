@@ -72,149 +72,35 @@ bool ConfigEditor::InitializeConfig()
 
 void ConfigEditor::LoadConfig()
 {
-    LoadSettingInt(Files::gameUserSettings, Sections::scalabilityGroups, CEVars.resolutionQuality);
-    LoadSettingInt(Files::gameUserSettings, Sections::scalabilityGroups, CEVars.viewDistanceQuality);
-    LoadSettingInt(Files::gameUserSettings, Sections::scalabilityGroups, CEVars.antiAliasQuality);
-    LoadSettingInt(Files::gameUserSettings, Sections::scalabilityGroups, CEVars.shadowQuality);
-    LoadSettingInt(Files::gameUserSettings, Sections::scalabilityGroups, CEVars.postProcessQuality);
-    LoadSettingInt(Files::gameUserSettings, Sections::scalabilityGroups, CEVars.textureQuality);
-    LoadSettingInt(Files::gameUserSettings, Sections::scalabilityGroups, CEVars.effectsQuality);
-    LoadSettingInt(Files::gameUserSettings, Sections::scalabilityGroups, CEVars.foliageQuality);
-    LoadSettingInt(Files::gameUserSettings, Sections::scalabilityGroups, CEVars.shadingQuality);
+    CEVars.resolutionQuality.LoadValue();
+    CEVars.viewDistanceQuality.LoadValue();
+    CEVars.antiAliasQuality.LoadValue();
+    CEVars.shadowQuality.LoadValue();
+    CEVars.postProcessQuality.LoadValue();
+    CEVars.textureQuality.LoadValue();
+    CEVars.effectsQuality.LoadValue();
+    CEVars.foliageQuality.LoadValue();
+    CEVars.shadingQuality.LoadValue();
+    CEVars.animationQuality.LoadValue();
 
-    LoadSettingInt(Files::gameUserSettings, Sections::DBDGameUserSettings, CEVars.antiAliasMode);
+    CEVars.useVSync.LoadValue();
+    CEVars.antiAliasMode.LoadValue();
+    CEVars.ambientOcclusion.LoadValue();
+    CEVars.ambientOcclusionStaticFraction.LoadValue();
+    CEVars.bloom.LoadValue();
+    CEVars.lensFlare.LoadValue();
+    CEVars.motionBlur.LoadValue();
 
-    LoadSettingString(Files::gameUserSettings, Sections::DBDGameUserSettings, CEVars.useVSync);
-    LoadSettingInt(Files::gameUserSettings, Sections::DBDGameUserSettings, CEVars.antiAliasMode);
+    CEVars.windowMode.LoadValue();
+    CEVars.skipNewsPopup.LoadValue();
 
-    if (GetReadOnly(Files::engine))
-        CEVars.engineReadOnly = true;
-
-    LoadSettingFind(Files::engine, CEVars.ambientOcclusion, true);
-    LoadSettingFind(Files::engine, CEVars.ambientOcclusionStaticFraction, true);
-    LoadSettingFind(Files::engine, CEVars.bloom, true);
-    LoadSettingFind(Files::engine, CEVars.lensFlare, true);
-    LoadSettingFind(Files::engine, CEVars.motionBlur, true);
-
-    LoadSettingInt(Files::gameUserSettings, Sections::DBDGameUserSettings, CEVars.windowMode);
-
-    LoadSettingInt(Files::gameUserSettings, Sections::DBDGameUserSettings, CEVars.resolutionWidth);
-    LoadSettingInt(Files::gameUserSettings, Sections::DBDGameUserSettings, CEVars.resolutionHeight);
-    LoadSettingInt(Files::gameUserSettings, Sections::DBDGameUserSettings, CEVars.desiredScreenWidth);
-    LoadSettingInt(Files::gameUserSettings, Sections::DBDGameUserSettings, CEVars.desiredScreenHeight);
-    LoadSettingInt(Files::gameUserSettings, Sections::DBDGameUserSettings, CEVars.fpsLimitMode);
-    LoadSettingInt(Files::gameUserSettings, Sections::DBDGameUserSettings, CEVars.killerFOV);
-
-    LoadSettingString(Files::gameUserSettings, Sections::DBDGameUserSettings, CEVars.terrorRadiusVisual);
-    LoadSettingInt(Files::gameUserSettings, Sections::DBDGameUserSettings, CEVars.colorBlindMode);
-    LoadSettingInt(Files::gameUserSettings, Sections::DBDGameUserSettings, CEVars.colorBlindModeStrength);
-
-    CEVars.removeIntroCutscene =
-        !std::filesystem::exists(
-            Misc::GetGameRootDirectory() + Files::AdditionalLoadingScreen
-        );
-
-    LoadSettingBool(Files::gameUserSettings, Sections::DBDGameUserSettings, CEVars.skipNewsPopup);
-
-    LoadSettingInt(Files::gameUserSettings, Sections::scalabilityGroups, CEVars.resolutionQuality);
+    CEVars.terrorRadiusVisual.LoadValue();
+    CEVars.colorBlindMode.LoadValue();
+    CEVars.colorBlindModeStrength.LoadValue();
+    
 
     if (Misc::IsGameRunning())
         MessageBoxA(nullptr, "Game Is Running, Changes Won't Apply Until It Is Restarted.", "Notice...", MB_OK);
-}
-
-bool ConfigEditor::LoadSettingBool(const std::string& _file, const std::string& group,
-                                   std::pair<std::string, std::pair<bool, std::pair<std::string, std::string>>>&
-                                   setting)
-{
-    mINI::INIStructure ini;
-    mINI::INIFile file(SettingsFolderLocation.string() + _file);
-
-    const bool readSuccess = file.read(ini);
-
-    if (GetReadOnly(_file))
-        SetReadOnly(_file, false);
-
-    setting.second.first = ini[group][setting.first] == setting.second.second.first;
-
-    if (CEVars.engineReadOnly)
-        SetReadOnly(_file, true);
-
-    return readSuccess;
-}
-
-bool ConfigEditor::LoadSettingInt(const std::string& _file, const std::string& group,
-                                  std::pair<std::string, int>& setting)
-{
-    mINI::INIStructure ini;
-    mINI::INIFile file(SettingsFolderLocation.string() + _file);
-
-    const bool readSuccess = file.read(ini);
-
-    if (GetReadOnly(_file))
-        SetReadOnly(_file, false);
-
-    setting.second = std::atoi(ini[group][setting.first].c_str());
-
-    if (CEVars.engineReadOnly)
-        SetReadOnly(_file, true);
-
-    return readSuccess;
-}
-
-bool ConfigEditor::LoadSettingString(const std::string& _file, const std::string& group,
-                                     std::pair<std::string, std::string>& setting)
-{
-    mINI::INIStructure ini;
-    mINI::INIFile file(SettingsFolderLocation.string() + _file);
-
-    const bool readSuccess = file.read(ini);
-
-    if (GetReadOnly(_file))
-        SetReadOnly(_file, false);
-
-    setting.second = ini[group][setting.first];
-
-    if (CEVars.engineReadOnly)
-        SetReadOnly(_file, true);
-
-    return readSuccess;
-}
-
-bool ConfigEditor::LoadSettingFind(const std::string& _file, std::pair<std::string, int>& setting, bool invertValue)
-{
-    std::ifstream file(SettingsFolderLocation.string() + _file);
-
-    std::string line;
-    while (std::getline(file, line))
-    {
-        if (line.find(setting.first + "=") != std::string::npos)
-        {
-            setting.second = invertValue ? 0 : 1;
-            return true;
-        }
-    }
-
-    setting.second = invertValue ? 1 : 0;
-    return true;
-}
-
-bool ConfigEditor::LoadSettingFind(const std::string& _file, std::pair<std::string, std::string>& setting,
-                                   bool invertValue)
-{
-    std::ifstream file(SettingsFolderLocation.string() + _file);
-
-    std::string line;
-    while (std::getline(file, line))
-    {
-        if (line.find(setting.first + "=") != std::string::npos)
-        {
-            setting.second = invertValue ? vFalse : vTrue;
-            return true;
-        }
-    }
-
-    setting.second = invertValue ? vTrue : vFalse;
-    return true;
 }
 
 bool ConfigEditor::CopyConfig()
@@ -297,96 +183,45 @@ bool ConfigEditor::ImportConfig()
 
     // Setup Main INI Structures
 
-    mINI::INIStructure gameUserSettingsIni;
-    mINI::INIFile gameUserSettings(SettingsFolderLocation.string() + Files::gameUserSettings);
-    gameUserSettings.read(gameUserSettingsIni);
+    CEVars.resolutionQuality.ImportValue(importedGameUserSettings);
+    CEVars.viewDistanceQuality.ImportValue(importedGameUserSettings);
+    CEVars.antiAliasQuality.ImportValue(importedGameUserSettings);
+    CEVars.shadowQuality.ImportValue(importedGameUserSettings);
+    CEVars.postProcessQuality.ImportValue(importedGameUserSettings);
+    CEVars.textureQuality.ImportValue(importedGameUserSettings);
+    CEVars.effectsQuality.ImportValue(importedGameUserSettings);
+    CEVars.foliageQuality.ImportValue(importedGameUserSettings);
+    CEVars.shadingQuality.ImportValue(importedGameUserSettings);
+    CEVars.animationQuality.ImportValue(importedGameUserSettings);
 
-    mINI::INIStructure engineIni;
-    mINI::INIFile engine(SettingsFolderLocation.string() + Files::engine);
-    engine.read(engineIni);
+    CEVars.useVSync.ImportValue(importedGameUserSettings);
+    CEVars.antiAliasMode.ImportValue(importedGameUserSettings);
+    CEVars.ambientOcclusion.ImportValue(importedEngine);
+    CEVars.ambientOcclusionStaticFraction.ImportValue(importedEngine);
+    CEVars.bloom.ImportValue(importedEngine);
+    CEVars.lensFlare.ImportValue(importedEngine);
+    CEVars.motionBlur.ImportValue(importedEngine);
 
-    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Sections::scalabilityGroups, CEVars.resolutionQuality);
-    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Sections::scalabilityGroups, CEVars.viewDistanceQuality);
-    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Sections::scalabilityGroups, CEVars.antiAliasQuality);
-    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Sections::scalabilityGroups, CEVars.shadowQuality);
-    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Sections::scalabilityGroups, CEVars.postProcessQuality);
-    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Sections::scalabilityGroups, CEVars.textureQuality);
-    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Sections::scalabilityGroups, CEVars.effectsQuality);
-    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Sections::scalabilityGroups, CEVars.foliageQuality);
-    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Sections::scalabilityGroups, CEVars.shadingQuality);
-
-    ImportSettingString(gameUserSettingsIni, importedGameUserSettingsIni, Sections::DBDGameUserSettings, CEVars.useVSync);
-    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Sections::DBDGameUserSettings, CEVars.antiAliasMode);
-
-    ImportSettingFindString(engineIni, importedEngineIni, Sections::rendererOverrideSettings, CEVars.ambientOcclusion, Files::engine);
-    ImportSettingFindString(engineIni, importedEngineIni, Sections::rendererOverrideSettings, CEVars.ambientOcclusionStaticFraction, Files::engine);
-    ImportSettingFindString(engineIni, importedEngineIni, Sections::rendererOverrideSettings, CEVars.bloom, Files::engine);
-    ImportSettingFindString(engineIni, importedEngineIni, Sections::rendererOverrideSettings, CEVars.lensFlare, Files::engine);
-    ImportSettingFindString(engineIni, importedEngineIni, Sections::rendererOverrideSettings, CEVars.motionBlur, Files::engine);
-
-    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Sections::DBDGameUserSettings, CEVars.windowMode);
-    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Sections::DBDGameUserSettings, CEVars.resolutionWidth);
-    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Sections::DBDGameUserSettings, CEVars.resolutionHeight);
-    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Sections::DBDGameUserSettings, CEVars.fpsLimitMode);
-    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Sections::DBDGameUserSettings, CEVars.killerFOV);
     
-    ImportSettingBool(gameUserSettingsIni, importedGameUserSettingsIni, Sections::DBDGameUserSettings, CEVars.skipNewsPopup);
+    CEVars.windowMode.ImportValue(importedGameUserSettings);
+    CEVars.resolutionWidth.ImportValue(importedGameUserSettings);
+    CEVars.resolutionHeight.ImportValue(importedGameUserSettings);
+    CEVars.fpsLimitMode.ImportValue(importedGameUserSettings);
+    CEVars.killerFOV.ImportValue(importedGameUserSettings);
 
-    ImportSettingString(gameUserSettingsIni, importedGameUserSettingsIni, Sections::DBDGameUserSettings, CEVars.terrorRadiusVisual);
-    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Sections::DBDGameUserSettings, CEVars.colorBlindMode);
-    ImportSettingInt(gameUserSettingsIni, importedGameUserSettingsIni, Sections::DBDGameUserSettings, CEVars.colorBlindModeStrength);
+    CEVars.removeIntroCutscene = std::filesystem::exists(Misc::GetGameRootDirectory() + "DeadByDaylight\\Content\\Movies\\" + "disabled_AdditionalLoadingScreen");
+    CEVars.skipNewsPopup.ImportValue(importedGameUserSettings);
 
-    if (GetReadOnly(Files::gameUserSettings))
-        SetReadOnly(Files::gameUserSettings, false);
-
-    if (GetReadOnly(Files::engine))
-        SetReadOnly(Files::engine, false);
-
-    gameUserSettings.write(gameUserSettingsIni);
-
+    CEVars.terrorRadiusVisual.ImportValue(importedGameUserSettings);
+    CEVars.colorBlindMode.ImportValue(importedGameUserSettings);
+    CEVars.colorBlindModeStrength.ImportValue(importedGameUserSettings);
+    
     LoadConfig();
-
-    if (CEVars.engineReadOnly)
-    {
-        SetReadOnly(Files::gameUserSettings, true);
-        SetReadOnly(Files::engine, true);
-    }
     
     std::remove(tempGameUserSettings.c_str());
     std::remove(tempEngine.c_str());
 
     return true;
-}
-
-void ConfigEditor::ImportSettingInt(mINI::INIStructure& ini, mINI::INIStructure& importedIni, std::string group,
-                                    std::pair<std::string, int> setting)
-{
-    ini[group][setting.first] = importedIni[group][setting.first];
-}
-
-void ConfigEditor::ImportSettingString(mINI::INIStructure& ini, mINI::INIStructure& importedIni, std::string group,
-                                       std::pair<std::string, std::string> setting)
-{
-    ini[group][setting.first] = importedIni[group][setting.first];
-}
-
-void ConfigEditor::ImportSettingBool(mINI::INIStructure& ini, mINI::INIStructure& importedIni, std::string group,
-    std::pair<std::string, std::pair<bool, std::pair<std::string, std::string>>> setting)
-{
-    ini[group][setting.first] = importedIni[group][setting.first];
-}
-
-void ConfigEditor::ImportSettingFindString(mINI::INIStructure& ini, mINI::INIStructure& importedIni, std::string group,
-                                           std::pair<std::string, std::string> setting, std::string _file)
-{
-    if (!importedIni.has(group))
-        return;
-
-    if (importedIni[group].has(setting.first))
-    {
-        if (ChangeValue(_file, group, setting))
-            CEVars.engineReadOnly = true;
-    }
 }
 
 bool ConfigEditor::SetReadOnly(const std::string& file, const bool value)
@@ -414,74 +249,4 @@ std::filesystem::path ConfigEditor::GetSettingsFolderLocation()
     localAppDataPath /= "DeadByDaylight\\Saved\\Config\\WindowsClient\\";
 
     return localAppDataPath;
-}
-
-bool ConfigEditor::ChangeValue(std::string _file, std::string group, std::pair<std::string, int> intSetting)
-{
-    return ChangeValue(_file, group, std::pair(intSetting.first, std::to_string(intSetting.second)));
-}
-
-bool ConfigEditor::ChangeValue(std::string _file, std::string section, std::pair<std::string, std::string> stringSetting)
-{
-    if (GetReadOnly(_file))
-        SetReadOnly(_file, false);
-
-    mINI::INIFile file(SettingsFolderLocation.string() + _file);
-    mINI::INIStructure ini;
-    file.read(ini);
-
-    ini[section][stringSetting.first] = stringSetting.second;
-    
-    bool writeSuccess = file.write(ini, true);
-
-    if (CEVars.engineReadOnly)
-        SetReadOnly(_file, true);
-
-    return writeSuccess;
-}
-
-bool ConfigEditor::ChangeValue(std::string _file, std::string group,
-                               std::pair<std::string, std::pair<bool, std::pair<std::string, std::string>>> boolSetting)
-{
-    if (GetReadOnly(_file))
-        SetReadOnly(_file, false);
-
-    mINI::INIFile file(SettingsFolderLocation.string() + _file);
-    mINI::INIStructure ini;
-    file.read(ini);
-
-    if (boolSetting.second.first)
-        ini[group][boolSetting.first] = boolSetting.second.second.first;
-    else ini[group][boolSetting.first] = boolSetting.second.second.second;
-
-    bool writeSuccess = file.write(ini);
-
-    if (CEVars.engineReadOnly)
-        SetReadOnly(_file, true);
-
-    return writeSuccess;
-}
-
-bool ConfigEditor::RemoveValue(std::string _file, std::string group, std::pair<std::string, int> intSetting)
-{
-    return RemoveValue(_file, group, std::pair(intSetting.first, std::to_string(intSetting.second)));
-}
-
-bool ConfigEditor::RemoveValue(std::string _file, std::string group, std::pair<std::string, std::string> stringSetting)
-{
-    if (GetReadOnly(_file))
-        SetReadOnly(_file, false);
-
-    mINI::INIFile file(SettingsFolderLocation.string() + _file);
-    mINI::INIStructure ini;
-    file.read(ini);
-
-    bool removed = ini[group].remove(stringSetting.first);
-
-    file.write(ini);
-
-    if (CEVars.engineReadOnly)
-        SetReadOnly(_file, true);
-
-    return removed;
 }

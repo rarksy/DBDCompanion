@@ -1,35 +1,17 @@
 ﻿#pragma once
 #include <filesystem>
-#include <variant>
-
 #include "mINI/ini.h"
-
-#define vFalse std::string("False")
-#define vTrue std::string("True")
 
 namespace ConfigEditor
 {
     bool InitializeConfig();
     void LoadConfig();
 
-    bool LoadSettingBool(const std::string& _file, const std::string& group, std::pair<std::string, std::pair<bool, std::pair<std::string, std::string>>>& setting);
-    bool LoadSettingInt(const std::string& _file, const std::string& group, std::pair<std::string, int>& setting);
-    bool LoadSettingString(const std::string& _file, const std::string& group, std::pair<std::string, std::string>& setting);
-    bool LoadSettingFind(const std::string& _file, std::pair<std::string, int>& setting, bool invertValue = false);
-    bool LoadSettingFind(const std::string& _file, std::pair<std::string, std::string>& setting, bool invertValue = false);
-    
     bool SetReadOnly(const std::string& file, const bool value);
     bool GetReadOnly(const std::string& file);
-    
+
     std::filesystem::path GetSettingsFolderLocation();
     inline std::filesystem::path SettingsFolderLocation;
-    
-    bool ChangeValue(std::string _file, std::string group, std::pair<std::string, int> intSetting);
-    bool ChangeValue(std::string _file, std::string section, std::pair<std::string, std::string> stringSetting);
-    bool ChangeValue(std::string _file, std::string group, std::pair<std::string, std::pair<bool, std::pair<std::string, std::string>>> boolSetting);
-    
-    bool RemoveValue(std::string _file, std::string group, std::pair<std::string, int> intSetting);
-    bool RemoveValue(std::string _file, std::string group, std::pair<std::string, std::string> stringSetting);
 
     namespace Files
     {
@@ -50,35 +32,103 @@ namespace ConfigEditor
         std::string file;
         std::string section;
         std::string variable;
-        std::variant<int, std::string> value;
-        
-        Setting(std::string _file, std::string _section, std::string _variable, std::variant<int, std::string> _value)
+        int value;
+
+        Setting(std::string _file, std::string _section, std::string _variable, int _value)
             : file(_file), section(_section), variable(_variable), value(_value)
         {
         }
-        
-        void SetValue(std::variant<int, std::string> _value)
+        ~Setting(){}
+
+        bool ImportValue(const mINI::INIFile& _file)
         {
-            value = _value;
+            mINI::INIStructure importedINI;
+            _file.read(importedINI);
+            
+            mINI::INIFile localINIFile(SettingsFolderLocation.string() + this->file);
+            mINI::INIStructure localINI;
+            localINIFile.read(localINI);
+
+            localINI[this->section][this->variable] = importedINI[this->section][this->variable];
+
+            if (GetReadOnly(this->file))
+                SetReadOnly(this->file, false);
+
+            const bool writeSuccess = localINIFile.write(localINI, true);
+
+            SetReadOnly(this->file, true);
+
+            return writeSuccess;
         }
 
-        std::string GetValue() const {
-            return std::visit([](const auto& v) -> std::string {
-                if constexpr (std::is_same_v<decltype(v), int>) {
-                    return std::to_string(v);
-                } else if constexpr (std::is_same_v<decltype(v), std::string>) {
-                    return v;
-                } else {
-                    return "Unsupported Type";
-                }
-            }, value);
+        bool LoadValue()
+        {
+            mINI::INIFile iniFile(SettingsFolderLocation.string() + this->file);
+            mINI::INIStructure ini;
+
+            const bool readSuccess = iniFile.read(ini);
+            
+            if (!readSuccess)
+                return false;
+
+            std::string loadedValueString = ini[this->section][this->variable];
+            std::transform(loadedValueString.begin(), loadedValueString.end(), loadedValueString.begin(), tolower);
+
+            if (loadedValueString.empty())
+                return false;
+            
+            if (loadedValueString == "true" || loadedValueString == "false")
+            {
+                this->value = loadedValueString == "true";
+                return true;
+            }
+
+            this->value = std::stoi(loadedValueString);
+            return true;
+        }
+        
+        bool SetValue()
+        {
+            mINI::INIFile iniFile(SettingsFolderLocation.string() + this->file);
+            mINI::INIStructure ini;
+
+            iniFile.read(ini);
+
+            ini[this->section][this->variable] = std::to_string(this->value);
+
+            if (GetReadOnly(this->file))
+                SetReadOnly(this->file, false);
+
+            const bool writeSuccess = iniFile.write(ini);
+
+            SetReadOnly(this->file, true);
+
+            return writeSuccess;
+        }
+
+        bool RemoveValue()
+        {
+            mINI::INIFile iniFile(SettingsFolderLocation.string() + this->file);
+            mINI::INIStructure ini;
+
+            iniFile.read(ini);
+
+            ini[this->section].remove(this->variable);
+
+            if (GetReadOnly(this->file))
+                SetReadOnly(this->file, false);
+
+            const bool writeSuccess = iniFile.write(ini);
+
+            SetReadOnly(this->file, true);
+
+            return writeSuccess;
         }
     };
-    
-    class Var2
+
+    class Variables
     {
     public:
-
         // Graphics Quality
         Setting resolutionQuality = Setting(Files::gameUserSettings, Sections::scalabilityGroups, "sg.ResolutionQuality", 100);
         Setting viewDistanceQuality = Setting(Files::gameUserSettings, Sections::scalabilityGroups, "sg.ViewDistanceQuality", 0);
@@ -90,19 +140,17 @@ namespace ConfigEditor
         Setting foliageQuality = Setting(Files::gameUserSettings, Sections::scalabilityGroups, "sg.FoliageQuality", 0);
         Setting shadingQuality = Setting(Files::gameUserSettings, Sections::scalabilityGroups, "sg.ShadingQuality", 0);
         Setting animationQuality = Setting(Files::gameUserSettings, Sections::scalabilityGroups, "sg.AnimationQuality", 0);
-
+        
         // Rendering
-        Setting useVSync = Setting(Files::gameUserSettings, Sections::scalabilityGroups, "sg.bUseVSync", "True");
+        Setting useVSync = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "bUseVSync", 1);
         Setting antiAliasMode = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "AntiAliasingMode", 1);
-
-        bool engineReadOnly = false;
-
-        Setting ambientOcclusion = Setting(Files::engine, Sections::rendererOverrideSettings, "r.DefaultFeature.AmbientOcclusion", "True");
-        Setting ambientOcclusionStaticFraction = Setting(Files::engine, Sections::rendererOverrideSettings, "r.DefaultFeature.AmbientOcclusionStaticFraction", "True");
-        Setting bloom = Setting(Files::engine, Sections::rendererOverrideSettings, "r.DefaultFeature.Bloom", "True");
-        Setting lensFlare = Setting(Files::engine, Sections::rendererOverrideSettings, "r.DefaultFeature.LensFlare", "True");
-        Setting motionBlur = Setting(Files::engine, Sections::rendererOverrideSettings, "r.DefaultFeature.MotionBlur", "True");
-
+        
+        Setting ambientOcclusion = Setting(Files::engine, Sections::rendererOverrideSettings, "r.DefaultFeature.AmbientOcclusion", 1);
+        Setting ambientOcclusionStaticFraction = Setting(Files::engine, Sections::rendererOverrideSettings, "r.DefaultFeature.AmbientOcclusionStaticFraction", 1);
+        Setting bloom = Setting(Files::engine, Sections::rendererOverrideSettings, "r.DefaultFeature.Bloom", 1);
+        Setting lensFlare = Setting(Files::engine, Sections::rendererOverrideSettings, "r.DefaultFeature.LensFlare", 1);
+        Setting motionBlur = Setting(Files::engine, Sections::rendererOverrideSettings, "r.DefaultFeature.MotionBlur", 1);
+        
         // Misc
         Setting windowMode = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "FullscreenMode", 1);
         Setting desiredScreenWidth = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "DesiredScreenWidth", 1920);
@@ -113,72 +161,16 @@ namespace ConfigEditor
         Setting killerFOV = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "FieldOfView", 87);
         bool removeIntroCutscene = false;
         Setting skipNewsPopup = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "HighestWeightSeenNews", 0);
-
+        
         // Accessibility
-        Setting terrorRadiusVisual = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "TerrorRadiusVisualFeedback", "False");
+        Setting terrorRadiusVisual = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "TerrorRadiusVisualFeedback", 0);
         Setting colorBlindMode = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "ColorBlindMode", 0);
         Setting colorBlindModeStrength = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "ColorBlindModeIntensity", 0);
     };
 
-    struct Variables
-    {
-        bool engineReadOnly = false;
-        
-        // Variable Name | Bool Value | Enabled Value | Disabled Value
-        using boolSetting = std::pair<std::string, std::pair<bool, std::pair<std::string, std::string>>>;
-
-        // Variable Name | Value
-        using intSetting = std::pair<std::string, int>;
-        
-        // Variable Name | Value
-        using stringSetting = std::pair<std::string, std::string>;
-
-        intSetting resolutionQuality = {"sg.ResolutionQuality", 100};
-        intSetting viewDistanceQuality = {"sg.ViewDistanceQuality", 0};
-        intSetting antiAliasQuality = {"sg.AntiAliasingQuality", 0};
-        intSetting shadowQuality = {"sg.ShadowQuality", 0};
-        intSetting postProcessQuality = {"sg.PostProcessQuality", 0};
-        intSetting textureQuality = {"sg.TextureQuality", 0};
-        intSetting effectsQuality = {"sg.EffectsQuality", 0};
-        intSetting foliageQuality = {"sg.FoliageQuality", 0};
-        intSetting shadingQuality = {"sg.ShadingQuality", 0};
-        
-        boolSetting skipNewsPopup = {"HighestWeightSeenNews", {false, {"99999", "0"}}};
-        
-        intSetting antiAliasMode = {"AntiAliasingMode", 1};
-
-        intSetting windowMode = {"FullscreenMode", 1};
-        intSetting desiredScreenWidth = {"DesiredScreenWidth", 1920};
-        intSetting desiredScreenHeight = {"DesiredScreenHeight", 1080};
-        intSetting resolutionWidth = {"ResolutionSizeX", 1080};
-        intSetting resolutionHeight = {"ResolutionSizeY", 1080};
-        intSetting fpsLimitMode = {"FPSLimitMode", 120};
-        intSetting killerFOV = {"FieldOfView", 67};
-        
-
-        stringSetting useVSync = {"bUseVSync", vTrue};
-        stringSetting ambientOcclusion = {"r.DefaultFeature.AmbientOcclusion", vFalse};
-        stringSetting ambientOcclusionStaticFraction = {
-            "r.DefaultFeature.AmbientOcclusionStaticFraction", vFalse
-        };
-        stringSetting bloom = {"r.DefaultFeature.Bloom", vFalse};
-        stringSetting lensFlare = {"r.DefaultFeature.LensFlare", vFalse};
-        stringSetting motionBlur = {"r.DefaultFeature.MotionBlur", vFalse};
-        
-        stringSetting terrorRadiusVisual = {"TerrorRadiusVisualFeedback", vFalse};
-        intSetting colorBlindMode = {"ColorBlindMode", 0};
-        intSetting colorBlindModeStrength = {"ColorBlindModeIntensity", 0};
-        
-        bool removeIntroCutscene = false;
-    };
 
     bool CopyConfig();
     bool ImportConfig();
-    void ImportSettingInt(mINI::INIStructure& ini, mINI::INIStructure& importedIni, std::string group, std::pair<std::string, int> setting);
-    void ImportSettingString(mINI::INIStructure& ini, mINI::INIStructure& importedIni, std::string group, std::pair<std::string, std::string> setting);
-    void ImportSettingBool(mINI::INIStructure& ini, mINI::INIStructure& importedIni, std::string group, std::pair<std::string, std::pair<bool, std::pair<std::string, std::string>>> setting);
-    void ImportSettingFindString(mINI::INIStructure& ini, mINI::INIStructure& importedIni, std::string group, std::pair<std::string, std::string> setting, std
-                                 ::string file = Files::gameUserSettings);
 };
 
 inline ConfigEditor::Variables CEVars;
