@@ -8,18 +8,14 @@
 namespace Crosshair
 {
     void Setup();
-    void DrawCrosshair();
-    void DrawLines();
-    void DrawOutline();
-    void DrawCenterDot();
-
+    void DrawCrosshairs();
+    void DrawLines(const ImVec2& centerPoint);
+    void DrawOutline(const ImVec2& centerPoint);
+    void DrawCenterDot(const ImVec2& centerPoint);
     void ModifyDynamicCenterPoint();
-
 
     struct Variables
     {
-        bool setCustom = false;
-
         bool enabled = false;
 
         bool enableLines = false;
@@ -43,9 +39,10 @@ namespace Crosshair
         int centerDotSegments = 12;
         ImColor centerDotColor = ImColor(255, 74, 74);
 
-        ImVec2 screenCenterPoint;
+        std::vector<ImVec2> allCenterPoints;
         ImVec2 trueScreenCenterPoint;
         ImVec2 savedScreenCenterPoint;
+
 
         bool useDynamicCenterPoint = false;
         int dynamicCenterPointIndex = 0;
@@ -203,7 +200,7 @@ namespace Crosshair
     {
         Variables newCVars;
         newCVars.enabled = true;
-        newCVars.screenCenterPoint = ImVec2(Backend::screenWidth / 2, Backend::screenHeight / 2);
+        //newCVars.screenCenterPoint = ImVec2(Backend::screenWidth / 2, Backend::screenHeight / 2);
         cfg = newCVars;
 
         return true;
