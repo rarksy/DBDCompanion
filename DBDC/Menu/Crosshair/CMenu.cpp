@@ -93,42 +93,42 @@ void CMenu::RenderUI()
         ImGui::BeginDisabled(CVars.useDynamicCenterPoint);
 
         if (ImGui::Button("Reset"))
-            CVars.screenCenterPoint.x = Backend::screenWidth / 2;
+            CVars.allCenterPoints[0].x = Backend::screenWidth / 2;
         ImGui::SameLine();
         ImGui::Button("-", ImVec2(20, 0));
         if (ImGui::IsItemActive() && ImGui::IsItemHovered())
-            CVars.screenCenterPoint.x--;
+            CVars.allCenterPoints[0].x--;
         ImGui::SameLine();
         ImGui::Button("+", ImVec2(20, 0));
         if (ImGui::IsItemActive() && ImGui::IsItemHovered())
-            CVars.screenCenterPoint.x++;
+            CVars.allCenterPoints[0].x++;
         ImGui::SameLine();
         ImGui::SetNextItemWidth(80);
-        ImGui::SliderFloat("X", &CVars.screenCenterPoint.x, 0, Backend::screenWidth, "%.0f");
+        ImGui::SliderFloat("X", &CVars.allCenterPoints[0].x, 0, Backend::screenWidth, "%.0f");
 
 
         if (ImGui::Button("Reset##"))
-            CVars.screenCenterPoint.y = Backend::screenHeight / 2;
+            CVars.allCenterPoints[0].y = Backend::screenHeight / 2;
         ImGui::SameLine();
         ImGui::Button("-##", ImVec2(20, 0));
         if (ImGui::IsItemActive() && ImGui::IsItemHovered())
-            CVars.screenCenterPoint.y--;
+            CVars.allCenterPoints[0].y--;
         ImGui::SameLine();
         ImGui::Button("+##", ImVec2(20, 0));
         if (ImGui::IsItemActive() && ImGui::IsItemHovered())
-            CVars.screenCenterPoint.y++;
+            CVars.allCenterPoints[0].y++;
         ImGui::SameLine();
         ImGui::SetNextItemWidth(80);
-        ImGui::SliderFloat("Y", &CVars.screenCenterPoint.y, 0, Backend::screenHeight, "%.0f");
+        ImGui::SliderFloat("Y", &CVars.allCenterPoints[0].y, 0, Backend::screenHeight, "%.0f");
 
         ImGui::EndDisabled();
 
         if (ImGui::Checkbox("Dynamic Killer Crosshair", &CVars.useDynamicCenterPoint))
         {
             if (CVars.useDynamicCenterPoint)
-                CVars.savedScreenCenterPoint = CVars.screenCenterPoint;
+                CVars.savedScreenCenterPoint = CVars.allCenterPoints[0];
             else
-                CVars.screenCenterPoint = CVars.savedScreenCenterPoint;
+                CVars.allCenterPoints[0] = CVars.savedScreenCenterPoint;
         }
 
         ImGui::BeginDisabled(!CVars.useDynamicCenterPoint);
