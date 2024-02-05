@@ -30,9 +30,11 @@ void HCMenu::RenderUI()
             std::thread loopThread(HookCounter::DetectionLoop);
             loopThread.detach();
         }
-        else if (!CVars.enabled)
+        else
         {
-            Menu::Overlay::DestroyOverlay();
+            if (!CVars.enabled)
+                Menu::Overlay::DestroyOverlay();
+
             HookCounter::Internal::survivorLocationsStage1.clear();
             HookCounter::Internal::survivorLocationsStage2.clear();
         }
@@ -47,7 +49,7 @@ void HCMenu::RenderUI()
     ImGui::Columns(3, nullptr, false);
     ImGui::SetColumnWidth(0, 240);
     ImGui::SetColumnWidth(1, 245);
-    
+
     ImGui::SeparatorText("Options");
 
     ImGui::Checkbox("Track 1st Stage Hooks", &HCVars.track1stStage);
@@ -59,7 +61,7 @@ void HCMenu::RenderUI()
     ImGui::NextColumn();
 
     ImGui::SeparatorText("Customization");
-
+    
     ImGui::BeginDisabled(!HCVars.playSoundOnHook);
     ImGui::SetNextItemWidth(140);
     ImGui::InputTextWithHint("Sound Path", "C:/Path/To/File.wav", HCVars.soundFilePath, sizeof HCVars.soundFilePath);
@@ -67,7 +69,7 @@ void HCMenu::RenderUI()
     ImGui::EndDisabled();
 
     ImGui::NextColumn();
-    
+
     ImGui::SeparatorText("Settings");
 
     GUI::DropDownBox("Menu UI Scale", HCVars.menuScaleFactor, UIScales, false);
@@ -75,6 +77,9 @@ void HCMenu::RenderUI()
 
     GUI::DropDownBox("In-Game UI Scale", HCVars.hudScaleFactor, UIScales, false);
     GUI::ToolTip("Set This To Whatever Your \"In-Game UI Scale\" Setting Is Set To In Game.");
+
+    ImGui::SliderFloat("1st Threshold", &HCVars.firstThreshold, 0.0F, 1.F, "%.1F");
+    ImGui::SliderFloat("2nd Threshold", &HCVars.secondThreshold, 0.0F, 1.F, "%.1F");
 
     ImGui::EndDisabled();
 
