@@ -47,9 +47,32 @@ bool CEMenu::Setup()
 
 void CEMenu::RenderUI()
 {
+    ImGui::SameLine(252);
+    
+    if (ImGui::Button("Copy Settings"))
+        ConfigEditor::CopyConfig();
+    GUI::ToolTip("Will copy your settings to clipboard, you can send it to anyone else using DBDC.");
+
+    ImGui::SameLine();
+
+    if (ImGui::Button("Import Settings"))
+        ConfigEditor::ImportConfig();
+    GUI::ToolTip("Will import settings copied to clipboard.");
+
+    ImGui::SameLine();
+
+    if (ImGui::Button("Open Folder"))
+        Misc::OpenSettingsFolder();
+
+    ImGui::SameLine();
+
+    if (ImGui::Button("Restart Game"))
+        Misc::RestartGame();
+    GUI::ToolTip("Will close and reopen Dead By Daylight to apply any changed settings.");
+    
     ImGui::Columns(3, nullptr, false);
-    ImGui::SetColumnWidth(0, 270);
-    ImGui::SetColumnWidth(1, 200);
+    ImGui::SetColumnWidth(0, 258);
+    ImGui::SetColumnWidth(1, 227);
 
     ImGui::SeparatorText("Graphics Quality");
     GUI::ToolTip("Features settings that affect the graphical fidelity of Dead By Daylight.");
@@ -105,28 +128,6 @@ void CEMenu::RenderUI()
     ImGui::SeparatorText("Rendering");
     GUI::ToolTip("Features settings that affect the way the game renders.");
 
-    GUI::Checkbox("VSync", CEVars.useVSync);
-    GUI::ToolTip("Syncs Dead By Daylight's framerate to your refresh rate.\n"
-        "Note: Can cause input delay.");
-
-    GUI::Checkbox("Anti-Aliasing", CEVars.antiAliasMode);
-    GUI::ToolTip("Blurs the edges of objects to appear less jagged.",
-                 CEVars.antiAliasMode.value
-                     ? Image::AntiAliasing::textureOn
-                     : Image::AntiAliasing::textureOff, ImVec2(400, 250));
-
-
-    GUI::Checkbox("Ambient Occlusion", CEVars.ambientOcclusion);
-    GUI::Checkbox("A/O Static Fraction", CEVars.ambientOcclusionStaticFraction);
-    GUI::Checkbox("Bloom", CEVars.bloom);
-    GUI::Checkbox("Lens Flare", CEVars.lensFlare);
-    GUI::Checkbox("Motion Blur", CEVars.motionBlur);
-
-    ImGui::NextColumn();
-
-    ImGui::SeparatorText("Misc");
-    GUI::ToolTip("Features settings that affect the user experience.");
-
     GUI::DropDownBox("Window Mode", CEVars.windowMode, windowModes);
     GUI::ToolTip("Changes the rendering mode used to display the game.");
 
@@ -152,20 +153,42 @@ void CEMenu::RenderUI()
 
     ImGui::EndDisabled();
     GUI::ToolTip("Sets the maximum achievable framerate.\n" "Values are clamped and cannot go above/below the available options.");
-    
+
+    GUI::Checkbox("VSync", CEVars.useVSync);
+    GUI::ToolTip("Syncs Dead By Daylight's framerate to your refresh rate.\n"
+        "Note: Can cause input delay.");
+
+    GUI::Checkbox("Anti-Aliasing", CEVars.antiAliasMode);
+    GUI::ToolTip("Blurs the edges of objects to appear less jagged.",
+                 CEVars.antiAliasMode.value
+                     ? Image::AntiAliasing::textureOn
+                     : Image::AntiAliasing::textureOff, ImVec2(400, 250));
+
+
+    GUI::Checkbox("Ambient Occlusion", CEVars.ambientOcclusion);
+    GUI::Checkbox("A/O Static Fraction", CEVars.ambientOcclusionStaticFraction);
+    GUI::Checkbox("Bloom", CEVars.bloom);
+    GUI::Checkbox("Lens Flare", CEVars.lensFlare);
+    GUI::Checkbox("Motion Blur", CEVars.motionBlur);
+
+    ImGui::NextColumn();
+
+    ImGui::SeparatorText("Misc");
+    GUI::ToolTip("Features settings that affect the user experience.");
+
     GUI::Slider("Killer FOV", CEVars.killerFOV, 87, 103);
     GUI::ToolTip("Changes the FOV used for 1st person killers.");
-    
+
     if (ImGui::Checkbox("Remove Intro Cutscene", &CEVars.removeIntroCutscene))
     {
         const std::string gameDir = Misc::GetGameRootDirectory();
         const std::string moviesDir = gameDir + "DeadByDaylight\\Content\\Movies\\";
-    
+
         if (CEVars.removeIntroCutscene)
         {
             if (std::filesystem::exists(moviesDir + "disabled_AdditionalLoadingScreen"))
                 std::filesystem::remove_all(moviesDir + "disabled_AdditionalLoadingScreen");
-            
+
             if (std::rename(
                 (moviesDir + "AdditionalLoadingScreen").c_str(),
                 (moviesDir + "disabled_AdditionalLoadingScreen").c_str()) != 0)
@@ -186,45 +209,37 @@ void CEMenu::RenderUI()
         }
     }
     GUI::ToolTip("Skips the cutscene that plays after launching the game.");
-    
+
     GUI::Checkbox("Skip News Popup", CEVars.skipNewsPopup, 0, 99999);
     GUI::ToolTip("Disables the news popup that appears after launching the game.");
-    
+
+    ImGui::SeparatorText("Sensitivity");
+
+    GUI::Slider("Survivor Mouse", CEVars.survivorMouseSensitivity, 0, 100);
+    GUI::Slider("Survivor Controller", CEVars.survivorControllerSensitivity, 0, 100);
+    GUI::Slider("Killer Mouse", CEVars.killerMouseSensitivity, 0, 100);
+    GUI::Slider("Killer Controller", CEVars.killerControllerSensitivity, 0, 100);
+
     ImGui::SeparatorText("Accessibility");
-    
+
     GUI::Checkbox("Terror Radius Visual", CEVars.terrorRadiusVisual);
     GUI::ToolTip("Adds a visual heartbeat whenever inside the killers terror radius");
-    
+
     GUI::DropDownBox("Colorblind Mode", CEVars.colorBlindMode, colorBlindModes);
     GUI::ToolTip("Adjusts the games color pallet.");
-    
-    GUI::Slider("Colorblind Strength", CEVars.colorBlindModeStrength, 0, 100);
+
+    ImGui::BeginDisabled(!CEVars.colorBlindMode.value);
+
+    GUI::Slider("Strength", CEVars.colorBlindModeStrength, 0, 100);
     GUI::ToolTip("Adjusts the strength of the changed color pallet.");
-    
-    ImGui::SeparatorText("Other");
-    
+
+    ImGui::EndDisabled();
+
     //if (ImGui::Button("Start In DX12")) // doesnt actually work, malding
-        //Misc::RestartGame(true);
+    //Misc::RestartGame(true);
     //GUI::ToolTip("Will close and reopen Dead By Daylight Using DirectX 12.\nThis will also apply any changed settings.");
-    
-    if (ImGui::Button("Copy Settings"))
-        ConfigEditor::CopyConfig();
-    GUI::ToolTip("Will copy your settings to clipboard, you can send it to anyone else using DBDC.");
-    
-    ImGui::SameLine();
-    
-    if (ImGui::Button("Import Settings"))
-        ConfigEditor::ImportConfig();
-    GUI::ToolTip("Will import settings copied to clipboard.");
-    
-    if (ImGui::Button("Open Folder"))
-        Misc::OpenSettingsFolder();
-    
-    ImGui::SameLine();
-    
-    if (ImGui::Button("Restart Game"))
-        Misc::RestartGame();
-    GUI::ToolTip("Will close and reopen Dead By Daylight to apply any changed settings.");
+
+    ImGui::EndColumns();
 }
 
 inline ImVec4 RGBToImVec4(int r, int g, int b, int a = 255)
