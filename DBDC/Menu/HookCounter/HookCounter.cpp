@@ -54,7 +54,7 @@ void HookCounter::DetectionLoop()
     cv::Rect region(0, 0, Backend::screenWidth / 3, Backend::screenHeight);
     cv::Mat frame;
     cv::Point detectedLocation;
-    double minThreshold = 0.9; // 0-1
+
     
     while (HCVars.enabled)
     {
@@ -64,13 +64,13 @@ void HookCounter::DetectionLoop()
 
         if (HCVars.track1stStage)
         {
-            if (TemplateMatch(frame, stage1Image, minThreshold, detectedLocation))
+            if (TemplateMatch(frame, stage1Image, HCVars.firstThreshold, detectedLocation))
                 HandleDetection(detectedLocation, Internal::survivorLocationsStage1);
         }
 
         if (HCVars.track2ndStage)
         {
-            if (TemplateMatch(frame, stage2Image, minThreshold, detectedLocation))
+            if (TemplateMatch(frame, stage2Image, HCVars.secondThreshold, detectedLocation))
                 HandleDetection(detectedLocation, Internal::survivorLocationsStage2);
         }
 

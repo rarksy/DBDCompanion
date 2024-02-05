@@ -23,6 +23,9 @@ namespace HookCounter
 
         ConfigEditor::Setting menuScaleFactor = ConfigEditor::Setting(ConfigEditor::Files::gameUserSettings, ConfigEditor::Sections::DBDGameUserSettings, "MenuScaleFactor", 100);
         ConfigEditor::Setting hudScaleFactor = ConfigEditor::Setting(ConfigEditor::Files::gameUserSettings, ConfigEditor::Sections::DBDGameUserSettings, "HudScaleFactor", 100);
+
+        float firstThreshold = 0.9f;
+        float secondThreshold = 0.9f;
     };
 
     namespace Internal
