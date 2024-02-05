@@ -142,6 +142,13 @@ namespace ConfigEditor
         Setting animationQuality = Setting(Files::gameUserSettings, Sections::scalabilityGroups, "sg.AnimationQuality", 0);
         
         // Rendering
+        Setting windowMode = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "FullscreenMode", 1);
+        Setting desiredScreenWidth = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "DesiredScreenWidth", 1920);
+        Setting desiredScreenHeight = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "DesiredScreenHeight", 1080);
+        Setting resolutionWidth = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "ResolutionSizeX", 1920);
+        Setting resolutionHeight = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "ResolutionSizeY", 1080);
+        Setting fpsLimitMode = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "FPSLimitMode", 60);
+        
         Setting useVSync = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "bUseVSync", 1);
         Setting antiAliasMode = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "AntiAliasingMode", 1);
         
@@ -152,13 +159,11 @@ namespace ConfigEditor
         Setting motionBlur = Setting(Files::engine, Sections::rendererOverrideSettings, "r.DefaultFeature.MotionBlur", 1);
         
         // Misc
-        Setting windowMode = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "FullscreenMode", 1);
-        Setting desiredScreenWidth = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "DesiredScreenWidth", 1920);
-        Setting desiredScreenHeight = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "DesiredScreenHeight", 1080);
-        Setting resolutionWidth = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "ResolutionSizeX", 1920);
-        Setting resolutionHeight = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "ResolutionSizeY", 1080);
-        Setting fpsLimitMode = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "FPSLimitMode", 60);
         Setting killerFOV = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "FieldOfView", 87);
+        Setting killerMouseSensitivity = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "KillerMouseSensitivity", 50);
+        Setting killerControllerSensitivity = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "KillerControllerSensitivity", 50);
+        Setting survivorMouseSensitivity = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "SurvivorMouseSensitivity", 50);
+        Setting survivorControllerSensitivity = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "SurvivorControllerSensitivity", 50);
         bool removeIntroCutscene = false;
         Setting skipNewsPopup = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "HighestWeightSeenNews", 0);
         

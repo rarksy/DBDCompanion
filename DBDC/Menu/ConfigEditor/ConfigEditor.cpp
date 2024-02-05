@@ -83,6 +83,10 @@ void ConfigEditor::LoadConfig()
     CEVars.shadingQuality.LoadValue();
     CEVars.animationQuality.LoadValue();
 
+    CEVars.windowMode.LoadValue();
+    CEVars.resolutionWidth.LoadValue();
+    CEVars.resolutionHeight.LoadValue();
+    CEVars.fpsLimitMode.LoadValue();
     CEVars.useVSync.LoadValue();
     CEVars.antiAliasMode.LoadValue();
     CEVars.ambientOcclusion.LoadValue();
@@ -90,15 +94,15 @@ void ConfigEditor::LoadConfig()
     CEVars.bloom.LoadValue();
     CEVars.lensFlare.LoadValue();
     CEVars.motionBlur.LoadValue();
-
     
-    CEVars.windowMode.LoadValue();
-    CEVars.resolutionWidth.LoadValue();
-    CEVars.resolutionHeight.LoadValue();
-    CEVars.fpsLimitMode.LoadValue();
     CEVars.killerFOV.LoadValue();
     CEVars.removeIntroCutscene = std::filesystem::exists(Misc::GetGameRootDirectory() + "DeadByDaylight\\Content\\Movies\\" + "disabled_AdditionalLoadingScreen");
     CEVars.skipNewsPopup.LoadValue();
+
+    CEVars.survivorMouseSensitivity.LoadValue();
+    CEVars.survivorControllerSensitivity.LoadValue();
+    CEVars.killerMouseSensitivity.LoadValue();
+    CEVars.killerControllerSensitivity.LoadValue();
 
     CEVars.terrorRadiusVisual.LoadValue();
     CEVars.colorBlindMode.LoadValue();
@@ -217,6 +221,11 @@ bool ConfigEditor::ImportConfig()
 
     CEVars.removeIntroCutscene = std::filesystem::exists(Misc::GetGameRootDirectory() + "DeadByDaylight\\Content\\Movies\\" + "disabled_AdditionalLoadingScreen");
     CEVars.skipNewsPopup.ImportValue(importedGameUserSettings);
+
+    CEVars.survivorMouseSensitivity.ImportValue(importedGameUserSettings);
+    CEVars.survivorControllerSensitivity.ImportValue(importedGameUserSettings);
+    CEVars.killerMouseSensitivity.ImportValue(importedGameUserSettings);
+    CEVars.killerControllerSensitivity.ImportValue(importedGameUserSettings);
 
     CEVars.terrorRadiusVisual.ImportValue(importedGameUserSettings);
     CEVars.colorBlindMode.ImportValue(importedGameUserSettings);
