@@ -78,7 +78,6 @@
     <ClInclude Include="Menu\HookCounter\HookCounter.h" />
     <ClInclude Include="Menu\Menu.h" />
     <ClInclude Include="Misc\Misc.hpp" />
-    <ClInclude Include="Scripts\Scripts.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Dependencies\GLFW\lib\glew32s.lib" />
