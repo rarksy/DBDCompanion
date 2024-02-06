@@ -52,7 +52,7 @@ namespace Crosshair
     {
         inline int currentSelectedProfile = -1;
         inline int loadedProfile = -1;
-        inline std::string profileFolder = "\\Crosshair Profiles\\";
+        inline std::string profileFolder = "\\DBDC\\Crosshair Profiles\\";
         inline std::vector<std::string> allProfiles;
         inline std::string selectedProfileName;
         inline std::string loadedProfileName;
@@ -62,7 +62,7 @@ namespace Crosshair
     {
         if (!std::filesystem::exists(Backend::exeDirectory.string() + ProfileHandling::profileFolder))
         {
-            const bool directoryCreated = std::filesystem::create_directory(
+            const bool directoryCreated = std::filesystem::create_directories(
                 Backend::exeDirectory.string() + ProfileHandling::profileFolder);
 
             return directoryCreated;
