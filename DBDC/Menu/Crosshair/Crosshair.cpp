@@ -5,20 +5,20 @@
 void Crosshair::Setup()
 {
     CVars.trueScreenCenterPoint = ImVec2(Backend::screenWidth / 2, Backend::screenHeight / 2);
-    CVars.allCenterPoints.push_back(CVars.trueScreenCenterPoint);
+    allCenterPoints.push_back(CVars.trueScreenCenterPoint);
 }
 
 void Crosshair::DrawCrosshairs()
 {
     if (CVars.useDynamicCenterPoint)
         ModifyDynamicCenterPoint();
-    else if (CVars.allCenterPoints.size() > 0)
-        for (int i = 1; i < CVars.allCenterPoints.size(); i++)
-            CVars.allCenterPoints.erase(CVars.allCenterPoints.begin() + i);
+    else if (allCenterPoints.size() > 0)
+        for (int i = 1; i < allCenterPoints.size(); i++)
+            allCenterPoints.erase(allCenterPoints.begin() + i);
 
-    for (int i = 0; i < CVars.allCenterPoints.size(); i++)
+    for (int i = 0; i < allCenterPoints.size(); i++)
     {
-        const ImVec2 centerPoint = CVars.allCenterPoints[i];
+        const ImVec2 centerPoint = allCenterPoints[i];
 
         if (CVars.enableCenterDot)
             DrawCenterDot(centerPoint);
@@ -251,15 +251,15 @@ void Crosshair::ModifyDynamicCenterPoint()
             const auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
                 std::chrono::steady_clock::now() - startTime).count();
 
-            if (CVars.allCenterPoints[0].y < CVars.trueScreenCenterPoint.y + 30 && duration >= 2000)
-                CVars.allCenterPoints[0].y++;
+            if (allCenterPoints[0].y < CVars.trueScreenCenterPoint.y + 30 && duration >= 2000)
+                allCenterPoints[0].y++;
         }
         else
         {
             if (isRButtonDown)
                 isRButtonDown = false;
 
-            CVars.allCenterPoints[0] = CVars.trueScreenCenterPoint;
+            allCenterPoints[0] = ImVec2(Backend::screenWidth / 2, Backend::screenHeight / 2);
         }
     }
     else if (CVars.dynamicCenterPointIndex == 1) // Deathslinger
@@ -275,26 +275,26 @@ void Crosshair::ModifyDynamicCenterPoint()
                 std::chrono::steady_clock::now() - startTime).count();
 
             if (duration > 400)
-                CVars.allCenterPoints[0].y = 9999; // off screen;
+                allCenterPoints[0].y = 9999; // off screen;
         }
         else
         {
             if (isRButtonDown)
                 isRButtonDown = false;
 
-            CVars.allCenterPoints[0].x = Backend::screenWidth / 2 + 3;
-            CVars.allCenterPoints[0].y = CVars.trueScreenCenterPoint.y;
+            allCenterPoints[0].x = Backend::screenWidth / 2 + 3;
+            allCenterPoints[0].y = CVars.trueScreenCenterPoint.y;
         }
     }
     else if (CVars.dynamicCenterPointIndex == 2) // Trickster
     {
-        CVars.allCenterPoints[0] = ImVec2(Backend::screenWidth / 2 - 15, Backend::screenHeight / 2);
-        if (CVars.allCenterPoints.size() < 2)
-            CVars.allCenterPoints.push_back(ImVec2(Backend::screenWidth / 2 + 15, Backend::screenHeight / 2));
+        allCenterPoints[0] = ImVec2(Backend::screenWidth / 2 - 15, Backend::screenHeight / 2);
+        if (allCenterPoints.size() < 2)
+            allCenterPoints.push_back(ImVec2(Backend::screenWidth / 2 + 15, Backend::screenHeight / 2));
     }
 
     if (CVars.dynamicCenterPointIndex != 2)
-        if (CVars.allCenterPoints.size() > 0)
-            for (int i = 1; i < CVars.allCenterPoints.size(); i++)
-                CVars.allCenterPoints.erase(CVars.allCenterPoints.begin() + i);
+        if (allCenterPoints.size() > 0)
+            for (int i = 1; i < allCenterPoints.size(); i++)
+                allCenterPoints.erase(allCenterPoints.begin() + i);
 }
