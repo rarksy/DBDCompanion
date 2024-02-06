@@ -14,6 +14,8 @@ void CMenu::Setup()
 
 void CMenu::RenderUI()
 {
+    ImGui::SetCursorPosY(45);
+    
     if (ImGui::Checkbox("Enable", &CVars.enabled))
     {
         if (CVars.enabled)
@@ -93,42 +95,42 @@ void CMenu::RenderUI()
         ImGui::BeginDisabled(CVars.useDynamicCenterPoint);
 
         if (ImGui::Button("Reset"))
-            CVars.allCenterPoints[0].x = Backend::screenWidth / 2;
+            Crosshair::allCenterPoints[0].x = Backend::screenWidth / 2;
         ImGui::SameLine();
         ImGui::Button("-", ImVec2(20, 0));
         if (ImGui::IsItemActive() && ImGui::IsItemHovered())
-            CVars.allCenterPoints[0].x--;
+            Crosshair::allCenterPoints[0].x--;
         ImGui::SameLine();
         ImGui::Button("+", ImVec2(20, 0));
         if (ImGui::IsItemActive() && ImGui::IsItemHovered())
-            CVars.allCenterPoints[0].x++;
+            Crosshair::allCenterPoints[0].x++;
         ImGui::SameLine();
         ImGui::SetNextItemWidth(80);
-        ImGui::SliderFloat("X", &CVars.allCenterPoints[0].x, 0, Backend::screenWidth, "%.0f");
+        ImGui::SliderFloat("X", &Crosshair::allCenterPoints[0].x, 0, Backend::screenWidth, "%.0f");
 
 
         if (ImGui::Button("Reset##"))
-            CVars.allCenterPoints[0].y = Backend::screenHeight / 2;
+            Crosshair::allCenterPoints[0].y = Backend::screenHeight / 2;
         ImGui::SameLine();
         ImGui::Button("-##", ImVec2(20, 0));
         if (ImGui::IsItemActive() && ImGui::IsItemHovered())
-            CVars.allCenterPoints[0].y--;
+            Crosshair::allCenterPoints[0].y--;
         ImGui::SameLine();
         ImGui::Button("+##", ImVec2(20, 0));
         if (ImGui::IsItemActive() && ImGui::IsItemHovered())
-            CVars.allCenterPoints[0].y++;
+            Crosshair::allCenterPoints[0].y++;
         ImGui::SameLine();
         ImGui::SetNextItemWidth(80);
-        ImGui::SliderFloat("Y", &CVars.allCenterPoints[0].y, 0, Backend::screenHeight, "%.0f");
+        ImGui::SliderFloat("Y", &Crosshair::allCenterPoints[0].y, 0, Backend::screenHeight, "%.0f");
 
         ImGui::EndDisabled();
 
         if (ImGui::Checkbox("Dynamic Killer Crosshair", &CVars.useDynamicCenterPoint))
         {
             if (CVars.useDynamicCenterPoint)
-                CVars.savedScreenCenterPoint = CVars.allCenterPoints[0];
+                CVars.savedScreenCenterPoint = Crosshair::allCenterPoints[0];
             else
-                CVars.allCenterPoints[0] = CVars.savedScreenCenterPoint;
+                Crosshair::allCenterPoints[0] = CVars.savedScreenCenterPoint;
         }
 
         ImGui::BeginDisabled(!CVars.useDynamicCenterPoint);

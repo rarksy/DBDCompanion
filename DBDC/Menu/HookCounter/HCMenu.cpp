@@ -16,6 +16,8 @@ void HCMenu::Setup()
 
 void HCMenu::RenderUI()
 {
+    ImGui::SetCursorPosY(45);
+    
     if (ImGui::Checkbox("Enable", &HCVars.enabled))
     {
         if (HCVars.enabled)

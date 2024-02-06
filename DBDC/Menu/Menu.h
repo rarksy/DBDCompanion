@@ -65,7 +65,7 @@ namespace Menu
     }
 
 
-    inline int menuToShow = 0;
+    inline int menuToShow = 1;
 
     inline constexpr ImGuiWindowFlags menuFlags =
         ImGuiWindowFlags_NoResize |

@@ -47,7 +47,7 @@ bool CEMenu::Setup()
 
 void CEMenu::RenderUI()
 {
-    ImGui::SameLine(252);
+    ImGui::SetCursorPos({252, 15});
     
     if (ImGui::Button("Copy Settings"))
         ConfigEditor::CopyConfig();

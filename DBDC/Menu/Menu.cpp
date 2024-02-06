@@ -48,7 +48,7 @@ void Menu::RunLoop()
                 HookCounter::RenderDetection();
 
             if (CVars.enabled)
-                Crosshair::DrawCrosshair();
+                Crosshair::DrawCrosshairs();
 
             ImGui::Render();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -75,24 +75,37 @@ void Menu::RenderUI()
     ImGui::SetNextWindowSize(ImVec2(Styling::menuWidth, Styling::menuHeight), ImGuiCond_Once);
     ImGui::Begin("menu", nullptr, menuFlags);
 
-    if (menuToShow != 0)
-    {
-        if (ImGui::Button("<- Back"))
-            menuToShow = 0;
-    }
+    static bool hamburgerOpen = false;
+    static float hamburgerWidth = 0;
 
-    if (menuToShow == 0)
+    if (hamburgerOpen || hamburgerWidth > 0.F)
     {
+        ImGui::GetWindowDrawList()->AddRectFilledMultiColor({5, 5}, {hamburgerWidth, Styling::menuHeight / 3}, ImColor(55, 13, 13), ImColor(25, 13, 13), ImColor(15, 13, 13),
+                                                            ImColor(15, 13, 13));
+        ImGui::GetWindowDrawList()->AddRect({5, 5}, {hamburgerWidth, Styling::menuHeight / 3}, ImColor(255, 83, 83), 2.F, 0, 2.F);
+
+        ImGui::PushClipRect({5, 5}, {hamburgerWidth, Styling::menuHeight / 3}, false);
+
+        if (ImGui::IsKeyPressed(ImGuiKey_MouseLeft, false) && !ImGui::IsMouseHoveringRect({5, 5}, {hamburgerWidth, Styling::menuHeight / 3}))
+            hamburgerOpen = false;
+
+        ImGui::SetCursorPosY(45);
+
         if (ImGui::Button("Config Editor"))
             menuToShow = 1;
-
         if (ImGui::Button("Hook Counter (ALPHA)"))
             menuToShow = 2;
         GUI::ToolTip("This is a pre-release alpha of the hook counter\nIt is not finished and WILL contain bugs");
 
         if (ImGui::Button("Crosshair Menu"))
             menuToShow = 3;
+        
+        ImGui::PopClipRect();
+    }
+    ImGui::BeginDisabled(hamburgerOpen || hamburgerWidth > 0.F);
 
+    if (menuToShow == 0)
+    {
         ImGui::SetCursorPos({10, 470});
         ImGui::TextColored(ImVec4(0.1F, 0.1F, 0.1F, 0.3F), "I DONT KNOW HOW TO MAKE A GOOD MAIN MENU");
     }
@@ -109,7 +122,7 @@ void Menu::RenderUI()
     {
         static std::once_flag flag;
         std::call_once(flag, HCMenu::Setup);
-        
+
         HCMenu::RenderUI();
     }
 
@@ -119,9 +132,25 @@ void Menu::RenderUI()
         static std::once_flag flagMenu;
         std::call_once(flagCrosshair, Crosshair::Setup);
         std::call_once(flagMenu, CMenu::Setup);
-        
+
         CMenu::RenderUI();
     }
+
+    ImGui::EndDisabled();
+
+    if (hamburgerOpen && hamburgerWidth < 200)
+        hamburgerWidth += 10;
+    else if (!hamburgerOpen && hamburgerWidth > 0)
+        hamburgerWidth -= 10;
+
+    ImGui::GetWindowDrawList()->AddRectFilled({8, 10}, {38, 15}, ImColor(255, 83, 83));
+    ImGui::GetWindowDrawList()->AddRectFilled({8, 20}, {38, 25}, ImColor(255, 83, 83));
+    ImGui::GetWindowDrawList()->AddRectFilled({8, 30}, {38, 35}, ImColor(255, 83, 83));
+    ImGui::SetCursorPos({6, 6});
+    
+    if (ImGui::InvisibleButton("hamburgermenu", {40, 34}))
+        hamburgerOpen = !hamburgerOpen;
+    
 
     ImGui::SetCursorPos({720, 470});
     ImGui::TextColored(ImVec4(0.8F, 0.8F, 0.8F, 0.5F), "(?)");
@@ -167,6 +196,7 @@ void Menu::CreateGlobalStyle()
     style.FrameRounding = 2.F;
     style.DisabledAlpha = 0.3F;
     style.FrameBorderSize = 1.7F;
+    style.DisabledAlpha = 0.1f;
 
     // Slider
     colors[ImGuiCol_Slider] = RGBToImVec4(255, 83, 83);
@@ -195,7 +225,6 @@ void Menu::CreateGlobalStyle()
 
     // Input Text
     colors[ImGuiCol_InputText] = RGBToImVec4(255, 83, 83);
-    
-    colors[ImGuiCol_TextSelectedBg] = RGBToImVec4(225, 63, 63, 150);
 
+    colors[ImGuiCol_TextSelectedBg] = RGBToImVec4(225, 63, 63, 150);
 }
