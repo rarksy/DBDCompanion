@@ -3,6 +3,27 @@
 #include "ImGui/imgui.h"
 #include "Menu.h"
 #include "../Backend/Backend.hpp"
+#include "GUI/GUI.h"
+
+struct Color
+{
+    int r;
+    int g;
+    int b;
+    int a = 255;
+
+    Color(int _r, int _g, int _b, int _a = 255) : r(_r), g(_g), b(_b), a(_a) {}
+
+    ImVec4 ToImVec4()
+    {
+        return {r / 255.F, g / 255.F, b / 255.F, a / 255.F};
+    }
+
+    ImColor ToImColor()
+    {
+        return ImColor(r, g, b);
+    }
+};
 
 namespace Menu
 {
@@ -57,6 +78,8 @@ namespace Menu
         inline constexpr int itemWidth = 100;
 
         inline constexpr float fontSize = 22.F;
+
+        inline Color menuAccent = Color(255, 83, 83);
     }
 
     namespace Icons
@@ -65,7 +88,7 @@ namespace Menu
     }
 
 
-    inline int menuToShow = 1;
+    inline int menuToShow = 0;
 
     inline constexpr ImGuiWindowFlags menuFlags =
         ImGuiWindowFlags_NoResize |
