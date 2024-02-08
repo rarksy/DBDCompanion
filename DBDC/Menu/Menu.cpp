@@ -89,7 +89,7 @@ void Menu::RenderUI()
     ImGui::SetNextWindowSize(ImVec2(Styling::menuWidth, Styling::menuHeight), ImGuiCond_Once);
     ImGui::Begin("menu", nullptr, menuFlags);
 
-    static bool hamburgerOpen = false;
+    static bool hamburgerOpen = true;
     static float hamburgerWidth = 0;
 
     if (hamburgerOpen || hamburgerWidth > 0.F)
