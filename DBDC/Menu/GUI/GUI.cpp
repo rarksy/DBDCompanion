@@ -2,6 +2,7 @@
 #include  "../Menu.h"
 #include "../ConfigEditor/ConfigEditor.hpp"
 
+
 bool GUI::Checkbox(const char* label, ConfigEditor::Setting& setting, bool invert)
 {
     ImGui::SetNextItemWidth(static_cast<float>(Menu::Styling::itemWidth));
@@ -48,7 +49,7 @@ bool GUI::Slider(const char* label, ConfigEditor::Setting& setting, int minValue
 }
 
 bool GUI::DropDownBox(const char* label, int& index, std::vector<std::string> items, bool useIndex, float widgetSize, std::string caption, std::vector<unsigned*> textures,
-                 ImVec2 textureSize)
+                      ImVec2 textureSize)
 {
     ImGui::SetNextItemWidth(widgetSize);
 
@@ -148,4 +149,23 @@ void GUI::ToolTip(std::string message, unsigned int texture, const ImVec2& size,
         ImGui::Image((void*)texture, size);
         ImGui::EndTooltip();
     }
+}
+
+bool GUI::ColorPicker(const char* label, Color& col)
+{
+    ImGui::PushID(label);
+
+    ImVec4 colorVec4 = col.ToImVec4();
+    const bool valueChanged = ImGui::ColorEdit4(label, &colorVec4.x, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_NoTooltip);
+
+    if (valueChanged)
+    {
+        const ImColor imColor = ImColor(colorVec4);
+
+        col = Color(imColor.Value.x * 255, imColor.Value.y * 255, imColor.Value.z * 255, imColor.Value.w * 255);
+    }
+
+    ImGui::PopID();
+
+    return valueChanged;
 }
