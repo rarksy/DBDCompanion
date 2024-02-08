@@ -145,7 +145,7 @@ void CMenu::RenderUI()
 
         ImGui::Text("Current Profile: %s", Crosshair::ProfileHandling::loadedProfileName.c_str());
         
-        ImGui::PushStyleColor(ImGuiCol_Border, ImColor(255, 83, 83).Value);
+        ImGui::PushStyleColor(ImGuiCol_Border, Menu::Styling::menuAccent.ToImVec4());
         if (ImGui::ListBox("##Profiles", &Crosshair::ProfileHandling::currentSelectedProfile,
                            [](void* data, int idx, const char** outText)
                            {
