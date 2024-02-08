@@ -2,7 +2,7 @@
 #include "Crosshair.h"
 #include "../Menu.h"
 #include "../GUI/GUI.h"
-#include "../HookCounter/HookCounter.h"
+#include "../HookTracker/HookCounter.h"
 #include "GLFW/glfw3.h"
 #include "ImGui/imgui.h"
 
@@ -27,7 +27,7 @@ void CMenu::RenderUI()
                 glfwMakeContextCurrent(Menu::mainWindow);
             }
         }
-        else if (!HCVars.enabled)
+        else if (!HTVars.enabled)
             Menu::Overlay::DestroyOverlay();
     }
 

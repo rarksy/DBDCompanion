@@ -7,10 +7,10 @@
 #include "Crosshair/CMenu.h"
 #include "Crosshair/Crosshair.h"
 #include "GUI/GUI.h"
-#include "HookCounter/HCMenu.h"
+#include "HookTracker\HTMenu.h"
 #include <Windows.h>
 
-#include "HookCounter/HookCounter.h"
+#include "HookTracker/HookCounter.h"
 
 void Menu::RunLoop()
 {
@@ -58,8 +58,8 @@ void Menu::RunLoop()
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
 
-            if (HCVars.enabled)
-                HookCounter::RenderDetection();
+            if (HTVars.enabled)
+                HookTracker::RenderDetection();
 
             if (CVars.enabled)
                 Crosshair::DrawCrosshairs();
@@ -110,12 +110,13 @@ void Menu::RenderUI()
 
         if (ImGui::Button("Config Editor"))
             menuToShow = 1;
+        GUI::ToolTip("Allows you to adjust your game settings in\nmore detail than the base game offers");
 
         ImGui::Spacing();
 
-        if (ImGui::Button("Hook Counter"))
+        if (ImGui::Button("Hook Tracker"))
             menuToShow = 2;
-        GUI::ToolTip("This is a pre-release alpha of the hook counter\nIt is not finished and WILL contain bugs");
+        GUI::ToolTip("This is a pre-release alpha of the hook Tracker\nIt is not finished and WILL contain bugs");
 
         ImGui::Spacing();
 
@@ -192,9 +193,9 @@ void Menu::RenderUI()
     else if (menuToShow == 2)
     {
         static std::once_flag flag;
-        std::call_once(flag, HCMenu::Setup);
+        std::call_once(flag, HTMenu::Setup);
 
-        HCMenu::RenderUI();
+        HTMenu::RenderUI();
     }
 
     else if (menuToShow == 3)

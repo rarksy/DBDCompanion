@@ -6,7 +6,7 @@
 #include <GLFW/glfw3.h>
 #include "../ConfigEditor/ConfigEditor.hpp"
 
-namespace HookCounter
+namespace HookTracker
 {
     void DetectionLoop();
     void HandleDetection(const cv::Point& detectedLocation, std::vector<ImVec2>& locations);
@@ -36,4 +36,4 @@ namespace HookCounter
     };
 }
 
-inline HookCounter::Variables HCVars;
+inline HookTracker::Variables HTVars;

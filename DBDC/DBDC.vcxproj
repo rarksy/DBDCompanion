@@ -26,8 +26,8 @@
     <ClCompile Include="Menu\Crosshair\CMenu.cpp" />
     <ClCompile Include="Menu\Crosshair\Crosshair.cpp" />
     <ClCompile Include="Menu\GUI\GUI.cpp" />
-    <ClCompile Include="Menu\HookCounter\HCMenu.cpp" />
-    <ClCompile Include="Menu\HookCounter\HookCounter.cpp" />
+    <ClCompile Include="Menu\HookTracker\HTMenu.cpp" />
+    <ClCompile Include="Menu\HookTracker\HookCounter.cpp" />
     <ClCompile Include="Menu\Menu.cpp" />
     <ClCompile Include="Misc\Misc.cpp" />
   </ItemGroup>
@@ -43,9 +43,9 @@
     <ClInclude Include="Dependencies\GLFW\GL\wglew.h" />
     <ClInclude Include="Dependencies\Images\AntiAliasing\Off.hpp" />
     <ClInclude Include="Dependencies\Images\AntiAliasing\On.hpp" />
-    <ClInclude Include="Dependencies\Images\HookCounter\Hook.hpp" />
-    <ClInclude Include="Dependencies\Images\HookCounter\pip.hpp" />
-    <ClInclude Include="Dependencies\Images\HookCounter\Stage2.hpp" />
+    <ClInclude Include="Dependencies\Images\HookTracker\Hook.hpp" />
+    <ClInclude Include="Dependencies\Images\HookTracker\pip.hpp" />
+    <ClInclude Include="Dependencies\Images\HookTracker\Stage2.hpp" />
     <ClInclude Include="Dependencies\Images\Icons\ConfigEditor.hpp" />
     <ClInclude Include="Dependencies\Images\Images.h" />
     <ClInclude Include="Dependencies\Images\ResolutionQuality\100.hpp" />
@@ -74,8 +74,8 @@
     <ClInclude Include="Menu\Crosshair\CMenu.h" />
     <ClInclude Include="Menu\Crosshair\Crosshair.h" />
     <ClInclude Include="Menu\GUI\GUI.h" />
-    <ClInclude Include="Menu\HookCounter\HCMenu.h" />
-    <ClInclude Include="Menu\HookCounter\HookCounter.h" />
+    <ClInclude Include="Menu\HookTracker\HTMenu.h" />
+    <ClInclude Include="Menu\HookTracker\HookCounter.h" />
     <ClInclude Include="Menu\Menu.h" />
     <ClInclude Include="Misc\Misc.hpp" />
   </ItemGroup>
