@@ -11,7 +11,8 @@ The config editor features the most extensive range of options that allow you to
 The config editor is always being updated and plans to feature things i **didn't even know were possible** until looking into them recently ;) stay tuned for that!
 
 # Hook Counter
-![image](https://github.com/rarksy/DBDCompanion/assets/70506725/4ef4f359-3127-4250-95da-a20b6913537b)  
+![image](https://github.com/rarksy/DBDCompanion/assets/70506725/2cd129f0-403b-4cbc-a5fc-9ba781babb66)
+
 The hook counter uses image recognition to detect when a survivor has been hooked, when a detection is made a pip icon will be rendered next to the corresponding survivors portrait just like when you're playing survivor!  
 This part of DBDC is still in prototype alpha so it is not polished and WILL contain bugs.  
 
