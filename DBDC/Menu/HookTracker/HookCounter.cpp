@@ -2,9 +2,9 @@
 #include <Windows.h>
 
 #include "HookCounter.h"
-#include "HCMenu.h"
-#include "Images/HookCounter/Hook.hpp"
-#include "Images/HookCounter/Stage2.hpp"
+#include "HTMenu.h"
+#include "Images/HookTracker/Hook.hpp"
+#include "Images/HookTracker/Stage2.hpp"
 #include "../Backend/Backend.hpp"
 #include "../Misc/Misc.hpp"
 
@@ -19,7 +19,7 @@ bool TemplateMatch(cv::Mat Frame, cv::Mat ElementToFind, double Threshold, cv::P
     return AccuracyValue >= Threshold;
 }
 
-void HookCounter::DetectionLoop()
+void HookTracker::DetectionLoop()
 {
     constexpr int targetFramerate = 3;
     constexpr std::chrono::duration<double> targetFrameDuration(1.0 / targetFramerate);
@@ -42,35 +42,35 @@ void HookCounter::DetectionLoop()
     }
 
     cv::resize(stage1Image, stage1Image, cv::Size(
-                   static_cast<int>(stage1Image.cols * HCVars.HudScaleFactor.second / 100.0),
-                   static_cast<int>(stage1Image.rows * HCVars.HudScaleFactor.second / 100.0))
+                   static_cast<int>(stage1Image.cols * HTVars.hudScaleFactor.value / 100.0),
+                   static_cast<int>(stage1Image.rows * HTVars.hudScaleFactor.value / 100.0))
     );
 
     cv::resize(stage2Image, stage2Image, cv::Size(
-                   static_cast<int>(stage2Image.cols * HCVars.HudScaleFactor.second / 100.0),
-                   static_cast<int>(stage2Image.rows * HCVars.HudScaleFactor.second / 100.0))
+                   static_cast<int>(stage2Image.cols * HTVars.hudScaleFactor.value / 100.0),
+                   static_cast<int>(stage2Image.rows * HTVars.hudScaleFactor.value / 100.0))
     );
     
     cv::Rect region(0, 0, Backend::screenWidth / 3, Backend::screenHeight);
     cv::Mat frame;
     cv::Point detectedLocation;
-    double minThreshold = 0.9; // 0-1
+
     
-    while (HCVars.enabled)
+    while (HTVars.enabled)
     {
         const auto frameStartTime = std::chrono::steady_clock::now();
 
         frame = Misc::GetScreenshot(region);
 
-        if (HCVars.track1stStage)
+        if (HTVars.track1stStage)
         {
-            if (TemplateMatch(frame, stage1Image, minThreshold, detectedLocation))
+            if (TemplateMatch(frame, stage1Image, HTVars.firstThreshold, detectedLocation))
                 HandleDetection(detectedLocation, Internal::survivorLocationsStage1);
         }
 
-        if (HCVars.track2ndStage)
+        if (HTVars.track2ndStage)
         {
-            if (TemplateMatch(frame, stage2Image, minThreshold, detectedLocation))
+            if (TemplateMatch(frame, stage2Image, HTVars.secondThreshold, detectedLocation))
                 HandleDetection(detectedLocation, Internal::survivorLocationsStage2);
         }
 
@@ -83,7 +83,7 @@ void HookCounter::DetectionLoop()
     }
 }
 
-void HookCounter::HandleDetection(const cv::Point& detectedLocation, std::vector<ImVec2>& locations)
+void HookTracker::HandleDetection(const cv::Point& detectedLocation, std::vector<ImVec2>& locations)
 {
     bool addSurvivor = true;
 
@@ -104,12 +104,12 @@ void HookCounter::HandleDetection(const cv::Point& detectedLocation, std::vector
     {
         locations.push_back(ImVec2(detectedLocation.x, detectedLocation.y));
 
-        if (HCVars.playSoundOnHook)
-            PlaySoundA(HCVars.soundFilePath, nullptr, SND_ASYNC);
+        if (HTVars.playSoundOnHook)
+            PlaySoundA(HTVars.soundFilePath, nullptr, SND_ASYNC);
     }
 }
 
-void HookCounter::RenderDetection()
+void HookTracker::RenderDetection()
 {
     const int stage1Size = Internal::survivorLocationsStage1.size();
     const int stage2Size = Internal::survivorLocationsStage2.size();

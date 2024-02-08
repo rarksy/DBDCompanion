@@ -26,14 +26,15 @@
     <ClCompile Include="Menu\Crosshair\CMenu.cpp" />
     <ClCompile Include="Menu\Crosshair\Crosshair.cpp" />
     <ClCompile Include="Menu\GUI\GUI.cpp" />
-    <ClCompile Include="Menu\HookCounter\HCMenu.cpp" />
-    <ClCompile Include="Menu\HookCounter\HookCounter.cpp" />
+    <ClCompile Include="Menu\HookTracker\HTMenu.cpp" />
+    <ClCompile Include="Menu\HookTracker\HookCounter.cpp" />
     <ClCompile Include="Menu\Menu.cpp" />
     <ClCompile Include="Misc\Misc.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Backend\Backend.hpp" />
     <ClInclude Include="Dependencies\Base64\Base64.hpp" />
+    <ClInclude Include="Dependencies\Exe Icons\256x256.hpp" />
     <ClInclude Include="Dependencies\Fonts\Rethink.hpp" />
     <ClInclude Include="Dependencies\GLFW\glfw3.h" />
     <ClInclude Include="Dependencies\GLFW\glfw3native.h" />
@@ -43,8 +44,9 @@
     <ClInclude Include="Dependencies\GLFW\GL\wglew.h" />
     <ClInclude Include="Dependencies\Images\AntiAliasing\Off.hpp" />
     <ClInclude Include="Dependencies\Images\AntiAliasing\On.hpp" />
-    <ClInclude Include="Dependencies\Images\HookCounter\Hook.hpp" />
-    <ClInclude Include="Dependencies\Images\HookCounter\Stage2.hpp" />
+    <ClInclude Include="Dependencies\Images\HookTracker\Hook.hpp" />
+    <ClInclude Include="Dependencies\Images\HookTracker\pip.hpp" />
+    <ClInclude Include="Dependencies\Images\HookTracker\Stage2.hpp" />
     <ClInclude Include="Dependencies\Images\Icons\ConfigEditor.hpp" />
     <ClInclude Include="Dependencies\Images\Images.h" />
     <ClInclude Include="Dependencies\Images\ResolutionQuality\100.hpp" />
@@ -73,11 +75,10 @@
     <ClInclude Include="Menu\Crosshair\CMenu.h" />
     <ClInclude Include="Menu\Crosshair\Crosshair.h" />
     <ClInclude Include="Menu\GUI\GUI.h" />
-    <ClInclude Include="Menu\HookCounter\HCMenu.h" />
-    <ClInclude Include="Menu\HookCounter\HookCounter.h" />
+    <ClInclude Include="Menu\HookTracker\HTMenu.h" />
+    <ClInclude Include="Menu\HookTracker\HookCounter.h" />
     <ClInclude Include="Menu\Menu.h" />
     <ClInclude Include="Misc\Misc.hpp" />
-    <ClInclude Include="Scripts\Scripts.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Dependencies\GLFW\lib\glew32s.lib" />
@@ -106,6 +107,9 @@
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>exe_icon.ico</ApplicationIcon>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -144,6 +148,8 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>Dependencies\zlib\lib\zlibd.lib;winmm.lib;Dependencies\opencv2\lib\opencv_world481d.lib;opengl32.lib;Dependencies\GLFW\lib\glew32s.lib;Dependencies\GLFW\lib\glfw3.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalManifestDependencies>
+      </AdditionalManifestDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

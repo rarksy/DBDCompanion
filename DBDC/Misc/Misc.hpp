@@ -2,9 +2,11 @@
 #include <string>
 #include <vector>
 #include <opencv2/opencv.hpp>
+#include <Windows.h>
 
 namespace Misc
 {
+    DWORD GetGamePID();
     bool IsGameRunning();
     void RestartGame(bool dx12 = false);
 

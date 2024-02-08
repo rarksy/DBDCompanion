@@ -1,5 +1,4 @@
 ﻿#include "CEMenu.hpp"
-
 #include "../Menu.h"
 #include "../Misc/Misc.hpp"
 #include "../GUI/GUI.h"
@@ -43,27 +42,45 @@ bool CEMenu::Setup()
     Images::LoadTextureFromMemory(textureQualityUltraRawData, sizeof textureQualityUltraRawData,
                                   &Image::TextureQuality::textureUltra);
 
-    CEMenu::isSetup = true;
-    
     return true;
 }
 
 void CEMenu::RenderUI()
 {
-    ImGui::Columns(3, nullptr, false);
-    ImGui::SetColumnWidth(0, 270);
-    ImGui::SetColumnWidth(1, 200);
+    ImGui::SetCursorPos({252, 15});
     
+    if (ImGui::Button("Copy Settings"))
+        ConfigEditor::CopyConfig();
+    GUI::ToolTip("Will copy your settings to clipboard, you can send it to anyone else using DBDC.");
+
+    ImGui::SameLine();
+
+    if (ImGui::Button("Import Settings"))
+        ConfigEditor::ImportConfig();
+    GUI::ToolTip("Will import settings copied to clipboard.");
+
+    ImGui::SameLine();
+
+    if (ImGui::Button("Open Folder"))
+        Misc::OpenSettingsFolder();
+
+    ImGui::SameLine();
+
+    if (ImGui::Button("Restart Game"))
+        Misc::RestartGame();
+    GUI::ToolTip("Will close and reopen Dead By Daylight to apply any changed settings.");
+    
+    ImGui::Columns(3, nullptr, false);
+    ImGui::SetColumnWidth(0, 258);
+    ImGui::SetColumnWidth(1, 227);
+
     ImGui::SeparatorText("Graphics Quality");
     GUI::ToolTip("Features settings that affect the graphical fidelity of Dead By Daylight.");
 
     static GLuint texture = Image::ResolutionQuality::texture100;
     if (GUI::Slider("Resolution Quality", CEVars.resolutionQuality, 60, 100))
     {
-        ConfigEditor::ChangeValue(ConfigEditor::Files::gameUserSettings, ConfigEditor::Groups::scalabilityGroups,
-                                  CEVars.resolutionQuality);
-        
-        const auto value = CEVars.resolutionQuality.second;
+        const auto value = CEVars.resolutionQuality.value;
         if (value < 79)
             texture = Image::ResolutionQuality::texture60;
         else if (value < 99)
@@ -73,250 +90,105 @@ void CEMenu::RenderUI()
     }
     GUI::ToolTip("Sets the quality at which the game is rendered.\n"
                  "Note: 100%% = native resolution", texture, ImVec2(400, 170));
-    
-    if (GUI::DropDownBox("View Distance", qualities, CEVars.viewDistanceQuality))
-        ConfigEditor::ChangeValue(ConfigEditor::Files::gameUserSettings, ConfigEditor::Groups::scalabilityGroups,
-                                  CEVars.viewDistanceQuality);
+
+    GUI::DropDownBox("View Distance", CEVars.viewDistanceQuality, qualities);
     GUI::ToolTip("Changes the level of detail at which objects in the distance are rendered.\n"
         "The higher the setting, the further the distance before objects lose quality.");
-    
-    ImGui::BeginDisabled(CEVars.antiAliasMode.second == 0);
-    if (GUI::DropDownBox("Anti-AIiasing", qualities, CEVars.antiAliasQuality))
-    {
-        ConfigEditor::ChangeValue(ConfigEditor::Files::gameUserSettings, ConfigEditor::Groups::scalabilityGroups,
-                                  CEVars.antiAliasQuality);
-    }
+
+    ImGui::BeginDisabled(!CEVars.antiAliasMode.value);
+    GUI::DropDownBox("Anti-AIiasing", CEVars.antiAliasQuality, qualities);
     ImGui::EndDisabled();
     GUI::ToolTip("Changes the strength of anti-aliasing's effect.");
-    
-    if (GUI::DropDownBox("Shadows", qualities, CEVars.shadowQuality))
-        ConfigEditor::ChangeValue(ConfigEditor::Files::gameUserSettings, ConfigEditor::Groups::scalabilityGroups,
-                                  CEVars.shadowQuality);
-    GUI::ToolTip("Lowers the quality & amount of shadows used."); 
-    
-    if (GUI::DropDownBox("Post Processing", qualities, CEVars.postProcessQuality))
-        ConfigEditor::ChangeValue(ConfigEditor::Files::gameUserSettings, ConfigEditor::Groups::scalabilityGroups,
-                                  CEVars.postProcessQuality);
+
+    GUI::DropDownBox("Shadows", CEVars.shadowQuality, qualities);
+    GUI::ToolTip("Lowers the quality & amount of shadows used.");
+
+    GUI::DropDownBox("Post Processing", CEVars.postProcessQuality, qualities);
     GUI::ToolTip("Changes the quality of glow related effects (such as fire glow).");
-    
-    if (GUI::DropDownBox("Textures", qualities, CEVars.textureQuality, false,
-                         "Changes the quality of textures & models.", Image::TextureQuality::allTextures,
-                         ImVec2(500, 200)))
-        ConfigEditor::ChangeValue(ConfigEditor::Files::gameUserSettings, ConfigEditor::Groups::scalabilityGroups,
-                                  CEVars.textureQuality);
+
+    GUI::DropDownBox("Textures", CEVars.textureQuality, qualities, true, Menu::Styling::itemWidth, "Changes the quality of textures & models.", Image::TextureQuality::allTextures,
+                     ImVec2(500, 200));
+
     GUI::ToolTip("Changes the quality of textures & models.");
-    
-    if (GUI::DropDownBox("Effects", qualities, CEVars.effectsQuality))
-        ConfigEditor::ChangeValue(ConfigEditor::Files::gameUserSettings, ConfigEditor::Groups::scalabilityGroups,
-                                  CEVars.effectsQuality);
+
+    GUI::DropDownBox("Effects", CEVars.effectsQuality, qualities);
     GUI::ToolTip("Changes the quality of effects (such as fire particles etc).");
-    
-    if (GUI::DropDownBox("Foliage", qualities, CEVars.foliageQuality))
-        ConfigEditor::ChangeValue(ConfigEditor::Files::gameUserSettings, ConfigEditor::Groups::scalabilityGroups,
-                                  CEVars.foliageQuality);
+
+    GUI::DropDownBox("Foliage", CEVars.foliageQuality, qualities);
     GUI::ToolTip("Changes the quality & amount of foliage used (such as grass, bushes, corn).");
-    
-    if (GUI::DropDownBox("Shading", qualities, CEVars.shadingQuality))
-        ConfigEditor::ChangeValue(ConfigEditor::Files::gameUserSettings, ConfigEditor::Groups::scalabilityGroups,
-                                  CEVars.shadingQuality);
-    GUI::ToolTip("Changes the quality of the shading.\n"
-        "(i'll be real idk what this does)");
-    
+
+    GUI::DropDownBox("Shading", CEVars.shadingQuality, qualities);
+
+    GUI::DropDownBox("Animations", CEVars.animationQuality, qualities);
+
+    GUI::ToolTip("Changes the quality of the shading.\n" "(i'll be real idk what this does)");
+
     ImGui::NextColumn();
-    
+
     ImGui::SeparatorText("Rendering");
-    GUI::ToolTip("Features settings that modify the way the game renders.");
-    
-    if (GUI::StringCheckbox("VSync", CEVars.useVSync))
-        ConfigEditor::ChangeValue(ConfigEditor::Files::gameUserSettings, ConfigEditor::Groups::DBDGameUserSettings,
-                                  CEVars.useVSync);
-    GUI::ToolTip("Syncs Dead By Daylight's framerate to your refresh rate.\n"
-        "Note: Can cause input delay.");
-    
-    if (GUI::IntCheckbox("Anti-Aliasing", CEVars.antiAliasMode))
-        ConfigEditor::ChangeValue(ConfigEditor::Files::gameUserSettings, ConfigEditor::Groups::DBDGameUserSettings,
-                                  CEVars.antiAliasMode);
-    GUI::ToolTip("Blurs the edges of objects to appear less jagged.",
-                 CEVars.antiAliasMode.second == 1
-                     ? Image::AntiAliasing::textureOn
-                     : Image::AntiAliasing::textureOff, ImVec2(400, 250));
-    
-    ImGui::Spacing();
-    ImGui::Spacing();
-    
-    if (ImGui::Checkbox("Read-Only", &CEVars.engineReadOnly))
-        ConfigEditor::SetReadOnly(ConfigEditor::Files::engine,
-                            CEVars.engineReadOnly);
-    GUI::ToolTip("Stops Dead By Daylight from resetting any chosen settings."
-        "\nSome Options Require This To Work.");
-    
-    ImGui::BeginDisabled(!CEVars.engineReadOnly);
-    {
-        if (GUI::StringCheckbox("Ambient Occlusion", CEVars.ambientOcclusion))
-        {
-            if (CEVars.ambientOcclusion.second == "False")
-                ConfigEditor::ChangeValue(
-                    ConfigEditor::Files::engine,
-                    ConfigEditor::Groups::rendererOverrideSettings,
-                    CEVars.ambientOcclusion
-                );
-            else
-            {
-                ConfigEditor::RemoveValue(
-                    ConfigEditor::Files::engine,
-                    ConfigEditor::Groups::rendererOverrideSettings,
-                    CEVars.ambientOcclusion
-                );
-    
-                CEVars.ambientOcclusion.second = vTrue;
-            }
-        }
-    
-        if (GUI::StringCheckbox("A/O Static Fraction", CEVars.ambientOcclusionStaticFraction))
-        {
-            if (CEVars.ambientOcclusionStaticFraction.second == "False")
-                ConfigEditor::ChangeValue(
-                    ConfigEditor::Files::engine,
-                    ConfigEditor::Groups::rendererOverrideSettings,
-                    CEVars.ambientOcclusionStaticFraction
-                );
-            else
-            {
-                ConfigEditor::RemoveValue(
-                    ConfigEditor::Files::engine,
-                    ConfigEditor::Groups::rendererOverrideSettings,
-                    CEVars.ambientOcclusionStaticFraction
-                );
-    
-                CEVars.ambientOcclusionStaticFraction.second = vTrue;
-            }
-        }
-    
-        if (GUI::StringCheckbox("Bloom", CEVars.bloom))
-        {
-            if (CEVars.bloom.second == "False")
-                ConfigEditor::ChangeValue(
-                    ConfigEditor::Files::engine,
-                    ConfigEditor::Groups::rendererOverrideSettings,
-                    CEVars.bloom
-                );
-            else
-            {
-                ConfigEditor::RemoveValue(
-                    ConfigEditor::Files::engine,
-                    ConfigEditor::Groups::rendererOverrideSettings,
-                    CEVars.bloom
-                );
-    
-                CEVars.bloom.second = vTrue;
-            }
-        }
-    
-        if (GUI::StringCheckbox("Lens Flare", CEVars.lensFlare))
-        {
-            if (CEVars.lensFlare.second == "False")
-                ConfigEditor::ChangeValue(
-                    ConfigEditor::Files::engine,
-                    ConfigEditor::Groups::rendererOverrideSettings,
-                    CEVars.lensFlare
-                );
-            else
-            {
-                ConfigEditor::RemoveValue(
-                    ConfigEditor::Files::engine,
-                    ConfigEditor::Groups::rendererOverrideSettings,
-                    CEVars.lensFlare
-                );
-    
-                CEVars.lensFlare.second = vTrue;
-            }
-        }
-    
-        if (GUI::StringCheckbox("Motion Blur", CEVars.motionBlur))
-        {
-            if (CEVars.motionBlur.second == "False")
-                ConfigEditor::ChangeValue(
-                    ConfigEditor::Files::engine,
-                    ConfigEditor::Groups::rendererOverrideSettings,
-                    CEVars.motionBlur
-                );
-            else
-            {
-                ConfigEditor::RemoveValue(
-                    ConfigEditor::Files::engine,
-                    ConfigEditor::Groups::rendererOverrideSettings,
-                    CEVars.motionBlur
-                );
-    
-                CEVars.motionBlur.second = vTrue;
-            }
-        }
-    }
-    ImGui::EndDisabled();
-    
-    ImGui::NextColumn();
-    
-    ImGui::SeparatorText("Misc");
-    
-    if (GUI::DropDownBox("Window Mode", windowModes, CEVars.windowMode))
-        ConfigEditor::ChangeValue(ConfigEditor::Files::gameUserSettings, ConfigEditor::Groups::DBDGameUserSettings,
-                                  CEVars.windowMode);
+    GUI::ToolTip("Features settings that affect the way the game renders.");
+
+    GUI::DropDownBox("Window Mode", CEVars.windowMode, windowModes);
     GUI::ToolTip("Changes the rendering mode used to display the game.");
-    
-    ImGui::BeginDisabled(CEVars.windowMode.second == 1);
+
+    ImGui::BeginDisabled(CEVars.windowMode.value);
     {
-        ImGui::SetNextItemWidth(49);
-        if (ImGui::InputInt("##ResolutionW", &CEVars.resolutionWidth.second, 0))
-        {
-            ConfigEditor::ChangeValue(ConfigEditor::Files::gameUserSettings, ConfigEditor::Groups::DBDGameUserSettings,
-                                      CEVars.resolutionWidth);
-            ConfigEditor::ChangeValue(ConfigEditor::Files::gameUserSettings, ConfigEditor::Groups::DBDGameUserSettings,
-                                      CEVars.desiredScreenWidth);
-        }
+        GUI::InputInt("##ResolutionW", CEVars.resolutionWidth, 49);
         GUI::ToolTip("Sets the desired width for the game window.");
         ImGui::SameLine();
         ImGui::Text("x");
         GUI::ToolTip("Sets the desired resolution for the game window.");
         ImGui::SameLine();
-        ImGui::SetNextItemWidth(48);
-        if (ImGui::InputInt("##ResolutionH", &CEVars.resolutionHeight.second, 0))
-        {
-            ConfigEditor::ChangeValue(ConfigEditor::Files::gameUserSettings, ConfigEditor::Groups::DBDGameUserSettings,
-                                      CEVars.resolutionHeight);
-            ConfigEditor::ChangeValue(ConfigEditor::Files::gameUserSettings, ConfigEditor::Groups::DBDGameUserSettings,
-                                      CEVars.desiredScreenHeight);
-        }
-        
+        GUI::InputInt("##ResolutionH", CEVars.resolutionHeight, 48);
+
         GUI::ToolTip("Sets the desired height for the game window.");
         ImGui::SameLine(133);
         ImGui::Text("Resolution");
     }
     ImGui::EndDisabled();
-    
-    ImGui::BeginDisabled(CEVars.useVSync.second == "True");
-    {
-        if (GUI::DropDownBox("FPS Limit Mode", fpsLimitModes, CEVars.fpsLimitMode, true))
-            ConfigEditor::ChangeValue(ConfigEditor::Files::gameUserSettings, ConfigEditor::Groups::DBDGameUserSettings,
-                                      CEVars.fpsLimitMode);
-    }
+
+    ImGui::BeginDisabled(CEVars.useVSync.value);
+
+    GUI::DropDownBox("FPS Limit Mode", CEVars.fpsLimitMode, fpsLimitModes, false, 40);
+
     ImGui::EndDisabled();
-    GUI::ToolTip("Sets the maximum achievable framerate.\n"
-        "Values are clamped and cannot go above/below the available options.");
-    
-    if (GUI::Slider("Killer FOV", CEVars.killerFOV, 87, 103, false))
-        ConfigEditor::ChangeValue(ConfigEditor::Files::gameUserSettings, ConfigEditor::Groups::DBDGameUserSettings,
-                                  CEVars.killerFOV);
-    
+    GUI::ToolTip("Sets the maximum achievable framerate.\n" "Values are clamped and cannot go above/below the available options.");
+
+    GUI::Checkbox("VSync", CEVars.useVSync);
+    GUI::ToolTip("Syncs Dead By Daylight's framerate to your refresh rate.\n"
+        "Note: Can cause input delay.");
+
+    GUI::Checkbox("Anti-Aliasing", CEVars.antiAliasMode);
+    GUI::ToolTip("Blurs the edges of objects to appear less jagged.",
+                 CEVars.antiAliasMode.value
+                     ? Image::AntiAliasing::textureOn
+                     : Image::AntiAliasing::textureOff, ImVec2(400, 250));
+
+
+    GUI::Checkbox("Ambient Occlusion", CEVars.ambientOcclusion);
+    GUI::Checkbox("A/O Static Fraction", CEVars.ambientOcclusionStaticFraction);
+    GUI::Checkbox("Bloom", CEVars.bloom);
+    GUI::Checkbox("Lens Flare", CEVars.lensFlare);
+    GUI::Checkbox("Motion Blur", CEVars.motionBlur);
+
+    ImGui::NextColumn();
+
+    ImGui::SeparatorText("Misc");
+    GUI::ToolTip("Features settings that affect the user experience.");
+
+    GUI::Slider("Killer FOV", CEVars.killerFOV, 87, 103);
+    GUI::ToolTip("Changes the FOV used for 1st person killers.");
+
     if (ImGui::Checkbox("Remove Intro Cutscene", &CEVars.removeIntroCutscene))
     {
         const std::string gameDir = Misc::GetGameRootDirectory();
         const std::string moviesDir = gameDir + "DeadByDaylight\\Content\\Movies\\";
-    
+
         if (CEVars.removeIntroCutscene)
         {
             if (std::filesystem::exists(moviesDir + "disabled_AdditionalLoadingScreen"))
-                std::filesystem::remove(moviesDir + "disabled_AdditionalLoadingScreen");
-            
+                std::filesystem::remove_all(moviesDir + "disabled_AdditionalLoadingScreen");
+
             if (std::rename(
                 (moviesDir + "AdditionalLoadingScreen").c_str(),
                 (moviesDir + "disabled_AdditionalLoadingScreen").c_str()) != 0)
@@ -336,46 +208,38 @@ void CEMenu::RenderUI()
             }
         }
     }
-    if (GUI::boolCheckbox("Skip News Popup", CEVars.skipNewsPopup))
-    {
-        ConfigEditor::ChangeValue(ConfigEditor::Files::gameUserSettings, ConfigEditor::Groups::DBDGameUserSettings, CEVars.skipNewsPopup);
-    }
-    
+    GUI::ToolTip("Skips the cutscene that plays after launching the game.");
+
+    GUI::Checkbox("Skip News Popup", CEVars.skipNewsPopup, 0, 99999);
+    GUI::ToolTip("Disables the news popup that appears after launching the game.");
+
+    ImGui::SeparatorText("Sensitivity");
+
+    GUI::Slider("Survivor Mouse", CEVars.survivorMouseSensitivity, 0, 100);
+    GUI::Slider("Survivor Controller", CEVars.survivorControllerSensitivity, 0, 100);
+    GUI::Slider("Killer Mouse", CEVars.killerMouseSensitivity, 0, 100);
+    GUI::Slider("Killer Controller", CEVars.killerControllerSensitivity, 0, 100);
+
     ImGui::SeparatorText("Accessibility");
-    
-    if (GUI::StringCheckbox("Terror Radius Visual", CEVars.terrorRadiusVisual))
-        ConfigEditor::ChangeValue(ConfigEditor::Files::gameUserSettings, ConfigEditor::Groups::DBDGameUserSettings, CEVars.terrorRadiusVisual);
+
+    GUI::Checkbox("Terror Radius Visual", CEVars.terrorRadiusVisual);
     GUI::ToolTip("Adds a visual heartbeat whenever inside the killers terror radius");
-    
-    if (GUI::DropDownBox("Colorblind Mode", colorBlindModes, CEVars.colorBlindMode))
-        ConfigEditor::ChangeValue(ConfigEditor::Files::gameUserSettings, ConfigEditor::Groups::DBDGameUserSettings, CEVars.colorBlindMode);
-    
-    if (GUI::Slider("Colorblind Strength", CEVars.colorBlindModeStrength, 0, 100))
-        ConfigEditor::ChangeValue(ConfigEditor::Files::gameUserSettings, ConfigEditor::Groups::DBDGameUserSettings, CEVars.colorBlindModeStrength);
-    
-    ImGui::SeparatorText("Other");
-    
-    
+
+    GUI::DropDownBox("Colorblind Mode", CEVars.colorBlindMode, colorBlindModes);
+    GUI::ToolTip("Adjusts the games color pallet.");
+
+    ImGui::BeginDisabled(!CEVars.colorBlindMode.value);
+
+    GUI::Slider("Strength", CEVars.colorBlindModeStrength, 0, 100);
+    GUI::ToolTip("Adjusts the strength of the changed color pallet.");
+
+    ImGui::EndDisabled();
+
     //if (ImGui::Button("Start In DX12")) // doesnt actually work, malding
-        //Misc::RestartGame(true);
+    //Misc::RestartGame(true);
     //GUI::ToolTip("Will close and reopen Dead By Daylight Using DirectX 12.\nThis will also apply any changed settings.");
 
-    if (ImGui::Button("Copy Settings"))
-        ConfigEditor::CopyConfig();
-    
-    ImGui::SameLine();
-    
-    if (ImGui::Button("Import Settings"))
-        ConfigEditor::ImportConfig();
-    
-    if (ImGui::Button("Open Folder"))
-        Misc::OpenSettingsFolder();
-
-    ImGui::SameLine();
-
-    if (ImGui::Button("Restart Game"))
-        Misc::RestartGame();
-    GUI::ToolTip("Will close and reopen Dead By Daylight to apply any changed settings.");
+    ImGui::EndColumns();
 }
 
 inline ImVec4 RGBToImVec4(int r, int g, int b, int a = 255)

@@ -7,19 +7,33 @@
 #include "Crosshair/CMenu.h"
 #include "Crosshair/Crosshair.h"
 #include "GUI/GUI.h"
-#include "HookCounter/HCMenu.h"
+#include "HookTracker\HTMenu.h"
 #include <Windows.h>
 
-#include "HookCounter/HookCounter.h"
+#include "HookTracker/HookCounter.h"
 
 void Menu::RunLoop()
 {
+    {
+        mINI::INIFile file(Backend::exeDirectory.string() + "\\DBDC\\Settings");
+        mINI::INIStructure ini;
+        file.read(ini);
+
+        if (!ini["Settings"]["MenuAccentR"].empty())
+        {
+            Styling::menuAccent.r = std::atoi(ini["Settings"]["MenuAccentR"].c_str());
+            Styling::menuAccent.g = std::atoi(ini["Settings"]["MenuAccentG"].c_str());
+            Styling::menuAccent.b = std::atoi(ini["Settings"]["MenuAccentB"].c_str());
+            Styling::menuAccent.a = std::atoi(ini["Settings"]["MenuAccentA"].c_str());
+        }
+    }
+
     while (!glfwWindowShouldClose(mainWindow))
     {
         const double startTime = glfwGetTime();
 
         glfwMakeContextCurrent(Menu::mainWindow);
-        
+
         ImGui::SetCurrentContext(Menu::mainContext);
         glfwPollEvents();
 
@@ -44,11 +58,11 @@ void Menu::RunLoop()
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
 
-            if (HCVars.enabled)
-                HookCounter::RenderDetection();
+            if (HTVars.enabled)
+                HookTracker::RenderDetection();
 
             if (CVars.enabled)
-                Crosshair::DrawCrosshair();
+                Crosshair::DrawCrosshairs();
 
             ImGui::Render();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -75,24 +89,95 @@ void Menu::RenderUI()
     ImGui::SetNextWindowSize(ImVec2(Styling::menuWidth, Styling::menuHeight), ImGuiCond_Once);
     ImGui::Begin("menu", nullptr, menuFlags);
 
-    if (menuToShow != 0)
-    {
-        if (ImGui::Button("<- Back"))
-            menuToShow = 0;
-    }
+    static bool hamburgerOpen = true;
+    static float hamburgerWidth = 0;
 
-    if (menuToShow == 0)
+    if (hamburgerOpen || hamburgerWidth > 0.F)
     {
+        static int previousMenuShown = menuToShow;
+        
+        ImGui::GetWindowDrawList()->AddRectFilledMultiColor({5, 5}, {hamburgerWidth, Styling::menuHeight / 3},
+                                                            ImColor(Styling::menuAccent.r, Styling::menuAccent.g, Styling::menuAccent.b, 100), ImColor(25, 13, 13),
+                                                            ImColor(15, 13, 13),
+                                                            ImColor(15, 13, 13)
+        );
+
+        ImGui::GetWindowDrawList()->AddRect({5, 5}, {hamburgerWidth, Styling::menuHeight / 3}, Styling::menuAccent.ToImColor(), 2.F, 0, 2.F);
+
+        ImGui::PushClipRect({5, 5}, {hamburgerWidth, Styling::menuHeight / 3}, false);
+
+        ImGui::SetCursorPosY(45);
+
         if (ImGui::Button("Config Editor"))
             menuToShow = 1;
+        GUI::ToolTip("Allows you to adjust your game settings in\nmore detail than the base game offers");
 
-        if (ImGui::Button("Hook Counter (ALPHA)"))
+        ImGui::Spacing();
+
+        if (ImGui::Button("Hook Tracker"))
             menuToShow = 2;
-        GUI::ToolTip("This is a pre-release alpha of the hook counter\nIt is not finished and WILL contain bugs");
+        GUI::ToolTip("This is a pre-release alpha of the hook Tracker\nIt is not finished and WILL contain bugs");
+
+        ImGui::Spacing();
 
         if (ImGui::Button("Crosshair Menu"))
             menuToShow = 3;
 
+        ImGui::PopClipRect();
+
+        if (ImGui::IsKeyPressed(ImGuiKey_MouseLeft, false) && !ImGui::IsMouseHoveringRect({5, 5}, {hamburgerWidth, Styling::menuHeight / 3}))
+            hamburgerOpen = false;
+
+        if (previousMenuShown != menuToShow && !ImGui::IsMouseHoveringRect({5, 5}, {hamburgerWidth, Styling::menuHeight / 3}))
+        {
+            hamburgerOpen = false;
+            previousMenuShown = menuToShow;
+        }
+    }
+
+    if (hamburgerOpen && hamburgerWidth < 200)
+        hamburgerWidth += 10;
+    else if (!hamburgerOpen && hamburgerWidth > 0)
+        hamburgerWidth -= 10;
+
+    static ImColor hamburgerColor = ImGui::GetColorU32(ImGuiCol_Button);
+
+    ImGui::GetWindowDrawList()->AddRectFilled({8, 10}, {38, 15}, hamburgerColor, 4.F);
+    ImGui::GetWindowDrawList()->AddRectFilled({8, 20}, {38, 25}, hamburgerColor, 4.F);
+    ImGui::GetWindowDrawList()->AddRectFilled({8, 30}, {38, 35}, hamburgerColor, 4.F);
+
+    ImGui::SetCursorPos({6, 6});
+    if (ImGui::InvisibleButton("hamburgermenu", {40, 34}))
+        hamburgerOpen = !hamburgerOpen;
+
+    hamburgerColor = ImGui::GetColorU32(ImGui::IsItemHovered() ? ImGui::IsItemActive() ? ImGuiCol_ButtonActive : ImGuiCol_ButtonHovered : ImGuiCol_Button); 
+
+    static bool showColorPicker = false;
+    if (ImGui::IsKeyPressed(ImGuiKey_Space, false))
+        showColorPicker = !showColorPicker;
+
+    if (showColorPicker)
+    {
+        ImGui::SetCursorPos({45, 9});
+        if (GUI::ColorPicker("Menu Accent", Styling::menuAccent))
+        {
+            mINI::INIFile file(Backend::exeDirectory.string() + "\\DBDC\\Settings");
+            mINI::INIStructure ini;
+            file.read(ini);
+
+            ini["Settings"]["MenuAccentR"] = std::to_string(Styling::menuAccent.r);
+            ini["Settings"]["MenuAccentG"] = std::to_string(Styling::menuAccent.g);
+            ini["Settings"]["MenuAccentB"] = std::to_string(Styling::menuAccent.b);
+            ini["Settings"]["MenuAccentA"] = std::to_string(Styling::menuAccent.a);
+            file.write(ini);
+        }
+    }
+
+
+    ImGui::BeginDisabled(hamburgerOpen || hamburgerWidth > 0.F);
+
+    if (menuToShow == 0)
+    {
         ImGui::SetCursorPos({10, 470});
         ImGui::TextColored(ImVec4(0.1F, 0.1F, 0.1F, 0.3F), "I DONT KNOW HOW TO MAKE A GOOD MAIN MENU");
     }
@@ -108,18 +193,23 @@ void Menu::RenderUI()
     else if (menuToShow == 2)
     {
         static std::once_flag flag;
-        std::call_once(flag, HCMenu::Setup);
-        
-        HCMenu::RenderUI();
+        std::call_once(flag, HTMenu::Setup);
+
+        HTMenu::RenderUI();
     }
 
     else if (menuToShow == 3)
     {
-        static std::once_flag flag;
-        std::call_once(flag, Crosshair::Setup);
-        
+        static std::once_flag flagCrosshair;
+        static std::once_flag flagMenu;
+        std::call_once(flagCrosshair, Crosshair::Setup);
+        std::call_once(flagMenu, CMenu::Setup);
+
         CMenu::RenderUI();
     }
+
+    ImGui::EndDisabled();
+
 
     ImGui::SetCursorPos({720, 470});
     ImGui::TextColored(ImVec4(0.8F, 0.8F, 0.8F, 0.5F), "(?)");
@@ -147,47 +237,53 @@ inline ImVec4 RGBToImVec4(int r, int g, int b, int a = 255)
     return {r / 255.F, g / 255.F, b / 255.F, a / 255.F};
 }
 
+
 void Menu::CreateGlobalStyle()
 {
     ImGuiStyle& style = ImGui::GetStyle();
     auto& colors = style.Colors;
 
     // Button
-    colors[ImGuiCol_Button] = RGBToImVec4(255, 83, 83);
-    colors[ImGuiCol_ButtonHovered] = RGBToImVec4(255, 153, 153);
-    colors[ImGuiCol_ButtonActive] = RGBToImVec4(255, 203, 203);
+    colors[ImGuiCol_Button] = Styling::menuAccent.ToImVec4();
+    colors[ImGuiCol_ButtonHovered] = RGBToImVec4(Styling::menuAccent.r, Styling::menuAccent.g + 70, Styling::menuAccent.b + 70);
+    colors[ImGuiCol_ButtonActive] = RGBToImVec4(Styling::menuAccent.r, Styling::menuAccent.g + 120, Styling::menuAccent.b + 120);
 
     // Main Window
-    colors[ImGuiCol_FrameBg] = RGBToImVec4(255, 83, 83);
-    colors[ImGuiCol_FrameBgHovered] = RGBToImVec4(255, 153, 153);
-    colors[ImGuiCol_FrameBgActive] = RGBToImVec4(255, 203, 203);
+    colors[ImGuiCol_FrameBg] = RGBToImVec4(20, 20, 20);
+    colors[ImGuiCol_FrameBgHovered] = RGBToImVec4(Styling::menuAccent.r, Styling::menuAccent.g + 70, Styling::menuAccent.b + 70);
+    colors[ImGuiCol_FrameBgActive] = RGBToImVec4(Styling::menuAccent.r, Styling::menuAccent.g + 120, Styling::menuAccent.b + 120);
     style.FrameRounding = 2.F;
     style.DisabledAlpha = 0.3F;
     style.FrameBorderSize = 1.7F;
+    style.DisabledAlpha = 0.1f;
 
     // Slider
-    colors[ImGuiCol_Slider] = RGBToImVec4(255, 83, 83);
-    colors[ImGuiCol_SliderActive] = RGBToImVec4(255, 203, 203);
-    colors[ImGuiCol_SliderHovered] = RGBToImVec4(255, 153, 153);
-    colors[ImGuiCol_SliderGrab] = RGBToImVec4(255, 83, 83);
+    colors[ImGuiCol_Slider] = Styling::menuAccent.ToImVec4();
+    colors[ImGuiCol_SliderActive] = RGBToImVec4(Styling::menuAccent.r, Styling::menuAccent.g + 120, Styling::menuAccent.b + 120);
+    colors[ImGuiCol_SliderHovered] = RGBToImVec4(Styling::menuAccent.r, Styling::menuAccent.g + 70, Styling::menuAccent.b + 70);
+    colors[ImGuiCol_SliderGrab] = RGBToImVec4(Styling::menuAccent.r, Styling::menuAccent.g, Styling::menuAccent.b);
     style.GrabRounding = style.FrameRounding;
 
     // Checkbox
-    colors[ImGuiCol_CheckMark] = RGBToImVec4(255, 83, 83);
+    colors[ImGuiCol_CheckMark] = Styling::menuAccent.ToImVec4();
+    colors[ImGuiCol_CheckMarkHovered] = RGBToImVec4(Styling::menuAccent.r, Styling::menuAccent.g + 70, Styling::menuAccent.b + 70);
+    colors[ImGuiCol_CheckMarkActive] = RGBToImVec4(Styling::menuAccent.r, Styling::menuAccent.g + 120, Styling::menuAccent.b + 120);
 
     // Combo
-    colors[ImGuiCol_Combo] = RGBToImVec4(255, 83, 83);
-    colors[ImGuiCol_ComboActive] = RGBToImVec4(255, 203, 203);
-    colors[ImGuiCol_ComboHovered] = RGBToImVec4(255, 153, 153);
+    colors[ImGuiCol_Combo] = Styling::menuAccent.ToImVec4();
+    colors[ImGuiCol_ComboActive] = RGBToImVec4(Styling::menuAccent.r, Styling::menuAccent.g + 120, Styling::menuAccent.b + 120);
+    colors[ImGuiCol_ComboHovered] = RGBToImVec4(Styling::menuAccent.r, Styling::menuAccent.g + 70, Styling::menuAccent.b + 70);
 
     // Header ( Selectables Etc )
-    colors[ImGuiCol_Header] = RGBToImVec4(255, 83, 83);
-    colors[ImGuiCol_HeaderHovered] = RGBToImVec4(255, 153, 153);
-    colors[ImGuiCol_HeaderActive] = RGBToImVec4(255, 203, 203);
+    colors[ImGuiCol_Header] = Styling::menuAccent.ToImVec4();
+    colors[ImGuiCol_HeaderHovered] = RGBToImVec4(Styling::menuAccent.r, Styling::menuAccent.g + 70, Styling::menuAccent.b + 70);
+    colors[ImGuiCol_HeaderActive] = RGBToImVec4(Styling::menuAccent.r, Styling::menuAccent.g + 120, Styling::menuAccent.b + 120);
 
     // Separator
-    colors[ImGuiCol_Separator] = RGBToImVec4(255, 83, 83);
+    colors[ImGuiCol_Separator] = Styling::menuAccent.ToImVec4();
 
+    // Input Text
+    colors[ImGuiCol_InputText] = Styling::menuAccent.ToImVec4();
 
-    colors[ImGuiCol_TextSelectedBg] = RGBToImVec4(225, 63, 63, 150);
+    colors[ImGuiCol_TextSelectedBg] = RGBToImVec4(Styling::menuAccent.r - 30, Styling::menuAccent.g - 20, Styling::menuAccent.b - 20, Styling::menuAccent.a - 105);
 }

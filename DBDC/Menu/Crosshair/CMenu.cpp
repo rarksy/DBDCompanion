@@ -2,12 +2,20 @@
 #include "Crosshair.h"
 #include "../Menu.h"
 #include "../GUI/GUI.h"
-#include "../HookCounter/HookCounter.h"
+#include "../HookTracker/HookCounter.h"
 #include "GLFW/glfw3.h"
 #include "ImGui/imgui.h"
 
+void CMenu::Setup()
+{
+    Crosshair::CheckProfileDirectory();
+    Crosshair::ReloadProfiles();
+}
+
 void CMenu::RenderUI()
 {
+    ImGui::SetCursorPosY(45);
+    
     if (ImGui::Checkbox("Enable", &CVars.enabled))
     {
         if (CVars.enabled)
@@ -19,7 +27,7 @@ void CMenu::RenderUI()
                 glfwMakeContextCurrent(Menu::mainWindow);
             }
         }
-        else if (!HCVars.enabled)
+        else if (!HTVars.enabled)
             Menu::Overlay::DestroyOverlay();
     }
 
@@ -82,68 +90,98 @@ void CMenu::RenderUI()
         }
         ImGui::EndDisabled();
 
-        ImGui::NextColumn();
-
         ImGui::SeparatorText("Center Point");
 
         ImGui::BeginDisabled(CVars.useDynamicCenterPoint);
 
         if (ImGui::Button("Reset"))
-            CVars.screenCenterPoint.x = Backend::screenWidth / 2;
+            Crosshair::allCenterPoints[0].x = Backend::screenWidth / 2;
         ImGui::SameLine();
         ImGui::Button("-", ImVec2(20, 0));
         if (ImGui::IsItemActive() && ImGui::IsItemHovered())
-            CVars.screenCenterPoint.x--;
+            Crosshair::allCenterPoints[0].x--;
         ImGui::SameLine();
         ImGui::Button("+", ImVec2(20, 0));
         if (ImGui::IsItemActive() && ImGui::IsItemHovered())
-            CVars.screenCenterPoint.x++;
+            Crosshair::allCenterPoints[0].x++;
         ImGui::SameLine();
         ImGui::SetNextItemWidth(80);
-        ImGui::SliderFloat("X", &CVars.screenCenterPoint.x, 0, Backend::screenWidth, "%.0f");
+        ImGui::SliderFloat("X", &Crosshair::allCenterPoints[0].x, 0, Backend::screenWidth, "%.0f");
 
 
         if (ImGui::Button("Reset##"))
-            CVars.screenCenterPoint.y = Backend::screenHeight / 2;
+            Crosshair::allCenterPoints[0].y = Backend::screenHeight / 2;
         ImGui::SameLine();
         ImGui::Button("-##", ImVec2(20, 0));
         if (ImGui::IsItemActive() && ImGui::IsItemHovered())
-            CVars.screenCenterPoint.y--;
+            Crosshair::allCenterPoints[0].y--;
         ImGui::SameLine();
         ImGui::Button("+##", ImVec2(20, 0));
         if (ImGui::IsItemActive() && ImGui::IsItemHovered())
-            CVars.screenCenterPoint.y++;
+            Crosshair::allCenterPoints[0].y++;
         ImGui::SameLine();
         ImGui::SetNextItemWidth(80);
-        ImGui::SliderFloat("Y", &CVars.screenCenterPoint.y, 0, Backend::screenHeight, "%.0f");
+        ImGui::SliderFloat("Y", &Crosshair::allCenterPoints[0].y, 0, Backend::screenHeight, "%.0f");
 
         ImGui::EndDisabled();
 
         if (ImGui::Checkbox("Dynamic Killer Crosshair", &CVars.useDynamicCenterPoint))
         {
             if (CVars.useDynamicCenterPoint)
-                CVars.savedScreenCenterPoint = CVars.screenCenterPoint;
+                CVars.savedScreenCenterPoint = Crosshair::allCenterPoints[0];
             else
-                CVars.screenCenterPoint = CVars.savedScreenCenterPoint;
-            
+                Crosshair::allCenterPoints[0] = CVars.savedScreenCenterPoint;
         }
 
         ImGui::BeginDisabled(!CVars.useDynamicCenterPoint);
 
-        GUI::DropDownBox("Killer", dynamicKillers, CVars.dynamicCenterPointIndex);
-        
+        GUI::DropDownBox("Killer", CVars.dynamicCenterPointIndex, dynamicKillers);
+
         ImGui::EndDisabled();
 
-        ImGui::SeparatorText("Settings");
+        ImGui::NextColumn();
 
-        if (ImGui::Button("Save Settings"))
-            CVars.Save(CVars);
+        ImGui::SeparatorText("Profiles");
 
-        if (ImGui::Button("Load Settings"))
-            CVars.Load(CVars);
+        ImGui::Text("Current Profile: %s", Crosshair::ProfileHandling::loadedProfileName.c_str());
+        
+        ImGui::PushStyleColor(ImGuiCol_Border, Menu::Styling::menuAccent.ToImVec4());
+        if (ImGui::ListBox("##Profiles", &Crosshair::ProfileHandling::currentSelectedProfile,
+                           [](void* data, int idx, const char** outText)
+                           {
+                               *outText = Crosshair::ProfileHandling::allProfiles.at(idx).c_str();
+                               return true;
+                           },
+                           NULL, (int)Crosshair::ProfileHandling::allProfiles.size(), 5))
+        {
+            if (Crosshair::ProfileHandling::currentSelectedProfile < Crosshair::ProfileHandling::allProfiles.size())
+                Crosshair::ProfileHandling::selectedProfileName = Crosshair::ProfileHandling::allProfiles.at(
+                    Crosshair::ProfileHandling::currentSelectedProfile);
+        }
+        ImGui::PopStyleColor();
 
-        if (ImGui::Button("Reset Settings"))
-            CVars.Reset(CVars);
+        static char inputProfileName[32];
+
+        ImGui::InputTextWithHint("##Name", "Profile Name...", inputProfileName, IM_ARRAYSIZE(inputProfileName));
+
+        if (ImGui::Button("Reset Current Profile", ImVec2(169, 0)))
+            Crosshair::ReloadProfiles();
+
+        if (ImGui::Button("Create", ImVec2(80, 0)))
+            Crosshair::CreateProfile(inputProfileName);
+
+        ImGui::SameLine();
+
+        if (ImGui::Button("Delete", ImVec2(81, 0)))
+            Crosshair::DeleteProfile(Crosshair::ProfileHandling::selectedProfileName);
+        
+        if (ImGui::Button("Save", ImVec2(80, 0)))
+            Crosshair::SaveProfile(Crosshair::ProfileHandling::selectedProfileName, CVars);
+
+        ImGui::SameLine();
+
+        if (ImGui::Button("Load", ImVec2(81, 0)))
+            Crosshair::LoadProfile(Crosshair::ProfileHandling::selectedProfileName, CVars);
 
         ImGui::EndColumns();
     }

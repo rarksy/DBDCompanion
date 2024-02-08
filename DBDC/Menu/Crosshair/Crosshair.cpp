@@ -4,24 +4,32 @@
 
 void Crosshair::Setup()
 {
-    CVars.screenCenterPoint = ImVec2(Backend::screenWidth / 2, Backend::screenHeight / 2);
-    CVars.trueScreenCenterPoint = CVars.screenCenterPoint;
+    CVars.trueScreenCenterPoint = ImVec2(Backend::screenWidth / 2, Backend::screenHeight / 2);
+    allCenterPoints.push_back(CVars.trueScreenCenterPoint);
 }
 
-void Crosshair::DrawCrosshair()
+void Crosshair::DrawCrosshairs()
 {
     if (CVars.useDynamicCenterPoint)
         ModifyDynamicCenterPoint();
+    else if (allCenterPoints.size() > 0)
+        for (int i = 1; i < allCenterPoints.size(); i++)
+            allCenterPoints.erase(allCenterPoints.begin() + i);
 
-    if (CVars.enableCenterDot)
-        DrawCenterDot();
-
-    if (CVars.enableLines)
+    for (int i = 0; i < allCenterPoints.size(); i++)
     {
-        if (CVars.enableOutline)
-            DrawOutline();
+        const ImVec2 centerPoint = allCenterPoints[i];
 
-        DrawLines();
+        if (CVars.enableCenterDot)
+            DrawCenterDot(centerPoint);
+
+        if (CVars.enableLines)
+        {
+            if (CVars.enableOutline)
+                DrawOutline(centerPoint);
+
+            DrawLines(centerPoint);
+        }
     }
 }
 
@@ -30,10 +38,9 @@ bool isEven(int number)
     return (!(number & 1));
 }
 
-void Crosshair::DrawLines()
+void Crosshair::DrawLines(const ImVec2& centerPoint)
 {
     ImDrawList* drawList = ImGui::GetBackgroundDrawList();
-    ImVec2 center = CVars.screenCenterPoint;
     int thickness = CVars.lineThickness;
     float halfThickness = thickness / 2;
 
@@ -53,13 +60,13 @@ void Crosshair::DrawLines()
 
             if (isEven(thickness))
             {
-                startPos = ImVec2(center.x - halfThickness, center.y - CVars.lineGap - CVars.lineLength);
-                endPos = ImVec2(center.x + halfThickness + (thickness % 2), center.y - CVars.lineGap);
+                startPos = ImVec2(centerPoint.x - halfThickness, centerPoint.y - CVars.lineGap - CVars.lineLength);
+                endPos = ImVec2(centerPoint.x + halfThickness + (thickness % 2), centerPoint.y - CVars.lineGap);
             }
             else
             {
-                startPos = ImVec2(center.x - numMinus, (center.y + 0.51F) - CVars.lineGap);
-                endPos = ImVec2(center.x + numAdd, (center.y + 0.51F) - CVars.lineGap - CVars.lineLength);
+                startPos = ImVec2(centerPoint.x - numMinus, (centerPoint.y + 0.51F) - CVars.lineGap);
+                endPos = ImVec2(centerPoint.x + numAdd, (centerPoint.y + 0.51F) - CVars.lineGap - CVars.lineLength);
             }
             break;
 
@@ -68,14 +75,14 @@ void Crosshair::DrawLines()
 
             if (isEven(thickness))
             {
-                startPos = ImVec2(center.x - halfThickness, center.y + CVars.lineGap);
-                endPos = ImVec2(center.x + halfThickness + (thickness % 2),
-                                center.y + CVars.lineGap + CVars.lineLength);
+                startPos = ImVec2(centerPoint.x - halfThickness, centerPoint.y + CVars.lineGap);
+                endPos = ImVec2(centerPoint.x + halfThickness + (thickness % 2),
+                                centerPoint.y + CVars.lineGap + CVars.lineLength);
             }
             else
             {
-                startPos = ImVec2(center.x - numMinus, center.y + CVars.lineGap);
-                endPos = ImVec2(center.x + numAdd, center.y + CVars.lineGap + CVars.lineLength);
+                startPos = ImVec2(centerPoint.x - numMinus, centerPoint.y + CVars.lineGap);
+                endPos = ImVec2(centerPoint.x + numAdd, centerPoint.y + CVars.lineGap + CVars.lineLength);
             }
             break;
 
@@ -84,13 +91,13 @@ void Crosshair::DrawLines()
 
             if (isEven(thickness))
             {
-                startPos = ImVec2(center.x - CVars.lineGap - CVars.lineLength, center.y - halfThickness);
-                endPos = ImVec2(center.x - CVars.lineGap, center.y + halfThickness + (thickness % 2));
+                startPos = ImVec2(centerPoint.x - CVars.lineGap - CVars.lineLength, centerPoint.y - halfThickness);
+                endPos = ImVec2(centerPoint.x - CVars.lineGap, centerPoint.y + halfThickness + (thickness % 2));
             }
             else
             {
-                startPos = ImVec2((center.x + 0.51F) - CVars.lineGap, center.y - numMinus);
-                endPos = ImVec2((center.x + 0.51F) - CVars.lineGap - CVars.lineLength, center.y + numAdd);
+                startPos = ImVec2((centerPoint.x + 0.51F) - CVars.lineGap, centerPoint.y - numMinus);
+                endPos = ImVec2((centerPoint.x + 0.51F) - CVars.lineGap - CVars.lineLength, centerPoint.y + numAdd);
             }
             break;
 
@@ -99,14 +106,14 @@ void Crosshair::DrawLines()
 
             if (isEven(thickness))
             {
-                startPos = ImVec2(center.x + CVars.lineGap, center.y - halfThickness);
-                endPos = ImVec2(center.x + CVars.lineGap + CVars.lineLength,
-                                center.y + halfThickness + (thickness % 2));
+                startPos = ImVec2(centerPoint.x + CVars.lineGap, centerPoint.y - halfThickness);
+                endPos = ImVec2(centerPoint.x + CVars.lineGap + CVars.lineLength,
+                                centerPoint.y + halfThickness + (thickness % 2));
             }
             else
             {
-                startPos = ImVec2(center.x + CVars.lineGap, center.y - numMinus);
-                endPos = ImVec2(center.x + CVars.lineGap + CVars.lineLength, center.y + numAdd);
+                startPos = ImVec2(centerPoint.x + CVars.lineGap, centerPoint.y - numMinus);
+                endPos = ImVec2(centerPoint.x + CVars.lineGap + CVars.lineLength, centerPoint.y + numAdd);
             }
         }
 
@@ -115,10 +122,9 @@ void Crosshair::DrawLines()
     }
 }
 
-void Crosshair::DrawOutline()
+void Crosshair::DrawOutline(const ImVec2& centerPoint)
 {
     ImDrawList* drawList = ImGui::GetBackgroundDrawList();
-    ImVec2 center = CVars.screenCenterPoint;
     int lineThickness = CVars.lineThickness;
     int outlineThickness = CVars.outlineThickness;
     int halfThickness = lineThickness / 2;
@@ -139,17 +145,17 @@ void Crosshair::DrawOutline()
 
             if (isEven(lineThickness))
             {
-                startPos = ImVec2(center.x - halfThickness - outlineThickness,
-                                  center.y - CVars.lineGap - CVars.lineLength - outlineThickness);
-                endPos = ImVec2(center.x + halfThickness + (lineThickness % 2) + outlineThickness,
-                                center.y - CVars.lineGap + outlineThickness);
+                startPos = ImVec2(centerPoint.x - halfThickness - outlineThickness,
+                                  centerPoint.y - CVars.lineGap - CVars.lineLength - outlineThickness);
+                endPos = ImVec2(centerPoint.x + halfThickness + (lineThickness % 2) + outlineThickness,
+                                centerPoint.y - CVars.lineGap + outlineThickness);
             }
             else
             {
-                startPos = ImVec2(center.x - numMinus - outlineThickness,
-                                  (center.y + 0.51F) - CVars.lineGap + outlineThickness);
-                endPos = ImVec2(center.x + numAdd + outlineThickness,
-                                (center.y + 0.51F) - CVars.lineGap - CVars.lineLength - outlineThickness);
+                startPos = ImVec2(centerPoint.x - numMinus - outlineThickness,
+                                  (centerPoint.y + 0.51F) - CVars.lineGap + outlineThickness);
+                endPos = ImVec2(centerPoint.x + numAdd + outlineThickness,
+                                (centerPoint.y + 0.51F) - CVars.lineGap - CVars.lineLength - outlineThickness);
             }
             break;
 
@@ -158,17 +164,17 @@ void Crosshair::DrawOutline()
 
             if (isEven(lineThickness))
             {
-                startPos = ImVec2(center.x - halfThickness - outlineThickness,
-                                  center.y + CVars.lineGap - outlineThickness);
-                endPos = ImVec2(center.x + halfThickness + (lineThickness % 2) + outlineThickness,
-                                center.y + CVars.lineGap + CVars.lineLength + outlineThickness);
+                startPos = ImVec2(centerPoint.x - halfThickness - outlineThickness,
+                                  centerPoint.y + CVars.lineGap - outlineThickness);
+                endPos = ImVec2(centerPoint.x + halfThickness + (lineThickness % 2) + outlineThickness,
+                                centerPoint.y + CVars.lineGap + CVars.lineLength + outlineThickness);
             }
             else
             {
-                startPos = ImVec2(center.x - numMinus - outlineThickness,
-                                  center.y + CVars.lineGap - outlineThickness);
-                endPos = ImVec2(center.x + numAdd + outlineThickness,
-                                center.y + CVars.lineGap + CVars.lineLength + outlineThickness);
+                startPos = ImVec2(centerPoint.x - numMinus - outlineThickness,
+                                  centerPoint.y + CVars.lineGap - outlineThickness);
+                endPos = ImVec2(centerPoint.x + numAdd + outlineThickness,
+                                centerPoint.y + CVars.lineGap + CVars.lineLength + outlineThickness);
             }
             break;
 
@@ -177,17 +183,17 @@ void Crosshair::DrawOutline()
 
             if (isEven(lineThickness))
             {
-                startPos = ImVec2(center.x - CVars.lineGap - CVars.lineLength - outlineThickness,
-                                  center.y - halfThickness - outlineThickness);
-                endPos = ImVec2(center.x - CVars.lineGap + outlineThickness,
-                                center.y + halfThickness + (lineThickness % 2) + outlineThickness);
+                startPos = ImVec2(centerPoint.x - CVars.lineGap - CVars.lineLength - outlineThickness,
+                                  centerPoint.y - halfThickness - outlineThickness);
+                endPos = ImVec2(centerPoint.x - CVars.lineGap + outlineThickness,
+                                centerPoint.y + halfThickness + (lineThickness % 2) + outlineThickness);
             }
             else
             {
-                startPos = ImVec2((center.x + 0.51F) - CVars.lineGap + outlineThickness,
-                                  center.y - numMinus - outlineThickness);
-                endPos = ImVec2((center.x + 0.51F) - CVars.lineGap - CVars.lineLength - outlineThickness,
-                                center.y + numAdd + outlineThickness);
+                startPos = ImVec2((centerPoint.x + 0.51F) - CVars.lineGap + outlineThickness,
+                                  centerPoint.y - numMinus - outlineThickness);
+                endPos = ImVec2((centerPoint.x + 0.51F) - CVars.lineGap - CVars.lineLength - outlineThickness,
+                                centerPoint.y + numAdd + outlineThickness);
             }
             break;
 
@@ -196,17 +202,17 @@ void Crosshair::DrawOutline()
 
             if (isEven(lineThickness))
             {
-                startPos = ImVec2(center.x + CVars.lineGap - outlineThickness,
-                                  center.y - halfThickness - outlineThickness);
-                endPos = ImVec2(center.x + CVars.lineGap + CVars.lineLength + outlineThickness,
-                                center.y + halfThickness + (lineThickness % 2) + outlineThickness);
+                startPos = ImVec2(centerPoint.x + CVars.lineGap - outlineThickness,
+                                  centerPoint.y - halfThickness - outlineThickness);
+                endPos = ImVec2(centerPoint.x + CVars.lineGap + CVars.lineLength + outlineThickness,
+                                centerPoint.y + halfThickness + (lineThickness % 2) + outlineThickness);
             }
             else
             {
-                startPos = ImVec2(center.x + CVars.lineGap - outlineThickness,
-                                  center.y - numMinus - outlineThickness);
-                endPos = ImVec2(center.x + CVars.lineGap + CVars.lineLength + outlineThickness,
-                                center.y + numAdd + outlineThickness);
+                startPos = ImVec2(centerPoint.x + CVars.lineGap - outlineThickness,
+                                  centerPoint.y - numMinus - outlineThickness);
+                endPos = ImVec2(centerPoint.x + CVars.lineGap + CVars.lineLength + outlineThickness,
+                                centerPoint.y + numAdd + outlineThickness);
             }
         }
 
@@ -215,18 +221,15 @@ void Crosshair::DrawOutline()
     }
 }
 
-
-void Crosshair::DrawCenterDot()
+void Crosshair::DrawCenterDot(const ImVec2& centerPoint)
 {
-    // Get Relevant Variables 
-    ImVec2 center = CVars.screenCenterPoint;
     ImDrawList* drawList = ImGui::GetBackgroundDrawList();
 
-    if (CVars.filledCenterDot) // Draw A Filled Circle Since The Filled Checkbox Is Ticked
-        drawList->AddCircleFilled(center, CVars.centerDotSize, CVars.centerDotColor,
+    if (CVars.filledCenterDot)
+        drawList->AddCircleFilled(centerPoint, CVars.centerDotSize, CVars.centerDotColor,
                                   CVars.centerDotSegments);
-    else // No Fill
-        drawList->AddCircle(center, CVars.centerDotSize, CVars.centerDotColor,
+    else
+        drawList->AddCircle(centerPoint, CVars.centerDotSize, CVars.centerDotColor,
                             CVars.centerDotSegments, CVars.centerDotThickness);
 }
 
@@ -235,14 +238,8 @@ void Crosshair::ModifyDynamicCenterPoint()
     static std::chrono::steady_clock::time_point startTime;
     static bool isRButtonDown;
 
-    switch (CVars.dynamicCenterPointIndex)
+    if (CVars.dynamicCenterPointIndex == 0) // Huntress
     {
-    default:
-        CVars.screenCenterPoint = CVars.trueScreenCenterPoint;
-        break;
-
-    case 0: // Huntress
-
         if (GetAsyncKeyState(VK_RBUTTON))
         {
             if (!isRButtonDown)
@@ -254,20 +251,19 @@ void Crosshair::ModifyDynamicCenterPoint()
             const auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
                 std::chrono::steady_clock::now() - startTime).count();
 
-            if (CVars.screenCenterPoint.y < CVars.trueScreenCenterPoint.y + 30 && duration >= 2000)
-                CVars.screenCenterPoint.y++;
+            if (allCenterPoints[0].y < CVars.trueScreenCenterPoint.y + 30 && duration >= 2000)
+                allCenterPoints[0].y++;
         }
         else
         {
             if (isRButtonDown)
                 isRButtonDown = false;
 
-            CVars.screenCenterPoint = CVars.trueScreenCenterPoint;
+            allCenterPoints[0] = ImVec2(Backend::screenWidth / 2, Backend::screenHeight / 2);
         }
-        break;
-
-    case 1: // Deathslinger
-
+    }
+    else if (CVars.dynamicCenterPointIndex == 1) // Deathslinger
+    {
         if (GetAsyncKeyState(VK_RBUTTON))
         {
             if (!isRButtonDown)
@@ -279,17 +275,50 @@ void Crosshair::ModifyDynamicCenterPoint()
                 std::chrono::steady_clock::now() - startTime).count();
 
             if (duration > 400)
-                CVars.screenCenterPoint.y = 9999; // off screen;
+                allCenterPoints[0].y = 9999; // off screen;
         }
         else
         {
             if (isRButtonDown)
                 isRButtonDown = false;
 
-            CVars.screenCenterPoint.x = Backend::screenWidth / 2 + 3;
-            CVars.screenCenterPoint.y = CVars.trueScreenCenterPoint.y;
+            allCenterPoints[0].x = Backend::screenWidth / 2 + 3;
+            allCenterPoints[0].y = CVars.trueScreenCenterPoint.y;
         }
-
-        break;
     }
+    else if (CVars.dynamicCenterPointIndex == 2) // Trickster
+    {
+        allCenterPoints[0] = ImVec2(Backend::screenWidth / 2 - 15, Backend::screenHeight / 2);
+        if (allCenterPoints.size() < 2)
+            allCenterPoints.push_back(ImVec2(Backend::screenWidth / 2 + 15, Backend::screenHeight / 2));
+    }
+    else if (CVars.dynamicCenterPointIndex == 3) // Clown
+    {
+        if (GetAsyncKeyState(VK_RBUTTON))
+        {
+            if (!isRButtonDown)
+            {
+                startTime = std::chrono::steady_clock::now();
+                isRButtonDown = true;
+            }
+            auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
+                std::chrono::steady_clock::now() - startTime).count();
+
+
+            if (duration > 200 && allCenterPoints[0].y > 480)
+                allCenterPoints[0].y -= 4;
+        }
+        else
+        {
+            if (isRButtonDown)
+                isRButtonDown = false;
+            
+            allCenterPoints[0].y = 890;
+        }
+    }
+
+    if (CVars.dynamicCenterPointIndex != 2)
+        if (allCenterPoints.size() > 0)
+            for (int i = 1; i < allCenterPoints.size(); i++)
+                allCenterPoints.erase(allCenterPoints.begin() + i);
 }

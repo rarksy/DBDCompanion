@@ -4,7 +4,7 @@
 
 #include "ImGui/imgui.h"
 
-namespace HCMenu
+namespace HTMenu
 {
     void Setup();
     void RenderUI();

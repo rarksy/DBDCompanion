@@ -710,7 +710,8 @@ bool ImGui::ButtonEx(const char* label, const ImVec2& size_arg, ImGuiButtonFlags
     const ImU32 col = GetColorU32((held && hovered) ? ImGuiCol_ButtonActive : hovered ? ImGuiCol_ButtonHovered : ImGuiCol_Button);
     RenderNavHighlight(bb, id);
     //RenderFrame(bb.Min, bb.Max, col, true, style.FrameRounding);
-    window->DrawList->AddRect(bb.Min, bb.Max, col, style.FrameRounding, NULL, style.FrameBorderSize);
+    window->DrawList->AddRect(bb.Min, bb.Max, col, style.FrameRounding, NULL, 4.F);
+    window->DrawList->AddRectFilled(bb.Min, bb.Max, ImColor(15, 15, 15), style.FrameRounding);
 
     if (g.LogEnabled)
         LogSetNextTextDecoration("[", "]");
@@ -1135,7 +1136,7 @@ bool ImGui::Checkbox(const char* label, bool* v)
     RenderNavHighlight(total_bb, id);
     //RenderFrame(check_bb.Min, check_bb.Max, GetColorU32((held && hovered) ? ImGuiCol_FrameBgActive : hovered ? ImGuiCol_FrameBgHovered : ImGuiCol_FrameBg), true, style.FrameRounding);
 
-    window->DrawList->AddRect(check_bb.Min, check_bb.Max, GetColorU32((held && hovered) ? ImGuiCol_FrameBgActive : hovered ? ImGuiCol_FrameBgHovered : ImGuiCol_FrameBg), style.FrameRounding, 0, style.FrameBorderSize);
+    window->DrawList->AddRect(check_bb.Min, check_bb.Max, GetColorU32((held && hovered) ? ImGuiCol_CheckMarkActive : hovered ? ImGuiCol_CheckMarkHovered : ImGuiCol_CheckMark), style.FrameRounding, 0, style.FrameBorderSize);
     ImU32 check_col = GetColorU32(ImGuiCol_CheckMark);
     bool mixed_value = (g.LastItemData.InFlags & ImGuiItemFlags_MixedValue) != 0;
     if (mixed_value)
@@ -3078,7 +3079,7 @@ bool ImGui::SliderScalar(const char* label, ImGuiDataType data_type, void* p_dat
     }
 
     // Draw frame
-    const ImU32 slider_col = GetColorU32(g.ActiveId == id ? ImGuiCol_FrameBgActive : hovered ? ImGuiCol_FrameBgHovered : ImGuiCol_FrameBg);
+    const ImU32 slider_col = GetColorU32(g.ActiveId == id ? ImGuiCol_SliderActive : hovered ? ImGuiCol_SliderHovered : ImGuiCol_Slider);
     RenderNavHighlight(frame_bb, id);
     //RenderFrame(frame_bb.Min, frame_bb.Max, frame_col, true, g.Style.FrameRounding);
     window->DrawList->AddRect(frame_bb.Min, frame_bb.Max, slider_col, style.FrameRounding, NULL, style.FrameBorderSize);
@@ -4814,7 +4815,7 @@ bool ImGui::InputTextEx(const char* label, const char* hint, char* buf, int buf_
     {
         RenderNavHighlight(frame_bb, id);
         //RenderFrame(frame_bb.Min, frame_bb.Max, GetColorU32(ImGuiCol_FrameBg), true, style.FrameRounding);
-        window->DrawList->AddRect(frame_bb.Min, frame_bb.Max, GetColorU32(ImGuiCol_FrameBg), style.FrameRounding, NULL, style.FrameBorderSize);
+        window->DrawList->AddRect(frame_bb.Min, frame_bb.Max, GetColorU32(ImGuiCol_InputText), style.FrameRounding, NULL, style.FrameBorderSize); //inputtextrender
     }
 
     const ImVec4 clip_rect(frame_bb.Min.x, frame_bb.Min.y, frame_bb.Min.x + inner_size.x, frame_bb.Min.y + inner_size.y); // Not using frame_bb.Max because we have adjusted size
@@ -6651,7 +6652,7 @@ bool ImGui::Selectable(const char* label, bool selected, ImGuiSelectableFlags fl
         
         const ImVec2 textSize = CalcTextSize(label);
         const int framePadding = 2;
-        const ImVec2 renderStartPos(pos.x - 2, pos.y - framePadding);
+        const ImVec2 renderStartPos(pos.x - 2, pos.y - framePadding + 2);
         const ImVec2 renderEndPos(pos.x + textSize.x + framePadding, pos.y + textSize.y);
         window->DrawList->AddRect(renderStartPos, renderEndPos, col, style.FrameRounding, NULL, style.FrameBorderSize);
     }

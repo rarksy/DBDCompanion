@@ -11,9 +11,7 @@
 #include "Base64/Base64.hpp"
 #include "zlib/zlib.h"
 
-LPCWSTR exe = L"DeadByDaylight-Win64-Shipping.exe";
-
-DWORD GetProcessId(LPCWSTR ProcessName)
+DWORD Misc::GetGamePID()
 {
     PROCESSENTRY32 pt;
     HANDLE hsnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
@@ -22,7 +20,7 @@ DWORD GetProcessId(LPCWSTR ProcessName)
     {
         do
         {
-            if (!wcscmp(pt.szExeFile, ProcessName))
+            if (!wcscmp(pt.szExeFile, L"DeadByDaylight-Win64-Shipping.exe"))
             {
                 CloseHandle(hsnap);
                 return pt.th32ProcessID;
@@ -36,9 +34,7 @@ DWORD GetProcessId(LPCWSTR ProcessName)
 
 bool Misc::IsGameRunning()
 {
-    DWORD pid = GetProcessId(exe);
-
-    return pid != 0;
+    return GetGamePID() != 0;
 }
 
 void Misc::RestartGame(bool dx12)
@@ -48,7 +44,7 @@ void Misc::RestartGame(bool dx12)
         if (MessageBox(nullptr, L"This Will Close And Reopen Dead By Daylight.", L"Continue?", MB_YESNO) == IDNO)
             return;
 
-        HANDLE handle = OpenProcess(PROCESS_TERMINATE, FALSE, GetProcessId(exe));
+        HANDLE handle = OpenProcess(PROCESS_TERMINATE, FALSE, GetGamePID());
         if (handle != NULL)
         {
             TerminateProcess(handle, 0);

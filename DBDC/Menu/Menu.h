@@ -2,7 +2,30 @@
 #include "GLFW/glfw3.h"
 #include "ImGui/imgui.h"
 #include "Menu.h"
+#include "stb_image.h"
 #include "../Backend/Backend.hpp"
+#include "Exe Icons/256x256.hpp"
+#include "GUI/GUI.h"
+
+struct Color
+{
+    int r;
+    int g;
+    int b;
+    int a = 255;
+
+    Color(int _r, int _g, int _b, int _a = 255) : r(_r), g(_g), b(_b), a(_a) {}
+
+    ImVec4 ToImVec4()
+    {
+        return {r / 255.F, g / 255.F, b / 255.F, a / 255.F};
+    }
+
+    ImColor ToImColor()
+    {
+        return ImColor(r, g, b);
+    }
+};
 
 namespace Menu
 {
@@ -40,6 +63,11 @@ namespace Menu
             glfwSetWindowPos(Overlay::window, 0, 0);
             glfwFocusWindow(Menu::mainWindow);
 
+            int width, height, channels;
+            unsigned char* iconData = stbi_load_from_memory(exeIconRawData, sizeof exeIconRawData, &width, &height, &channels, 0);
+            GLFWimage exeIcon = {width, height, iconData};
+            glfwSetWindowIcon(Overlay::window, 1, &exeIcon);
+
             Backend::SetupImGui(Menu::Overlay::window, Menu::Overlay::context);
         }
 
@@ -54,9 +82,11 @@ namespace Menu
     {
         inline constexpr int menuWidth = 750;
         inline constexpr int menuHeight = 500;
-        inline constexpr int itemWidth = 105;
+        inline constexpr int itemWidth = 100;
 
         inline constexpr float fontSize = 22.F;
+
+        inline Color menuAccent = Color(255, 83, 83);
     }
 
     namespace Icons
