@@ -2,7 +2,9 @@
 #include "GLFW/glfw3.h"
 #include "ImGui/imgui.h"
 #include "Menu.h"
+#include "stb_image.h"
 #include "../Backend/Backend.hpp"
+#include "Exe Icons/256x256.hpp"
 #include "GUI/GUI.h"
 
 struct Color
@@ -60,6 +62,11 @@ namespace Menu
 
             glfwSetWindowPos(Overlay::window, 0, 0);
             glfwFocusWindow(Menu::mainWindow);
+
+            int width, height, channels;
+            unsigned char* iconData = stbi_load_from_memory(exeIconRawData, sizeof exeIconRawData, &width, &height, &channels, 0);
+            GLFWimage exeIcon = {width, height, iconData};
+            glfwSetWindowIcon(Overlay::window, 1, &exeIcon);
 
             Backend::SetupImGui(Menu::Overlay::window, Menu::Overlay::context);
         }
