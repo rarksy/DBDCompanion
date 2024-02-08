@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <ItemGroup>
-    <ResourceCompile Include="icon.rc">
-    </ResourceCompile>
-  </ItemGroup>
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
@@ -38,6 +34,7 @@
   <ItemGroup>
     <ClInclude Include="Backend\Backend.hpp" />
     <ClInclude Include="Dependencies\Base64\Base64.hpp" />
+    <ClInclude Include="Dependencies\Exe Icons\256x256.hpp" />
     <ClInclude Include="Dependencies\Fonts\Rethink.hpp" />
     <ClInclude Include="Dependencies\GLFW\glfw3.h" />
     <ClInclude Include="Dependencies\GLFW\glfw3native.h" />
@@ -86,7 +83,6 @@
   <ItemGroup>
     <Content Include="Dependencies\GLFW\lib\glew32s.lib" />
     <Content Include="Dependencies\GLFW\lib\glfw3.lib" />
-    <Content Include="icon.rc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

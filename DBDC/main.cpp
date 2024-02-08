@@ -6,11 +6,11 @@
 #include "ImGui/imgui_impl_opengl3.h"
 #include "Menu/Menu.h"
 #include "Dependencies/Images/Icons/ConfigEditor.hpp"
-#define GLFW_EXPOSE_NATIVE_WIN32
-#include "GLFW/glfw3native.h"
+#include "stb_image.h"
+#include "Exe Icons/256x256.hpp"
 #include "ImGui/imgui_impl_glfw.h"
 
-int WINAPI wWinMain(HINSTANCE instance, HINSTANCE, PTSTR, int)
+int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
 {
     if (!Backend::InitGLFW())
         return -1;
@@ -33,15 +33,16 @@ int WINAPI wWinMain(HINSTANCE instance, HINSTANCE, PTSTR, int)
         fileToCreate.close();
     }
 
-    Menu::mainWindow = Backend::SetupWindow("Dead By Daylight Companion", Menu::Styling::menuWidth,
-                                            Menu::Styling::menuHeight);
+    Menu::mainWindow = Backend::SetupWindow("Dead By Daylight Companion", Menu::Styling::menuWidth, Menu::Styling::menuHeight);
 
     if (!Menu::mainWindow)
         return -1;
 
-    HICON icon = LoadIcon(instance, MAKEINTRESOURCE(105));
-    SendMessage(glfwGetWin32Window(Menu::mainWindow), WM_SETICON, ICON_BIG, (LPARAM)icon);
-    
+    int width, height, channels;
+    unsigned char* iconData = stbi_load_from_memory(exeIconRawData, sizeof exeIconRawData, &width, &height, &channels, 0);
+    GLFWimage exeIcon = {width, height, iconData};
+    glfwSetWindowIcon(Menu::mainWindow, 1, &exeIcon);
+
     Backend::SetupImGui(Menu::mainWindow, Menu::mainContext);
 
     Images::LoadTextureFromMemory(configEditorIconRawData, sizeof configEditorIconRawData, &Menu::Icons::ConfigEditor);
