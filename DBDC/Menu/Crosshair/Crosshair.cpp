@@ -292,6 +292,30 @@ void Crosshair::ModifyDynamicCenterPoint()
         if (allCenterPoints.size() < 2)
             allCenterPoints.push_back(ImVec2(Backend::screenWidth / 2 + 15, Backend::screenHeight / 2));
     }
+    else if (CVars.dynamicCenterPointIndex == 3) // Clown
+    {
+        if (GetAsyncKeyState(VK_RBUTTON))
+        {
+            if (!isRButtonDown)
+            {
+                startTime = std::chrono::steady_clock::now();
+                isRButtonDown = true;
+            }
+            auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
+                std::chrono::steady_clock::now() - startTime).count();
+
+
+            if (duration > 200 && allCenterPoints[0].y > 480)
+                allCenterPoints[0].y -= 4;
+        }
+        else
+        {
+            if (isRButtonDown)
+                isRButtonDown = false;
+            
+            allCenterPoints[0].y = 890;
+        }
+    }
 
     if (CVars.dynamicCenterPointIndex != 2)
         if (allCenterPoints.size() > 0)
