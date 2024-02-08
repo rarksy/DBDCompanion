@@ -6,9 +6,11 @@
 #include "ImGui/imgui_impl_opengl3.h"
 #include "Menu/Menu.h"
 #include "Dependencies/Images/Icons/ConfigEditor.hpp"
+#define GLFW_EXPOSE_NATIVE_WIN32
+#include "GLFW/glfw3native.h"
 #include "ImGui/imgui_impl_glfw.h"
 
-int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
+int WINAPI wWinMain(HINSTANCE instance, HINSTANCE, PTSTR, int)
 {
     if (!Backend::InitGLFW())
         return -1;
@@ -36,6 +38,9 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
 
     if (!Menu::mainWindow)
         return -1;
+
+    HICON icon = LoadIcon(instance, MAKEINTRESOURCE(105));
+    SendMessage(glfwGetWin32Window(Menu::mainWindow), WM_SETICON, ICON_BIG, (LPARAM)icon);
     
     Backend::SetupImGui(Menu::mainWindow, Menu::mainContext);
 

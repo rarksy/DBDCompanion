@@ -1,0 +1,12 @@
+﻿// Icon Resource Definition
+#define ICON_16X16                      101
+#define ICON_32X32                      102
+#define ICON_64X64                      103
+#define ICON_128X128                    104
+#define ICON_256X256                    105
+
+ICON_16X16              ICON                    "Dependencies/Exe Icons/16x16.ico"
+ICON_32X32              ICON                    "Dependencies/Exe Icons/32x32.ico"
+ICON_64X64              ICON                    "Dependencies/Exe Icons/64x64.ico"
+ICON_128X128            ICON                    "Dependencies/Exe Icons/128x128.ico"
+ICON_256X256            ICON                    "Dependencies/Exe Icons/256x256.ico"
