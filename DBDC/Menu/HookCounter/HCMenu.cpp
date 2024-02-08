@@ -13,17 +13,11 @@ void HCMenu::Setup()
     HCVars.menuScaleFactor.LoadValue();
     HCVars.hudScaleFactor.LoadValue();
 
-    if (!std::filesystem::exists(Backend::exeDirectory.string() + "\\DBDC\\HookCounterSettings"))
-    {
-        std::ofstream fileToCreate(Backend::exeDirectory.string() + "\\DBDC\\HookCounterSettings");
-        fileToCreate.close();
-    }
-
-    mINI::INIFile file(Backend::exeDirectory.string() + "\\DBDC\\HookCounterSettings");
+    mINI::INIFile file(Backend::exeDirectory.string() + "\\DBDC\\Settings");
     mINI::INIStructure ini;
     file.read(ini);
 
-    strcpy_s(HCVars.soundFilePath, ini["Settings"]["FilePath"].c_str());
+    strcpy_s(HCVars.soundFilePath, ini["HookCounter"]["SoundPath"].c_str());
 }
 
 void HCMenu::RenderUI()
@@ -80,11 +74,11 @@ void HCMenu::RenderUI()
     ImGui::SetNextItemWidth(140);
     if (ImGui::InputTextWithHint("Sound Path", "C:/Path/To/File.wav", HCVars.soundFilePath, sizeof HCVars.soundFilePath))
     {
-        mINI::INIFile file(Backend::exeDirectory.string() + "\\DBDC\\HookCounterSettings");
+        mINI::INIFile file(Backend::exeDirectory.string() + "\\DBDC\\Settings");
         mINI::INIStructure ini;
         file.read(ini);
 
-        ini["Settings"]["FilePath"] = HCVars.soundFilePath;
+        ini["HookCounter"]["SoundPath"] = HCVars.soundFilePath;
         file.write(ini);
     }
     GUI::ToolTip("Only .wav files are supported in this version.");

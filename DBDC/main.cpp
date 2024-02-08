@@ -25,13 +25,18 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
 
     Backend::exeDirectory = exePath.parent_path();
 
+    if (!std::filesystem::exists(Backend::exeDirectory.string() + "\\DBDC\\Settings"))
+    {
+        std::ofstream fileToCreate(Backend::exeDirectory.string() + "\\DBDC\\Settings");
+        fileToCreate.close();
+    }
+
     Menu::mainWindow = Backend::SetupWindow("Dead By Daylight Companion", Menu::Styling::menuWidth,
                                             Menu::Styling::menuHeight);
 
     if (!Menu::mainWindow)
         return -1;
-
-
+    
     Backend::SetupImGui(Menu::mainWindow, Menu::mainContext);
 
     Images::LoadTextureFromMemory(configEditorIconRawData, sizeof configEditorIconRawData, &Menu::Icons::ConfigEditor);
