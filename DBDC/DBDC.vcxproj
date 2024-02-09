@@ -67,6 +67,7 @@
     <ClInclude Include="Dependencies\ImGui\imstb_textedit.h" />
     <ClInclude Include="Dependencies\ImGui\imstb_truetype.h" />
     <ClInclude Include="Dependencies\mINI\ini.h" />
+    <ClInclude Include="Dependencies\miscLIB\miscLIB.hpp" />
     <ClInclude Include="Dependencies\stb_image.h" />
     <ClInclude Include="Dependencies\zlib\zconf.h" />
     <ClInclude Include="Dependencies\zlib\zlib.h" />
