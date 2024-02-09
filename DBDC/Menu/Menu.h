@@ -25,6 +25,22 @@ struct Color
     {
         return ImColor(r, g, b);
     }
+
+    void ApplyFromImColor(const ImColor& imcolor)
+    {
+        this->r = imcolor.Value.x;
+        this->g = imcolor.Value.y;
+        this->b = imcolor.Value.z;
+        this->a = imcolor.Value.w;
+    }
+
+    void ApplyFromImVec4(const ImVec4& imvec4)
+    {
+        this->r = imvec4.x * 255;
+        this->g = imvec4.y * 255;
+        this->b = imvec4.z * 255;
+        this->a = imvec4.w * 255;
+    }
 };
 
 namespace Menu
