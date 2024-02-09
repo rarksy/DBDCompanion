@@ -7,6 +7,7 @@
 #include <filesystem>
 #include <Windows.h>
 #include <TlHelp32.h>
+#include <fstream>
 
 namespace ml
 {
@@ -48,20 +49,53 @@ namespace ml
         return std::filesystem::path(pathBuffer);
     }
 
-    inline bool file_exists(const std::string& file_path)
+    inline bool file_or_directory_exists(const std::string& file_path)
     {
         return std::filesystem::exists(file_path);
     }
 
     inline bool create_file(const std::string& file_name)
     {
-        if (file_exists(file_name))
+        if (file_or_directory_exists(file_name))
             return false;
         
         std::ofstream file_to_create(file_name);
         file_to_create.close();
 
-        return file_exists(file_name);
+        return file_or_directory_exists(file_name);
+    }
+
+    inline bool create_directory(const std::string& directory_path)
+    {
+        if (file_or_directory_exists(directory_path))
+            return false;
+
+        return std::filesystem::create_directories(directory_path);
+    }
+
+    inline DWORD get_exe_pid(const std::wstring& processName)
+    {
+        HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+        if (hSnapshot == INVALID_HANDLE_VALUE)
+            return 0;
+
+        PROCESSENTRY32 pe32;
+        pe32.dwSize = sizeof(PROCESSENTRY32);
+
+        if (!Process32First(hSnapshot, &pe32)) {
+            CloseHandle(hSnapshot);
+            return 0;
+        }
+
+        do {
+            if (processName == pe32.szExeFile) {
+                CloseHandle(hSnapshot);
+                return pe32.th32ProcessID;
+            }
+        } while (Process32Next(hSnapshot, &pe32));
+
+        CloseHandle(hSnapshot);
+        return 0;
     }
 
     inline bool is_exe_running(const std::wstring& processName) {
