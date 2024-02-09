@@ -6,8 +6,6 @@
 
 namespace Misc
 {
-    DWORD GetGamePID();
-    bool IsGameRunning();
     void RestartGame(bool dx12 = false);
 
     cv::Mat GetScreenshot(const cv::Rect& region, bool grayscale = true);
