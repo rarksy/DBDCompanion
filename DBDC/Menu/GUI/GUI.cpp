@@ -127,7 +127,6 @@ bool GUI::InputInt(const char* label, ConfigEditor::Setting& setting, float widg
     return valueChanged;
 }
 
-
 void GUI::ToolTip(std::string message, bool holdRightClick)
 {
     if (holdRightClick && (!ImGui::IsKeyDown(ImGuiKey_MouseRight)))
@@ -145,8 +144,8 @@ void GUI::ToolTip(std::string message, unsigned int texture, const ImVec2& size,
     if (ImGui::IsItemHovered())
     {
         ImGui::BeginTooltip();
-        ImGui::Text(message.c_str());
-        ImGui::Image((void*)texture, size);
+        ImGui::Text("%s", message.c_str());
+        ImGui::Image(reinterpret_cast<void*>(texture), size);
         ImGui::EndTooltip();
     }
 }
@@ -159,11 +158,7 @@ bool GUI::ColorPicker(const char* label, Color& col)
     const bool valueChanged = ImGui::ColorEdit4(label, &colorVec4.x, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_NoTooltip);
 
     if (valueChanged)
-    {
-        const ImColor imColor = ImColor(colorVec4);
-
-        col = Color(imColor.Value.x * 255, imColor.Value.y * 255, imColor.Value.z * 255, imColor.Value.w * 255);
-    }
+        col.ApplyFromImVec4(colorVec4);
 
     ImGui::PopID();
 

@@ -13,7 +13,7 @@ void HTMenu::Setup()
     HTVars.menuScaleFactor.LoadValue();
     HTVars.hudScaleFactor.LoadValue();
 
-    mINI::INIFile file(Backend::exeDirectory.string() + "\\DBDC\\Settings");
+    mINI::INIFile file(Backend::exeDirectory.string() + Backend::settingsDirectory + "Settings");
     mINI::INIStructure ini;
     file.read(ini);
 
@@ -74,7 +74,7 @@ void HTMenu::RenderUI()
     ImGui::SetNextItemWidth(140);
     if (ImGui::InputTextWithHint("Sound Path", "C:/Path/To/File.wav", HTVars.soundFilePath, sizeof HTVars.soundFilePath))
     {
-        mINI::INIFile file(Backend::exeDirectory.string() + "\\DBDC\\Settings");
+        mINI::INIFile file(Backend::exeDirectory.string() + Backend::settingsDirectory + "Settings");
         mINI::INIStructure ini;
         file.read(ini);
 

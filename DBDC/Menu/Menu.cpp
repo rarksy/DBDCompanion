@@ -15,7 +15,7 @@
 void Menu::RunLoop()
 {
     {
-        mINI::INIFile file(Backend::exeDirectory.string() + "\\DBDC\\Settings");
+        mINI::INIFile file(Backend::exeDirectory.string() + Backend::settingsDirectory + "Settings");
         mINI::INIStructure ini;
         file.read(ini);
 
@@ -161,7 +161,7 @@ void Menu::RenderUI()
         ImGui::SetCursorPos({45, 9});
         if (GUI::ColorPicker("Menu Accent", Styling::menuAccent))
         {
-            mINI::INIFile file(Backend::exeDirectory.string() + "\\DBDC\\Settings");
+            mINI::INIFile file(Backend::exeDirectory.string() + Backend::settingsDirectory + "Settings");
             mINI::INIStructure ini;
             file.read(ini);
 
