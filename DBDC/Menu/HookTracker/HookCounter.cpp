@@ -10,12 +10,12 @@
 
 bool TemplateMatch(cv::Mat Frame, cv::Mat ElementToFind, double Threshold, cv::Point& Detectedlocation)
 {
-    auto Result = cv::Mat(Frame.rows - ElementToFind.rows + 1, Frame.cols - ElementToFind.cols + 1, CV_32FC1);
+    auto result = cv::Mat(Frame.rows - ElementToFind.rows + 1, Frame.cols - ElementToFind.cols + 1, CV_32FC1);
 
-    cv::matchTemplate(Frame, ElementToFind, Result, cv::TM_CCOEFF_NORMED);
-    cv::threshold(Result, Result, Threshold, 1.0, cv::THRESH_TOZERO);
+    cv::matchTemplate(Frame, ElementToFind, result, cv::TM_CCOEFF_NORMED);
+    cv::threshold(result, result, Threshold, 1.0, cv::THRESH_TOZERO);
     double AccuracyValue;
-    cv::minMaxLoc(Result, NULL, &AccuracyValue, NULL, &Detectedlocation);
+    cv::minMaxLoc(result, NULL, &AccuracyValue, NULL, &Detectedlocation);
     return AccuracyValue >= Threshold;
 }
 
@@ -92,8 +92,8 @@ void HookTracker::HandleDetection(const cv::Point& detectedLocation, std::vector
     {
         const auto survivor = locations[i];
 
-        if (detectedLocation.y > survivor.y - 15 &&
-            detectedLocation.y < survivor.y + 15)
+        if (detectedLocation.y > survivor.y - 7 &&
+            detectedLocation.y < survivor.y + 7)
         {
             addSurvivor = false;
             break;
