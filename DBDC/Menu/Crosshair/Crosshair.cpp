@@ -41,11 +41,11 @@ bool isEven(int number)
 void Crosshair::DrawLines(const ImVec2& centerPoint)
 {
     ImDrawList* drawList = ImGui::GetBackgroundDrawList();
-    int thickness = CVars.lineThickness;
-    float halfThickness = thickness / 2;
+    const int thickness = CVars.lineThickness;
+    const float halfThickness = thickness / 2;
 
-    float numMinus = thickness / 2;
-    float numAdd = thickness - numMinus;
+    const float numMinus = thickness / 2;
+    const float numAdd = thickness - numMinus;
 
     for (int i = 0; i < 4; i++)
     {
@@ -125,12 +125,12 @@ void Crosshair::DrawLines(const ImVec2& centerPoint)
 void Crosshair::DrawOutline(const ImVec2& centerPoint)
 {
     ImDrawList* drawList = ImGui::GetBackgroundDrawList();
-    int lineThickness = CVars.lineThickness;
-    int outlineThickness = CVars.outlineThickness;
-    int halfThickness = lineThickness / 2;
+    const int lineThickness = CVars.lineThickness;
+    const int outlineThickness = CVars.outlineThickness;
+    const int halfThickness = lineThickness / 2;
 
-    int numMinus = lineThickness / 2;
-    int numAdd = lineThickness - numMinus;
+    const int numMinus = lineThickness / 2;
+    const int numAdd = lineThickness - numMinus;
 
     for (int i = 0; i < 4; i++)
     {
