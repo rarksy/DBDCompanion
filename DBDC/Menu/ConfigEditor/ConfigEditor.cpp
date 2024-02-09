@@ -7,6 +7,8 @@
 
 #include <ShlObj_core.h>
 
+#include "miscLIB/miscLIB.hpp"
+
 bool ConfigEditor::InitializeConfig()
 {
     const auto path = GetSettingsFolderLocation();
@@ -109,7 +111,7 @@ void ConfigEditor::LoadConfig()
     CEVars.colorBlindModeStrength.LoadValue();
     
 
-    if (Misc::IsGameRunning())
+    if (ml::is_exe_running(L"DeadByDaylight-Win64-Shipping.exe"))
         MessageBoxA(nullptr, "Game Is Running, Changes Won't Apply Until It Is Restarted.", "Notice...", MB_OK);
 }
 
@@ -168,7 +170,6 @@ bool ConfigEditor::ImportConfig()
 
     const std::string gameUserSettingsContent = decompressed.substr(0, decompressed.find("ENDFILE"));
     const std::string engineContent = decompressed.substr(decompressed.find("ENDFILE") + 7);
-
     // Setup Temp Files
     
     const std::string tempGameUserSettings = "ImportedGameUserSettings.ini";

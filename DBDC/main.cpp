@@ -9,29 +9,24 @@
 #include "stb_image.h"
 #include "Exe Icons/256x256.hpp"
 #include "ImGui/imgui_impl_glfw.h"
+#include "miscLIB/miscLIB.hpp"
 
 int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
 {
     if (!Backend::InitGLFW())
         return -1;
 
-    Backend::screenWidth = GetSystemMetrics(SM_CXSCREEN);
-    Backend::screenHeight = GetSystemMetrics(SM_CYSCREEN);
+    Backend::screenWidth = ml::get_screen_width();
+    Backend::screenHeight = ml::get_screen_height();
 
     Menu::Overlay::windowWidth = Backend::screenWidth;
     Menu::Overlay::windowHeight = Backend::screenHeight;
 
     char pathBuffer[MAX_PATH];
     GetModuleFileNameA(NULL, pathBuffer, MAX_PATH);
-    const std::filesystem::path exePath(pathBuffer);
+    Backend::exeDirectory = std::filesystem::path(pathBuffer).parent_path();
 
-    Backend::exeDirectory = exePath.parent_path();
-
-    if (!std::filesystem::exists(Backend::exeDirectory.string() + "\\DBDC\\Settings"))
-    {
-        std::ofstream fileToCreate(Backend::exeDirectory.string() + "\\DBDC\\Settings");
-        fileToCreate.close();
-    }
+    ml::create_directory(Backend::exeDirectory.string() + Backend::settingsDirectory);
 
     Menu::mainWindow = Backend::SetupWindow("Dead By Daylight Companion", Menu::Styling::menuWidth, Menu::Styling::menuHeight);
 

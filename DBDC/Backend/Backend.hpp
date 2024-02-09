@@ -18,4 +18,6 @@ namespace Backend
     inline int screenWidth;
     inline int screenHeight;
     inline std::filesystem::path exeDirectory;
+    inline const std::string settingsDirectory = "\\DBDC\\";
+    
 }
