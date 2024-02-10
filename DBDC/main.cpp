@@ -1,5 +1,4 @@
 #include <cstdio>
-#include <iostream>
 #include <Windows.h>
 #include "Backend/Backend.hpp"
 #include "Images/Images.h"
