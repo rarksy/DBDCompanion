@@ -1,5 +1,4 @@
 ﻿#include "Backend.hpp"
-#include <iostream>
 #include "Fonts/Rethink.hpp"
 #include "../Menu/Menu.h"
 #include <ImGui/imgui.h>
