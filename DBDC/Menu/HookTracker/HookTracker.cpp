@@ -1,7 +1,7 @@
 ﻿#include <chrono>
 #include <Windows.h>
 
-#include "HookCounter.h"
+#include "HookTracker.hpp"
 #include "HTMenu.h"
 #include "Images/HookTracker/Hook.hpp"
 #include "Images/HookTracker/Stage2.hpp"
@@ -65,13 +65,13 @@ void HookTracker::DetectionLoop()
         if (HTVars.track1stStage)
         {
             if (TemplateMatch(frame, stage1Image, HTVars.firstThreshold, detectedLocation))
-                HandleDetection(detectedLocation, Internal::survivorLocationsStage1);
+                HandleDetection(detectedLocation, Internal::survivorLocationsStage1, HTVars.firstDetectionRange);
         }
 
         if (HTVars.track2ndStage)
         {
             if (TemplateMatch(frame, stage2Image, HTVars.secondThreshold, detectedLocation))
-                HandleDetection(detectedLocation, Internal::survivorLocationsStage2);
+                HandleDetection(detectedLocation, Internal::survivorLocationsStage2, HTVars.secondDetectionRange);
         }
 
         const auto frameEndTime = std::chrono::steady_clock::now();
@@ -83,7 +83,7 @@ void HookTracker::DetectionLoop()
     }
 }
 
-void HookTracker::HandleDetection(const cv::Point& detectedLocation, std::vector<ImVec2>& locations)
+void HookTracker::HandleDetection(const cv::Point& detectedLocation, std::vector<ImVec2>& locations, int detectionRange)
 {
     bool addSurvivor = true;
 
@@ -92,8 +92,8 @@ void HookTracker::HandleDetection(const cv::Point& detectedLocation, std::vector
     {
         const auto survivor = locations[i];
 
-        if (detectedLocation.y > survivor.y - 7 &&
-            detectedLocation.y < survivor.y + 7)
+        if (detectedLocation.y > survivor.y - detectionRange &&
+            detectedLocation.y < survivor.y + detectionRange)
         {
             addSurvivor = false;
             break;

@@ -9,7 +9,7 @@
 namespace HookTracker
 {
     void DetectionLoop();
-    void HandleDetection(const cv::Point& detectedLocation, std::vector<ImVec2>& locations);
+    void HandleDetection(const cv::Point& detectedLocation, std::vector<ImVec2>& locations, int detectionRange);
     void RenderDetection();
 
     struct Variables
@@ -26,6 +26,9 @@ namespace HookTracker
 
         float firstThreshold = 0.9f;
         float secondThreshold = 0.9f;
+
+        int firstDetectionRange = 7;
+        int secondDetectionRange = 5;
     };
 
     namespace Internal

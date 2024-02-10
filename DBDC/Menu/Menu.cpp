@@ -10,7 +10,7 @@
 #include "HookTracker\HTMenu.h"
 #include <Windows.h>
 
-#include "HookTracker/HookCounter.h"
+#include "HookTracker\HookTracker.hpp"
 
 void Menu::RunLoop()
 {

@@ -4,7 +4,7 @@
 #include "../Menu.h"
 #include "../Crosshair/Crosshair.h"
 #include "../GUI/GUI.h"
-#include "HookCounter.h"
+#include "HookTracker.hpp"
 #include "../ConfigEditor/ConfigEditor.hpp"
 
 void HTMenu::Setup()

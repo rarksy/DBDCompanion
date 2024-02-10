@@ -31,7 +31,7 @@
     <ClCompile Include="Menu\Crosshair\Crosshair.cpp" />
     <ClCompile Include="Menu\GUI\GUI.cpp" />
     <ClCompile Include="Menu\HookTracker\HTMenu.cpp" />
-    <ClCompile Include="Menu\HookTracker\HookCounter.cpp" />
+    <ClCompile Include="Menu\HookTracker\HookTracker.cpp" />
     <ClCompile Include="Menu\Menu.cpp" />
     <ClCompile Include="Misc\Misc.cpp" />
   </ItemGroup>
@@ -81,7 +81,7 @@
     <ClInclude Include="Menu\Crosshair\Crosshair.h" />
     <ClInclude Include="Menu\GUI\GUI.h" />
     <ClInclude Include="Menu\HookTracker\HTMenu.h" />
-    <ClInclude Include="Menu\HookTracker\HookCounter.h" />
+    <ClInclude Include="Menu\HookTracker\HookTracker.hpp" />
     <ClInclude Include="Menu\Menu.h" />
     <ClInclude Include="Misc\Misc.hpp" />
   </ItemGroup>
