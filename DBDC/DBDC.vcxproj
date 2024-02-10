@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ResourceCompile Include="icon.rc">
+    </ResourceCompile>
+  </ItemGroup>
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
@@ -84,6 +88,7 @@
   <ItemGroup>
     <Content Include="Dependencies\GLFW\lib\glew32s.lib" />
     <Content Include="Dependencies\GLFW\lib\glfw3.lib" />
+    <Content Include="icon.rc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
@@ -173,6 +178,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>Dependencies\zlib\lib\zlib.lib;winmm.lib;Dependencies\opencv2\lib\opencv_world481.lib;opengl32.lib;Dependencies\GLFW\lib\glew32s.lib;Dependencies\GLFW\lib\glfw3.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalManifestDependencies></AdditionalManifestDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
