@@ -13,7 +13,8 @@ struct Color
     int g;
     int b;
     int a = 255;
-
+    
+    Color() : r(0), g(0), b(0) {}
     Color(int _r, int _g, int _b, int _a = 255) : r(_r), g(_g), b(_b), a(_a) {}
 
     ImVec4 ToImVec4()
