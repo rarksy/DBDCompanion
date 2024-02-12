@@ -16,8 +16,8 @@ namespace HookTracker
     {
         bool enabled = false;
 
-        bool track1stStage = false;
-        bool track2ndStage = false;
+        bool track1stStage = true;
+        bool track2ndStage = true;
         bool playSoundOnHook = false;
         char soundFilePath[128];
 
@@ -29,6 +29,8 @@ namespace HookTracker
 
         int firstDetectionRange = 7;
         int secondDetectionRange = 5;
+
+        double resizeMultiplier1080p = 1.3;
     };
 
     namespace Internal

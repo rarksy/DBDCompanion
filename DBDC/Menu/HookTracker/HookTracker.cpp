@@ -37,8 +37,8 @@ void HookTracker::DetectionLoop()
 
     if (Backend::screenHeight == 1080)
     {
-        cv::resize(stage1Image, stage1Image, cv::Size(), 1.0 / 1.3, 1.0 / 1.3, cv::INTER_AREA);
-        cv::resize(stage2Image, stage2Image, cv::Size(), 1.0 / 1.3, 1.0 / 1.3, cv::INTER_AREA);
+        cv::resize(stage1Image, stage1Image, cv::Size(), 1.0 / HTVars.resizeMultiplier1080p, 1.0 / HTVars.resizeMultiplier1080p, cv::INTER_AREA);
+        cv::resize(stage2Image, stage2Image, cv::Size(), 1.0 / HTVars.resizeMultiplier1080p, 1.0 / HTVars.resizeMultiplier1080p, cv::INTER_AREA);
     }
 
     cv::resize(stage1Image, stage1Image, cv::Size(
@@ -87,8 +87,8 @@ void HookTracker::HandleDetection(const cv::Point& detectedLocation, std::vector
 {
     bool addSurvivor = true;
 
-    const int stage1LocationsSize = locations.size();
-    for (int i = 0; i < stage1LocationsSize; i++)
+    const size_t stage1LocationsSize = locations.size();
+    for (size_t i = 0; i < stage1LocationsSize; i++)
     {
         const auto survivor = locations[i];
 
@@ -111,17 +111,18 @@ void HookTracker::HandleDetection(const cv::Point& detectedLocation, std::vector
 
 void HookTracker::RenderDetection()
 {
-    const int stage1Size = Internal::survivorLocationsStage1.size();
-    const int stage2Size = Internal::survivorLocationsStage2.size();
+    
+    const size_t stage1Size = Internal::survivorLocationsStage1.size();
+    const size_t stage2Size = Internal::survivorLocationsStage2.size();
 
-    for (int i = 0; i < stage1Size; i++)
+    for (size_t i = 0; i < stage1Size; i++)
     {
         const auto location = Internal::survivorLocationsStage1[i];
         ImGui::GetBackgroundDrawList()->AddRect(location, ImVec2(location.x + 10, location.y + 10),
                                                 ImColor(255, 0, 0));
     }
 
-    for (int i = 0; i < stage2Size; i++)
+    for (size_t i = 0; i < stage2Size; i++)
     {
         const auto location = Internal::survivorLocationsStage2[i];
         ImGui::GetBackgroundDrawList()->AddRectFilled(location, ImVec2(location.x + 10, location.y + 10),
