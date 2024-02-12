@@ -34,7 +34,7 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
 
     int width, height, channels;
     unsigned char* iconData = stbi_load_from_memory(exeIconRawData, sizeof exeIconRawData, &width, &height, &channels, 0);
-    GLFWimage exeIcon = {width, height, iconData};
+    const GLFWimage exeIcon = {width, height, iconData};
     glfwSetWindowIcon(Menu::mainWindow, 1, &exeIcon);
 
     Backend::SetupImGui(Menu::mainWindow, Menu::mainContext);
