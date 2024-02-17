@@ -9,6 +9,9 @@
 #include <TlHelp32.h>
 #include <fstream>
 
+#include "../curl/curl.h"
+#include "../nlohmann/json.hpp"
+
 namespace ml
 {
     template <typename... Args>
@@ -17,18 +20,18 @@ namespace ml
         (std::cout << ... << std::forward<Args>(args)) << std::endl;
     }
 
-    template<typename T>
+    template <typename T>
     std::string to_string(T content)
     {
         return std::to_string(content);
     }
-    
+
     inline std::string to_string(const char* content)
     {
         return {content};
     }
 
-    template<typename T>
+    template <typename T>
     std::vector<std::string> split_to_vector(T content, char delimiter)
     {
         std::vector<std::string> tokens;
@@ -45,7 +48,7 @@ namespace ml
     {
         char pathBuffer[MAX_PATH];
         GetModuleFileNameA(NULL, pathBuffer, MAX_PATH);
-        
+
         return std::filesystem::path(pathBuffer);
     }
 
@@ -58,7 +61,7 @@ namespace ml
     {
         if (file_or_directory_exists(file_name))
             return false;
-        
+
         std::ofstream file_to_create(file_name);
         file_to_create.close();
 
@@ -82,23 +85,28 @@ namespace ml
         PROCESSENTRY32 pe32;
         pe32.dwSize = sizeof(PROCESSENTRY32);
 
-        if (!Process32First(hSnapshot, &pe32)) {
+        if (!Process32First(hSnapshot, &pe32))
+        {
             CloseHandle(hSnapshot);
             return 0;
         }
 
-        do {
-            if (processName == pe32.szExeFile) {
+        do
+        {
+            if (processName == pe32.szExeFile)
+            {
                 CloseHandle(hSnapshot);
                 return pe32.th32ProcessID;
             }
-        } while (Process32Next(hSnapshot, &pe32));
+        }
+        while (Process32Next(hSnapshot, &pe32));
 
         CloseHandle(hSnapshot);
         return 0;
     }
 
-    inline bool is_exe_running(const std::wstring& processName) {
+    inline bool is_exe_running(const std::wstring& processName)
+    {
         HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
         if (hSnapshot == INVALID_HANDLE_VALUE)
             return false;
@@ -106,17 +114,21 @@ namespace ml
         PROCESSENTRY32 pe32;
         pe32.dwSize = sizeof(PROCESSENTRY32);
 
-        if (!Process32First(hSnapshot, &pe32)) {
+        if (!Process32First(hSnapshot, &pe32))
+        {
             CloseHandle(hSnapshot);
             return false;
         }
 
-        do {
-            if (processName == pe32.szExeFile) {
+        do
+        {
+            if (processName == pe32.szExeFile)
+            {
                 CloseHandle(hSnapshot);
                 return true;
             }
-        } while (Process32Next(hSnapshot, &pe32));
+        }
+        while (Process32Next(hSnapshot, &pe32));
 
         CloseHandle(hSnapshot);
         return false;
@@ -136,13 +148,16 @@ namespace ml
     {
         std::string clipboardText;
 
-        if (OpenClipboard(nullptr)) {
+        if (OpenClipboard(nullptr))
+        {
             HANDLE hClipboardData = GetClipboardData(CF_TEXT);
 
-            if (hClipboardData != nullptr) {
+            if (hClipboardData != nullptr)
+            {
                 char* clipboardChars = static_cast<char*>(GlobalLock(hClipboardData));
-            
-                if (clipboardChars != nullptr) {
+
+                if (clipboardChars != nullptr)
+                {
                     clipboardText = clipboardChars;
                     GlobalUnlock(hClipboardData);
                 }
@@ -156,13 +171,16 @@ namespace ml
 
     inline void set_clipboard_text(const std::string& input)
     {
-        if (OpenClipboard(nullptr)) {
+        if (OpenClipboard(nullptr))
+        {
             EmptyClipboard();
 
             HGLOBAL hClipboardData = GlobalAlloc(GMEM_DDESHARE, input.size() + 1);
-            if (hClipboardData != nullptr) {
+            if (hClipboardData != nullptr)
+            {
                 char* pchData = static_cast<char*>(GlobalLock(hClipboardData));
-                if (pchData != nullptr) {
+                if (pchData != nullptr)
+                {
                     strcpy_s(pchData, input.size() + 1, input.c_str());
                     GlobalUnlock(hClipboardData);
 
@@ -189,4 +207,49 @@ namespace ml
         open_directory(runString);
     }
 
+    inline size_t write_callback(void* contents, size_t size, size_t nmemb, std::string* response)
+    {
+        response->append((char*)contents, size * nmemb);
+        return size * nmemb;
+    }
+    
+    using json = nlohmann::json;
+    inline json curl_get(const std::string& url) {
+        curl_global_init(CURL_GLOBAL_ALL);
+
+        CURL* curl = curl_easy_init();
+        if (!curl)
+            throw std::runtime_error("Failed to initialize curl");
+
+        curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+
+        std::string response;
+
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+
+        // Set a user-agent to avoid potential issues with the server
+        curl_easy_setopt(curl, CURLOPT_USERAGENT, "curl/7.77.0");
+
+        CURLcode res = curl_easy_perform(curl);
+
+        if (res != CURLE_OK) {
+            curl_easy_cleanup(curl);
+            curl_global_cleanup();
+            throw std::runtime_error("Failed to perform curl request: " + std::string(curl_easy_strerror(res)));
+        }
+
+        long http_code = 0;
+        curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &http_code);
+        if (http_code != 200) {
+            curl_easy_cleanup(curl);
+            curl_global_cleanup();
+            throw std::runtime_error("HTTP error: " + std::to_string(http_code));
+        }
+
+        curl_easy_cleanup(curl);
+        curl_global_cleanup();
+
+        return json::parse(response);
+    }
 }
