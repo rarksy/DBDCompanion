@@ -1,5 +1,5 @@
 ﻿#include "Misc.hpp"
-#include "../Menu/ConfigEditor/ConfigEditor.hpp"
+#include "../Features/ConfigEditor/ConfigEditor.hpp"
 
 #include <regex>
 #include <Windows.h>

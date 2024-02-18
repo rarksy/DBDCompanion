@@ -25,15 +25,16 @@
     <ClCompile Include="Dependencies\ImGui\imgui_tables.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Menu\ConfigEditor\CEMenu.cpp" />
-    <ClCompile Include="Menu\ConfigEditor\ConfigEditor.cpp" />
-    <ClCompile Include="Menu\Crosshair\CMenu.cpp" />
-    <ClCompile Include="Menu\Crosshair\Crosshair.cpp" />
-    <ClCompile Include="Menu\GUI\GUI.cpp" />
-    <ClCompile Include="Menu\HookTracker\HTMenu.cpp" />
-    <ClCompile Include="Menu\HookTracker\HookTracker.cpp" />
-    <ClCompile Include="Menu\Menu.cpp" />
-    <ClCompile Include="Menu\Perk Packager\PPMenu.cpp" />
+    <ClCompile Include="Features\ConfigEditor\CEMenu.cpp" />
+    <ClCompile Include="Features\ConfigEditor\ConfigEditor.cpp" />
+    <ClCompile Include="Features\Crosshair\CMenu.cpp" />
+    <ClCompile Include="Features\Crosshair\Crosshair.cpp" />
+    <ClCompile Include="Features\GUI\GUI.cpp" />
+    <ClCompile Include="Features\HookTracker\HTMenu.cpp" />
+    <ClCompile Include="Features\HookTracker\HookTracker.cpp" />
+    <ClCompile Include="Features\Menu.cpp" />
+    <ClCompile Include="Features\Perk Packager\PerkPackager.cpp" />
+    <ClCompile Include="Features\Perk Packager\PPMenu.cpp" />
     <ClCompile Include="Misc\Misc.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -533,15 +534,16 @@
     <ClInclude Include="Dependencies\stb_image.h" />
     <ClInclude Include="Dependencies\zlib\zconf.h" />
     <ClInclude Include="Dependencies\zlib\zlib.h" />
-    <ClInclude Include="Menu\ConfigEditor\CEMenu.hpp" />
-    <ClInclude Include="Menu\ConfigEditor\ConfigEditor.hpp" />
-    <ClInclude Include="Menu\Crosshair\CMenu.h" />
-    <ClInclude Include="Menu\Crosshair\Crosshair.h" />
-    <ClInclude Include="Menu\GUI\GUI.h" />
-    <ClInclude Include="Menu\HookTracker\HTMenu.h" />
-    <ClInclude Include="Menu\HookTracker\HookTracker.hpp" />
-    <ClInclude Include="Menu\Menu.h" />
-    <ClInclude Include="Menu\Perk Packager\PPMenu.h" />
+    <ClInclude Include="Features\ConfigEditor\CEMenu.hpp" />
+    <ClInclude Include="Features\ConfigEditor\ConfigEditor.hpp" />
+    <ClInclude Include="Features\Crosshair\CMenu.h" />
+    <ClInclude Include="Features\Crosshair\Crosshair.h" />
+    <ClInclude Include="Features\GUI\GUI.h" />
+    <ClInclude Include="Features\HookTracker\HTMenu.h" />
+    <ClInclude Include="Features\HookTracker\HookTracker.hpp" />
+    <ClInclude Include="Features\Menu.h" />
+    <ClInclude Include="Features\Perk Packager\PerkPackager.h" />
+    <ClInclude Include="Features\Perk Packager\PPMenu.h" />
     <ClInclude Include="Misc\Misc.hpp" />
   </ItemGroup>
   <ItemGroup>

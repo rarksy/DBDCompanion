@@ -1,4 +1,6 @@
 ﻿#pragma once
+#include <nlohmann/json.hpp>
+
 #include "GLFW/glfw3.h"
 #include "ImGui/imgui.h"
 #include "Menu.h"
@@ -42,6 +44,13 @@ struct Color
         this->b = imvec4.z * 255;
         this->a = imvec4.w * 255;
     }
+
+    ImColor* AsImColor()
+    {
+        static ImColor imColor;
+        imColor = ImColor(r, g, b, a);
+        return &imColor;
+    }
 };
 
 namespace Menu
@@ -52,6 +61,8 @@ namespace Menu
 
     inline GLFWwindow* mainWindow = nullptr;
     inline ImGuiContext* mainContext = nullptr;
+
+    inline nlohmann::json shrineData;
 
     namespace Overlay
     {

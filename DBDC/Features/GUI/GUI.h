@@ -3,12 +3,15 @@
 #include <string>
 #include "ImGui/imgui.h"
 #include "../ConfigEditor/ConfigEditor.hpp"
-#include "../Menu/Menu.h"
+#include "../Features/Menu.h"
 
 struct Color;
 
 namespace GUI
 {
+    bool BeginHamburgerMenu(bool& open, int& tab, float& width, float& height, ImColor* color);
+    void EndhamburgerMenu(bool& open, int& tab, float& width, float& height, ImColor* color);
+    
     bool Checkbox(const char* label, ConfigEditor::Setting& setting, bool invert = false);
     bool Checkbox(const char* label, ConfigEditor::Setting& setting, int disabledValue, int enabledValue, bool invert = false);
     bool Slider(const char* label, ConfigEditor::Setting& setting, int minValue, int maxValue, bool clampMinMax = true);

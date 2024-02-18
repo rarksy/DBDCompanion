@@ -5,9 +5,15 @@
 
 void PPMenu::Setup()
 {
+    
 }
 
 void PPMenu::RenderUI()
 {
+    if (!isSetup)
+    {
+        ImGui::Text("Loading Data...");
 
+        return;
+    }
 }

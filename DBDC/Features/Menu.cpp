@@ -11,6 +11,8 @@
 #include <Windows.h>
 
 #include "HookTracker\HookTracker.hpp"
+#include "Perk Packager/PerkPackager.h"
+#include "Perk Packager/PPMenu.h"
 
 void Menu::RunLoop()
 {
@@ -63,6 +65,7 @@ void Menu::RunLoop()
 
             if (CVars.enabled)
                 Crosshair::DrawCrosshairs();
+            
 
             ImGui::Render();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -91,20 +94,21 @@ void Menu::RenderUI()
 
     static bool hamburgerOpen = true;
     static float hamburgerWidth = 0;
-
+    static float hamBurgerHeight = Styling::menuHeight / 3.F;
+    
     if (hamburgerOpen || hamburgerWidth > 0.F)
     {
         static int previousMenuShown = menuToShow;
         
-        ImGui::GetWindowDrawList()->AddRectFilledMultiColor({5, 5}, {hamburgerWidth, Styling::menuHeight / 3},
+        ImGui::GetWindowDrawList()->AddRectFilledMultiColor({5, 5}, {hamburgerWidth, hamBurgerHeight},
                                                             ImColor(Styling::menuAccent.r, Styling::menuAccent.g, Styling::menuAccent.b, 100), ImColor(25, 13, 13),
                                                             ImColor(15, 13, 13),
                                                             ImColor(15, 13, 13)
         );
-
-        ImGui::GetWindowDrawList()->AddRect({5, 5}, {hamburgerWidth, Styling::menuHeight / 3}, Styling::menuAccent.ToImColor(), 2.F, 0, 2.F);
-
-        ImGui::PushClipRect({5, 5}, {hamburgerWidth, Styling::menuHeight / 3}, false);
+    
+        ImGui::GetWindowDrawList()->AddRect({5, 5}, {hamburgerWidth, hamBurgerHeight}, Styling::menuAccent.ToImColor(), 2.F, 0, 2.F);
+    
+        ImGui::PushClipRect({5, 5}, {hamburgerWidth, hamBurgerHeight}, false);
 
         ImGui::SetCursorPosY(45);
 
@@ -123,33 +127,31 @@ void Menu::RenderUI()
         if (ImGui::Button("Crosshair Menu"))
             menuToShow = 3;
 
-        ImGui::PopClipRect();
-
-        if (ImGui::IsKeyPressed(ImGuiKey_MouseLeft, false) && !ImGui::IsMouseHoveringRect({5, 5}, {hamburgerWidth, Styling::menuHeight / 3}))
+        if (ImGui::IsKeyPressed(ImGuiKey_MouseLeft, false) && !ImGui::IsMouseHoveringRect({5, 5}, {hamburgerWidth, hamBurgerHeight}))
             hamburgerOpen = false;
-
-        if (previousMenuShown != menuToShow && !ImGui::IsMouseHoveringRect({5, 5}, {hamburgerWidth, Styling::menuHeight / 3}))
+    
+        if (previousMenuShown != menuToShow && !ImGui::IsMouseHoveringRect({5, 5}, {hamburgerWidth, hamBurgerHeight}))
         {
             hamburgerOpen = false;
             previousMenuShown = menuToShow;
         }
     }
-
+    
     if (hamburgerOpen && hamburgerWidth < 200)
         hamburgerWidth += 10;
     else if (!hamburgerOpen && hamburgerWidth > 0)
         hamburgerWidth -= 10;
-
+    
     static ImColor hamburgerColor = ImGui::GetColorU32(ImGuiCol_Button);
-
+    
     ImGui::GetWindowDrawList()->AddRectFilled({8, 10}, {38, 15}, hamburgerColor, 4.F);
     ImGui::GetWindowDrawList()->AddRectFilled({8, 20}, {38, 25}, hamburgerColor, 4.F);
     ImGui::GetWindowDrawList()->AddRectFilled({8, 30}, {38, 35}, hamburgerColor, 4.F);
-
+    
     ImGui::SetCursorPos({6, 6});
     if (ImGui::InvisibleButton("hamburgermenu", {40, 34}))
         hamburgerOpen = !hamburgerOpen;
-
+    
     hamburgerColor = ImGui::GetColorU32(ImGui::IsItemHovered() ? ImGui::IsItemActive() ? ImGuiCol_ButtonActive : ImGuiCol_ButtonHovered : ImGuiCol_Button); 
 
     static bool showColorPicker = false;
@@ -207,7 +209,10 @@ void Menu::RenderUI()
         CMenu::RenderUI();
     }
 
+    
     ImGui::EndDisabled();
+
+    
 
 
     ImGui::SetCursorPos({720, 470});

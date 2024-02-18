@@ -214,7 +214,7 @@ namespace ml
     }
     
     using json = nlohmann::json;
-    inline json curl_get(const std::string& url) {
+    inline json json_get(const std::string& url) {
         curl_global_init(CURL_GLOBAL_ALL);
 
         CURL* curl = curl_easy_init();
