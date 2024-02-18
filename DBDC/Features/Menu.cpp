@@ -12,7 +12,6 @@
 
 #include "HookTracker\HookTracker.hpp"
 #include "Perk Packager/PerkPackager.h"
-#include "Perk Packager/PPMenu.h"
 
 void Menu::RunLoop()
 {
@@ -95,6 +94,7 @@ void Menu::RenderUI()
     static bool hamburger_open = true;
     static float hamburger_width = 0.F;
     static float hamburger_height = Styling::menuHeight / 3.F;
+    static bool showColorPicker = false;
 
     if (GUI::BeginHamburgerMenu(hamburger_open, hamburger_width, hamburger_height, Styling::menuAccent.AsImColor()))
     {
@@ -114,12 +114,18 @@ void Menu::RenderUI()
 
         if (ImGui::Button("Crosshair Menu"))
             menuToShow = 3;
-        
-        GUI::EndhamburgerMenu(hamburger_open, menuToShow, hamburger_width, hamburger_height, Styling::menuAccent.AsImColor());
+
+        if (menuToShow != 0)
+        {
+            ImGui::SetCursorPos({(showColorPicker ? 60.F : 45.F), 9});
+            if (ImGui::Button("<-"))
+                menuToShow = 0;
+        }
+
+        GUI::EndhamburgerMenu(hamburger_open, menuToShow, hamburger_width, hamburger_height);
     }
     GUI::DrawHamburger(hamburger_open, Styling::menuAccent.AsImColor());
 
-    static bool showColorPicker = false;
     if (ImGui::IsKeyPressed(ImGuiKey_Space, false))
         showColorPicker = !showColorPicker;
 
@@ -144,11 +150,18 @@ void Menu::RenderUI()
 
     if (menuToShow == 0)
     {
+        ImGui::SetCursorPos({215, 9});
+        ImGui::BeginGroup();
+        
+        ImGui::SeparatorText("Shrine Of Secrets");
+        
+        ImGui::EndGroup();
+        
         ImGui::SetCursorPos({10, 470});
         ImGui::TextColored(ImVec4(0.1F, 0.1F, 0.1F, 0.3F), "I DONT KNOW HOW TO MAKE A GOOD MAIN MENU");
     }
 
-    else if (menuToShow == 1)
+    if (menuToShow == 1)
     {
         static std::once_flag flag;
         std::call_once(flag, CEMenu::Setup);

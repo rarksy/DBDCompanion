@@ -9,8 +9,8 @@ struct Color;
 
 namespace GUI
 {
-    bool BeginHamburgerMenu(bool& open, float& width, float& height, ImColor* color);
-    void EndhamburgerMenu(bool& open, int& tab, float& width, float& height, ImColor* color);
+    bool BeginHamburgerMenu(bool& open, float& width, float& height, const ImColor* color);
+    void EndhamburgerMenu(bool& open, int& tab, float& width, float& height);
     void DrawHamburger(bool& open, ImColor* color);
     
     bool Checkbox(const char* label, ConfigEditor::Setting& setting, bool invert = false);
@@ -26,4 +26,8 @@ namespace GUI
     void ToolTip(std::string message, unsigned int texture, const ImVec2& size, bool holdRightClick = true);
 
     bool ColorPicker(const char* label, Color& col);
+
+
+    void BeginGroupBox(const char* group_name, ImVec2 size);
+    void EndGroupBox();
 }

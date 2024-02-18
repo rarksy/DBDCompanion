@@ -3,7 +3,7 @@
 #include "../ConfigEditor/ConfigEditor.hpp"
 
 
-bool GUI::BeginHamburgerMenu(bool& open, float& width, float& height, ImColor* color)
+bool GUI::BeginHamburgerMenu(bool& open, float& width, float& height, const ImColor* color)
 {
     if (open || width > 0.F)
     {
@@ -11,7 +11,7 @@ bool GUI::BeginHamburgerMenu(bool& open, float& width, float& height, ImColor* c
             {5, 5},
             {width, height},
             *color,
-            ImColor(25, 13, 13),
+            ImColor(15, 13, 13),
             ImColor(15, 13, 13),
             ImColor(15, 13, 13)
         );
@@ -35,7 +35,7 @@ bool GUI::BeginHamburgerMenu(bool& open, float& width, float& height, ImColor* c
     return (open || width > 0.F);
 }
 
-void GUI::EndhamburgerMenu(bool& open, int& tab, float& width, float& height, ImColor* color)
+void GUI::EndhamburgerMenu(bool& open, int& tab, float& width, float& height)
 {
     if (ImGui::IsKeyPressed(ImGuiKey_MouseLeft, false) && !ImGui::IsMouseHoveringRect({5, 5}, {width, height}))
         open = false;
@@ -233,4 +233,24 @@ bool GUI::ColorPicker(const char* label, Color& col)
     ImGui::PopID();
 
     return valueChanged;
+}
+
+void RenderGroupBox(float x, float y, float width, float height, ImU32 color, float rounding = 0.0f, float thickness = 1.0f)
+{
+    ImGuiWindow* window = ImGui::GetCurrentWindow();
+    window->DrawList->AddRect(ImVec2(x, y), ImVec2(x + width, y + height), color, rounding, 0, thickness);
+}
+
+void GUI::BeginGroupBox(const char* group_name, ImVec2 size)
+{
+    ImGui::BeginGroup();
+    ImGui::Text(group_name);
+    RenderGroupBox(ImGui::GetItemRectMin().x, ImGui::GetItemRectMin().y, size.x, size.y, ImGui::GetColorU32(ImGuiCol_Border));
+    ImGui::Indent();
+}
+
+void GUI::EndGroupBox()
+{
+    ImGui::Unindent();
+    ImGui::EndGroup();
 }
