@@ -9,8 +9,9 @@ struct Color;
 
 namespace GUI
 {
-    bool BeginHamburgerMenu(bool& open, int& tab, float& width, float& height, ImColor* color);
+    bool BeginHamburgerMenu(bool& open, float& width, float& height, ImColor* color);
     void EndhamburgerMenu(bool& open, int& tab, float& width, float& height, ImColor* color);
+    void DrawHamburger(bool& open, ImColor* color);
     
     bool Checkbox(const char* label, ConfigEditor::Setting& setting, bool invert = false);
     bool Checkbox(const char* label, ConfigEditor::Setting& setting, int disabledValue, int enabledValue, bool invert = false);

@@ -3,7 +3,7 @@
 #include "../ConfigEditor/ConfigEditor.hpp"
 
 
-bool GUI::BeginHamburgerMenu(bool& open, int& tab, float& width, float& height, ImColor* color)
+bool GUI::BeginHamburgerMenu(bool& open, float& width, float& height, ImColor* color)
 {
     if (open || width > 0.F)
     {
@@ -52,6 +52,12 @@ void GUI::EndhamburgerMenu(bool& open, int& tab, float& width, float& height, Im
     else if (!open && width > 0)
         width -= 10;
 
+    if (open || width > 0.F)
+        ImGui::PopClipRect();
+}
+
+void GUI::DrawHamburger(bool& open, ImColor* color)
+{
     ImGui::GetWindowDrawList()->AddRectFilled({8, 10}, {38, 15}, *color, 4.F);
     ImGui::GetWindowDrawList()->AddRectFilled({8, 20}, {38, 25}, *color, 4.F);
     ImGui::GetWindowDrawList()->AddRectFilled({8, 30}, {38, 35}, *color, 4.F);
@@ -59,10 +65,8 @@ void GUI::EndhamburgerMenu(bool& open, int& tab, float& width, float& height, Im
     ImGui::SetCursorPos({6, 6});
     if (ImGui::InvisibleButton("hamburgermenu", {40, 34}))
         open = !open;
-    
-    *color = ImGui::GetColorU32(ImGui::IsItemHovered() ? ImGui::IsItemActive() ? ImGuiCol_ButtonActive : ImGuiCol_ButtonHovered : ImGuiCol_Button);
 
-    ImGui::PopClipRect();
+    *color = ImGui::GetColorU32(ImGui::IsItemHovered() ? ImGui::IsItemActive() ? ImGuiCol_ButtonActive : ImGuiCol_ButtonHovered : ImGuiCol_Button);
 }
 
 bool GUI::Checkbox(const char* label, ConfigEditor::Setting& setting, bool invert)

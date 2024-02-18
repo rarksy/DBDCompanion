@@ -65,7 +65,7 @@ void Menu::RunLoop()
 
             if (CVars.enabled)
                 Crosshair::DrawCrosshairs();
-            
+
 
             ImGui::Render();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -92,24 +92,12 @@ void Menu::RenderUI()
     ImGui::SetNextWindowSize(ImVec2(Styling::menuWidth, Styling::menuHeight), ImGuiCond_Once);
     ImGui::Begin("menu", nullptr, menuFlags);
 
-    static bool hamburgerOpen = true;
-    static float hamburgerWidth = 0;
-    static float hamBurgerHeight = Styling::menuHeight / 3.F;
-    
-    if (hamburgerOpen || hamburgerWidth > 0.F)
-    {
-        static int previousMenuShown = menuToShow;
-        
-        ImGui::GetWindowDrawList()->AddRectFilledMultiColor({5, 5}, {hamburgerWidth, hamBurgerHeight},
-                                                            ImColor(Styling::menuAccent.r, Styling::menuAccent.g, Styling::menuAccent.b, 100), ImColor(25, 13, 13),
-                                                            ImColor(15, 13, 13),
-                                                            ImColor(15, 13, 13)
-        );
-    
-        ImGui::GetWindowDrawList()->AddRect({5, 5}, {hamburgerWidth, hamBurgerHeight}, Styling::menuAccent.ToImColor(), 2.F, 0, 2.F);
-    
-        ImGui::PushClipRect({5, 5}, {hamburgerWidth, hamBurgerHeight}, false);
+    static bool hamburger_open = true;
+    static float hamburger_width = 0.F;
+    static float hamburger_height = Styling::menuHeight / 3.F;
 
+    if (GUI::BeginHamburgerMenu(hamburger_open, hamburger_width, hamburger_height, Styling::menuAccent.AsImColor()))
+    {
         ImGui::SetCursorPosY(45);
 
         if (ImGui::Button("Config Editor"))
@@ -126,33 +114,10 @@ void Menu::RenderUI()
 
         if (ImGui::Button("Crosshair Menu"))
             menuToShow = 3;
-
-        if (ImGui::IsKeyPressed(ImGuiKey_MouseLeft, false) && !ImGui::IsMouseHoveringRect({5, 5}, {hamburgerWidth, hamBurgerHeight}))
-            hamburgerOpen = false;
-    
-        if (previousMenuShown != menuToShow && !ImGui::IsMouseHoveringRect({5, 5}, {hamburgerWidth, hamBurgerHeight}))
-        {
-            hamburgerOpen = false;
-            previousMenuShown = menuToShow;
-        }
+        
+        GUI::EndhamburgerMenu(hamburger_open, menuToShow, hamburger_width, hamburger_height, Styling::menuAccent.AsImColor());
     }
-    
-    if (hamburgerOpen && hamburgerWidth < 200)
-        hamburgerWidth += 10;
-    else if (!hamburgerOpen && hamburgerWidth > 0)
-        hamburgerWidth -= 10;
-    
-    static ImColor hamburgerColor = ImGui::GetColorU32(ImGuiCol_Button);
-    
-    ImGui::GetWindowDrawList()->AddRectFilled({8, 10}, {38, 15}, hamburgerColor, 4.F);
-    ImGui::GetWindowDrawList()->AddRectFilled({8, 20}, {38, 25}, hamburgerColor, 4.F);
-    ImGui::GetWindowDrawList()->AddRectFilled({8, 30}, {38, 35}, hamburgerColor, 4.F);
-    
-    ImGui::SetCursorPos({6, 6});
-    if (ImGui::InvisibleButton("hamburgermenu", {40, 34}))
-        hamburgerOpen = !hamburgerOpen;
-    
-    hamburgerColor = ImGui::GetColorU32(ImGui::IsItemHovered() ? ImGui::IsItemActive() ? ImGuiCol_ButtonActive : ImGuiCol_ButtonHovered : ImGuiCol_Button); 
+    GUI::DrawHamburger(hamburger_open, Styling::menuAccent.AsImColor());
 
     static bool showColorPicker = false;
     if (ImGui::IsKeyPressed(ImGuiKey_Space, false))
@@ -174,8 +139,8 @@ void Menu::RenderUI()
             file.write(ini);
         }
     }
-    
-    ImGui::BeginDisabled(hamburgerOpen || hamburgerWidth > 0.F);
+
+    ImGui::BeginDisabled(hamburger_open || hamburger_width > 0.F);
 
     if (menuToShow == 0)
     {
@@ -209,28 +174,29 @@ void Menu::RenderUI()
         CMenu::RenderUI();
     }
 
-    
-    ImGui::EndDisabled();
 
-    
+    ImGui::EndDisabled();
 
 
     ImGui::SetCursorPos({720, 470});
     ImGui::TextColored(ImVec4(0.8F, 0.8F, 0.8F, 0.5F), "(?)");
-    GUI::ToolTip("Hold right click when hovering an option to view information about it.\n"
-                 "Tip: Some options have images associated to assist in selection."
-                 "\n\nDead By Daylight Companion By rarksy/ski\n"
-                 "Press Enter To Join The Discord Server.\n\n"
-                 "Build Version: Early Access "
+    GUI::ToolTip(
+        "Hold right click when hovering an option to view information about it.\n"
+        "Tip: Some options have images associated to assist in selection."
+        "\n\nDead By Daylight Companion By rarksy/ski\n"
+        "Press Enter To Join The Discord Server.\n\n"
+        "Build Version: Early Access "
 #ifdef _DEBUG
-                 "Debug"
+        "Debug"
 #else
                  "Release"
 #endif
-                 "\nBuild Date: " + std::string(__DATE__) +
-                 "\nBuild Time: " + std::string(__TIME__), false);
+        "\nBuild Date: " + std::string(__DATE__)
+        + "\nBuild Time: " + std::string(__TIME__), false
+    );
 
-    if (ImGui::IsItemHovered() && ImGui::IsKeyPressed(ImGuiKey_Enter, false))
+    if
+    (ImGui::IsItemHovered() && ImGui::IsKeyPressed(ImGuiKey_Enter, false))
         ShellExecuteA(NULL, "open", "https://discord.gg/vKjjS8yazu", NULL, NULL, SW_SHOWNORMAL);
 
     ImGui::End();
