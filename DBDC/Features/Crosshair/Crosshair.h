@@ -60,10 +60,10 @@ namespace Crosshair
 
     inline bool CheckProfileDirectory()
     {
-        if (!std::filesystem::exists(Backend::exeDirectory.string() + ProfileHandling::profileFolder))
+        if (!std::filesystem::exists(backend::exe_directory.string() + ProfileHandling::profileFolder))
         {
             const bool directoryCreated = std::filesystem::create_directories(
-                Backend::exeDirectory.string() + ProfileHandling::profileFolder);
+                backend::exe_directory.string() + ProfileHandling::profileFolder);
 
             return directoryCreated;
         }
@@ -77,7 +77,7 @@ namespace Crosshair
         for (int i = 0; i < ProfileHandling::allProfiles.size(); i++)
         {
             const auto profile = ProfileHandling::allProfiles[i];
-            if (!std::filesystem::exists(Backend::exeDirectory.string() + ProfileHandling::profileFolder + profile))
+            if (!std::filesystem::exists(backend::exe_directory.string() + ProfileHandling::profileFolder + profile))
             {
                 const auto it = std::ranges::find(ProfileHandling::allProfiles, profile);
 
@@ -87,7 +87,7 @@ namespace Crosshair
         }
 
         for (const auto& entry : std::filesystem::directory_iterator(
-                 Backend::exeDirectory.string() + ProfileHandling::profileFolder))
+                 backend::exe_directory.string() + ProfileHandling::profileFolder))
         {
             if (entry.path().has_extension())
                 continue;
@@ -107,7 +107,7 @@ namespace Crosshair
             return false;
 
         std::filesystem::path filePath(
-            Backend::exeDirectory.string() + ProfileHandling::profileFolder + fileName
+            backend::exe_directory.string() + ProfileHandling::profileFolder + fileName
         );
 
         if (!filePath.has_filename())
@@ -132,7 +132,7 @@ namespace Crosshair
     inline bool DeleteProfile(std::string fileName)
     {
         std::filesystem::path filePath(
-            Backend::exeDirectory.string() + ProfileHandling::profileFolder + fileName
+            backend::exe_directory.string() + ProfileHandling::profileFolder + fileName
         );
 
         if (!exists(filePath))
@@ -161,7 +161,7 @@ namespace Crosshair
     template <typename T>
     bool SaveProfile(std::string fileName, T& cfg)
     {
-        std::ofstream filePath(Backend::exeDirectory.string() + ProfileHandling::profileFolder + fileName,
+        std::ofstream filePath(backend::exe_directory.string() + ProfileHandling::profileFolder + fileName,
                                std::ios::binary);
 
         if (!filePath.is_open())
@@ -179,7 +179,7 @@ namespace Crosshair
     template <typename T>
     bool LoadProfile(std::string fileName, T& cfg)
     {
-        std::ifstream file(Backend::exeDirectory.string() + ProfileHandling::profileFolder + fileName,
+        std::ifstream file(backend::exe_directory.string() + ProfileHandling::profileFolder + fileName,
                            std::ios::binary);
 
         if (!file)

@@ -10,50 +10,97 @@
 #include "HookTracker\HTMenu.h"
 #include <Windows.h>
 
+#include "../Misc/Misc.hpp"
 #include "HookTracker\HookTracker.hpp"
+#include "Images/Images.h"
 #include "Perk Packager/PerkPackager.h"
 
-void Menu::RunLoop()
+void menu::run_loop()
 {
     {
-        const mINI::INIFile file(Backend::exeDirectory.string() + Backend::settingsDirectory + "Settings");
+        const mINI::INIFile file(backend::exe_directory.string() + backend::settings_directory + "Settings");
         mINI::INIStructure ini;
         file.read(ini);
 
         if (!ini["Settings"]["MenuAccentR"].empty())
         {
-            Styling::menuAccent.r = std::atoi(ini["Settings"]["MenuAccentR"].c_str());
-            Styling::menuAccent.g = std::atoi(ini["Settings"]["MenuAccentG"].c_str());
-            Styling::menuAccent.b = std::atoi(ini["Settings"]["MenuAccentB"].c_str());
-            Styling::menuAccent.a = std::atoi(ini["Settings"]["MenuAccentA"].c_str());
+            styling::menu_accent.r = std::atoi(ini["Settings"]["MenuAccentR"].c_str());
+            styling::menu_accent.g = std::atoi(ini["Settings"]["MenuAccentG"].c_str());
+            styling::menu_accent.b = std::atoi(ini["Settings"]["MenuAccentB"].c_str());
+            styling::menu_accent.a = std::atoi(ini["Settings"]["MenuAccentA"].c_str());
         }
     }
 
-    while (!glfwWindowShouldClose(mainWindow))
+    std::thread shrine_initialization_thread([]
     {
-        const double startTime = glfwGetTime();
+        shrine_of_secrets::data = ml::json_get("https://dbd.tricky.lol/api/shrine?includeperkinfo=1");
 
-        glfwMakeContextCurrent(Menu::mainWindow);
+        for (int i = 0; i < 4; i++)
+        {
+            auto& description = shrine_of_secrets::data["perks"][i]["description"].get_ref<std::string&>();
 
-        ImGui::SetCurrentContext(Menu::mainContext);
+            size_t pos = 0;
+
+            while ((pos = description.find("<br>", pos)) != std::string::npos)
+                description.replace(pos, 4, "\n");
+
+            pos = 0;
+            while ((pos = description.find("<b>", pos)) != std::string::npos)
+                description.replace(pos, 4, "\n");
+
+            pos = 0;
+            while ((pos = description.find("</b>", pos)) != std::string::npos)
+                description.replace(pos, 4, "\n");
+
+            pos = 0;
+            while ((pos = description.find("<i>", pos)) != std::string::npos)
+                description.replace(pos, 3, "");
+
+            pos = 0;
+            while ((pos = description.find("</i>", pos)) != std::string::npos)
+                description.replace(pos, 3, "");
+
+            shrine_of_secrets::reset_time_start = shrine_of_secrets::data["start"];
+            shrine_of_secrets::reset_time_end = shrine_of_secrets::data["end"];
+
+            std::string perk_info_url = "https://dbd.tricky.lol/api/perkinfo?perk=" + shrine_of_secrets::data["perks"][i]["id"].get_ref<std::string&>();
+
+            nlohmann::json perk_data = ml::json_get(perk_info_url);
+
+            shrine_of_secrets::perk_image_paths.push_back(
+                misc::get_game_root_directory() + std::string("DeadByDaylight/Content/" + perk_data["image"].get_ref<std::string&>())
+            );
+        }
+
+        shrine_of_secrets::is_ready = true;
+    });
+    shrine_initialization_thread.detach();
+
+    while (!glfwWindowShouldClose(main_window))
+    {
+        const double start_time = glfwGetTime();
+
+        glfwMakeContextCurrent(menu::main_window);
+
+        ImGui::SetCurrentContext(menu::main_context);
         glfwPollEvents();
 
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        Menu::CreateGlobalStyle();
-        Menu::RenderUI();
+        menu::create_global_style();
+        menu::render_ui();
 
         ImGui::Render();
         glClear(GL_COLOR_BUFFER_BIT);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-        glfwSwapBuffers(Menu::mainWindow);
+        glfwSwapBuffers(menu::main_window);
 
-        if (Menu::Overlay::window != nullptr)
+        if (menu::overlay::window != nullptr)
         {
-            glfwMakeContextCurrent(Menu::Overlay::window);
-            ImGui::SetCurrentContext(Menu::Overlay::context);
+            glfwMakeContextCurrent(menu::overlay::window);
+            ImGui::SetCurrentContext(menu::overlay::context);
 
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();
@@ -69,99 +116,141 @@ void Menu::RunLoop()
             ImGui::Render();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-            glfwSwapBuffers(Menu::Overlay::window);
+            glfwSwapBuffers(menu::overlay::window);
         }
 
-        const double endTime = glfwGetTime();
-        const double elapsedTime = endTime - startTime;
+        const double end_time = glfwGetTime();
+        const double elapsed_time = end_time - start_time;
 
-        constexpr double targetFrameTime = 1.0 / static_cast<double>(80);
+        constexpr double target_frame_time = 1.0 / static_cast<double>(80);
 
-        if (elapsedTime < targetFrameTime)
+        if (elapsed_time < target_frame_time)
         {
-            const double sleepTime = targetFrameTime - elapsedTime;
-            std::this_thread::sleep_for(std::chrono::duration<double>(sleepTime));
+            const double sleep_time = target_frame_time - elapsed_time;
+            std::this_thread::sleep_for(std::chrono::duration<double>(sleep_time));
         }
     }
 }
 
-void Menu::RenderUI()
+void menu::render_ui()
 {
     ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Once);
-    ImGui::SetNextWindowSize(ImVec2(Styling::menuWidth, Styling::menuHeight), ImGuiCond_Once);
-    ImGui::Begin("menu", nullptr, menuFlags);
+    ImGui::SetNextWindowSize(ImVec2(styling::menu_width, styling::menu_height), ImGuiCond_Once);
+    ImGui::Begin("menu", nullptr, menu_flags);
 
     static bool hamburger_open = true;
     static float hamburger_width = 0.F;
-    static float hamburger_height = Styling::menuHeight / 3.F;
-    static bool showColorPicker = false;
+    static float hamburger_height = styling::menu_height / 3.F;
+    static bool show_color_picker = false;
 
-    if (GUI::BeginHamburgerMenu(hamburger_open, hamburger_width, hamburger_height, Styling::menuAccent.AsImColor()))
+    if (gui::begin_hamburger_menu(hamburger_open, hamburger_width, hamburger_height, styling::menu_accent.as_imcolor()))
     {
         ImGui::SetCursorPosY(45);
 
         if (ImGui::Button("Config Editor"))
-            menuToShow = 1;
-        GUI::ToolTip("Allows you to adjust your game settings in\nmore detail than the base game offers");
+            menu_to_show = 1;
+        gui::tool_tip("Allows you to adjust your game settings in\nmore detail than the base game offers");
 
         ImGui::Spacing();
 
         if (ImGui::Button("Hook Tracker"))
-            menuToShow = 2;
-        GUI::ToolTip("This is a pre-release alpha of the hook Tracker\nIt is not finished and WILL contain bugs");
+            menu_to_show = 2;
+        gui::tool_tip("This is a pre-release alpha of the hook Tracker\nIt is not finished and WILL contain bugs");
 
         ImGui::Spacing();
 
         if (ImGui::Button("Crosshair Menu"))
-            menuToShow = 3;
+            menu_to_show = 3;
 
-        if (menuToShow != 0)
+        if (menu_to_show != 0)
         {
-            ImGui::SetCursorPos({(showColorPicker ? 60.F : 45.F), 9});
+            ImGui::SetCursorPos({(show_color_picker ? 60.F : 45.F), 9});
             if (ImGui::Button("<-"))
-                menuToShow = 0;
+                menu_to_show = 0;
         }
 
-        GUI::EndhamburgerMenu(hamburger_open, menuToShow, hamburger_width, hamburger_height);
+        gui::end_hamburger_menu(hamburger_open, menu_to_show, hamburger_width, hamburger_height);
     }
-    GUI::DrawHamburger(hamburger_open, Styling::menuAccent.AsImColor());
+    gui::draw_hamburger_menu(hamburger_open, styling::menu_accent.as_imcolor());
 
     if (ImGui::IsKeyPressed(ImGuiKey_Space, false))
-        showColorPicker = !showColorPicker;
+        show_color_picker = !show_color_picker;
 
-    if (showColorPicker)
+    if (show_color_picker)
     {
         ImGui::SetCursorPos({45, 9});
-        if (GUI::ColorPicker("Menu Accent", Styling::menuAccent))
+        if (gui::color_picker("Menu Accent", styling::menu_accent))
         {
-            const mINI::INIFile file(Backend::exeDirectory.string() + Backend::settingsDirectory + "Settings");
+            const mINI::INIFile file(backend::exe_directory.string() + backend::settings_directory + "Settings");
             mINI::INIStructure ini;
             file.read(ini);
 
-            ini["Settings"]["MenuAccentR"] = std::to_string(Styling::menuAccent.r);
-            ini["Settings"]["MenuAccentG"] = std::to_string(Styling::menuAccent.g);
-            ini["Settings"]["MenuAccentB"] = std::to_string(Styling::menuAccent.b);
-            ini["Settings"]["MenuAccentA"] = std::to_string(Styling::menuAccent.a);
+            ini["Settings"]["MenuAccentR"] = std::to_string(styling::menu_accent.r);
+            ini["Settings"]["MenuAccentG"] = std::to_string(styling::menu_accent.g);
+            ini["Settings"]["MenuAccentB"] = std::to_string(styling::menu_accent.b);
+            ini["Settings"]["MenuAccentA"] = std::to_string(styling::menu_accent.a);
             file.write(ini);
         }
     }
 
     ImGui::BeginDisabled(hamburger_open || hamburger_width > 0.F);
 
-    if (menuToShow == 0)
+    if (menu_to_show == 0)
     {
         ImGui::SetCursorPos({215, 9});
         ImGui::BeginGroup();
-        
-        ImGui::SeparatorText("Shrine Of Secrets");
-        
+
+        ImGui::SeparatorText(
+            shrine_of_secrets::is_ready
+                ? (std::string("Shrine Of Secrets: Resets In ") + ml::unix_get_remaining_time(shrine_of_secrets::reset_time_end)).c_str()
+                : "Shrine Of Secrets: Loading Data...");
+
+        if (shrine_of_secrets::is_ready)
+        {
+            ImGui::Columns(4, nullptr, false);
+
+            for (int i = 0; i < 4; i++)
+            {
+                const std::string perk_name = shrine_of_secrets::data["perks"][i]["name"];
+                const std::string perk_id = shrine_of_secrets::data["perks"][i]["id"];
+                const std::string perk_description = shrine_of_secrets::data["perks"][i]["description"];
+
+                GLuint perk_image;
+                images::load_texture_from_file(shrine_of_secrets::perk_image_paths[i], &perk_image);
+
+                const float column_width = ImGui::GetColumnWidth();
+                const ImVec2 image_size = ImVec2(100, 100);
+                const float spacing = ImGui::GetStyle().ItemSpacing.x;
+
+                const float image_x_position = ImGui::GetCursorPosX() + (column_width - image_size.x) / 2.0f - ImGui::GetScrollX() - spacing;
+
+                ImGui::SetCursorPosX(image_x_position);
+
+                ImGui::SetCursorPosX(image_x_position);
+                ImGui::Image((void*)perk_image, image_size);
+                gui::tool_tip(perk_description.c_str(), 250.F);
+
+                const float text_width = ImGui::CalcTextSize(perk_name.c_str()).x;
+
+                const float text_x_position = ImGui::GetCursorPosX() + (column_width - text_width) / 2.0f - ImGui::GetScrollX() - spacing;
+
+                ImGui::SetCursorPosX(text_x_position);
+                ImGui::Text("%s", perk_name.c_str());
+                gui::tool_tip(perk_description.c_str(), 250.F);
+
+
+                if (i != 3)
+                    ImGui::NextColumn();
+            }
+        }
+
         ImGui::EndGroup();
-        
+
         ImGui::SetCursorPos({10, 470});
         ImGui::TextColored(ImVec4(0.1F, 0.1F, 0.1F, 0.3F), "I DONT KNOW HOW TO MAKE A GOOD MAIN MENU");
     }
 
-    if (menuToShow == 1)
+    if (menu_to_show == 1)
     {
         static std::once_flag flag;
         std::call_once(flag, CEMenu::Setup);
@@ -169,7 +258,7 @@ void Menu::RenderUI()
         CEMenu::RenderUI();
     }
 
-    else if (menuToShow == 2)
+    else if (menu_to_show == 2)
     {
         static std::once_flag flag;
         std::call_once(flag, HTMenu::Setup);
@@ -177,7 +266,7 @@ void Menu::RenderUI()
         HTMenu::RenderUI();
     }
 
-    else if (menuToShow == 3)
+    else if (menu_to_show == 3)
     {
         static std::once_flag flagCrosshair;
         static std::once_flag flagMenu;
@@ -193,23 +282,22 @@ void Menu::RenderUI()
 
     ImGui::SetCursorPos({720, 470});
     ImGui::TextColored(ImVec4(0.8F, 0.8F, 0.8F, 0.5F), "(?)");
-    GUI::ToolTip(
+    gui::tool_tip(
         "Hold right click when hovering an option to view information about it.\n"
         "Tip: Some options have images associated to assist in selection."
-        "\n\nDead By Daylight Companion By rarksy/ski\n"
+        "\n\nDead By Daylight Companion By Rarksy\n"
         "Press Enter To Join The Discord Server.\n\n"
         "Build Version: Early Access "
 #ifdef _DEBUG
         "Debug"
 #else
-                 "Release"
+        "Release"
 #endif
         "\nBuild Date: " + std::string(__DATE__)
-        + "\nBuild Time: " + std::string(__TIME__), false
+        + "\nBuild Time: " + std::string(__TIME__), 500, false
     );
 
-    if
-    (ImGui::IsItemHovered() && ImGui::IsKeyPressed(ImGuiKey_Enter, false))
+    if (ImGui::IsItemHovered() && ImGui::IsKeyPressed(ImGuiKey_Enter, false))
         ShellExecuteA(NULL, "open", "https://discord.gg/vKjjS8yazu", NULL, NULL, SW_SHOWNORMAL);
 
     ImGui::End();
@@ -221,52 +309,52 @@ inline ImVec4 RGBToImVec4(int r, int g, int b, int a = 255)
 }
 
 
-void Menu::CreateGlobalStyle()
+void menu::create_global_style()
 {
     ImGuiStyle& style = ImGui::GetStyle();
     auto& colors = style.Colors;
 
     // Button
-    colors[ImGuiCol_Button] = Styling::menuAccent.ToImVec4();
-    colors[ImGuiCol_ButtonHovered] = RGBToImVec4(Styling::menuAccent.r, Styling::menuAccent.g + 70, Styling::menuAccent.b + 70);
-    colors[ImGuiCol_ButtonActive] = RGBToImVec4(Styling::menuAccent.r, Styling::menuAccent.g + 120, Styling::menuAccent.b + 120);
+    colors[ImGuiCol_Button] = styling::menu_accent.to_imvec4();
+    colors[ImGuiCol_ButtonHovered] = RGBToImVec4(styling::menu_accent.r, styling::menu_accent.g + 70, styling::menu_accent.b + 70);
+    colors[ImGuiCol_ButtonActive] = RGBToImVec4(styling::menu_accent.r, styling::menu_accent.g + 120, styling::menu_accent.b + 120);
 
     // Main Window
     colors[ImGuiCol_FrameBg] = RGBToImVec4(20, 20, 20);
-    colors[ImGuiCol_FrameBgHovered] = RGBToImVec4(Styling::menuAccent.r, Styling::menuAccent.g + 70, Styling::menuAccent.b + 70);
-    colors[ImGuiCol_FrameBgActive] = RGBToImVec4(Styling::menuAccent.r, Styling::menuAccent.g + 120, Styling::menuAccent.b + 120);
+    colors[ImGuiCol_FrameBgHovered] = RGBToImVec4(styling::menu_accent.r, styling::menu_accent.g + 70, styling::menu_accent.b + 70);
+    colors[ImGuiCol_FrameBgActive] = RGBToImVec4(styling::menu_accent.r, styling::menu_accent.g + 120, styling::menu_accent.b + 120);
     style.FrameRounding = 2.F;
     style.DisabledAlpha = 0.3F;
     style.FrameBorderSize = 1.7F;
     style.DisabledAlpha = 0.1f;
 
     // Slider
-    colors[ImGuiCol_Slider] = Styling::menuAccent.ToImVec4();
-    colors[ImGuiCol_SliderActive] = RGBToImVec4(Styling::menuAccent.r, Styling::menuAccent.g + 120, Styling::menuAccent.b + 120);
-    colors[ImGuiCol_SliderHovered] = RGBToImVec4(Styling::menuAccent.r, Styling::menuAccent.g + 70, Styling::menuAccent.b + 70);
-    colors[ImGuiCol_SliderGrab] = RGBToImVec4(Styling::menuAccent.r, Styling::menuAccent.g, Styling::menuAccent.b);
+    colors[ImGuiCol_Slider] = styling::menu_accent.to_imvec4();
+    colors[ImGuiCol_SliderActive] = RGBToImVec4(styling::menu_accent.r, styling::menu_accent.g + 120, styling::menu_accent.b + 120);
+    colors[ImGuiCol_SliderHovered] = RGBToImVec4(styling::menu_accent.r, styling::menu_accent.g + 70, styling::menu_accent.b + 70);
+    colors[ImGuiCol_SliderGrab] = RGBToImVec4(styling::menu_accent.r, styling::menu_accent.g, styling::menu_accent.b);
     style.GrabRounding = style.FrameRounding;
 
     // Checkbox
-    colors[ImGuiCol_CheckMark] = Styling::menuAccent.ToImVec4();
-    colors[ImGuiCol_CheckMarkHovered] = RGBToImVec4(Styling::menuAccent.r, Styling::menuAccent.g + 70, Styling::menuAccent.b + 70);
-    colors[ImGuiCol_CheckMarkActive] = RGBToImVec4(Styling::menuAccent.r, Styling::menuAccent.g + 120, Styling::menuAccent.b + 120);
+    colors[ImGuiCol_CheckMark] = styling::menu_accent.to_imvec4();
+    colors[ImGuiCol_CheckMarkHovered] = RGBToImVec4(styling::menu_accent.r, styling::menu_accent.g + 70, styling::menu_accent.b + 70);
+    colors[ImGuiCol_CheckMarkActive] = RGBToImVec4(styling::menu_accent.r, styling::menu_accent.g + 120, styling::menu_accent.b + 120);
 
     // Combo
-    colors[ImGuiCol_Combo] = Styling::menuAccent.ToImVec4();
-    colors[ImGuiCol_ComboActive] = RGBToImVec4(Styling::menuAccent.r, Styling::menuAccent.g + 120, Styling::menuAccent.b + 120);
-    colors[ImGuiCol_ComboHovered] = RGBToImVec4(Styling::menuAccent.r, Styling::menuAccent.g + 70, Styling::menuAccent.b + 70);
+    colors[ImGuiCol_Combo] = styling::menu_accent.to_imvec4();
+    colors[ImGuiCol_ComboActive] = RGBToImVec4(styling::menu_accent.r, styling::menu_accent.g + 120, styling::menu_accent.b + 120);
+    colors[ImGuiCol_ComboHovered] = RGBToImVec4(styling::menu_accent.r, styling::menu_accent.g + 70, styling::menu_accent.b + 70);
 
     // Header ( Selectables Etc )
-    colors[ImGuiCol_Header] = Styling::menuAccent.ToImVec4();
-    colors[ImGuiCol_HeaderHovered] = RGBToImVec4(Styling::menuAccent.r, Styling::menuAccent.g + 70, Styling::menuAccent.b + 70);
-    colors[ImGuiCol_HeaderActive] = RGBToImVec4(Styling::menuAccent.r, Styling::menuAccent.g + 120, Styling::menuAccent.b + 120);
+    colors[ImGuiCol_Header] = styling::menu_accent.to_imvec4();
+    colors[ImGuiCol_HeaderHovered] = RGBToImVec4(styling::menu_accent.r, styling::menu_accent.g + 70, styling::menu_accent.b + 70);
+    colors[ImGuiCol_HeaderActive] = RGBToImVec4(styling::menu_accent.r, styling::menu_accent.g + 120, styling::menu_accent.b + 120);
 
     // Separator
-    colors[ImGuiCol_Separator] = Styling::menuAccent.ToImVec4();
+    colors[ImGuiCol_Separator] = styling::menu_accent.to_imvec4();
 
     // Input Text
-    colors[ImGuiCol_InputText] = Styling::menuAccent.ToImVec4();
+    colors[ImGuiCol_InputText] = styling::menu_accent.to_imvec4();
 
-    colors[ImGuiCol_TextSelectedBg] = RGBToImVec4(Styling::menuAccent.r - 30, Styling::menuAccent.g - 20, Styling::menuAccent.b - 20, Styling::menuAccent.a - 105);
+    colors[ImGuiCol_TextSelectedBg] = RGBToImVec4(styling::menu_accent.r - 30, styling::menu_accent.g - 20, styling::menu_accent.b - 20, styling::menu_accent.a - 105);
 }

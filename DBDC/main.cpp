@@ -17,53 +17,53 @@
 
 int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
 {
-    if (!Backend::InitGLFW())
+    if (!backend::init_glfw())
         return -1;
     
-    Backend::screenWidth = ml::get_screen_width();
-    Backend::screenHeight = ml::get_screen_height();
+    backend::screen_width = ml::get_screen_width();
+    backend::screen_height = ml::get_screen_height();
     
-    Menu::Overlay::windowWidth = Backend::screenWidth;
-    Menu::Overlay::windowHeight = Backend::screenHeight;
+    menu::overlay::window_width = backend::screen_width;
+    menu::overlay::window_height = backend::screen_height;
     
     char pathBuffer[MAX_PATH];
     GetModuleFileNameA(NULL, pathBuffer, MAX_PATH);
-    Backend::exeDirectory = std::filesystem::path(pathBuffer).parent_path();
+    backend::exe_directory = std::filesystem::path(pathBuffer).parent_path();
     
-    ml::create_directory(Backend::exeDirectory.string() + Backend::settingsDirectory);
+    ml::create_directory(backend::exe_directory.string() + backend::settings_directory);
     
-    Menu::mainWindow = Backend::SetupWindow("Dead By Daylight Companion", Menu::Styling::menuWidth, Menu::Styling::menuHeight);
+    menu::main_window = backend::setup_window("Dead By Daylight Companion", menu::styling::menu_width, menu::styling::menu_height);
     
-    if (!Menu::mainWindow)
+    if (!menu::main_window)
         return -1;
     
     int width, height, channels;
     unsigned char* iconData = stbi_load_from_memory(exeIconRawData, sizeof exeIconRawData, &width, &height, &channels, 0);
     const GLFWimage exeIcon = {width, height, iconData};
-    glfwSetWindowIcon(Menu::mainWindow, 1, &exeIcon);
+    glfwSetWindowIcon(menu::main_window, 1, &exeIcon);
     
-    Backend::SetupImGui(Menu::mainWindow, Menu::mainContext);
+    backend::setup_imgui(menu::main_window, menu::main_context);
     
-    Images::LoadTextureFromMemory(configEditorIconRawData, sizeof configEditorIconRawData, &Menu::Icons::ConfigEditor);
+    images::load_texture_from_memory(configEditorIconRawData, sizeof configEditorIconRawData, &menu::icons::config_editor);
     
-    Menu::RunLoop();
+    menu::run_loop();
     
-    if (Menu::Overlay::window != nullptr)
+    if (menu::overlay::window != nullptr)
     {
-        Menu::Overlay::DestroyOverlay();
-        ImGui::SetCurrentContext(Menu::Overlay::context);
+        menu::overlay::destroy_overlay();
+        ImGui::SetCurrentContext(menu::overlay::context);
         ImGui_ImplGlfw_Shutdown();
         ImGui_ImplOpenGL3_Shutdown();
-        ImGui::DestroyContext(Menu::Overlay::context);
+        ImGui::DestroyContext(menu::overlay::context);
     }
     
-    ImGui::SetCurrentContext(Menu::mainContext);
+    ImGui::SetCurrentContext(menu::main_context);
     
     ImGui_ImplGlfw_Shutdown();
     ImGui_ImplOpenGL3_Shutdown();
-    ImGui::DestroyContext(Menu::mainContext);
+    ImGui::DestroyContext(menu::main_context);
     
-    glfwDestroyWindow(Menu::mainWindow);
+    glfwDestroyWindow(menu::main_window);
     
     glfwTerminate();
     

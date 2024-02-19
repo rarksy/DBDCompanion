@@ -2,180 +2,180 @@
 #include <filesystem>
 #include "mINI/ini.h"
 
-namespace ConfigEditor
+namespace config_editor
 {
-    bool InitializeConfig();
-    void LoadConfig();
+    bool initialize_config();
+    void load_config();
 
-    bool SetReadOnly(const std::string& file, const bool value);
-    bool GetReadOnly(const std::string& file);
+    bool set_read_only(const std::string& file, const bool& value);
+    bool get_read_only(const std::string& file);
 
-    std::filesystem::path GetSettingsFolderLocation();
-    inline std::filesystem::path SettingsFolderLocation;
+    std::filesystem::path get_settings_folder_location();
+    inline std::filesystem::path settings_folder_location;
 
-    namespace Files
+    namespace files
     {
-        inline std::string AdditionalLoadingScreen = "DeadByDaylight\\Content\\Movies\\AdditionalLoadingScreen";
-        inline std::string gameUserSettings = "\\GameUserSettings.ini";
+        inline std::string additional_loading_screen = "DeadByDaylight\\Content\\Movies\\AdditionalLoadingScreen";
+        inline std::string game_user_settings = "\\GameUserSettings.ini";
         inline std::string engine = "\\Engine.ini";
     }
 
-    namespace Sections
+    namespace sections
     {
-        inline std::string scalabilityGroups = "ScalabilityGroups";
-        inline std::string DBDGameUserSettings = "/Script/DeadByDaylight.DBDGameUserSettings";
-        inline std::string rendererOverrideSettings = "/Script/Engine.RendererOverrideSettings";
+        inline std::string scalability_groups = "ScalabilityGroups";
+        inline std::string dbd_game_user_settings = "/Script/DeadByDaylight.DBDGameUserSettings";
+        inline std::string renderer_override_settings = "/Script/Engine.RendererOverrideSettings";
     }
 
-    struct Setting
+    struct setting
     {
         std::string file;
         std::string section;
         std::string variable;
         int value;
 
-        Setting(std::string _file, std::string _section, std::string _variable, int _value)
+        setting(std::string _file, std::string _section, std::string _variable, int _value)
             : file(_file), section(_section), variable(_variable), value(_value)
         {
         }
-        ~Setting(){}
+        ~setting(){}
 
-        bool ImportValue(const mINI::INIFile& _file)
+        bool import_value(const mINI::INIFile& _file)
         {
-            mINI::INIStructure importedINI;
-            _file.read(importedINI);
+            mINI::INIStructure imported_ini;
+            _file.read(imported_ini);
             
-            mINI::INIFile localINIFile(SettingsFolderLocation.string() + this->file);
-            mINI::INIStructure localINI;
-            localINIFile.read(localINI);
+            mINI::INIFile local_ini_file(settings_folder_location.string() + this->file);
+            mINI::INIStructure local_ini;
+            local_ini_file.read(local_ini);
 
-            localINI[this->section][this->variable] = importedINI[this->section][this->variable];
+            local_ini[this->section][this->variable] = imported_ini[this->section][this->variable];
 
-            if (GetReadOnly(this->file))
-                SetReadOnly(this->file, false);
+            if (get_read_only(this->file))
+                set_read_only(this->file, false);
 
-            const bool writeSuccess = localINIFile.write(localINI, true);
+            const bool write_success = local_ini_file.write(local_ini, true);
 
-            SetReadOnly(this->file, true);
+            set_read_only(this->file, true);
 
-            return writeSuccess;
+            return write_success;
         }
 
-        bool LoadValue()
+        bool load_value()
         {
-            mINI::INIFile iniFile(SettingsFolderLocation.string() + this->file);
+            mINI::INIFile ini_file(settings_folder_location.string() + this->file);
             mINI::INIStructure ini;
 
-            const bool readSuccess = iniFile.read(ini);
+            const bool read_success = ini_file.read(ini);
             
-            if (!readSuccess)
+            if (!read_success)
                 return false;
 
-            std::string loadedValueString = ini[this->section][this->variable];
-            std::transform(loadedValueString.begin(), loadedValueString.end(), loadedValueString.begin(), tolower);
+            std::string loaded_value_string = ini[this->section][this->variable];
+            std::transform(loaded_value_string.begin(), loaded_value_string.end(), loaded_value_string.begin(), tolower);
 
-            if (loadedValueString.empty())
+            if (loaded_value_string.empty())
                 return false;
             
-            if (loadedValueString == "true" || loadedValueString == "false")
+            if (loaded_value_string == "true" || loaded_value_string == "false")
             {
-                this->value = loadedValueString == "true";
+                this->value = loaded_value_string == "true";
                 return true;
             }
 
-            this->value = std::stoi(loadedValueString);
+            this->value = std::stoi(loaded_value_string);
             return true;
         }
         
-        bool SetValue()
+        bool set_value()
         {
-            mINI::INIFile iniFile(SettingsFolderLocation.string() + this->file);
+            mINI::INIFile ini_file(settings_folder_location.string() + this->file);
             mINI::INIStructure ini;
 
-            iniFile.read(ini);
+            ini_file.read(ini);
 
             ini[this->section][this->variable] = std::to_string(this->value);
 
-            if (GetReadOnly(this->file))
-                SetReadOnly(this->file, false);
+            if (get_read_only(this->file))
+                set_read_only(this->file, false);
 
-            const bool writeSuccess = iniFile.write(ini);
+            const bool write_success = ini_file.write(ini);
 
-            SetReadOnly(this->file, true);
+            set_read_only(this->file, true);
 
-            return writeSuccess;
+            return write_success;
         }
 
-        bool RemoveValue()
+        bool remove_value()
         {
-            mINI::INIFile iniFile(SettingsFolderLocation.string() + this->file);
+            mINI::INIFile ini_file(settings_folder_location.string() + this->file);
             mINI::INIStructure ini;
 
-            iniFile.read(ini);
+            ini_file.read(ini);
 
             ini[this->section].remove(this->variable);
 
-            if (GetReadOnly(this->file))
-                SetReadOnly(this->file, false);
+            if (get_read_only(this->file))
+                set_read_only(this->file, false);
 
-            const bool writeSuccess = iniFile.write(ini);
+            const bool write_success = ini_file.write(ini);
 
-            SetReadOnly(this->file, true);
+            set_read_only(this->file, true);
 
-            return writeSuccess;
+            return write_success;
         }
     };
 
-    class Variables
+    class variables
     {
     public:
         // Graphics Quality
-        Setting resolutionQuality = Setting(Files::gameUserSettings, Sections::scalabilityGroups, "sg.ResolutionQuality", 100);
-        Setting viewDistanceQuality = Setting(Files::gameUserSettings, Sections::scalabilityGroups, "sg.ViewDistanceQuality", 0);
-        Setting antiAliasQuality = Setting(Files::gameUserSettings, Sections::scalabilityGroups, "sg.AntiAliasingQuality", 0);
-        Setting shadowQuality = Setting(Files::gameUserSettings, Sections::scalabilityGroups, "sg.ShadowQuality", 0);
-        Setting postProcessQuality = Setting(Files::gameUserSettings, Sections::scalabilityGroups, "sg.PostProcessQuality", 0);
-        Setting textureQuality = Setting(Files::gameUserSettings, Sections::scalabilityGroups, "sg.TextureQuality", 0);
-        Setting effectsQuality = Setting(Files::gameUserSettings, Sections::scalabilityGroups, "sg.EffectsQuality", 0);
-        Setting foliageQuality = Setting(Files::gameUserSettings, Sections::scalabilityGroups, "sg.FoliageQuality", 0);
-        Setting shadingQuality = Setting(Files::gameUserSettings, Sections::scalabilityGroups, "sg.ShadingQuality", 0);
-        Setting animationQuality = Setting(Files::gameUserSettings, Sections::scalabilityGroups, "sg.AnimationQuality", 0);
+        setting resolution_quality = setting(files::game_user_settings, sections::scalability_groups, "sg.ResolutionQuality", 100);
+        setting view_distance_quality = setting(files::game_user_settings, sections::scalability_groups, "sg.ViewDistanceQuality", 0);
+        setting anti_alias_quality = setting(files::game_user_settings, sections::scalability_groups, "sg.AntiAliasingQuality", 0);
+        setting shadow_quality = setting(files::game_user_settings, sections::scalability_groups, "sg.ShadowQuality", 0);
+        setting post_process_quality = setting(files::game_user_settings, sections::scalability_groups, "sg.PostProcessQuality", 0);
+        setting texture_quality = setting(files::game_user_settings, sections::scalability_groups, "sg.TextureQuality", 0);
+        setting effects_quality = setting(files::game_user_settings, sections::scalability_groups, "sg.EffectsQuality", 0);
+        setting foliage_quality = setting(files::game_user_settings, sections::scalability_groups, "sg.FoliageQuality", 0);
+        setting shading_quality = setting(files::game_user_settings, sections::scalability_groups, "sg.ShadingQuality", 0);
+        setting animation_quality = setting(files::game_user_settings, sections::scalability_groups, "sg.AnimationQuality", 0);
         
         // Rendering
-        Setting windowMode = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "FullscreenMode", 1);
-        Setting desiredScreenWidth = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "DesiredScreenWidth", 1920);
-        Setting desiredScreenHeight = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "DesiredScreenHeight", 1080);
-        Setting resolutionWidth = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "ResolutionSizeX", 1920);
-        Setting resolutionHeight = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "ResolutionSizeY", 1080);
-        Setting fpsLimitMode = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "FPSLimitMode", 60);
+        setting window_mode = setting(files::game_user_settings, sections::dbd_game_user_settings, "FullscreenMode", 1);
+        setting desired_screen_width = setting(files::game_user_settings, sections::dbd_game_user_settings, "DesiredScreenWidth", 1920);
+        setting desired_screen_height = setting(files::game_user_settings, sections::dbd_game_user_settings, "DesiredScreenHeight", 1080);
+        setting resolution_width = setting(files::game_user_settings, sections::dbd_game_user_settings, "ResolutionSizeX", 1920);
+        setting resolution_height = setting(files::game_user_settings, sections::dbd_game_user_settings, "ResolutionSizeY", 1080);
+        setting fps_limit_mode = setting(files::game_user_settings, sections::dbd_game_user_settings, "FPSLimitMode", 60);
         
-        Setting useVSync = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "bUseVSync", 1);
-        Setting antiAliasMode = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "AntiAliasingMode", 1);
+        setting use_vsync = setting(files::game_user_settings, sections::dbd_game_user_settings, "bUseVSync", 1);
+        setting anti_alias_mode = setting(files::game_user_settings, sections::dbd_game_user_settings, "AntiAliasingMode", 1);
         
-        Setting ambientOcclusion = Setting(Files::engine, Sections::rendererOverrideSettings, "r.DefaultFeature.AmbientOcclusion", 1);
-        Setting ambientOcclusionStaticFraction = Setting(Files::engine, Sections::rendererOverrideSettings, "r.DefaultFeature.AmbientOcclusionStaticFraction", 1);
-        Setting bloom = Setting(Files::engine, Sections::rendererOverrideSettings, "r.DefaultFeature.Bloom", 1);
-        Setting lensFlare = Setting(Files::engine, Sections::rendererOverrideSettings, "r.DefaultFeature.LensFlare", 1);
-        Setting motionBlur = Setting(Files::engine, Sections::rendererOverrideSettings, "r.DefaultFeature.MotionBlur", 1);
+        setting ambient_occlusion = setting(files::engine, sections::renderer_override_settings, "r.DefaultFeature.AmbientOcclusion", 1);
+        setting ambient_occlusion_static_fraction = setting(files::engine, sections::renderer_override_settings, "r.DefaultFeature.AmbientOcclusionStaticFraction", 1);
+        setting bloom = setting(files::engine, sections::renderer_override_settings, "r.DefaultFeature.Bloom", 1);
+        setting lens_flare = setting(files::engine, sections::renderer_override_settings, "r.DefaultFeature.LensFlare", 1);
+        setting motion_blur = setting(files::engine, sections::renderer_override_settings, "r.DefaultFeature.MotionBlur", 1);
         
         // Misc
-        Setting killerFOV = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "FieldOfView", 87);
-        Setting killerMouseSensitivity = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "KillerMouseSensitivity", 50);
-        Setting killerControllerSensitivity = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "KillerControllerSensitivity", 50);
-        Setting survivorMouseSensitivity = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "SurvivorMouseSensitivity", 50);
-        Setting survivorControllerSensitivity = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "SurvivorControllerSensitivity", 50);
-        bool removeIntroCutscene = false;
-        Setting skipNewsPopup = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "HighestWeightSeenNews", 0);
+        setting killer_fov = setting(files::game_user_settings, sections::dbd_game_user_settings, "FieldOfView", 87);
+        setting killer_mouse_sensitivity = setting(files::game_user_settings, sections::dbd_game_user_settings, "KillerMouseSensitivity", 50);
+        setting killer_controller_sensitivity = setting(files::game_user_settings, sections::dbd_game_user_settings, "KillerControllerSensitivity", 50);
+        setting survivor_mouse_sensitivity = setting(files::game_user_settings, sections::dbd_game_user_settings, "SurvivorMouseSensitivity", 50);
+        setting survivor_controller_sensitivity = setting(files::game_user_settings, sections::dbd_game_user_settings, "SurvivorControllerSensitivity", 50);
+        bool remove_intro_cutscene = false;
+        setting skip_news_popup = setting(files::game_user_settings, sections::dbd_game_user_settings, "HighestWeightSeenNews", 0);
         
         // Accessibility
-        Setting terrorRadiusVisual = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "TerrorRadiusVisualFeedback", 0);
-        Setting colorBlindMode = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "ColorBlindMode", 0);
-        Setting colorBlindModeStrength = Setting(Files::gameUserSettings, Sections::DBDGameUserSettings, "ColorBlindModeIntensity", 0);
+        setting terror_radius_visual = setting(files::game_user_settings, sections::dbd_game_user_settings, "TerrorRadiusVisualFeedback", 0);
+        setting color_blind_mode = setting(files::game_user_settings, sections::dbd_game_user_settings, "ColorBlindMode", 0);
+        setting color_blind_mode_strength = setting(files::game_user_settings, sections::dbd_game_user_settings, "ColorBlindModeIntensity", 0);
     };
 
 
-    bool CopyConfig();
-    bool ImportConfig();
+    bool copy_config();
+    bool import_config();
 };
 
-inline ConfigEditor::Variables CEVars;
+inline config_editor::variables ce_vars;

@@ -21,8 +21,8 @@ namespace HookTracker
         bool playSoundOnHook = false;
         char soundFilePath[128];
 
-        ConfigEditor::Setting menuScaleFactor = ConfigEditor::Setting(ConfigEditor::Files::gameUserSettings, ConfigEditor::Sections::DBDGameUserSettings, "MenuScaleFactor", 100);
-        ConfigEditor::Setting hudScaleFactor = ConfigEditor::Setting(ConfigEditor::Files::gameUserSettings, ConfigEditor::Sections::DBDGameUserSettings, "HudScaleFactor", 100);
+        config_editor::setting menuScaleFactor = config_editor::setting(config_editor::files::game_user_settings, config_editor::sections::dbd_game_user_settings, "MenuScaleFactor", 100);
+        config_editor::setting hudScaleFactor = config_editor::setting(config_editor::files::game_user_settings, config_editor::sections::dbd_game_user_settings, "HudScaleFactor", 100);
 
         float firstThreshold = 0.9f;
         float secondThreshold = 0.9f;

@@ -3,21 +3,21 @@
 #include <GLFW/glfw3.h>
 #include "ImGui/imgui_internal.h"
 
-namespace Backend
+namespace backend
 {
-    int InitGLFW();
-    void ShutdownGLFW();
+    int init_glfw();
+    void shutdown_glfw();
     
-    GLFWwindow* SetupWindow(const char* title, int width, int height);
-    void SetupImGui(GLFWwindow* window, ImGuiContext*& context);
+    GLFWwindow* setup_window(const char* title, int width, int height);
+    void setup_imgui(GLFWwindow* window, ImGuiContext*& context);
     
-    bool SetupImageTextures();
+    bool setup_image_textures();
 
-    void ShutdownImGui();
+    void shutdown_imgui();
 
-    inline int screenWidth;
-    inline int screenHeight;
-    inline std::filesystem::path exeDirectory;
-    inline const std::string settingsDirectory = "\\DBDC\\";
+    inline int screen_width;
+    inline int screen_height;
+    inline std::filesystem::path exe_directory;
+    inline const std::string settings_directory = "\\DBDC\\";
     
 }

@@ -4,7 +4,7 @@
 
 void Crosshair::Setup()
 {
-    CVars.trueScreenCenterPoint = ImVec2(Backend::screenWidth / 2, Backend::screenHeight / 2);
+    CVars.trueScreenCenterPoint = ImVec2(backend::screen_width / 2, backend::screen_height / 2);
     allCenterPoints.push_back(CVars.trueScreenCenterPoint);
 }
 
@@ -259,7 +259,7 @@ void Crosshair::ModifyDynamicCenterPoint()
             if (isRButtonDown)
                 isRButtonDown = false;
 
-            allCenterPoints[0] = ImVec2(Backend::screenWidth / 2, Backend::screenHeight / 2);
+            allCenterPoints[0] = ImVec2(backend::screen_width / 2, backend::screen_height / 2);
         }
     }
     else if (CVars.dynamicCenterPointIndex == 1) // Deathslinger
@@ -282,15 +282,15 @@ void Crosshair::ModifyDynamicCenterPoint()
             if (isRButtonDown)
                 isRButtonDown = false;
 
-            allCenterPoints[0].x = Backend::screenWidth / 2 + 3;
+            allCenterPoints[0].x = backend::screen_width / 2 + 3;
             allCenterPoints[0].y = CVars.trueScreenCenterPoint.y;
         }
     }
     else if (CVars.dynamicCenterPointIndex == 2) // Trickster
     {
-        allCenterPoints[0] = ImVec2(Backend::screenWidth / 2 - 15, Backend::screenHeight / 2);
+        allCenterPoints[0] = ImVec2(backend::screen_width / 2 - 15, backend::screen_height / 2);
         if (allCenterPoints.size() < 2)
-            allCenterPoints.push_back(ImVec2(Backend::screenWidth / 2 + 15, Backend::screenHeight / 2));
+            allCenterPoints.push_back(ImVec2(backend::screen_width / 2 + 15, backend::screen_height / 2));
     }
     else if (CVars.dynamicCenterPointIndex == 3) // Clown
     {

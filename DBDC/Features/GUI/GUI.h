@@ -5,29 +5,29 @@
 #include "../ConfigEditor/ConfigEditor.hpp"
 #include "../Features/Menu.h"
 
-struct Color;
+struct color;
 
-namespace GUI
+namespace gui
 {
-    bool BeginHamburgerMenu(bool& open, float& width, float& height, const ImColor* color);
-    void EndhamburgerMenu(bool& open, int& tab, float& width, float& height);
-    void DrawHamburger(bool& open, ImColor* color);
+    bool begin_hamburger_menu(bool& open, float& width, float& height, const ImColor* color);
+    void end_hamburger_menu(bool& open, int& tab, float& width, float& height);
+    void draw_hamburger_menu(bool& open, ImColor* color);
     
-    bool Checkbox(const char* label, ConfigEditor::Setting& setting, bool invert = false);
-    bool Checkbox(const char* label, ConfigEditor::Setting& setting, int disabledValue, int enabledValue, bool invert = false);
-    bool Slider(const char* label, ConfigEditor::Setting& setting, int minValue, int maxValue, bool clampMinMax = true);
-    bool DropDownBox(const char* label, ConfigEditor::Setting& setting, std::vector<std::string> items, bool useIndex = true, float widgetSize = 100.F,
+    bool checkbox(const char* label, config_editor::setting& setting, bool invert = false);
+    bool checkbox(const char* label, config_editor::setting& setting, int disabledValue, int enabledValue, bool invert = false);
+    bool slider(const char* label, config_editor::setting& setting, int minValue, int maxValue, bool clampMinMax = true);
+    bool drop_down_box(const char* label, config_editor::setting& setting, std::vector<std::string> items, bool useIndex = true, float widgetSize = 100.F,
                      std::string caption = "", std::vector<unsigned*> textures = {}, ImVec2 textureSize = ImVec2(250, 100));
-    bool DropDownBox(const char* label, int& index, std::vector<std::string> items, bool useIndex = true, float widgetSize = 100.F, std::string caption = "", std::vector<unsigned*> textures = {},
+    bool drop_down_box(const char* label, int& index, std::vector<std::string> items, bool useIndex = true, float widgetSize = 100.F, std::string caption = "", std::vector<unsigned*> textures = {},
                  ImVec2 textureSize = ImVec2(250, 100));
-    bool InputInt(const char* label, ConfigEditor::Setting& setting, float widgetWidth = 100.F);
+    bool input_int(const char* label, config_editor::setting& setting, float widgetWidth = 100.F);
 
-    void ToolTip(std::string message, bool holdRightClick = true);
-    void ToolTip(std::string message, unsigned int texture, const ImVec2& size, bool holdRightClick = true);
+    void tool_tip(std::string message, float text_wrap_size = 500.F, bool holdRightClick = true);
+    void tool_tip(std::string message, unsigned int texture, const ImVec2& size, bool holdRightClick = true);
 
-    bool ColorPicker(const char* label, Color& col);
+    bool color_picker(const char* label, color& col);
 
 
-    void BeginGroupBox(const char* group_name, ImVec2 size);
-    void EndGroupBox();
+    void begin_group_box(const char* group_name, ImVec2 size);
+    void end_group_box();
 }

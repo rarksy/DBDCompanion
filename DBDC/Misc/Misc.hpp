@@ -4,14 +4,14 @@
 #include <opencv2/opencv.hpp>
 #include <Windows.h>
 
-namespace Misc
+namespace misc
 {
     void RestartGame(bool dx12 = false);
 
     cv::Mat GetScreenshot(const cv::Rect& region, bool grayscale = true);
 
     std::vector<std::string> GetAllLibraryDirectories();
-    std::string GetGameRootDirectory();
+    std::string get_game_root_directory();
 
     void OpenSettingsFolder();
 

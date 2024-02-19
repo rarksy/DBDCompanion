@@ -3,7 +3,7 @@
 #include "../ConfigEditor/ConfigEditor.hpp"
 
 
-bool GUI::BeginHamburgerMenu(bool& open, float& width, float& height, const ImColor* color)
+bool gui::begin_hamburger_menu(bool& open, float& width, float& height, const ImColor* color)
 {
     if (open || width > 0.F)
     {
@@ -19,7 +19,7 @@ bool GUI::BeginHamburgerMenu(bool& open, float& width, float& height, const ImCo
         ImGui::GetWindowDrawList()->AddRect(
             {5, 5},
             {width, height},
-            Menu::Styling::menuAccent.ToImColor(),
+            menu::styling::menu_accent.to_imcolor(),
             2.F,
             0,
             2.F
@@ -35,7 +35,7 @@ bool GUI::BeginHamburgerMenu(bool& open, float& width, float& height, const ImCo
     return (open || width > 0.F);
 }
 
-void GUI::EndhamburgerMenu(bool& open, int& tab, float& width, float& height)
+void gui::end_hamburger_menu(bool& open, int& tab, float& width, float& height)
 {
     if (ImGui::IsKeyPressed(ImGuiKey_MouseLeft, false) && !ImGui::IsMouseHoveringRect({5, 5}, {width, height}))
         open = false;
@@ -56,7 +56,7 @@ void GUI::EndhamburgerMenu(bool& open, int& tab, float& width, float& height)
         ImGui::PopClipRect();
 }
 
-void GUI::DrawHamburger(bool& open, ImColor* color)
+void gui::draw_hamburger_menu(bool& open, ImColor* color)
 {
     ImGui::GetWindowDrawList()->AddRectFilled({8, 10}, {38, 15}, *color, 4.F);
     ImGui::GetWindowDrawList()->AddRectFilled({8, 20}, {38, 25}, *color, 4.F);
@@ -69,9 +69,9 @@ void GUI::DrawHamburger(bool& open, ImColor* color)
     *color = ImGui::GetColorU32(ImGui::IsItemHovered() ? ImGui::IsItemActive() ? ImGuiCol_ButtonActive : ImGuiCol_ButtonHovered : ImGuiCol_Button);
 }
 
-bool GUI::Checkbox(const char* label, ConfigEditor::Setting& setting, bool invert)
+bool gui::checkbox(const char* label, config_editor::setting& setting, bool invert)
 {
-    ImGui::SetNextItemWidth(static_cast<float>(Menu::Styling::itemWidth));
+    ImGui::SetNextItemWidth(static_cast<float>(menu::styling::item_width));
 
     bool isChecked = invert ? !setting.value : setting.value;
 
@@ -80,15 +80,15 @@ bool GUI::Checkbox(const char* label, ConfigEditor::Setting& setting, bool inver
     if (valueChanged)
     {
         setting.value = invert ? !isChecked : isChecked;
-        setting.SetValue();
+        setting.set_value();
     }
 
     return valueChanged;
 }
 
-bool GUI::Checkbox(const char* label, ConfigEditor::Setting& setting, int disabledValue, int enabledValue, bool invert)
+bool gui::checkbox(const char* label, config_editor::setting& setting, int disabledValue, int enabledValue, bool invert)
 {
-    ImGui::SetNextItemWidth(static_cast<float>(Menu::Styling::itemWidth));
+    ImGui::SetNextItemWidth(static_cast<float>(menu::styling::item_width));
 
     bool isChecked = setting.value == enabledValue;
     const bool valueChanged = ImGui::Checkbox(label, &isChecked);
@@ -96,25 +96,25 @@ bool GUI::Checkbox(const char* label, ConfigEditor::Setting& setting, int disabl
     if (valueChanged)
     {
         setting.value = isChecked ? invert ? disabledValue : enabledValue : disabledValue;
-        setting.SetValue();
+        setting.set_value();
     }
 
     return valueChanged;
 }
 
-bool GUI::Slider(const char* label, ConfigEditor::Setting& setting, int minValue, int maxValue, bool clampMinMax)
+bool gui::slider(const char* label, config_editor::setting& setting, int minValue, int maxValue, bool clampMinMax)
 {
-    ImGui::SetNextItemWidth(static_cast<float>(Menu::Styling::itemWidth));
+    ImGui::SetNextItemWidth(static_cast<float>(menu::styling::item_width));
 
     const bool valueChanged = ImGui::SliderInt(label, &setting.value, minValue, maxValue, "%d", clampMinMax ? ImGuiSliderFlags_AlwaysClamp : 0);
 
     if (valueChanged)
-        setting.SetValue();
+        setting.set_value();
 
     return valueChanged;
 }
 
-bool GUI::DropDownBox(const char* label, int& index, std::vector<std::string> items, bool useIndex, float widgetSize, std::string caption, std::vector<unsigned*> textures,
+bool gui::drop_down_box(const char* label, int& index, std::vector<std::string> items, bool useIndex, float widgetSize, std::string caption, std::vector<unsigned*> textures,
                       ImVec2 textureSize)
 {
     ImGui::SetNextItemWidth(widgetSize);
@@ -138,7 +138,7 @@ bool GUI::DropDownBox(const char* label, int& index, std::vector<std::string> it
             }
 
             if (!textures.empty())
-                GUI::ToolTip(caption, *textures[i], textureSize);
+                gui::tool_tip(caption, *textures[i], textureSize);
         }
 
         ImGui::EndCombo();
@@ -147,7 +147,7 @@ bool GUI::DropDownBox(const char* label, int& index, std::vector<std::string> it
     return itemSelected;
 }
 
-bool GUI::DropDownBox(const char* label, ConfigEditor::Setting& setting, std::vector<std::string> items, bool useIndex, float widgetSize, std::string caption,
+bool gui::drop_down_box(const char* label, config_editor::setting& setting, std::vector<std::string> items, bool useIndex, float widgetSize, std::string caption,
                       std::vector<unsigned*> textures, ImVec2 textureSize)
 {
     ImGui::SetNextItemWidth(widgetSize);
@@ -167,12 +167,12 @@ bool GUI::DropDownBox(const char* label, ConfigEditor::Setting& setting, std::ve
             if (ImGui::Selectable(items[i].c_str(), isSelected))
             {
                 setting.value = useIndex ? i : std::atoi(items[i].c_str());
-                setting.SetValue();
+                setting.set_value();
                 itemSelected = true;
             }
 
             if (!textures.empty())
-                GUI::ToolTip(caption, *textures[i], textureSize);
+                gui::tool_tip(caption, *textures[i], textureSize);
         }
 
         ImGui::EndCombo();
@@ -181,19 +181,19 @@ bool GUI::DropDownBox(const char* label, ConfigEditor::Setting& setting, std::ve
     return itemSelected;
 }
 
-bool GUI::InputInt(const char* label, ConfigEditor::Setting& setting, float widgetWidth)
+bool gui::input_int(const char* label, config_editor::setting& setting, float widgetWidth)
 {
     ImGui::SetNextItemWidth(widgetWidth);
 
     const bool valueChanged = ImGui::InputInt(label, &setting.value, 0, ImGuiInputTextFlags_CharsDecimal);
 
     if (valueChanged)
-        setting.SetValue();
+        setting.set_value();
 
     return valueChanged;
 }
 
-void GUI::ToolTip(std::string message, bool holdRightClick)
+void gui::tool_tip(std::string message, float text_wrap_size, bool holdRightClick)
 {
     if (holdRightClick && (!ImGui::IsKeyDown(ImGuiKey_MouseRight)))
         return;
@@ -201,12 +201,14 @@ void GUI::ToolTip(std::string message, bool holdRightClick)
     if (ImGui::IsItemHovered())
     {
         ImGui::BeginTooltip();
-        ImGui::Text("%s", message.c_str());
+        ImGui::PushTextWrapPos(text_wrap_size);
+        ImGui::TextWrapped(message.c_str());
+        ImGui::PopTextWrapPos();
         ImGui::EndTooltip();
     }
 }
 
-void GUI::ToolTip(std::string message, unsigned int texture, const ImVec2& size, bool holdRightClick)
+void gui::tool_tip(std::string message, unsigned int texture, const ImVec2& size, bool holdRightClick)
 {
     if (holdRightClick && (!ImGui::IsKeyDown(ImGuiKey_MouseRight)))
         return;
@@ -220,15 +222,15 @@ void GUI::ToolTip(std::string message, unsigned int texture, const ImVec2& size,
     }
 }
 
-bool GUI::ColorPicker(const char* label, Color& col)
+bool gui::color_picker(const char* label, color& col)
 {
     ImGui::PushID(label);
 
-    ImVec4 colorVec4 = col.ToImVec4();
+    ImVec4 colorVec4 = col.to_imvec4();
     const bool valueChanged = ImGui::ColorEdit4(label, &colorVec4.x, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_NoTooltip);
 
     if (valueChanged)
-        col.ApplyFromImVec4(colorVec4);
+        col.apply_from_imvec4(colorVec4);
 
     ImGui::PopID();
 
@@ -241,7 +243,7 @@ void RenderGroupBox(float x, float y, float width, float height, ImU32 color, fl
     window->DrawList->AddRect(ImVec2(x, y), ImVec2(x + width, y + height), color, rounding, 0, thickness);
 }
 
-void GUI::BeginGroupBox(const char* group_name, ImVec2 size)
+void gui::begin_group_box(const char* group_name, ImVec2 size)
 {
     ImGui::BeginGroup();
     ImGui::Text(group_name);
@@ -249,7 +251,7 @@ void GUI::BeginGroupBox(const char* group_name, ImVec2 size)
     ImGui::Indent();
 }
 
-void GUI::EndGroupBox()
+void gui::end_group_box()
 {
     ImGui::Unindent();
     ImGui::EndGroup();

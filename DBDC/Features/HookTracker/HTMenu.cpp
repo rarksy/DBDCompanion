@@ -9,11 +9,11 @@
 
 void HTMenu::Setup()
 {
-    ConfigEditor::InitializeConfig();
-    HTVars.menuScaleFactor.LoadValue();
-    HTVars.hudScaleFactor.LoadValue();
+    config_editor::initialize_config();
+    HTVars.menuScaleFactor.load_value();
+    HTVars.hudScaleFactor.load_value();
 
-    mINI::INIFile file(Backend::exeDirectory.string() + Backend::settingsDirectory + "Settings");
+    mINI::INIFile file(backend::exe_directory.string() + backend::settings_directory + "Settings");
     mINI::INIStructure ini;
     file.read(ini);
 
@@ -28,11 +28,11 @@ void HTMenu::RenderUI()
     {
         if (HTVars.enabled)
         {
-            if (!Menu::Overlay::IsOverlayCreated())
+            if (!menu::overlay::is_overlay_created())
             {
-                Menu::Overlay::CreateOverlay();
-                ImGui::SetCurrentContext(Menu::mainContext);
-                glfwMakeContextCurrent(Menu::mainWindow);
+                menu::overlay::create_overlay();
+                ImGui::SetCurrentContext(menu::main_context);
+                glfwMakeContextCurrent(menu::main_window);
             }
 
             std::thread loopThread(HookTracker::DetectionLoop);
@@ -41,7 +41,7 @@ void HTMenu::RenderUI()
         else
         {
             if (!CVars.enabled)
-                Menu::Overlay::DestroyOverlay();
+                menu::overlay::destroy_overlay();
 
             HookTracker::Internal::survivorLocationsStage1.clear();
             HookTracker::Internal::survivorLocationsStage2.clear();
@@ -64,7 +64,7 @@ void HTMenu::RenderUI()
     ImGui::Checkbox("Track 2nd Stage Hooks", &HTVars.track2ndStage);
 
     ImGui::Checkbox("Play Sound On Hook", &HTVars.playSoundOnHook);
-    GUI::ToolTip("LOUD LOUD LOUD LOUD LOUD", false);
+    gui::tool_tip("LOUD LOUD LOUD LOUD LOUD", false);
 
     ImGui::NextColumn();
 
@@ -74,25 +74,25 @@ void HTMenu::RenderUI()
     ImGui::SetNextItemWidth(140);
     if (ImGui::InputTextWithHint("Sound Path", "C:/Path/To/File.wav", HTVars.soundFilePath, sizeof HTVars.soundFilePath))
     {
-        mINI::INIFile file(Backend::exeDirectory.string() + Backend::settingsDirectory + "Settings");
+        mINI::INIFile file(backend::exe_directory.string() + backend::settings_directory + "Settings");
         mINI::INIStructure ini;
         file.read(ini);
 
         ini["HookCounter"]["SoundPath"] = HTVars.soundFilePath;
         file.write(ini);
     }
-    GUI::ToolTip("Only .wav files are supported in this version.");
+    gui::tool_tip("Only .wav files are supported in this version.");
     ImGui::EndDisabled();
 
     ImGui::NextColumn();
 
     ImGui::SeparatorText("Settings");
 
-    GUI::DropDownBox("Menu UI Scale", HTVars.menuScaleFactor, UIScales, false);
-    GUI::ToolTip("Set This To Whatever Your \"UI Scale\" Setting Is Set To In Game.");
+    gui::drop_down_box("Menu UI Scale", HTVars.menuScaleFactor, UIScales, false);
+    gui::tool_tip("Set This To Whatever Your \"UI Scale\" Setting Is Set To In Game.");
 
-    GUI::DropDownBox("In-Game UI Scale", HTVars.hudScaleFactor, UIScales, false);
-    GUI::ToolTip("Set This To Whatever Your \"In-Game UI Scale\" Setting Is Set To In Game.");
+    gui::drop_down_box("In-Game UI Scale", HTVars.hudScaleFactor, UIScales, false);
+    gui::tool_tip("Set This To Whatever Your \"In-Game UI Scale\" Setting Is Set To In Game.");
 
     ImGui::SliderFloat("1st Threshold", &HTVars.firstThreshold, 0.0F, 1.F, "%.1F");
     ImGui::SliderFloat("2nd Threshold", &HTVars.secondThreshold, 0.0F, 1.F, "%.1F");

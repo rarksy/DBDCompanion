@@ -9,13 +9,13 @@
 
 #include "miscLIB/miscLIB.hpp"
 
-bool ConfigEditor::InitializeConfig()
+bool config_editor::initialize_config()
 {
-    const auto path = GetSettingsFolderLocation();
+    const auto path = get_settings_folder_location();
 
     if (exists(path))
     {
-        SettingsFolderLocation = path;
+        settings_folder_location = path;
         return true;
     }
 
@@ -58,7 +58,7 @@ bool ConfigEditor::InitializeConfig()
             pfd->Release();
         }
 
-        SettingsFolderLocation = pszPath;
+        settings_folder_location = pszPath;
         // Add your code here to work with the selected folder path
         CoTaskMemFree(pszPath);
 
@@ -69,94 +69,94 @@ bool ConfigEditor::InitializeConfig()
     CoUninitialize();
 
 
-    return std::filesystem::exists(SettingsFolderLocation.string() + Files::gameUserSettings);
+    return std::filesystem::exists(settings_folder_location.string() + files::game_user_settings);
 }
 
-void ConfigEditor::LoadConfig()
+void config_editor::load_config()
 {
-    CEVars.resolutionQuality.LoadValue();
-    CEVars.viewDistanceQuality.LoadValue();
-    CEVars.antiAliasQuality.LoadValue();
-    CEVars.shadowQuality.LoadValue();
-    CEVars.postProcessQuality.LoadValue();
-    CEVars.textureQuality.LoadValue();
-    CEVars.effectsQuality.LoadValue();
-    CEVars.foliageQuality.LoadValue();
-    CEVars.shadingQuality.LoadValue();
-    CEVars.animationQuality.LoadValue();
+    ce_vars.resolution_quality.load_value();
+    ce_vars.view_distance_quality.load_value();
+    ce_vars.anti_alias_quality.load_value();
+    ce_vars.shadow_quality.load_value();
+    ce_vars.post_process_quality.load_value();
+    ce_vars.texture_quality.load_value();
+    ce_vars.effects_quality.load_value();
+    ce_vars.foliage_quality.load_value();
+    ce_vars.shading_quality.load_value();
+    ce_vars.animation_quality.load_value();
 
-    CEVars.windowMode.LoadValue();
-    CEVars.resolutionWidth.LoadValue();
-    CEVars.resolutionHeight.LoadValue();
-    CEVars.fpsLimitMode.LoadValue();
-    CEVars.useVSync.LoadValue();
-    CEVars.antiAliasMode.LoadValue();
-    CEVars.ambientOcclusion.LoadValue();
-    CEVars.ambientOcclusionStaticFraction.LoadValue();
-    CEVars.bloom.LoadValue();
-    CEVars.lensFlare.LoadValue();
-    CEVars.motionBlur.LoadValue();
+    ce_vars.window_mode.load_value();
+    ce_vars.resolution_width.load_value();
+    ce_vars.resolution_height.load_value();
+    ce_vars.fps_limit_mode.load_value();
+    ce_vars.use_vsync.load_value();
+    ce_vars.anti_alias_mode.load_value();
+    ce_vars.ambient_occlusion.load_value();
+    ce_vars.ambient_occlusion_static_fraction.load_value();
+    ce_vars.bloom.load_value();
+    ce_vars.lens_flare.load_value();
+    ce_vars.motion_blur.load_value();
     
-    CEVars.killerFOV.LoadValue();
-    CEVars.removeIntroCutscene = std::filesystem::exists(Misc::GetGameRootDirectory() + "DeadByDaylight\\Content\\Movies\\" + "disabled_AdditionalLoadingScreen");
-    CEVars.skipNewsPopup.LoadValue();
+    ce_vars.killer_fov.load_value();
+    ce_vars.remove_intro_cutscene = std::filesystem::exists(misc::get_game_root_directory() + "DeadByDaylight\\Content\\Movies\\" + "disabled_AdditionalLoadingScreen");
+    ce_vars.skip_news_popup.load_value();
 
-    CEVars.survivorMouseSensitivity.LoadValue();
-    CEVars.survivorControllerSensitivity.LoadValue();
-    CEVars.killerMouseSensitivity.LoadValue();
-    CEVars.killerControllerSensitivity.LoadValue();
+    ce_vars.survivor_mouse_sensitivity.load_value();
+    ce_vars.survivor_controller_sensitivity.load_value();
+    ce_vars.killer_mouse_sensitivity.load_value();
+    ce_vars.killer_controller_sensitivity.load_value();
 
-    CEVars.terrorRadiusVisual.LoadValue();
-    CEVars.colorBlindMode.LoadValue();
-    CEVars.colorBlindModeStrength.LoadValue();
+    ce_vars.terror_radius_visual.load_value();
+    ce_vars.color_blind_mode.load_value();
+    ce_vars.color_blind_mode_strength.load_value();
     
 
     if (ml::is_exe_running(L"DeadByDaylight-Win64-Shipping.exe"))
         MessageBoxA(nullptr, "Game Is Running, Changes Won't Apply Until It Is Restarted.", "Notice...", MB_OK);
 }
 
-bool ConfigEditor::CopyConfig()
+bool config_editor::copy_config()
 {
-    std::ifstream file(SettingsFolderLocation.string() + Files::gameUserSettings, std::ios::binary);
+    std::ifstream file(settings_folder_location.string() + files::game_user_settings, std::ios::binary);
 
     if (!file.is_open())
         return false;
 
-    std::ostringstream ossGameUserSettings;
-    ossGameUserSettings << file.rdbuf();
+    std::ostringstream oss_game_user_settings;
+    oss_game_user_settings << file.rdbuf();
     file.close();
 
-    const std::string gameUserSettingsContent = ossGameUserSettings.str();
+    const std::string game_user_settings_content = oss_game_user_settings.str();
 
-    file.open(SettingsFolderLocation.string() + Files::engine, std::ios::binary);
+    file.open(settings_folder_location.string() + files::engine, std::ios::binary);
     if (!file.is_open())
         return false;
 
-    std::ostringstream ossEngine;
-    ossEngine << file.rdbuf();
+    std::ostringstream oss_engine;
+    oss_engine << file.rdbuf();
     file.close();
 
-    const std::string engineContent = ossEngine.str();
+    const std::string engine_content = oss_engine.str();
 
-    const std::string combinedContent = gameUserSettingsContent + "ENDFILE" + engineContent;
+    const std::string combined_content = game_user_settings_content + "ENDFILE" + engine_content;
 
-    const std::string compressed = Misc::CompressString(combinedContent);
+    const std::string compressed = misc::CompressString(combined_content);
 
-    const std::string tobase64 = Misc::Base64Encode(compressed);
+    const std::string to_base64 = misc::Base64Encode(compressed);
 
-    Misc::SetClipboardText(tobase64);
+    misc::SetClipboardText(to_base64);
 
     return true;
 }
 
-bool ConfigEditor::ImportConfig()
+bool config_editor::import_config()
 {
     const auto result = MessageBoxA(NULL, "This Will Replace Your Current Companion Settings, Continue?", "Notice...", MB_YESNO);
 
     if (result == IDNO)
         return false;
     
-    const std::string config = Misc::GetClipboardText();
+    const std::string config = misc::GetClipboardText();
 
     std::regex base64Regex("^[A-Za-z0-9+/]*={0,2}$"); // still dont know how regex works, thanks stackoverflow
     if (!std::regex_match(config, base64Regex))
@@ -165,104 +165,104 @@ bool ConfigEditor::ImportConfig()
         return false;
     }
 
-    const std::string unbase64 = Misc::Base64Decode(config);
-    const std::string decompressed = Misc::DecompressString(unbase64);
+    const std::string base64_decoded = misc::Base64Decode(config);
+    const std::string decompressed = misc::DecompressString(base64_decoded);
 
-    const std::string gameUserSettingsContent = decompressed.substr(0, decompressed.find("ENDFILE"));
-    const std::string engineContent = decompressed.substr(decompressed.find("ENDFILE") + 7);
+    const std::string game_user_settings_content = decompressed.substr(0, decompressed.find("ENDFILE"));
+    const std::string engine_content = decompressed.substr(decompressed.find("ENDFILE") + 7);
     // Setup Temp Files
     
-    const std::string tempGameUserSettings = "ImportedGameUserSettings.ini";
-    std::ofstream tempGameUserSettingsFile(tempGameUserSettings);
-    tempGameUserSettingsFile << gameUserSettingsContent;
-    tempGameUserSettingsFile.close();
+    const std::string temp_game_user_settings = "ImportedGameUserSettings.ini";
+    std::ofstream temp_game_user_settings_file(temp_game_user_settings);
+    temp_game_user_settings_file << game_user_settings_content;
+    temp_game_user_settings_file.close();
 
-    const std::string tempEngine = "ImportedEngine.ini";
-    std::ofstream tempEngineFile(tempEngine);
-    tempEngineFile << engineContent;
-    tempEngineFile.close();
+    const std::string basic_string = "ImportedEngine.ini";
+    std::ofstream temp_engine_file(basic_string);
+    temp_engine_file << engine_content;
+    temp_engine_file.close();
 
     // Setup Imported INI Structures
     
-    mINI::INIStructure importedGameUserSettingsIni;
-    mINI::INIFile importedGameUserSettings(tempGameUserSettings);
-    importedGameUserSettings.read(importedGameUserSettingsIni);
+    mINI::INIStructure imported_game_user_settings_ini;
+    mINI::INIFile imported_game_user_settings(temp_game_user_settings);
+    imported_game_user_settings.read(imported_game_user_settings_ini);
     
-    mINI::INIStructure importedEngineIni;
-    mINI::INIFile importedEngine(tempEngine);
-    importedEngine.read(importedEngineIni);
+    mINI::INIStructure imported_engine_ini;
+    mINI::INIFile imported_engine(basic_string);
+    imported_engine.read(imported_engine_ini);
 
     // Setup Main INI Structures
 
-    CEVars.resolutionQuality.ImportValue(importedGameUserSettings);
-    CEVars.viewDistanceQuality.ImportValue(importedGameUserSettings);
-    CEVars.antiAliasQuality.ImportValue(importedGameUserSettings);
-    CEVars.shadowQuality.ImportValue(importedGameUserSettings);
-    CEVars.postProcessQuality.ImportValue(importedGameUserSettings);
-    CEVars.textureQuality.ImportValue(importedGameUserSettings);
-    CEVars.effectsQuality.ImportValue(importedGameUserSettings);
-    CEVars.foliageQuality.ImportValue(importedGameUserSettings);
-    CEVars.shadingQuality.ImportValue(importedGameUserSettings);
-    CEVars.animationQuality.ImportValue(importedGameUserSettings);
+    ce_vars.resolution_quality.import_value(imported_game_user_settings);
+    ce_vars.view_distance_quality.import_value(imported_game_user_settings);
+    ce_vars.anti_alias_quality.import_value(imported_game_user_settings);
+    ce_vars.shadow_quality.import_value(imported_game_user_settings);
+    ce_vars.post_process_quality.import_value(imported_game_user_settings);
+    ce_vars.texture_quality.import_value(imported_game_user_settings);
+    ce_vars.effects_quality.import_value(imported_game_user_settings);
+    ce_vars.foliage_quality.import_value(imported_game_user_settings);
+    ce_vars.shading_quality.import_value(imported_game_user_settings);
+    ce_vars.animation_quality.import_value(imported_game_user_settings);
 
-    CEVars.useVSync.ImportValue(importedGameUserSettings);
-    CEVars.antiAliasMode.ImportValue(importedGameUserSettings);
-    CEVars.ambientOcclusion.ImportValue(importedEngine);
-    CEVars.ambientOcclusionStaticFraction.ImportValue(importedEngine);
-    CEVars.bloom.ImportValue(importedEngine);
-    CEVars.lensFlare.ImportValue(importedEngine);
-    CEVars.motionBlur.ImportValue(importedEngine);
+    ce_vars.use_vsync.import_value(imported_game_user_settings);
+    ce_vars.anti_alias_mode.import_value(imported_game_user_settings);
+    ce_vars.ambient_occlusion.import_value(imported_engine);
+    ce_vars.ambient_occlusion_static_fraction.import_value(imported_engine);
+    ce_vars.bloom.import_value(imported_engine);
+    ce_vars.lens_flare.import_value(imported_engine);
+    ce_vars.motion_blur.import_value(imported_engine);
 
     
-    CEVars.windowMode.ImportValue(importedGameUserSettings);
-    CEVars.resolutionWidth.ImportValue(importedGameUserSettings);
-    CEVars.resolutionHeight.ImportValue(importedGameUserSettings);
-    CEVars.fpsLimitMode.ImportValue(importedGameUserSettings);
-    CEVars.killerFOV.ImportValue(importedGameUserSettings);
+    ce_vars.window_mode.import_value(imported_game_user_settings);
+    ce_vars.resolution_width.import_value(imported_game_user_settings);
+    ce_vars.resolution_height.import_value(imported_game_user_settings);
+    ce_vars.fps_limit_mode.import_value(imported_game_user_settings);
+    ce_vars.killer_fov.import_value(imported_game_user_settings);
 
-    CEVars.removeIntroCutscene = std::filesystem::exists(Misc::GetGameRootDirectory() + "DeadByDaylight\\Content\\Movies\\" + "disabled_AdditionalLoadingScreen");
-    CEVars.skipNewsPopup.ImportValue(importedGameUserSettings);
+    ce_vars.remove_intro_cutscene = std::filesystem::exists(misc::get_game_root_directory() + "DeadByDaylight\\Content\\Movies\\" + "disabled_AdditionalLoadingScreen");
+    ce_vars.skip_news_popup.import_value(imported_game_user_settings);
 
-    CEVars.survivorMouseSensitivity.ImportValue(importedGameUserSettings);
-    CEVars.survivorControllerSensitivity.ImportValue(importedGameUserSettings);
-    CEVars.killerMouseSensitivity.ImportValue(importedGameUserSettings);
-    CEVars.killerControllerSensitivity.ImportValue(importedGameUserSettings);
+    ce_vars.survivor_mouse_sensitivity.import_value(imported_game_user_settings);
+    ce_vars.survivor_controller_sensitivity.import_value(imported_game_user_settings);
+    ce_vars.killer_mouse_sensitivity.import_value(imported_game_user_settings);
+    ce_vars.killer_controller_sensitivity.import_value(imported_game_user_settings);
 
-    CEVars.terrorRadiusVisual.ImportValue(importedGameUserSettings);
-    CEVars.colorBlindMode.ImportValue(importedGameUserSettings);
-    CEVars.colorBlindModeStrength.ImportValue(importedGameUserSettings);
+    ce_vars.terror_radius_visual.import_value(imported_game_user_settings);
+    ce_vars.color_blind_mode.import_value(imported_game_user_settings);
+    ce_vars.color_blind_mode_strength.import_value(imported_game_user_settings);
     
-    LoadConfig();
+    load_config();
     
-    std::remove(tempGameUserSettings.c_str());
-    std::remove(tempEngine.c_str());
+    std::remove(temp_game_user_settings.c_str());
+    std::remove(basic_string.c_str());
 
     return true;
 }
 
-bool ConfigEditor::SetReadOnly(const std::string& file, const bool value)
+bool config_editor::set_read_only(const std::string& file, const bool& value)
 {
-    DWORD attributes = GetFileAttributesA((SettingsFolderLocation.string() + file).c_str());
+    DWORD attributes = GetFileAttributesA((settings_folder_location.string() + file).c_str());
 
     if (value)
         attributes |= FILE_ATTRIBUTE_READONLY;
     else
         attributes &= ~FILE_ATTRIBUTE_READONLY;
 
-    return SetFileAttributesA((SettingsFolderLocation.string() + file).c_str(), attributes);
+    return SetFileAttributesA((settings_folder_location.string() + file).c_str(), attributes);
 }
 
-bool ConfigEditor::GetReadOnly(const std::string& file)
+bool config_editor::get_read_only(const std::string& file)
 {
-    return GetFileAttributesA((SettingsFolderLocation.string() + file).c_str()) &
+    return GetFileAttributesA((settings_folder_location.string() + file).c_str()) &
         FILE_ATTRIBUTE_READONLY;
 }
 
-std::filesystem::path ConfigEditor::GetSettingsFolderLocation()
+std::filesystem::path config_editor::get_settings_folder_location()
 {
-    auto localAppDataPath = std::filesystem::temp_directory_path().parent_path().parent_path();
+    auto local_app_data_path = std::filesystem::temp_directory_path().parent_path().parent_path();
 
-    localAppDataPath /= "DeadByDaylight\\Saved\\Config\\WindowsClient\\";
+    local_app_data_path /= "DeadByDaylight\\Saved\\Config\\WindowsClient\\";
 
-    return localAppDataPath;
+    return local_app_data_path;
 }

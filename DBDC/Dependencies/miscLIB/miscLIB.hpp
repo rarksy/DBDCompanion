@@ -8,6 +8,7 @@
 #include <Windows.h>
 #include <TlHelp32.h>
 #include <fstream>
+#include <ctime>
 
 #include "../curl/curl.h"
 #include "../nlohmann/json.hpp"
@@ -212,9 +213,11 @@ namespace ml
         response->append((char*)contents, size * nmemb);
         return size * nmemb;
     }
-    
+
     using json = nlohmann::json;
-    inline json json_get(const std::string& url) {
+
+    inline json json_get(const std::string& url)
+    {
         curl_global_init(CURL_GLOBAL_ALL);
 
         CURL* curl = curl_easy_init();
@@ -233,7 +236,8 @@ namespace ml
 
         CURLcode res = curl_easy_perform(curl);
 
-        if (res != CURLE_OK) {
+        if (res != CURLE_OK)
+        {
             curl_easy_cleanup(curl);
             curl_global_cleanup();
             throw std::runtime_error("Failed to perform curl request: " + std::string(curl_easy_strerror(res)));
@@ -241,7 +245,8 @@ namespace ml
 
         long http_code = 0;
         curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &http_code);
-        if (http_code != 200) {
+        if (http_code != 200)
+        {
             curl_easy_cleanup(curl);
             curl_global_cleanup();
             throw std::runtime_error("HTTP error: " + std::to_string(http_code));
@@ -251,5 +256,32 @@ namespace ml
         curl_global_cleanup();
 
         return json::parse(response);
+    }
+
+    inline std::string unix_format_number(int num)
+    {
+        return (num < 10 ? "0" + std::to_string(num) : std::to_string(num));
+    }
+
+    inline std::string unix_get_remaining_time(time_t unix_timestamp)
+    {
+        time_t currentTime;
+        time(&currentTime);
+
+        time_t remainingTime = unix_timestamp - currentTime;
+        const time_t remainingDays = remainingTime / (24 * 3600);
+        remainingTime = remainingTime % (24 * 3600);
+        const time_t remainingHours = remainingTime / 3600;
+        remainingTime %= 3600;
+        const time_t remainingMinutes = remainingTime / 60;
+        remainingTime %= 60;
+        const time_t remainingSeconds = remainingTime;
+
+        return std::string(
+            unix_format_number(remainingDays) + ":" +
+            unix_format_number(remainingHours) + ":" +
+            unix_format_number(remainingMinutes) + ":" +
+            unix_format_number(remainingSeconds)
+        );
     }
 }

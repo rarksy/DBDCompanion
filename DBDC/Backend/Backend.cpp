@@ -5,7 +5,7 @@
 #include <ImGui/imgui_impl_glfw.h>
 #include <ImGui/imgui_impl_opengl3.h>
 
-int Backend::InitGLFW()
+int backend::init_glfw()
 {
     if (!glfwInit())
     {
@@ -17,13 +17,13 @@ int Backend::InitGLFW()
     return true;
 }
 
-void Backend::ShutdownGLFW()
+void backend::shutdown_glfw()
 {
-    glfwDestroyWindow(Menu::mainWindow);
+    glfwDestroyWindow(menu::main_window);
     glfwTerminate();
 }
 
-GLFWwindow* Backend::SetupWindow(const char* title, int width, int height)
+GLFWwindow* backend::setup_window(const char* title, int width, int height)
 {
     glfwWindowHint(GLFW_RESIZABLE, false);
     GLFWwindow* window = glfwCreateWindow(width, height, title, NULL, NULL);
@@ -38,7 +38,7 @@ GLFWwindow* Backend::SetupWindow(const char* title, int width, int height)
     return window;
 }
 
-void Backend::SetupImGui(GLFWwindow* window, ImGuiContext*& context)
+void backend::setup_imgui(GLFWwindow* window, ImGuiContext*& context)
 {
     // Setup ImGui
     context = ImGui::CreateContext();
@@ -51,11 +51,11 @@ void Backend::SetupImGui(GLFWwindow* window, ImGuiContext*& context)
 
 
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
-    io.Fonts->AddFontFromMemoryCompressedTTF(Rethink_compressed_data, Rethink_compressed_size, Menu::Styling::fontSize);
+    io.Fonts->AddFontFromMemoryCompressedTTF(Rethink_compressed_data, Rethink_compressed_size, menu::styling::font_size);
     io.IniFilename = nullptr;
 }
 
-void Backend::ShutdownImGui()
+void backend::shutdown_imgui()
 {
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();

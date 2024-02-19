@@ -35,7 +35,7 @@ void HookTracker::DetectionLoop()
         stage2Image = cv::imdecode(stage2ByteArray, cv::IMREAD_GRAYSCALE);
     }
 
-    if (Backend::screenHeight == 1080)
+    if (backend::screen_height == 1080)
     {
         cv::resize(stage1Image, stage1Image, cv::Size(), 1.0 / HTVars.resizeMultiplier1080p, 1.0 / HTVars.resizeMultiplier1080p, cv::INTER_AREA);
         cv::resize(stage2Image, stage2Image, cv::Size(), 1.0 / HTVars.resizeMultiplier1080p, 1.0 / HTVars.resizeMultiplier1080p, cv::INTER_AREA);
@@ -51,7 +51,7 @@ void HookTracker::DetectionLoop()
                    static_cast<int>(stage2Image.rows * HTVars.hudScaleFactor.value / 100.0))
     );
     
-    cv::Rect region(0, 0, Backend::screenWidth / 3, Backend::screenHeight);
+    cv::Rect region(0, 0, backend::screen_width / 3, backend::screen_height);
     cv::Mat frame;
     cv::Point detectedLocation;
 
@@ -60,7 +60,7 @@ void HookTracker::DetectionLoop()
     {
         const auto frameStartTime = std::chrono::steady_clock::now();
 
-        frame = Misc::GetScreenshot(region);
+        frame = misc::GetScreenshot(region);
 
         if (HTVars.track1stStage)
         {
