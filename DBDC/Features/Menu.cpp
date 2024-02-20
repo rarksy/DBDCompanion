@@ -31,34 +31,6 @@ void menu::run_loop()
         }
     }
 
-    // std::thread data_thread([]
-    // {
-    //     menu::shrine_of_secrets::shrine_data = ml::json_get("https://dbd.tricky.lol/api/shrine?includeperkinfo=1");
-    //
-    //     for (int i = 0; i < 4; i++)
-    //         menu::shrine_of_secrets::perk_data[i] = ml::json_get(
-    //             "https://dbd.tricky.lol/api/perkinfo?perk=" + menu::shrine_of_secrets::shrine_data["perks"][i]["id"].get_ref<std::string&>());
-    //
-    //     menu::shrine_of_secrets::obtained_perk_data = true;
-    // });
-    // data_thread.detach();
-    //
-    //
-    // std::thread load_thread([]
-    // {
-    //     while (!menu::shrine_of_secrets::obtained_perk_data);
-    //
-    //     for (int i = 0; i < 4; i++)
-    //     {
-    //         images::load_texture_from_file(misc::get_game_root_directory() + "DeadByDaylight/Content/" + menu::shrine_of_secrets::perk_data[i]["image"].get_ref<std::string&>(),
-    //                                        &menu::shrine_of_secrets::perk_textures[i]);
-    //         std::cout << "tid: " << menu::shrine_of_secrets::perk_textures[i] << std::endl;
-    //     }
-    //
-    //     shrine_of_secrets::is_ready = true;
-    // });
-    // load_thread.detach();
-
 
     while (!glfwWindowShouldClose(main_window))
     {
@@ -181,55 +153,6 @@ void menu::render_ui()
 
     if (menu_to_show == 0)
     {
-        //ImGui::SetCursorPos({215, 9});
-        //ImGui::BeginGroup();
-
-        // ImGui::SeparatorText(
-        //     shrine_of_secrets::is_ready
-        //         ? (std::string("Shrine Of Secrets: Resets In ") + ml::unix_get_remaining_time(shrine_of_secrets::reset_time_end)).c_str()
-        //         : "Shrine Of Secrets: Loading Data...");
-        //
-        // if (shrine_of_secrets::is_ready)
-        // {
-        //     ImGui::Columns(4, nullptr, false);
-        //
-        //
-        //     for (int i = 0; i < 4; i++)
-        //     {
-        //         const std::string perk_name = shrine_of_secrets::shrine_data["perks"][i]["name"];
-        //         const std::string perk_id = shrine_of_secrets::shrine_data["perks"][i]["id"];
-        //         const std::string perk_description = shrine_of_secrets::shrine_data["perks"][i]["description"];
-        //
-        //         const float column_width = ImGui::GetColumnWidth();
-        //         const ImVec2 image_size = ImVec2(100, 100);
-        //         const float spacing = ImGui::GetStyle().ItemSpacing.x;
-        //
-        //         const float image_x_position = ImGui::GetCursorPosX() + (column_width - image_size.x) / 2.0f - ImGui::GetScrollX() - spacing;
-        //
-        //         ImGui::SetCursorPosX(image_x_position);
-        //
-        //         ImGui::SetCursorPosX(image_x_position);
-        //
-        //         ImGui::Image((void*)shrine_of_secrets::perk_textures[i], image_size);
-        //
-        //         gui::tool_tip(perk_description.c_str(), 250.F);
-        //
-        //         const float text_width = ImGui::CalcTextSize(perk_name.c_str()).x;
-        //
-        //         const float text_x_position = ImGui::GetCursorPosX() + (column_width - text_width) / 2.0f - ImGui::GetScrollX() - spacing;
-        //
-        //         ImGui::SetCursorPosX(text_x_position);
-        //         ImGui::Text("%s", perk_name.c_str());
-        //         gui::tool_tip(perk_description.c_str(), 250.F);
-        //
-        //
-        //         if (i != 3)
-        //             ImGui::NextColumn();
-        //     }
-        // }
-        //
-        // ImGui::EndGroup();
-
         ImGui::SetCursorPos({10, 470});
         ImGui::TextColored(ImVec4(0.1F, 0.1F, 0.1F, 0.3F), "I DONT KNOW HOW TO MAKE A GOOD MAIN MENU");
     }
