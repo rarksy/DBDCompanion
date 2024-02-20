@@ -3,6 +3,9 @@
 #include <GLFW/glfw3.h>
 #define STB_IMAGE_IMPLEMENTATION    
 
+#include <iostream>
+#include <ostream>
+
 #include "../Dependencies/stb_image.h"
 
 bool images::load_texture_from_memory(const unsigned char* image_array, int imageSize, unsigned int* out_texture)

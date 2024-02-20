@@ -31,50 +31,34 @@ void menu::run_loop()
         }
     }
 
-    std::thread shrine_initialization_thread([]
+    std::thread data_thread([]
     {
-        shrine_of_secrets::data = ml::json_get("https://dbd.tricky.lol/api/shrine?includeperkinfo=1");
+        menu::shrine_of_secrets::shrine_data = ml::json_get("https://dbd.tricky.lol/api/shrine?includeperkinfo=1");
+
+        for (int i = 0; i < 4; i++)
+            menu::shrine_of_secrets::perk_data[i] = ml::json_get(
+                "https://dbd.tricky.lol/api/perkinfo?perk=" + menu::shrine_of_secrets::shrine_data["perks"][i]["id"].get_ref<std::string&>());
+
+        menu::shrine_of_secrets::obtained_perk_data = true;
+    });
+    data_thread.detach();
+
+
+    std::thread load_thread([]
+    {
+        while (!menu::shrine_of_secrets::obtained_perk_data);
 
         for (int i = 0; i < 4; i++)
         {
-            auto& description = shrine_of_secrets::data["perks"][i]["description"].get_ref<std::string&>();
-
-            size_t pos = 0;
-
-            while ((pos = description.find("<br>", pos)) != std::string::npos)
-                description.replace(pos, 4, "\n");
-
-            pos = 0;
-            while ((pos = description.find("<b>", pos)) != std::string::npos)
-                description.replace(pos, 4, "\n");
-
-            pos = 0;
-            while ((pos = description.find("</b>", pos)) != std::string::npos)
-                description.replace(pos, 4, "\n");
-
-            pos = 0;
-            while ((pos = description.find("<i>", pos)) != std::string::npos)
-                description.replace(pos, 3, "");
-
-            pos = 0;
-            while ((pos = description.find("</i>", pos)) != std::string::npos)
-                description.replace(pos, 3, "");
-
-            shrine_of_secrets::reset_time_start = shrine_of_secrets::data["start"];
-            shrine_of_secrets::reset_time_end = shrine_of_secrets::data["end"];
-
-            std::string perk_info_url = "https://dbd.tricky.lol/api/perkinfo?perk=" + shrine_of_secrets::data["perks"][i]["id"].get_ref<std::string&>();
-
-            nlohmann::json perk_data = ml::json_get(perk_info_url);
-
-            shrine_of_secrets::perk_image_paths.push_back(
-                misc::get_game_root_directory() + std::string("DeadByDaylight/Content/" + perk_data["image"].get_ref<std::string&>())
-            );
+            images::load_texture_from_file(misc::get_game_root_directory() + "DeadByDaylight/Content/" + menu::shrine_of_secrets::perk_data[i]["image"].get_ref<std::string&>(),
+                                           &menu::shrine_of_secrets::perk_textures[i]);
+            std::cout << "tid: " << menu::shrine_of_secrets::perk_textures[i] << std::endl;
         }
 
         shrine_of_secrets::is_ready = true;
     });
-    shrine_initialization_thread.detach();
+    load_thread.detach();
+
 
     while (!glfwWindowShouldClose(main_window))
     {
@@ -209,14 +193,12 @@ void menu::render_ui()
         {
             ImGui::Columns(4, nullptr, false);
 
+
             for (int i = 0; i < 4; i++)
             {
-                const std::string perk_name = shrine_of_secrets::data["perks"][i]["name"];
-                const std::string perk_id = shrine_of_secrets::data["perks"][i]["id"];
-                const std::string perk_description = shrine_of_secrets::data["perks"][i]["description"];
-
-                GLuint perk_image;
-                images::load_texture_from_file(shrine_of_secrets::perk_image_paths[i], &perk_image);
+                const std::string perk_name = shrine_of_secrets::shrine_data["perks"][i]["name"];
+                const std::string perk_id = shrine_of_secrets::shrine_data["perks"][i]["id"];
+                const std::string perk_description = shrine_of_secrets::shrine_data["perks"][i]["description"];
 
                 const float column_width = ImGui::GetColumnWidth();
                 const ImVec2 image_size = ImVec2(100, 100);
@@ -227,7 +209,9 @@ void menu::render_ui()
                 ImGui::SetCursorPosX(image_x_position);
 
                 ImGui::SetCursorPosX(image_x_position);
-                ImGui::Image((void*)perk_image, image_size);
+
+                ImGui::Image((void*)shrine_of_secrets::perk_textures[i], image_size);
+
                 gui::tool_tip(perk_description.c_str(), 250.F);
 
                 const float text_width = ImGui::CalcTextSize(perk_name.c_str()).x;

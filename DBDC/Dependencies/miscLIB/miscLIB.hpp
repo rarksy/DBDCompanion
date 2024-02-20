@@ -231,7 +231,6 @@ namespace ml
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
 
-        // Set a user-agent to avoid potential issues with the server
         curl_easy_setopt(curl, CURLOPT_USERAGENT, "curl/7.77.0");
 
         CURLcode res = curl_easy_perform(curl);

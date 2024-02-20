@@ -77,11 +77,14 @@ namespace menu
 
     namespace shrine_of_secrets
     {
+        inline bool obtained_perk_data = false;
         inline bool is_ready = false;
         
-        inline nlohmann::json data = nullptr;
+        inline nlohmann::json shrine_data = nullptr;
+        inline std::vector<nlohmann::json> perk_data = {0, 0, 0, 0};
 
-        inline std::vector<std::string> perk_image_paths;
+        inline std::vector<const char*> perk_image_paths;
+        inline std::vector<GLuint> perk_textures = {0, 0, 0, 0};
         
         inline time_t reset_time_start = 0;
         inline time_t reset_time_end = 0;
