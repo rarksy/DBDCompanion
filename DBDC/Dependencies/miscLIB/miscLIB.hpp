@@ -213,10 +213,8 @@ namespace ml
         response->append((char*)contents, size * nmemb);
         return size * nmemb;
     }
-
-    using json = nlohmann::json;
-
-    inline json json_get(const std::string& url)
+    
+    inline nlohmann::json json_get(const std::string& url)
     {
         curl_global_init(CURL_GLOBAL_ALL);
 
@@ -254,7 +252,7 @@ namespace ml
         curl_easy_cleanup(curl);
         curl_global_cleanup();
 
-        return json::parse(response);
+        return nlohmann::json::parse(response);
     }
 
     inline std::string unix_format_number(int num)

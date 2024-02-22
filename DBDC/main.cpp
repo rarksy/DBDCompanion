@@ -13,7 +13,7 @@
 
 #include "Misc/Misc.hpp"
 
-//#define alternate_winmain
+#define alternate_winmain
 
 #ifndef alternate_winmain
 
@@ -76,24 +76,27 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
 
 int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int) // alternate winmain used for testing
 {
-    backend::init_glfw();
+
+    menu::shrine_of_secrets shrine;
+
+    std::cout << shrine.get_perk(0).name << std::endl;
     
-    menu::shrine_of_secrets::shrine_data = ml::json_get("https://dbd.tricky.lol/api/shrine?includeperkinfo=1");
-
-    for (int i = 0; i < 4; i++)
-        menu::shrine_of_secrets::perk_data[i] = ml::json_get(
-            "https://dbd.tricky.lol/api/perkinfo?perk=" + menu::shrine_of_secrets::shrine_data["perks"][i]["id"].get_ref<std::string&>());
-
-    menu::shrine_of_secrets::is_ready = true;
-
-    for (int i = 0; i < 4; i++)
-    {
-        images::load_texture_from_file(misc::get_game_root_directory() + "DeadByDaylight/Content/" + menu::shrine_of_secrets::perk_data[i]["image"].get_ref<std::string&>(),
-                                       &menu::shrine_of_secrets::perk_textures[0]);
-        std::cout << "tid: " << menu::shrine_of_secrets::perk_textures[i] << std::endl;
-    }
-
-    while (!menu::shrine_of_secrets::is_ready);
+    // menu::shrine_of_secrets::shrine_data = ml::json_get("https://dbd.tricky.lol/api/shrine?includeperkinfo=1");
+    //
+    // for (int i = 0; i < 4; i++)
+    //     menu::shrine_of_secrets::perk_data[i] = ml::json_get(
+    //         "https://dbd.tricky.lol/api/perkinfo?perk=" + menu::shrine_of_secrets::shrine_data["perks"][i]["id"].get_ref<std::string&>());
+    //
+    // menu::shrine_of_secrets::is_ready = true;
+    //
+    // for (int i = 0; i < 4; i++)
+    // {
+    //     images::load_texture_from_file(misc::get_game_root_directory() + "DeadByDaylight/Content/" + menu::shrine_of_secrets::perk_data[i]["image"].get_ref<std::string&>(),
+    //                                    &menu::shrine_of_secrets::perk_textures[0]);
+    //     std::cout << "tid: " << menu::shrine_of_secrets::perk_textures[i] << std::endl;
+    // }
+    //
+    // while (!menu::shrine_of_secrets::is_ready);
     return 0;
 }
 

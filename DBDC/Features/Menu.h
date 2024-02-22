@@ -9,6 +9,7 @@
 #include "Exe Icons/256x256.hpp"
 #include <ctime>
 #include "GUI/GUI.h"
+#include "miscLIB/miscLIB.hpp"
 
 struct color
 {
@@ -75,20 +76,48 @@ namespace menu
     inline GLFWwindow* main_window = nullptr;
     inline ImGuiContext* main_context = nullptr;
 
-    // namespace shrine_of_secrets
-    // {
-    //     inline bool obtained_perk_data = false;
-    //     inline bool is_ready = false;
-    //     
-    //     inline nlohmann::json shrine_data = nullptr;
-    //     inline std::vector<nlohmann::json> perk_data = {0, 0, 0, 0};
-    //
-    //     inline std::vector<const char*> perk_image_paths;
-    //     inline std::vector<GLuint> perk_textures = {0, 0, 0, 0};
-    //     
-    //     inline time_t reset_time_start = 0;
-    //     inline time_t reset_time_end = 0;
-    // }
+    struct shrine_of_secrets
+    {
+        struct perk
+        {
+            std::string id;
+            std::string name;
+            std::string description;
+        };
+
+        nlohmann::json shrine_data;
+        std::vector<perk> perk_data;
+
+        bool unavailable = false;
+
+        shrine_of_secrets()
+        {
+            this->shrine_data = ml::json_get("https://dbd.tricky.lol/api/shrine?includeperkinfo=1");
+
+            if (!this->shrine_data["error"].is_null())
+                this->unavailable = true;
+            else
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    const auto perk_info = ml::json_get("https://dbd.tricky.lol/api/perkinfo?perk=" + menu::shrine_of_secrets::shrine_data["perks"][i]["id"].get_ref<std::string&>());
+
+                    perk _perk;
+
+                    _perk.id = perk_info["id"];
+                    _perk.name = perk_info["name"];
+                    _perk.description = perk_info["description"];
+
+                    perk_data.push_back(_perk);
+                }
+            }
+        }
+
+        perk get_perk(const int& perk_index)
+        {
+            return perk_data[perk_index];
+        }
+    };
 
     namespace overlay
     {
