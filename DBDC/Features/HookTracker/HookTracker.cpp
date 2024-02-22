@@ -36,6 +36,16 @@ void hook_tracker::setup()
     } 
 }
 
+void hook_tracker::free()
+{
+    all_survivors.clear();
+}
+
+void hook_tracker::detection_loop()
+{
+    
+}
+
 void hook_tracker::render()
 {
     for (int i = 0; i < 4; i++)

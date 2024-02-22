@@ -63,7 +63,16 @@ namespace hook_tracker
     };
 
     void setup();
+    void free();
+
+    void detection_loop();
     void render();
 
     inline std::vector<survivor> all_survivors;
+
+
+    namespace ht_vars
+    {
+        inline bool enabled = false;
+    }
 }
