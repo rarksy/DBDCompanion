@@ -77,25 +77,25 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
 
 int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int) // alternate winmain used for testing
 {
-    using HookTracker::_internal::vec2;
+    using hook_tracker::_internal::vec2;
 
-    HookTracker::in_game_ui_scale.load_value();
+    hook_tracker::in_game_ui_scale.load_value();
 
     for (int i = 0; i < 4; i++)
     {
-        HookTracker::survivor surv;
+        hook_tracker::survivor surv;
 
         surv.index = i;
 
         if (ml::get_screen_height() == 1440)
         {
-            const auto region = HookTracker::_internal::survivor_regions_1440[i];
+            const auto region = hook_tracker::_internal::survivor_regions_1440[i];
             
             surv.location = region;
-            surv.size = HookTracker::_internal::vec2(300, 100);
+            surv.size = hook_tracker::_internal::vec2(300, 100);
         }
 
-        HookTracker::all_survivors.push_back(surv);
+        hook_tracker::all_survivors.push_back(surv);
     }
 
     backend::init_glfw();
@@ -120,7 +120,7 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int) // alternate winmain used 
 
         for (int i = 0; i < 4; i++)
         {
-            auto surv = HookTracker::all_survivors[i];
+            auto surv = hook_tracker::all_survivors[i];
             ImGui::GetBackgroundDrawList()->AddRect(surv.location.to_imvec2(), (surv.location + surv.size).to_imvec2(), ImColor(255, 0, 0));
         }
 

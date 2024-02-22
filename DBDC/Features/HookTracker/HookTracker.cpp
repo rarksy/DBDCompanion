@@ -2,11 +2,7 @@
 #include <Windows.h>
 
 #include "HookTracker.hpp"
-#include "HTMenu.h"
-#include "Images/HookTracker/Hook.hpp"
-#include "Images/HookTracker/Stage2.hpp"
-#include "../Backend/Backend.hpp"
-#include "../Misc/Misc.hpp"
+#include "../Dependencies/miscLIB/miscLIB.hpp"
 
 // bool TemplateMatch(cv::Mat Frame, cv::Mat ElementToFind, double Threshold, cv::Point& Detectedlocation)
 // {
@@ -18,3 +14,33 @@
 //     cv::minMaxLoc(result, NULL, &AccuracyValue, NULL, &Detectedlocation);
 //     return AccuracyValue >= Threshold;
 // }
+void hook_tracker::setup()
+{
+    hook_tracker::in_game_ui_scale.load_value();
+
+    for (int i = 0; i < 4; i++)
+    {
+        hook_tracker::survivor surv;
+
+        surv.index = i;
+
+        if (backend::screen_height == 1440)
+        {
+            const auto region = hook_tracker::_internal::survivor_regions_1440[i];
+            
+            surv.location = region;
+            surv.size = hook_tracker::_internal::vec2(300, 100);
+        }
+
+        hook_tracker::all_survivors.push_back(surv);
+    } 
+}
+
+void hook_tracker::render()
+{
+    for (int i = 0; i < 4; i++)
+    {
+        auto surv = hook_tracker::all_survivors[i];
+        ImGui::GetBackgroundDrawList()->AddRect(surv.location.to_imvec2(), (surv.location + surv.size).to_imvec2(), ImColor(255, 0, 0));
+    }
+}

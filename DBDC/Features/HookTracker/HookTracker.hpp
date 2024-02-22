@@ -22,7 +22,7 @@
 // if hook icon found AND red bar IS half way: 2nd hook detected
 // profit
 
-namespace HookTracker
+namespace hook_tracker
 {
     namespace _internal
     {
@@ -61,6 +61,9 @@ namespace HookTracker
 
         survivor(){}
     };
+
+    void setup();
+    void render();
 
     inline std::vector<survivor> all_survivors;
 }
