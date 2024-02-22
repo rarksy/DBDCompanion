@@ -6,6 +6,20 @@
 #include <GLFW/glfw3.h>
 #include "../ConfigEditor/ConfigEditor.hpp"
 
+// use math to get portrait x & y 
+/*
+    create hardcoded value for portrait locations ONLY @ 100% UI scale FOR EACH resolution
+    Y found = subtract the difference of (100 - UI scale) from the coordinate
+    X found = hardcode (hate it) 
+*/
+
+// create a scanning region from x, y -> desired w, h
+// scan for hook icon
+// if hook icon IS NOT found and red bar IS NOT found: no hook detected
+// if hook icon found but red bar IS NOT half way: 1st hook is detected
+// if hook icon found AND red bar IS half way: 2nd hook detected
+// profit
+
 namespace HookTracker
 {
     void DetectionLoop();
