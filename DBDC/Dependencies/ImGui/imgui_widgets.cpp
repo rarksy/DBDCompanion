@@ -3091,7 +3091,9 @@ bool ImGui::SliderScalar(const char* label, ImGuiDataType data_type, void* p_dat
         MarkItemEdited(id);
 
     // Render grab
-    float clampedValue = std::min(std::max(*(float*)p_data, *(float*)p_min), *(float*)p_max);  // Ensure value is within the range
+    // Ensure value is within the range defined by p_min and p_max
+    float clampedValue = std::clamp(*reinterpret_cast<float*>(p_data), *(float*)p_min, *(float*)p_max);
+
     ImRect filledBarRect(frame_bb.Min, ImVec2(frame_bb.Min.x + (frame_bb.Max.x - frame_bb.Min.x) * (clampedValue - *(float*)p_min) / (*(float*)p_max - *(float*)p_min), frame_bb.Max.y));
 
     if (*(float*)p_data != *(float*)p_min)

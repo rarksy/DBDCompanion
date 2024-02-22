@@ -13,7 +13,7 @@
 
 #include "Misc/Misc.hpp"
 
-#define alternate_winmain
+//#define alternate_winmain
 
 #ifndef alternate_winmain
 
