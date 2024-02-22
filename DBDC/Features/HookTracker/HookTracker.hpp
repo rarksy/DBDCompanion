@@ -4,6 +4,8 @@
 #include "ImGui/imgui.h"
 #include <opencv2/opencv.hpp>
 #include <GLFW/glfw3.h>
+
+#include "../../Backend/Backend.hpp"
 #include "../ConfigEditor/ConfigEditor.hpp"
 
 // use math to get portrait x & y 
@@ -22,37 +24,43 @@
 
 namespace HookTracker
 {
-    void DetectionLoop();
-    void HandleDetection(const cv::Point& detectedLocation, std::vector<ImVec2>& locations, int detectionRange);
-    void RenderDetection();
-
-    struct Variables
+    namespace _internal
     {
-        bool enabled = false;
+        struct vec2
+        {
+            int x;
+            int y;
 
-        bool track1stStage = true;
-        bool track2ndStage = true;
-        bool playSoundOnHook = false;
-        char soundFilePath[128];
+            vec2(int _x, int _y)
+            {
+                this->x = _x;
+                this->y = _y;
+            }
 
-        config_editor::setting menuScaleFactor = config_editor::setting(config_editor::files::game_user_settings, config_editor::sections::dbd_game_user_settings, "MenuScaleFactor", 100);
-        config_editor::setting hudScaleFactor = config_editor::setting(config_editor::files::game_user_settings, config_editor::sections::dbd_game_user_settings, "HudScaleFactor", 100);
+            ImVec2 to_imvec2()
+            {
+                return {static_cast<float>(this->x), static_cast<float>(this->y)};
+            }
 
-        float firstThreshold = 0.9f;
-        float secondThreshold = 0.9f;
+            vec2 operator+(const vec2& other) const
+            {
+                return vec2(x + other.x, y + other.y);
+            }
+        };
 
-        int firstDetectionRange = 7;
-        int secondDetectionRange = 5;
+        inline std::vector<vec2> survivor_regions_1440{{120, 580}, {120, 700}, {120, 820}, {120, 940}};
+    }
 
-        double resizeMultiplier1080p = 1.3;
+    inline config_editor::setting in_game_ui_scale(config_editor::files::game_user_settings, config_editor::sections::dbd_game_user_settings, "HudScaleFactor", 100);
+
+    struct survivor
+    {
+        int index;
+        _internal::vec2 location = {0, 0};
+        _internal::vec2 size = {0, 0};
+
+        survivor(){}
     };
 
-    namespace Internal
-    {
-        inline std::vector<ImVec2> survivorLocationsStage1;
-        inline std::vector<ImVec2> survivorLocationsStage2;
-        inline GLuint pipIconTexture;
-    };
+    inline std::vector<survivor> all_survivors;
 }
-
-inline HookTracker::Variables HTVars;

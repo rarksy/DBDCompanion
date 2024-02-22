@@ -72,8 +72,8 @@ void menu::run_loop()
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
 
-            if (HTVars.enabled)
-                HookTracker::RenderDetection();
+            //if (HTVars.enabled)
+                //HookTracker::RenderDetection();
 
             if (CVars.enabled)
                 Crosshair::DrawCrosshairs();

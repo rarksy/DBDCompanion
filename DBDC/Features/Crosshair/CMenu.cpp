@@ -27,8 +27,10 @@ void CMenu::RenderUI()
                 glfwMakeContextCurrent(menu::main_window);
             }
         }
-        else if (!HTVars.enabled)
-            menu::overlay::destroy_overlay();
+        //else if (!HTVars.enabled)
+            //menu::overlay::destroy_overlay();
+
+        else menu::overlay::destroy_overlay();
     }
 
     ImGui::Spacing();
