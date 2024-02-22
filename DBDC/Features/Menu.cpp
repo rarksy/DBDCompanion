@@ -135,7 +135,7 @@ void menu::render_ui()
     if (show_color_picker)
     {
         ImGui::SetCursorPos({45, 9});
-        if (gui::color_picker("Menu Accent", styling::menu_accent))
+        if (gui::color_picker("Menu Accent", &styling::menu_accent))
         {
             const mINI::INIFile file(backend::exe_directory.string() + backend::settings_directory + "Settings");
             mINI::INIStructure ini;

@@ -115,7 +115,7 @@ bool gui::slider(const char* label, config_editor::setting& setting, int minValu
 }
 
 bool gui::drop_down_box(const char* label, int& index, std::vector<std::string> items, bool useIndex, float widgetSize, std::string caption, std::vector<unsigned*> textures,
-                      ImVec2 textureSize)
+                        ImVec2 textureSize)
 {
     ImGui::SetNextItemWidth(widgetSize);
 
@@ -148,7 +148,7 @@ bool gui::drop_down_box(const char* label, int& index, std::vector<std::string> 
 }
 
 bool gui::drop_down_box(const char* label, config_editor::setting& setting, std::vector<std::string> items, bool useIndex, float widgetSize, std::string caption,
-                      std::vector<unsigned*> textures, ImVec2 textureSize)
+                        std::vector<unsigned*> textures, ImVec2 textureSize)
 {
     ImGui::SetNextItemWidth(widgetSize);
 
@@ -222,15 +222,17 @@ void gui::tool_tip(std::string message, unsigned int texture, const ImVec2& size
     }
 }
 
-bool gui::color_picker(const char* label, color& col)
+bool gui::color_picker(const char* label, color* col)
 {
     ImGui::PushID(label);
 
-    ImVec4 colorVec4 = col.to_imvec4();
+    ImVec4 colorVec4 = col->to_imvec4();
     const bool valueChanged = ImGui::ColorEdit4(label, &colorVec4.x, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_NoTooltip);
 
     if (valueChanged)
-        col.apply_from_imvec4(colorVec4);
+    {
+        col->apply_from_imvec4(colorVec4);
+    }
 
     ImGui::PopID();
 
