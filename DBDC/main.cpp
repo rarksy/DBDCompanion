@@ -14,9 +14,9 @@
 #include "Features/HookTracker/HookTracker.hpp"
 #include "Misc/Misc.hpp"
 
-#define alternate_winmain
+//#define debug_winmain
 
-#ifndef alternate_winmain
+#ifndef debug_winmain
 
 int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
 {
