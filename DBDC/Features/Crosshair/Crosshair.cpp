@@ -318,7 +318,8 @@ void Crosshair::ModifyDynamicCenterPoint()
     }
     else if (CVars.dynamicCenterPointIndex == 4) // The Unknown
     {
-        
+        if(allCenterPoints[0].y != 770)
+            allCenterPoints[0].y = 770;
     }
 
     if (CVars.dynamicCenterPointIndex != 2)
