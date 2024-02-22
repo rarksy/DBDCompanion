@@ -458,6 +458,7 @@
     <Content Include="Dependencies\curl\lib\libcurl.lib" />
     <Content Include="Dependencies\curl\lib\libcurl_debug.dll" />
     <Content Include="Dependencies\curl\lib\libcurl_debug.lib" />
+    <Content Include="Dependencies\Exe Icons\256x256.ico" />
     <Content Include="Dependencies\GLFW\lib\glew32s.lib" />
     <Content Include="Dependencies\GLFW\lib\glfw3.lib" />
     <Content Include="Dependencies\opencv2\lib\opencv_world481.dll" />
