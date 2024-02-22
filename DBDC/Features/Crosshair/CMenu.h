@@ -7,5 +7,5 @@ namespace CMenu
     void Setup();
     void RenderUI();
 
-    inline std::vector<std::string> dynamicKillers = {"Huntress", "Deathslinger", "Trickster", "Clown"};
+    inline std::vector<std::string> dynamicKillers = {"Huntress", "Deathslinger", "Trickster", "Clown", "Unknown"};
 }
