@@ -7,12 +7,37 @@
 #include "HookTracker.hpp"
 #include "../ConfigEditor/ConfigEditor.hpp"
 
-void HTMenu::Setup()
+void ht_menu::setup()
 {
     config_editor::initialize_config();
 }
 
-void HTMenu::RenderUI()
+void ht_menu::render_ui()
 {
     ImGui::SetCursorPosY(45);
+
+    if (ImGui::Checkbox("Enabled", &hook_tracker::ht_vars::enabled))
+    {
+        if (hook_tracker::ht_vars::enabled)
+        {
+            if (!menu::overlay::is_overlay_created())
+            {
+                menu::overlay::create_overlay();
+                ImGui::SetCurrentContext(menu::main_context);
+                glfwMakeContextCurrent(menu::main_window);
+            }
+
+            std::thread detection_thread(hook_tracker::detection_loop);
+            detection_thread.detach();
+            
+            hook_tracker::setup();
+        }
+        else
+        {
+            hook_tracker::free();
+
+            if (!CVars.enabled)
+                menu::overlay::destroy_overlay();
+        }
+    }
 }

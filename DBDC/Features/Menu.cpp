@@ -72,8 +72,8 @@ void menu::run_loop()
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
 
-            //if (HTVars.enabled)
-                //HookTracker::RenderDetection();
+            if (hook_tracker::ht_vars::enabled)
+                hook_tracker::render();
 
             if (CVars.enabled)
                 Crosshair::DrawCrosshairs();
@@ -178,10 +178,10 @@ void menu::render_ui()
 
     else if (menu_to_show == 2)
     {
-        static std::once_flag flag;
-        std::call_once(flag, HTMenu::Setup);
+        static std::once_flag menu_flag;
+        std::call_once(menu_flag, ht_menu::setup);
 
-        HTMenu::RenderUI();
+        ht_menu::render_ui();
     }
 
     else if (menu_to_show == 3)
