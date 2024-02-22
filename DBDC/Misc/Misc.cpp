@@ -1,5 +1,5 @@
 ﻿#include "Misc.hpp"
-#include "../Menu/ConfigEditor/ConfigEditor.hpp"
+#include "../Features/ConfigEditor/ConfigEditor.hpp"
 
 #include <regex>
 #include <Windows.h>
@@ -9,42 +9,17 @@
 #include <filesystem>
 
 #include "Base64/Base64.hpp"
+#include "miscLIB/miscLIB.hpp"
 #include "zlib/zlib.h"
 
-DWORD Misc::GetGamePID()
+void misc::RestartGame(bool dx12)
 {
-    PROCESSENTRY32 pt;
-    HANDLE hsnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-    pt.dwSize = sizeof(PROCESSENTRY32);
-    if (Process32First(hsnap, &pt))
-    {
-        do
-        {
-            if (!wcscmp(pt.szExeFile, L"DeadByDaylight-Win64-Shipping.exe"))
-            {
-                CloseHandle(hsnap);
-                return pt.th32ProcessID;
-            }
-        }
-        while (Process32Next(hsnap, &pt));
-    }
-    CloseHandle(hsnap);
-    return 0;
-}
-
-bool Misc::IsGameRunning()
-{
-    return GetGamePID() != 0;
-}
-
-void Misc::RestartGame(bool dx12)
-{
-    if (IsGameRunning())
+    if (ml::is_exe_running(L"DeadByDaylight-Win64-Shipping.exe"))
     {
         if (MessageBox(nullptr, L"This Will Close And Reopen Dead By Daylight.", L"Continue?", MB_YESNO) == IDNO)
             return;
 
-        HANDLE handle = OpenProcess(PROCESS_TERMINATE, FALSE, GetGamePID());
+        HANDLE handle = OpenProcess(PROCESS_TERMINATE, FALSE, ml::get_exe_pid(L"DeadByDaylight-Win64-Shipping.exe"));
         if (handle != NULL)
         {
             TerminateProcess(handle, 0);
@@ -58,7 +33,7 @@ void Misc::RestartGame(bool dx12)
     ShellExecuteA(NULL, "open", runString.c_str(), NULL, NULL, SW_SHOWDEFAULT);
 }
 
-cv::Mat Misc::GetScreenshot(const cv::Rect& region, bool grayscale)
+cv::Mat misc::GetScreenshot(const cv::Rect& region, bool grayscale)
 {
     const int regionWidth = region.width;
     const int regionHeight = region.height;
@@ -89,7 +64,7 @@ cv::Mat Misc::GetScreenshot(const cv::Rect& region, bool grayscale)
     return screenshot;
 }
 
-std::vector<std::string> Misc::GetAllLibraryDirectories()
+std::vector<std::string> misc::GetAllLibraryDirectories()
 {
     std::vector<std::string> paths;
     std::ifstream configFile("C:\\Program Files (x86)\\Steam\\steamapps\\libraryfolders.vdf"); // HATE this
@@ -116,7 +91,7 @@ std::vector<std::string> Misc::GetAllLibraryDirectories()
             std::string::size_type pos = 0;
             while ((pos = path.find("\\\\", pos)) != std::string::npos)
             {
-                path.replace(pos, 2, "\\");
+                path.replace(pos, 2, "/");
                 pos += 1; // Move past the replaced backslash
             }
 
@@ -128,7 +103,7 @@ std::vector<std::string> Misc::GetAllLibraryDirectories()
 }
 
 
-std::string Misc::GetGameRootDirectory()
+std::string misc::get_game_root_directory()
 {
     // library paths are located in:
     // C:\Program Files (x86)\Steam\steamapps/libraryfolders.vdf
@@ -138,7 +113,7 @@ std::string Misc::GetGameRootDirectory()
 
     for (const auto& path : allPaths)
     {
-        std::filesystem::path gameRootDir(path + "\\steamapps\\common\\Dead By Daylight\\");
+        std::filesystem::path gameRootDir(path + "/steamapps/common/Dead By Daylight/");
 
         if (!std::filesystem::exists(gameRootDir))
             continue;
@@ -149,12 +124,12 @@ std::string Misc::GetGameRootDirectory()
     return "";
 }
 
-void Misc::OpenSettingsFolder()
+void misc::OpenSettingsFolder()
 {
-    ShellExecuteA(NULL, "open", ConfigEditor::SettingsFolderLocation.string().c_str(), NULL, NULL, SW_SHOWDEFAULT);
+    ShellExecuteA(NULL, "open", config_editor::settings_folder_location.string().c_str(), NULL, NULL, SW_SHOWDEFAULT);
 }
 
-bool Misc::SetClipboardText(std::string input)
+bool misc::SetClipboardText(std::string input)
 {
     if (OpenClipboard(nullptr)) {
         EmptyClipboard();
@@ -179,7 +154,7 @@ bool Misc::SetClipboardText(std::string input)
     return false;
 }
 
-std::string Misc::GetClipboardText()
+std::string misc::GetClipboardText()
 {
     std::string clipboardText;
 
@@ -201,17 +176,17 @@ std::string Misc::GetClipboardText()
     return clipboardText;
 }
 
-std::string Misc::Base64Encode(std::string input)
+std::string misc::Base64Encode(std::string input)
 {
     return base64::to_base64(input);
 }
 
-std::string Misc::Base64Decode(std::string input)
+std::string misc::Base64Decode(std::string input)
 {
     return base64::from_base64(input);
 }
 
-std::string Misc::CompressString(const std::string& input)
+std::string misc::CompressString(const std::string& input)
 {
     z_stream zs;
     memset(&zs, 0, sizeof(zs));
@@ -249,7 +224,7 @@ std::string Misc::CompressString(const std::string& input)
     return outstring;
 }
 
-std::string Misc::DecompressString(const std::string& input)
+std::string misc::DecompressString(const std::string& input)
 {
     z_stream zs;
     memset(&zs, 0, sizeof(zs));

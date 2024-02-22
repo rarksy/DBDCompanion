@@ -1,7 +1,6 @@
 ﻿#ifndef BASE_64_HPP
 #define BASE_64_HPP
 
-#include <algorithm>
 #include <stdexcept>
 #include <string>
 #include <string_view>
