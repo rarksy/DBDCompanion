@@ -8,7 +8,7 @@ namespace misc
 {
     void RestartGame(bool dx12 = false);
 
-    cv::Mat GetScreenshot(const cv::Rect& region, bool grayscale = true);
+    cv::Mat get_screenshot(const cv::Rect& region, bool grayscale = true);
 
     std::vector<std::string> GetAllLibraryDirectories();
     std::string get_game_root_directory();

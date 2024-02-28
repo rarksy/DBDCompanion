@@ -33,7 +33,7 @@ void misc::RestartGame(bool dx12)
     ShellExecuteA(NULL, "open", runString.c_str(), NULL, NULL, SW_SHOWDEFAULT);
 }
 
-cv::Mat misc::GetScreenshot(const cv::Rect& region, bool grayscale)
+cv::Mat misc::get_screenshot(const cv::Rect& region, bool grayscale)
 {
     const int regionWidth = region.width;
     const int regionHeight = region.height;
