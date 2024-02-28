@@ -37,7 +37,7 @@ namespace hook_tracker
                 this->y = _y;
             }
 
-            ImVec2 to_imvec2()
+            ImVec2 to_imvec2() const
             {
                 return {static_cast<float>(this->x), static_cast<float>(this->y)};
             }
@@ -58,6 +58,9 @@ namespace hook_tracker
         int index;
         _internal::vec2 location = {0, 0};
         _internal::vec2 size = {0, 0};
+
+        bool currently_hooked = false;
+        int hook_stage = 0; // 1 = 1st stage | 2 = 2nd stage | 3 = dead 
 
         survivor(){}
     };

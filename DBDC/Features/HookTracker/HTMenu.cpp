@@ -27,10 +27,10 @@ void ht_menu::render_ui()
                 glfwMakeContextCurrent(menu::main_window);
             }
 
+            hook_tracker::setup();
+
             std::thread detection_thread(hook_tracker::detection_loop);
             detection_thread.detach();
-            
-            hook_tracker::setup();
         }
         else
         {
