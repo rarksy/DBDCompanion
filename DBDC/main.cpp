@@ -75,91 +75,12 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
 }
 #else
 
-bool TemplateMatch(cv::Mat Frame, cv::Mat ElementToFind, double Threshold, cv::Point& Detectedlocation)
-{
-    auto result = cv::Mat(Frame.rows - ElementToFind.rows + 1, Frame.cols - ElementToFind.cols + 1, CV_32FC1);
-
-    cv::matchTemplate(Frame, ElementToFind, result, cv::TM_CCOEFF_NORMED);
-    cv::threshold(result, result, Threshold, 1.0, cv::THRESH_TOZERO);
-    double AccuracyValue;
-    cv::minMaxLoc(result, NULL, &AccuracyValue, NULL, &Detectedlocation);
-    return AccuracyValue >= Threshold;
-}
-
 
 int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int) // alternate winmain used for testing
 {
-    using hook_tracker::_internal::vec2;
+    using namespace std;
 
-    hook_tracker::in_game_ui_scale.load_value();
-
-    int ui_scale = 100;
-
-    for (int i = 0; i < 4; i++)
-    {
-        hook_tracker::survivor surv;
-
-        surv.index = i;
-
-        if (ml::get_screen_height() == 1440)
-        {
-            const auto region = hook_tracker::_internal::survivor_regions_1440[i];
-
-            surv.location = region;
-            surv.size = vec2(300, 100);
-        }
-
-        hook_tracker::all_survivors.push_back(surv);
-    }
-
-    backend::init_glfw();
-
-    glfwWindowHint(GLFW_MAXIMIZED, true);
-    glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, true);
-    glfwWindowHint(GLFW_MOUSE_PASSTHROUGH, true);
-    glfwWindowHint(GLFW_FLOATING, true);
-    glfwWindowHint(GLFW_DECORATED, false);
-    const auto window = backend::setup_window("debug", 800, 600);
-
-    ImGuiContext* ctx = nullptr;
-    backend::setup_imgui(window, ctx);
-
-    cv::Mat hook_image = cv::imread("C:\\Users\\rarks\\Desktop\\hook.png", cv::IMREAD_GRAYSCALE);
-
-    while (!glfwWindowShouldClose(window))
-    {
-        glfwPollEvents();
-
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
-
-        for (int i = 0; i < 4; i++)
-        {
-            auto surv = hook_tracker::all_survivors[i];
-
-            ImGui::GetBackgroundDrawList()->AddRect(surv.location.to_imvec2(), (surv.location + surv.size).to_imvec2(), ImColor(255, 0, 0));
-
-            cv::Rect area_to_scan(surv.location.x, surv.location.y, surv.size.x, surv.size.y);
-
-            const auto frame = misc::get_screenshot(area_to_scan);
-
-            cv::Point detected_location;
-            if (TemplateMatch(frame, hook_image, 0.9, detected_location))
-            {
-                ImGui::GetBackgroundDrawList()->AddRect(
-                    {(surv.location + vec2((float)detected_location.x, (float)detected_location.y)).to_imvec2()},
-                    {(surv.location + vec2((float)detected_location.x + hook_image.cols, (float)detected_location.y + hook_image.rows)).to_imvec2()},
-                    ImColor(255, 0, 0));
-
-            }
-        }
-
-        ImGui::Render();
-        glClear(GL_COLOR_BUFFER_BIT);
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-        glfwSwapBuffers(window);
-    }
+    cout << 580.0 * (1.0 + (5.0 / 100.0)) << endl;
 
     return 0;
 }

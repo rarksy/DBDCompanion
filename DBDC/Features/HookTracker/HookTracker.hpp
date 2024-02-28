@@ -28,8 +28,8 @@ namespace hook_tracker
     {
         struct vec2
         {
-            int x;
-            int y;
+            double x;
+            double y;
 
             vec2(int _x, int _y)
             {

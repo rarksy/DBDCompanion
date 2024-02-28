@@ -7,9 +7,13 @@
 #include "../Misc/Misc.hpp"
 #include "Images/HookTracker/Hook.hpp"
 
+double calculatePercentage(double X, double P) {
+    return X * (P / 100.0); 
+}
 void hook_tracker::setup()
 {
-    hook_tracker::in_game_ui_scale.load_value();
+    in_game_ui_scale.load_value();
+    const double resize_percentage = 1.0 + (100.0 - (double)in_game_ui_scale.value / 100);
 
     for (int i = 0; i < 4; i++)
     {
@@ -20,9 +24,9 @@ void hook_tracker::setup()
         if (backend::screen_height == 1440)
         {
             const auto region = hook_tracker::_internal::survivor_regions_1440[i];
-
-
-            surv.location = region;
+            double y = region.y * resize_percentage;
+            surv.location.x = region.x;
+            surv.location.y = y;
             surv.size = hook_tracker::_internal::vec2(300, 100);
         }
 
