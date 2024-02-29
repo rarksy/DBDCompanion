@@ -14,6 +14,7 @@
 #include "HookTracker\HookTracker.hpp"
 #include "Images/Images.h"
 #include "Perk Packager/PerkPackager.h"
+#include "Shrine Of Secrets/ShrineOfSecrets.hpp"
 
 void menu::run_loop()
 {
@@ -31,6 +32,8 @@ void menu::run_loop()
         }
     }
 
+    std::thread shrine_thread(shrine_of_secrets::init);
+    shrine_thread.detach();
 
     while (!glfwWindowShouldClose(main_window))
     {
@@ -153,6 +156,9 @@ void menu::render_ui()
 
     if (menu_to_show == 0)
     {
+        ImGui::SetCursorPos({215, 9});
+        shrine_of_secrets::render_ui();
+
         ImGui::SetCursorPos({10, 470});
         ImGui::TextColored(ImVec4(0.1F, 0.1F, 0.1F, 0.3F), "I DONT KNOW HOW TO MAKE A GOOD MAIN MENU");
     }

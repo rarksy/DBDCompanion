@@ -76,49 +76,6 @@ namespace menu
     inline GLFWwindow* main_window = nullptr;
     inline ImGuiContext* main_context = nullptr;
 
-    struct shrine_of_secrets
-    {
-        struct perk
-        {
-            std::string id;
-            std::string name;
-            std::string description;
-        };
-
-        nlohmann::json shrine_data;
-        std::vector<perk> perk_data;
-
-        bool unavailable = false;
-
-        shrine_of_secrets()
-        {
-            this->shrine_data = ml::json_get("https://dbd.tricky.lol/api/shrine?includeperkinfo=1");
-
-            if (!this->shrine_data["error"].is_null())
-                this->unavailable = true;
-            else
-            {
-                for (int i = 0; i < 4; i++)
-                {
-                    const auto perk_info = ml::json_get("https://dbd.tricky.lol/api/perkinfo?perk=" + menu::shrine_of_secrets::shrine_data["perks"][i]["id"].get_ref<std::string&>());
-
-                    perk _perk;
-
-                    _perk.id = perk_info["id"];
-                    _perk.name = perk_info["name"];
-                    _perk.description = perk_info["description"];
-
-                    perk_data.push_back(_perk);
-                }
-            }
-        }
-
-        perk get_perk(const int& perk_index)
-        {
-            return perk_data[perk_index];
-        }
-    };
-
     namespace overlay
     {
         inline int window_width;

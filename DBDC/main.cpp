@@ -11,6 +11,7 @@
 #include "miscLIB/miscLIB.hpp"
 #include <opencv2/opencv.hpp>
 
+#include "Features/Shrine Of Secrets/ShrineOfSecrets.hpp"
 #include "Misc/Misc.hpp"
 
 //#define alternate_winmain
@@ -77,7 +78,7 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
 int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int) // alternate winmain used for testing
 {
 
-    menu::shrine_of_secrets shrine;
+    shrine_of_secrets::shrine shrine;
 
     std::cout << shrine.get_perk(0).name << std::endl;
     
