@@ -17,6 +17,7 @@ namespace shrine_of_secrets
 
     inline nlohmann::json shrine_data;
     inline std::vector<perk> all_perks;
+    inline std::vector<GLuint> all_perk_images;
     
     inline unsigned int reset_time_end;
 
@@ -28,6 +29,7 @@ namespace shrine_of_secrets
     bool load_cache();
     
     void init();
+    void load_images();
     perk get_perk(const int& perk_index);
     
     void render_ui();
