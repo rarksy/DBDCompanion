@@ -32,8 +32,17 @@ void menu::run_loop()
         }
     }
 
-    std::thread shrine_thread(shrine_of_secrets::init);
-    shrine_thread.detach();
+    std::thread shrine_load_thread([]
+    {
+        if (shrine_of_secrets::is_cache_valid())
+            shrine_of_secrets::load_cache();
+        else
+        {
+            shrine_of_secrets::init();
+            shrine_of_secrets::cache();
+        }
+    });
+    shrine_load_thread.detach();
 
     while (!glfwWindowShouldClose(main_window))
     {
@@ -156,7 +165,6 @@ void menu::render_ui()
 
     if (menu_to_show == 0)
     {
-        ImGui::SetCursorPos({215, 9});
         shrine_of_secrets::render_ui();
 
         ImGui::SetCursorPos({10, 470});

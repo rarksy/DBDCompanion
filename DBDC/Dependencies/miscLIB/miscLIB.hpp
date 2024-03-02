@@ -281,4 +281,29 @@ namespace ml
             unix_format_number(remainingSeconds)
         );
     }
+
+    inline std::string html_formatter(std::string html_content)
+    {
+        size_t pos = 0;
+        while ((pos = html_content.find("<br>", pos)) != std::string::npos)
+            html_content.replace(pos, 4, "\n");
+        
+        while ((pos = html_content.find("<i>", pos)) != std::string::npos)
+            html_content.replace(pos, 3, "");
+        
+        while ((pos = html_content.find("</i>", pos)) != std::string::npos)
+            html_content.replace(pos, 4, "");
+        
+        while ((pos = html_content.find("<b>", pos)) != std::string::npos)
+            html_content.replace(pos, 3, "");
+        
+        while ((pos = html_content.find("</b>", pos)) != std::string::npos)
+            html_content.replace(pos, 4, "");
+        
+        while ((pos = html_content.find("%", pos)) != std::string::npos) {
+            html_content.replace(pos, 1, "%%");
+        }
+
+        return html_content;
+    }
 }

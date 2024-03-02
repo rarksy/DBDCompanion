@@ -10,17 +10,21 @@ namespace shrine_of_secrets
         std::string id;
         std::string name;
         std::string description;
+        std::string image_path;
     };
 
     inline nlohmann::json shrine_data;
     inline std::vector<perk> all_perks;
-    inline GLuint perk_images[4] = {0, 0, 0, 0};
     
     inline unsigned int reset_time_end;
 
     inline bool unavailable = false;
     inline bool is_ready = false;
 
+    bool is_cache_valid();
+    void cache();
+    bool load_cache();
+    
     void init();
     perk get_perk(const int& perk_index);
     
