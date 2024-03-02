@@ -40,7 +40,7 @@ void shrine_of_secrets::cache()
     }
 
     data["shrine_data"]["reset_time"] = reset_time_end;
-    
+
     std::ofstream file_to_write(backend::exe_directory.string() + "\\DBDC\\shrine_cache.json");
     if (file_to_write.is_open())
     {
@@ -92,7 +92,7 @@ void shrine_of_secrets::init()
         for (int i = 0; i < 4; i++)
         {
             const auto perk_info = ml::json_get("https://dbd.tricky.lol/api/perkinfo?perk=" + shrine_data["perks"][i]["id"].get_ref<std::string&>());
-            
+
             shrine_data["perks"][i]["image_path"] = std::string(misc::get_game_root_directory() + "DeadByDaylight/Content/" + std::string(perk_info["image"]));
 
             perk p;
@@ -111,15 +111,24 @@ void shrine_of_secrets::init()
     is_ready = true;
 }
 
-void shrine_of_secrets::load_images()
+bool shrine_of_secrets::load_images()
 {
+    bool success = true;
     for (int i = 0; i < 4; i++)
     {
-        GLuint texture;
-        images::load_texture_from_file(get_perk(i).image_path, &texture);
+        const auto perk = get_perk(i);
 
+        GLuint texture;
+
+        if (!std::filesystem::exists(perk.image_path))
+            success = false;
+        
+        images::load_texture_from_file(get_perk(i).image_path, &texture);
+        
         all_perk_images.push_back(texture);
     }
+
+    return success;
 }
 
 shrine_of_secrets::perk shrine_of_secrets::get_perk(const int& perk_index)
@@ -132,7 +141,6 @@ shrine_of_secrets::perk shrine_of_secrets::get_perk(const int& perk_index)
 
 void shrine_of_secrets::render_ui()
 {
-    
     ImGui::SetCursorPos({10, 175});
 
     ImGui::BeginChild("ShrineChild", ImVec2(190, 0));
@@ -141,10 +149,10 @@ void shrine_of_secrets::render_ui()
 
     if (!is_ready)
     {
-        const std::string loading_text = "Loading Data..."; 
+        const std::string loading_text = "Loading Data...";
         auto windowWidth = ImGui::GetWindowSize().x;
         auto textWidth = ImGui::CalcTextSize(loading_text.c_str()).x;
-        
+
         ImGui::SetCursorPosX((windowWidth - textWidth) * 0.5f);
         ImGui::TextWrapped(loading_text.c_str());
     }
@@ -152,14 +160,14 @@ void shrine_of_secrets::render_ui()
     {
         static std::once_flag texture_load_flag;
         std::call_once(texture_load_flag, load_images);
-        
-        const std::string reset_text = "Resets In " + ml::unix_get_remaining_time(reset_time_end); 
+
+        const std::string reset_text = "Resets In " + ml::unix_get_remaining_time(reset_time_end);
         auto windowWidth = ImGui::GetWindowSize().x;
         auto textWidth = ImGui::CalcTextSize(reset_text.c_str()).x;
 
         ImGui::SetCursorPosX((windowWidth - textWidth) * 0.5f);
         ImGui::TextWrapped(reset_text.c_str());
-        
+
         for (int i = 0; i < 4; i++)
         {
             const auto perk_info = get_perk(i);
@@ -168,14 +176,14 @@ void shrine_of_secrets::render_ui()
             const auto image_path = perk_info.image_path;
 
             const auto perk_description = ml::html_formatter(perk_info.description);
-            
+
 
             const float image_size = 45.0f;
             const float text_height = ImGui::CalcTextSize(perk_name.c_str()).y;
 
             ImGui::Image(reinterpret_cast<void*>(all_perk_images[i]), ImVec2(image_size, image_size));
             ImGui::SameLine();
-        
+
             ImGui::SetCursorPosY(ImGui::GetCursorPosY() + (image_size - text_height) / 2);
             ImGui::Text(perk_name.c_str());
             gui::tool_tip(perk_description, 500.f, false);
