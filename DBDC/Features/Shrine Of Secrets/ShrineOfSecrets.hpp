@@ -3,6 +3,8 @@
 #include "nlohmann/json.hpp"
 #include <GLFW/glfw3.h>
 
+//future update: yellow / green / purple value colors to signify tiers
+
 namespace shrine_of_secrets
 {
     struct perk
