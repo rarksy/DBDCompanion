@@ -323,4 +323,38 @@ namespace ml
 
         return html_content;
     }
+
+
+    inline bool download_file(const std::string& url, const std::string& file_path) {
+        
+        CURL *curl = curl_easy_init();
+        if(curl) {
+            // Create directories if they don't exist
+            std::filesystem::create_directories(std::filesystem::path(file_path).parent_path());
+
+            FILE *fp;
+            errno_t err = fopen_s(&fp, file_path.c_str(), "wb");
+            if (err != 0 || !fp) {
+                std::cerr << "Failed to open file for writing: " << file_path << std::endl;
+                return false;
+            }
+
+            curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+            curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
+            curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, NULL);
+            curl_easy_setopt(curl, CURLOPT_FAILONERROR, 1L);
+
+            CURLcode res = curl_easy_perform(curl);
+            curl_easy_cleanup(curl);
+            fclose(fp);
+
+            if (res == CURLE_OK) {
+                return true;
+            } else {
+                remove(file_path.c_str()); // Delete partially downloaded file
+                return false;
+            }
+        }
+        return false;
+    }
 }
