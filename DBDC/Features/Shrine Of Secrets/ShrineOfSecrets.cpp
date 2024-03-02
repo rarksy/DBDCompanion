@@ -39,6 +39,8 @@ void shrine_of_secrets::cache()
         data["shrine_data"]["perks"][i]["image_path"] = perk.image_path;
     }
 
+    data["shrine_data"]["reset_time"] = reset_time_end;
+    
     std::ofstream file_to_write(backend::exe_directory.string() + "\\DBDC\\shrine_cache.json");
     if (file_to_write.is_open())
     {
@@ -70,7 +72,7 @@ bool shrine_of_secrets::load_cache()
             all_perks.push_back(p);
         }
 
-        reset_time_end = shrine_data["end"];
+        reset_time_end = shrine_data["reset_time"];
 
         is_ready = true;
         return true;
@@ -142,7 +144,8 @@ void shrine_of_secrets::render_ui()
         const std::string loading_text = "Loading Data..."; 
         auto windowWidth = ImGui::GetWindowSize().x;
         auto textWidth = ImGui::CalcTextSize(loading_text.c_str()).x;
-
+        
+        ImGui::SetCursorPosX((windowWidth - textWidth) * 0.5f);
         ImGui::TextWrapped(loading_text.c_str());
     }
     else
