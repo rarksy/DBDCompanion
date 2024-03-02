@@ -297,18 +297,15 @@ namespace ml
         while ((pos = html_content.find("<b>", pos)) != std::string::npos) 
             html_content.replace(pos, 3, "");
         
-
         // Remove </b> tags
         pos = 0;
         while ((pos = html_content.find("</b>", pos)) != std::string::npos) 
             html_content.replace(pos, 4, "");
-        
 
         // Remove <i> tags
         pos = 0; 
         while ((pos = html_content.find("<i>", pos)) != std::string::npos) 
             html_content.replace(pos, 3, "");
-        
 
         // Remove </i> tags
         pos = 0; 
