@@ -285,24 +285,44 @@ namespace ml
     inline std::string html_formatter(std::string html_content)
     {
         size_t pos = 0;
-        while ((pos = html_content.find("<br>", pos)) != std::string::npos)
+
+        // Replace <br> with newline
+        while ((pos = html_content.find("<br>", pos)) != std::string::npos) {
             html_content.replace(pos, 4, "\n");
-        
-        while ((pos = html_content.find("<i>", pos)) != std::string::npos)
-            html_content.replace(pos, 3, "");
-        
-        while ((pos = html_content.find("</i>", pos)) != std::string::npos)
-            html_content.replace(pos, 4, "");
-        
-        while ((pos = html_content.find("<b>", pos)) != std::string::npos)
-            html_content.replace(pos, 3, "");
-        
-        while ((pos = html_content.find("</b>", pos)) != std::string::npos)
-            html_content.replace(pos, 4, "");
-        
-        while ((pos = html_content.find("%", pos)) != std::string::npos) {
-            html_content.replace(pos, 1, "%%");
+            pos += 1;
         }
+
+        // Remove <b> tags
+        pos = 0;
+        while ((pos = html_content.find("<b>", pos)) != std::string::npos) 
+            html_content.replace(pos, 3, "");
+        
+
+        // Remove </b> tags
+        pos = 0;
+        while ((pos = html_content.find("</b>", pos)) != std::string::npos) 
+            html_content.replace(pos, 4, "");
+        
+
+        // Remove <i> tags
+        pos = 0; 
+        while ((pos = html_content.find("<i>", pos)) != std::string::npos) 
+            html_content.replace(pos, 3, "");
+        
+
+        // Remove </i> tags
+        pos = 0; 
+        while ((pos = html_content.find("</i>", pos)) != std::string::npos) 
+            html_content.replace(pos, 4, "");
+        
+
+        // Replace % with %%
+        pos = html_content.find('%');
+        while (pos != std::string::npos) {
+            html_content.replace(pos, 1, "%%");
+            pos = html_content.find('%', pos + 2); // Move past the inserted "%%"
+        }
+        
 
         return html_content;
     }
