@@ -30,15 +30,13 @@ void shrine_of_secrets::cache()
 {
     nlohmann::json data;
 
-    data["shrine_data"] = shrine_data;
-
     for (int i = 0; i < 4; i++)
     {
         const auto perk = all_perks[i];
-        data["perks"][i]["id"] = perk.id;
-        data["perks"][i]["name"] = perk.name;
-        data["perks"][i]["description"] = perk.description;
-        data["perks"][i]["image_path"] = perk.image_path;
+        data["shrine_data"]["perks"][i]["id"] = perk.id;
+        data["shrine_data"]["perks"][i]["name"] = perk.name;
+        data["shrine_data"]["perks"][i]["description"] = perk.description;
+        data["shrine_data"]["perks"][i]["image_path"] = perk.image_path;
     }
 
     std::ofstream file_to_write(backend::exe_directory.string() + "\\DBDC\\shrine_cache.json");
@@ -131,6 +129,13 @@ void shrine_of_secrets::render_ui()
         ImGui::TextWrapped("Loading Data...");
     else
     {
+        const std::string reset_text = "Resets In " + ml::unix_get_remaining_time(reset_time_end); 
+        auto windowWidth = ImGui::GetWindowSize().x;
+        auto textWidth = ImGui::CalcTextSize(reset_text.c_str()).x;
+
+        ImGui::SetCursorPosX((windowWidth - textWidth) * 0.5f);
+        ImGui::TextWrapped(reset_text.c_str());
+        
         for (int i = 0; i < 4; i++)
         {
             const auto perk_info = get_perk(i);
