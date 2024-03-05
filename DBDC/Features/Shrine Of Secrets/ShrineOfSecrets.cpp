@@ -158,8 +158,13 @@ void shrine_of_secrets::render_ui()
     }
     else
     {
-        static std::once_flag texture_load_flag;
-        std::call_once(texture_load_flag, load_images);
+
+        static bool has_loaded_images = false;
+        if (!has_loaded_images)
+        {
+            can_use_images = load_images();
+            has_loaded_images = true;
+        }
 
         const std::string reset_text = "Resets In " + ml::unix_get_remaining_time(reset_time_end);
         auto windowWidth = ImGui::GetWindowSize().x;
@@ -180,10 +185,11 @@ void shrine_of_secrets::render_ui()
 
             const float image_size = 45.0f;
             const float text_height = ImGui::CalcTextSize(perk_name.c_str()).y;
-
-            ImGui::Image(reinterpret_cast<void*>(all_perk_images[i]), ImVec2(image_size, image_size));
-            ImGui::SameLine();
-
+            if (can_use_images)
+            {
+                ImGui::Image(reinterpret_cast<void*>(all_perk_images[i]), ImVec2(image_size, image_size));
+                ImGui::SameLine();
+            }
             ImGui::SetCursorPosY(ImGui::GetCursorPosY() + (image_size - text_height) / 2);
             ImGui::Text(perk_name.c_str());
             gui::tool_tip(perk_description, 500.f, false);
