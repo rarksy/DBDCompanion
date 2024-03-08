@@ -248,7 +248,7 @@ void RenderGroupBox(float x, float y, float width, float height, ImU32 color, fl
 void gui::begin_group_box(const char* group_name, ImVec2 size)
 {
     ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.1f, 0.1f, 0.1f, 0.1f));
-    ImGui::BeginChild(group_name, size, false, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+    ImGui::BeginChild(group_name, size, true, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 }
 
 void gui::end_group_box()
