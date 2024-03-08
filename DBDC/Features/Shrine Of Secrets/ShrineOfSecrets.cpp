@@ -122,9 +122,9 @@ bool shrine_of_secrets::load_images()
 
         if (!std::filesystem::exists(perk.image_path))
             success = false;
-        
+
         images::load_texture_from_file(get_perk(i).image_path, &texture);
-        
+
         all_perk_images.push_back(texture);
     }
 
@@ -158,7 +158,6 @@ void shrine_of_secrets::render_ui()
     }
     else
     {
-
         static bool has_loaded_images = false;
         if (!has_loaded_images)
         {
@@ -182,16 +181,19 @@ void shrine_of_secrets::render_ui()
 
             const auto perk_description = ml::html_formatter(perk_info.description);
 
-
             const float image_size = 45.0f;
             const float text_height = ImGui::CalcTextSize(perk_name.c_str()).y;
+
             if (can_use_images)
             {
                 ImGui::Image(reinterpret_cast<void*>(all_perk_images[i]), ImVec2(image_size, image_size));
                 ImGui::SameLine();
             }
-            ImGui::SetCursorPosY(ImGui::GetCursorPosY() + (image_size - text_height) / 2);
-            ImGui::Text(perk_name.c_str());
+            
+            if (ImGui::CalcTextSize(perk_name.c_str()).x < (190.F - image_size))
+                ImGui::SetCursorPosY(ImGui::GetCursorPosY() + (image_size - text_height) / 2);
+            
+            ImGui::TextWrapped(perk_name.c_str());
             gui::tool_tip(perk_description, 500.f, false);
         }
     }
