@@ -172,6 +172,10 @@ void shrine_of_secrets::render_ui()
         ImGui::SetCursorPosX((windowWidth - textWidth) * 0.5f);
         ImGui::TextWrapped(reset_text.c_str());
 
+        ImGui::Spacing();
+        ImGui::Spacing();
+        ImGui::Spacing();
+
         for (int i = 0; i < 4; i++)
         {
             const auto perk_info = get_perk(i);
