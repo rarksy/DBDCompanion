@@ -247,14 +247,12 @@ void RenderGroupBox(float x, float y, float width, float height, ImU32 color, fl
 
 void gui::begin_group_box(const char* group_name, ImVec2 size)
 {
-    ImGui::BeginGroup();
-    ImGui::Text(group_name);
-    RenderGroupBox(ImGui::GetItemRectMin().x, ImGui::GetItemRectMin().y, size.x, size.y, ImGui::GetColorU32(ImGuiCol_Border));
-    ImGui::Indent();
+    ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.1f, 0.1f, 0.1f, 0.1f));
+    ImGui::BeginChild(group_name, size, false, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 }
 
 void gui::end_group_box()
 {
-    ImGui::Unindent();
-    ImGui::EndGroup();
+    ImGui::EndChild();
+    ImGui::PopStyleColor();
 }
