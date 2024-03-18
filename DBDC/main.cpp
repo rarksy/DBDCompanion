@@ -75,17 +75,6 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
 
 int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int) // alternate winmain used for testing
 {
-    char pathBuffer[MAX_PATH];
-    GetModuleFileNameA(NULL, pathBuffer, MAX_PATH);
-    backend::exe_directory = std::filesystem::path(pathBuffer).parent_path();
-
-    if (shrine_of_secrets::is_cache_valid())
-        shrine_of_secrets::load_cache();
-    else
-        shrine_of_secrets::init();
-
-    std::cout << shrine_of_secrets::all_perks[0].name;
     
-    return 0;
 }
 #endif
