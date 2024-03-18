@@ -171,14 +171,10 @@ void shrine_of_secrets::render_ui()
         for (int i = 0; i < 4; i++)
         {
             const auto perk_info = get_perk(i);
-
             const auto perk_name = perk_info.name;
-            const auto image_path = perk_info.image_path;
-
             const auto perk_description = perk_info.description;
 
             const float image_size = 45.0f;
-            const float text_height = ImGui::CalcTextSize(perk_name.c_str()).y;
 
             if (can_use_images)
             {
@@ -187,19 +183,14 @@ void shrine_of_secrets::render_ui()
             }
             
             float available_width = ImGui::GetContentRegionAvail().x;
-
-            // Check if the text will wrap
-            float ts = ImGui::CalcTextSize(perk_name.c_str()).x;
-            if (ts < available_width)
+            
+            float text_size = ImGui::CalcTextSize(perk_name.c_str()).x;
+            if (text_size < available_width)
             {
-                // Adjust the cursor position upwards by 15 pixels
                 ImVec2 pos = ImGui::GetCursorPos();
                 pos.y += 10;
                 ImGui::SetCursorPos(pos);
             }
-
-            if ((ImGui::CalcTextSize(perk_name.c_str()).x + image_size) < (190.F - image_size))
-                std::cout << "t" << std::endl;
 
             ImGui::TextWrapped(perk_name.c_str());
             gui::tool_tip(perk_description, 500.f, false);
