@@ -58,7 +58,7 @@ bool shrine_of_secrets::load_cache()
         perk p;
         p.id = shrine_data["perks"][i]["id"];
         p.name = shrine_data["perks"][i]["name"];
-        p.description = shrine_data["perks"][i]["description"];
+        p.description = ml::html_formatter(shrine_data["perks"][i]["description"]);
         p.image_path = shrine_data["perks"][i]["image_path"];
 
         all_perks.push_back(p);
@@ -91,7 +91,7 @@ void shrine_of_secrets::init()
 
             p.id = shrine_data["perks"][i]["id"];
             p.name = shrine_data["perks"][i]["name"];
-            p.description = shrine_data["perks"][i]["description"];
+            p.description = ml::html_formatter(shrine_data["perks"][i]["description"]);
             p.image_path = shrine_data["perks"][i]["image_path"];
 
             all_perks.push_back(p);
@@ -175,7 +175,7 @@ void shrine_of_secrets::render_ui()
             const auto perk_name = perk_info.name;
             const auto image_path = perk_info.image_path;
 
-            const auto perk_description = ml::html_formatter(perk_info.description);
+            const auto perk_description = perk_info.description;
 
             const float image_size = 45.0f;
             const float text_height = ImGui::CalcTextSize(perk_name.c_str()).y;
