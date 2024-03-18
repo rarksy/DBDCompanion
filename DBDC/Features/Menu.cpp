@@ -106,7 +106,7 @@ void menu::render_ui()
 
     static bool hamburger_open = true;
     static float hamburger_width = 0.F;
-    static float hamburger_height = styling::menu_height / 3.F;
+    static float hamburger_height = styling::menu_height / 3.5F;
     static bool show_color_picker = false;
 
     if (gui::begin_hamburger_menu(hamburger_open, hamburger_width, hamburger_height, styling::menu_accent.as_imcolor()))
