@@ -41,42 +41,34 @@ void shrine_of_secrets::cache()
 
     data["shrine_data"]["reset_time"] = reset_time_end;
 
-    std::ofstream file_to_write(backend::exe_directory.string() + "\\DBDC\\shrine_cache.json");
-    if (file_to_write.is_open())
-    {
-        file_to_write << data.dump(4);
-        file_to_write.close();
-    }
+    ml::json_write_data(backend::exe_directory.string() + "\\DBDC\\shrine_cache.json", data);
 }
 
 bool shrine_of_secrets::load_cache()
 {
-    std::ifstream file_to_read(backend::exe_directory.string() + "\\DBDC\\shrine_cache.json");
+    nlohmann::json data = ml::json_get_data_from_file(backend::exe_directory.string() + "\\DBDC\\shrine_cache.json");
 
-    if (file_to_read.is_open())
+    if (data == nullptr)
+        return false;
+
+    shrine_data = data["shrine_data"];
+
+    for (int i = 0; i < 4; i++)
     {
-        nlohmann::json data;
+        perk p;
+        p.id = shrine_data["perks"][i]["id"];
+        p.name = shrine_data["perks"][i]["name"];
+        p.description = shrine_data["perks"][i]["description"];
+        p.image_path = shrine_data["perks"][i]["image_path"];
 
-        file_to_read >> data;
-
-        shrine_data = data["shrine_data"];
-
-        for (int i = 0; i < 4; i++)
-        {
-            perk p;
-            p.id = shrine_data["perks"][i]["id"];
-            p.name = shrine_data["perks"][i]["name"];
-            p.description = shrine_data["perks"][i]["description"];
-            p.image_path = shrine_data["perks"][i]["image_path"];
-
-            all_perks.push_back(p);
-        }
-
-        reset_time_end = shrine_data["reset_time"];
-
-        is_ready = true;
-        return true;
+        all_perks.push_back(p);
     }
+
+    reset_time_end = shrine_data["reset_time"];
+
+    is_ready = true;
+    return true;
+
 
     return false;
 }
@@ -193,10 +185,10 @@ void shrine_of_secrets::render_ui()
                 ImGui::Image(reinterpret_cast<void*>(all_perk_images[i]), ImVec2(image_size, image_size));
                 ImGui::SameLine();
             }
-            
+
             if (ImGui::CalcTextSize(perk_name.c_str()).x < (190.F - image_size))
                 ImGui::SetCursorPosY(ImGui::GetCursorPosY() + (image_size - text_height) / 2);
-            
+
             ImGui::TextWrapped(perk_name.c_str());
             gui::tool_tip(perk_description, 500.f, false);
         }
