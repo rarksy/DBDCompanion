@@ -323,36 +323,15 @@ namespace ml
             html_content.replace(pos, 4, "\n");
             pos += 1;
         }
-        
-        // Remove <b> tags
-        pos = 0;
-        while ((pos = html_content.find("<b>", pos)) != std::string::npos) 
-            html_content.replace(pos, 3, "");
-        
-        // Remove </b> tags
-        pos = 0;
-        while ((pos = html_content.find("</b>", pos)) != std::string::npos) 
-            html_content.replace(pos, 4, "");
-        
-        // Remove <i> tags
-        pos = 0; 
-        while ((pos = html_content.find("<i>", pos)) != std::string::npos) 
-            html_content.replace(pos, 3, "");
-        
-        // Remove </i> tags
-        pos = 0; 
-        while ((pos = html_content.find("</i>", pos)) != std::string::npos) 
-            html_content.replace(pos, 4, "");
 
-        // Remove <li> tags
-        pos = 0; 
-        while ((pos = html_content.find("<li>", pos)) != std::string::npos) 
-            html_content.replace(pos, 4, "");
-        
-        // Remove </li> tags
-        pos = 0; 
-        while ((pos = html_content.find("</li>", pos)) != std::string::npos) 
-            html_content.replace(pos, 5, "");
+        pos = 0;
+        while ((pos = html_content.find('<'), pos) != std::string::npos)
+        {
+            size_t end_pos = html_content.find('>', pos);
+            
+            if (end_pos != std::string::npos)
+                html_content.erase(pos, end_pos - pos + 1);
+        }
 
         // Replace % with %%
         pos = html_content.find('%');
@@ -361,7 +340,6 @@ namespace ml
             pos = html_content.find('%', pos + 2); // Move past the inserted "%%"
         }
         
-
         return html_content;
     }
 
