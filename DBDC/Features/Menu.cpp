@@ -119,11 +119,11 @@ void menu::render_ui()
 
         ImGui::Spacing();
 
-        if (ImGui::Button("Hook Tracker"))
-            menu_to_show = 2;
-        gui::tool_tip("This is a pre-release alpha of the hook Tracker\nIt is not finished and WILL contain bugs");
-
-        ImGui::Spacing();
+        // if (ImGui::Button("Hook Tracker"))
+        //     menu_to_show = 2;
+        // gui::tool_tip("This is a pre-release alpha of the hook Tracker\nIt is not finished and WILL contain bugs");
+        //
+        // ImGui::Spacing();
 
         if (ImGui::Button("Crosshair Menu"))
             menu_to_show = 3;
@@ -176,13 +176,13 @@ void menu::render_ui()
         CEMenu::RenderUI();
     }
 
-    else if (menu_to_show == 2)
-    {
-        static std::once_flag menu_flag;
-        std::call_once(menu_flag, ht_menu::setup);
-
-        ht_menu::render_ui();
-    }
+    // else if (menu_to_show == 2)
+    // {
+    //     static std::once_flag menu_flag;
+    //     std::call_once(menu_flag, ht_menu::setup);
+    //
+    //     ht_menu::render_ui();
+    // }
 
     else if (menu_to_show == 3)
     {
