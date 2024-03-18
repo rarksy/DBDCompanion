@@ -19,16 +19,14 @@
 void menu::run_loop()
 {
     {
-        const mINI::INIFile file(backend::exe_directory.string() + backend::settings_directory + "Settings");
-        mINI::INIStructure ini;
-        file.read(ini);
+        const auto accent_data = ml::json_get_data_from_file(backend::exe_directory.string() + backend::settings_directory + "settings.json");
 
-        if (!ini["Settings"]["MenuAccentR"].empty())
+        if (accent_data.contains("menu_accent"))
         {
-            styling::menu_accent.r = std::atoi(ini["Settings"]["MenuAccentR"].c_str());
-            styling::menu_accent.g = std::atoi(ini["Settings"]["MenuAccentG"].c_str());
-            styling::menu_accent.b = std::atoi(ini["Settings"]["MenuAccentB"].c_str());
-            styling::menu_accent.a = std::atoi(ini["Settings"]["MenuAccentA"].c_str());
+            styling::menu_accent.r = accent_data["menu_accent"]["r"].get<int>();
+            styling::menu_accent.g = accent_data["menu_accent"]["g"].get<int>();
+            styling::menu_accent.b = accent_data["menu_accent"]["b"].get<int>();
+            styling::menu_accent.a = accent_data["menu_accent"]["a"].get<int>();
         }
     }
 
@@ -149,15 +147,14 @@ void menu::render_ui()
         ImGui::SetCursorPos({45, 9});
         if (gui::color_picker("Menu Accent", &styling::menu_accent))
         {
-            const mINI::INIFile file(backend::exe_directory.string() + backend::settings_directory + "Settings");
-            mINI::INIStructure ini;
-            file.read(ini);
+            nlohmann::json accent_data;
 
-            ini["Settings"]["MenuAccentR"] = std::to_string(styling::menu_accent.r);
-            ini["Settings"]["MenuAccentG"] = std::to_string(styling::menu_accent.g);
-            ini["Settings"]["MenuAccentB"] = std::to_string(styling::menu_accent.b);
-            ini["Settings"]["MenuAccentA"] = std::to_string(styling::menu_accent.a);
-            file.write(ini);
+            accent_data["menu_accent"]["r"] = styling::menu_accent.r;
+            accent_data["menu_accent"]["g"] = styling::menu_accent.g;
+            accent_data["menu_accent"]["b"] = styling::menu_accent.b;
+            accent_data["menu_accent"]["a"] = styling::menu_accent.a;
+
+            ml::json_write_data(backend::exe_directory.string() + backend::settings_directory + "settings.json", accent_data);
         }
     }
 
