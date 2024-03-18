@@ -78,11 +78,7 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
 
 int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int) // alternate winmain used for testing
 {
-    using namespace std;
-
-    cout << 580.0 * (1.0 + (5.0 / 100.0)) << endl;
-
-    return 0;
+    
 }
 
 #endif
