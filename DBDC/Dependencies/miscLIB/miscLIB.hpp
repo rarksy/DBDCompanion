@@ -255,6 +255,20 @@ namespace ml
         return nlohmann::json::parse(response);
     }
 
+    inline bool json_write_data(const std::string& file_path, nlohmann::json json_data)
+    {
+        std::ofstream file_to_write(file_path);
+
+        if (file_to_write.is_open())
+        {
+            file_to_write << json_data.dump(4);
+            file_to_write.close();
+
+            return true;
+        }
+        return false;
+    }
+
     inline std::string unix_format_number(int num)
     {
         return (num < 10 ? "0" + std::to_string(num) : std::to_string(num));
@@ -291,7 +305,7 @@ namespace ml
             html_content.replace(pos, 4, "\n");
             pos += 1;
         }
-
+        
         // Remove <b> tags
         pos = 0;
         while ((pos = html_content.find("<b>", pos)) != std::string::npos) 
@@ -301,16 +315,28 @@ namespace ml
         pos = 0;
         while ((pos = html_content.find("</b>", pos)) != std::string::npos) 
             html_content.replace(pos, 4, "");
-
+        
         // Remove <i> tags
         pos = 0; 
         while ((pos = html_content.find("<i>", pos)) != std::string::npos) 
             html_content.replace(pos, 3, "");
-
+        
         // Remove </i> tags
         pos = 0; 
         while ((pos = html_content.find("</i>", pos)) != std::string::npos) 
             html_content.replace(pos, 4, "");
+
+        // Remove <li> tags
+        pos = 0; 
+        while ((pos = html_content.find("<li>", pos)) != std::string::npos) 
+            html_content.replace(pos, 4, "");
+        
+        // Remove </li> tags
+        pos = 0; 
+        while ((pos = html_content.find("</li>", pos)) != std::string::npos) 
+            html_content.replace(pos, 5, "");
+
+        
         
 
         // Replace % with %%
