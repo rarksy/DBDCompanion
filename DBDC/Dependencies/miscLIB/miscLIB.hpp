@@ -214,7 +214,7 @@ namespace ml
         return size * nmemb;
     }
     
-    inline nlohmann::json json_get(const std::string& url)
+    inline nlohmann::json json_get_from_url(const std::string& url)
     {
         curl_global_init(CURL_GLOBAL_ALL);
 

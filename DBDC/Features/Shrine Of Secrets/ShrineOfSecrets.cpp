@@ -75,7 +75,7 @@ bool shrine_of_secrets::load_cache()
 
 void shrine_of_secrets::init()
 {
-    shrine_data = ml::json_get("https://dbd.tricky.lol/api/shrine?includeperkinfo=1");
+    shrine_data = ml::json_get_from_url("https://dbd.tricky.lol/api/shrine?includeperkinfo=1");
 
     if (!shrine_data["error"].is_null())
         unavailable = true;
@@ -83,7 +83,7 @@ void shrine_of_secrets::init()
     {
         for (int i = 0; i < 4; i++)
         {
-            const auto perk_info = ml::json_get("https://dbd.tricky.lol/api/perkinfo?perk=" + shrine_data["perks"][i]["id"].get_ref<std::string&>());
+            const auto perk_info = ml::json_get_from_url("https://dbd.tricky.lol/api/perkinfo?perk=" + shrine_data["perks"][i]["id"].get_ref<std::string&>());
 
             shrine_data["perks"][i]["image_path"] = std::string(misc::get_game_root_directory() + "DeadByDaylight/Content/" + std::string(perk_info["image"]));
 

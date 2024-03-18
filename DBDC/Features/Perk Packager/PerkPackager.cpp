@@ -4,7 +4,7 @@
 
 void PerkPackager::Setup()
 {
-    survivorData = ml::json_get("https://dbd.tricky.lol/api/characters?role=survivor&includeperks=1");
+    survivorData = ml::json_get_from_url("https://dbd.tricky.lol/api/characters?role=survivor&includeperks=1");
 
     for (auto& survivor : Characters::allSurvivors)
     {
