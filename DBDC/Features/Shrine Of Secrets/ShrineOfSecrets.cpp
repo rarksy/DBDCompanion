@@ -8,7 +8,7 @@
 
 bool shrine_of_secrets::is_cache_valid()
 {
-    const std::string cache_file = backend::exe_directory.string() + "\\DBDC\\shrine_cache.json";
+    const std::string cache_file = backend::exe_directory.string() + backend::settings_directory + "shrine_cache.json";
 
     if (!std::filesystem::exists(cache_file))
         return false;
@@ -41,12 +41,12 @@ void shrine_of_secrets::cache()
 
     data["shrine_data"]["reset_time"] = reset_time_end;
 
-    ml::json_write_data(backend::exe_directory.string() + "\\DBDC\\shrine_cache.json", data);
+    ml::json_write_data(backend::exe_directory.string() + backend::settings_directory + "shrine_cache.json", data);
 }
 
 bool shrine_of_secrets::load_cache()
 {
-    nlohmann::json data = ml::json_get_data_from_file(backend::exe_directory.string() + "\\DBDC\\shrine_cache.json");
+    nlohmann::json data = ml::json_get_data_from_file(backend::exe_directory.string() + backend::settings_directory + "shrine_cache.json");
 
     if (data == nullptr)
         return false;
