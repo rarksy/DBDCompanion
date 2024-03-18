@@ -269,6 +269,24 @@ namespace ml
         return false;
     }
 
+    inline nlohmann::json json_get_data_from_file(const std::string& file_path)
+    {
+        std::ifstream file_to_read(file_path);
+
+        if (file_to_read.is_open())
+        {
+            nlohmann::json data;
+
+            file_to_read >> data;
+
+            file_to_read.close();
+
+            return data;
+        }
+
+        return nullptr;
+    }
+
     inline std::string unix_format_number(int num)
     {
         return (num < 10 ? "0" + std::to_string(num) : std::to_string(num));
@@ -335,9 +353,6 @@ namespace ml
         pos = 0; 
         while ((pos = html_content.find("</li>", pos)) != std::string::npos) 
             html_content.replace(pos, 5, "");
-
-        
-        
 
         // Replace % with %%
         pos = html_content.find('%');
