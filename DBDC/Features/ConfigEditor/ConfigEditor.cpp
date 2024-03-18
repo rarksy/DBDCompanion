@@ -220,7 +220,7 @@ bool config_editor::import_config()
     ce_vars.fps_limit_mode.import_value(imported_game_user_settings);
     ce_vars.killer_fov.import_value(imported_game_user_settings);
 
-    ce_vars.remove_intro_cutscene = std::filesystem::exists(misc::get_game_root_directory() + "DeadByDaylight\\Content\\Movies\\" + "disabled_AdditionalLoadingScreen");
+    ce_vars.remove_intro_cutscene = !std::filesystem::exists(misc::get_game_root_directory() + "DeadByDaylight\\Content\\Movies\\" + "AdditionalLoadingScreen");
     ce_vars.skip_news_popup.import_value(imported_game_user_settings);
 
     ce_vars.survivor_mouse_sensitivity.import_value(imported_game_user_settings);

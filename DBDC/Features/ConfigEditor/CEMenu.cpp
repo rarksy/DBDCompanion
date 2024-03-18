@@ -182,7 +182,7 @@ void CEMenu::RenderUI()
     if (ImGui::Checkbox("Remove Intro Cutscene", &ce_vars.remove_intro_cutscene))
     {
         const std::string gameDir = misc::get_game_root_directory();
-        const std::string moviesDir = gameDir + "DeadByDaylight\\Content\\Movies\\";
+        const std::string moviesDir = gameDir + "DeadByDaylight/Content/Movies/";
 
         if (ce_vars.remove_intro_cutscene)
         {
@@ -199,6 +199,9 @@ void CEMenu::RenderUI()
         }
         else
         {
+            if (std::filesystem::exists(moviesDir + "AdditionalLoadingScreen"))
+                std::filesystem::remove_all(moviesDir + "AdditionalLoadingScreen");
+            
             if (std::rename(
                 (moviesDir + "disabled_AdditionalLoadingScreen").c_str(),
                 (moviesDir + "AdditionalLoadingScreen").c_str()) != 0)
