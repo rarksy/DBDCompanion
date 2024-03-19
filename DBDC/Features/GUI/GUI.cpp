@@ -147,6 +147,32 @@ bool gui::drop_down_box(const char* label, int& index, std::vector<std::string> 
     return itemSelected;
 }
 
+bool gui::drop_down_box(const char* label, std::string preview_value, int& id, std::vector<std::string> items, const float& box_width)
+{
+    ImGui::SetNextItemWidth(box_width);
+    
+    bool item_selected = false;
+    
+    if (ImGui::BeginCombo(label, preview_value.c_str(), ImGuiComboFlags_NoArrowButton))
+    {
+        for (int n = 0; n < items.size(); n++)
+        {
+            const bool is_selected = (id == n);
+            if (ImGui::Selectable(items[n].c_str(), is_selected))
+            {
+                id = n;
+                item_selected = true;
+            }
+            // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+            if (is_selected)
+                ImGui::SetItemDefaultFocus();
+        }
+        ImGui::EndCombo();
+    }
+
+    return item_selected;
+}
+
 bool gui::drop_down_box(const char* label, config_editor::setting& setting, std::vector<std::string> items, bool useIndex, float widgetSize, std::string caption,
                         std::vector<unsigned*> textures, ImVec2 textureSize)
 {
