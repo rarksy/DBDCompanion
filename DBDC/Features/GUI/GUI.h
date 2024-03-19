@@ -29,6 +29,6 @@ namespace gui
     bool color_picker(const char* label, color* col);
 
 
-    void begin_group_box(const char* group_name, ImVec2 size = ImVec2(0, 0));
+    void begin_group_box(const char* group_name, ImVec2 size = ImVec2(0, 0), ImGuiWindowFlags flags = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
     void end_group_box();
 }
