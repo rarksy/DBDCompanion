@@ -253,6 +253,21 @@ void Crosshair::ModifyDynamicCenterPoint()
 
             if (allCenterPoints[0].y < CVars.trueScreenCenterPoint.y + 30 && duration >= 2000)
                 allCenterPoints[0].y++;
+
+            if (CVars.show_dynamic_charge_bar)
+            {
+                ImGui::GetBackgroundDrawList()->AddRect(
+                    {allCenterPoints[0].x + CVars.lineGap + CVars.lineLength + 5, allCenterPoints[0].y + 15},
+                    {allCenterPoints[0].x + CVars.lineGap + CVars.lineLength + 15, allCenterPoints[0].y - 15},
+                    ImColor(255, 255, 255, 100)
+                );
+
+                ImGui::GetBackgroundDrawList()->AddRectFilled(
+                    {allCenterPoints[0].x + CVars.lineGap + CVars.lineLength + 5, allCenterPoints[0].y + 15},
+                    {allCenterPoints[0].x + CVars.lineGap + CVars.lineLength + 15, allCenterPoints[0].y + 15 - (duration > 2000 ? 30 : (duration / 70))},
+                    ImColor(255, 255, 255, 100)
+                );
+            }
         }
         else
         {
@@ -294,6 +309,9 @@ void Crosshair::ModifyDynamicCenterPoint()
     }
     else if (CVars.dynamicCenterPointIndex == 3) // Clown
     {
+        allCenterPoints[0].x = backend::screen_height == 1080 ? 950 : 1265; 
+        allCenterPoints[0].y = backend::screen_height == 1080 ? 440 : 570; 
+
         if (GetAsyncKeyState(VK_RBUTTON))
         {
             if (!isRButtonDown)
@@ -304,21 +322,30 @@ void Crosshair::ModifyDynamicCenterPoint()
             auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
                 std::chrono::steady_clock::now() - startTime).count();
 
+            if (CVars.show_dynamic_charge_bar)
+            {
+                ImGui::GetBackgroundDrawList()->AddRect(
+                    {allCenterPoints[0].x + CVars.lineGap + CVars.lineLength + 5, allCenterPoints[0].y + 15},
+                    {allCenterPoints[0].x + CVars.lineGap + CVars.lineLength + 15, allCenterPoints[0].y - 15},
+                    ImColor(255, 255, 255, 100)
+                );
 
-            if (duration > 200 && allCenterPoints[0].y > 480)
-                allCenterPoints[0].y -= 4;
+                ImGui::GetBackgroundDrawList()->AddRectFilled(
+                    {allCenterPoints[0].x + CVars.lineGap + CVars.lineLength + 5, allCenterPoints[0].y + 15},
+                    {allCenterPoints[0].x + CVars.lineGap + CVars.lineLength + 15, allCenterPoints[0].y + 15 - (duration > 1500 ? 30 : (duration / 50))},
+                    ImColor(255, 255, 255, 100)
+                );
+            }
         }
         else
         {
             if (isRButtonDown)
                 isRButtonDown = false;
-            
-            allCenterPoints[0].y = 890;
         }
     }
     else if (CVars.dynamicCenterPointIndex == 4) // The Unknown
     {
-        if(allCenterPoints[0].y != 770)
+        if (allCenterPoints[0].y != 770)
             allCenterPoints[0].y = 770;
     }
 

@@ -27,8 +27,6 @@ void CMenu::RenderUI()
                 glfwMakeContextCurrent(menu::main_window);
             }
         }
-        //else if (!HTVars.enabled)
-            //menu::overlay::destroy_overlay();
 
         else menu::overlay::destroy_overlay();
     }
@@ -136,6 +134,9 @@ void CMenu::RenderUI()
         }
 
         ImGui::BeginDisabled(!CVars.useDynamicCenterPoint);
+
+        ImGui::Checkbox("Show Charge Bar", &CVars.show_dynamic_charge_bar);
+        gui::tool_tip("Will show a bar next to crosshair to indicate power charge");
 
         gui::drop_down_box("Killer", CVars.dynamicCenterPointIndex, dynamicKillers);
 
