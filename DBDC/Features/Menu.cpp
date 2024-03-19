@@ -43,6 +43,12 @@ void menu::run_loop()
     });
     shrine_load_thread.detach();
 
+    std::thread perk_packager_load_thread([]
+    {
+        perk_packager::setup();
+    });
+    perk_packager_load_thread.detach();
+
     while (!glfwWindowShouldClose(main_window))
     {
         const double start_time = glfwGetTime();
@@ -58,6 +64,8 @@ void menu::run_loop()
 
         menu::create_global_style();
         menu::render_ui();
+
+        //ImGui::ShowDemoWindow();
 
         ImGui::Render();
         glClear(GL_COLOR_BUFFER_BIT);
@@ -107,7 +115,7 @@ void menu::render_ui()
 
     static bool hamburger_open = true;
     static float hamburger_width = 0.F;
-    static float hamburger_height = styling::menu_height / 3.5F;
+    static float hamburger_height = styling::menu_height / 3.2F;
     static bool show_color_picker = false;
 
     if (gui::begin_hamburger_menu(hamburger_open, hamburger_width, hamburger_height, styling::menu_accent.as_imcolor()))
@@ -129,9 +137,14 @@ void menu::render_ui()
         if (ImGui::Button("Crosshair Menu"))
             menu_to_show = 3;
 
+        ImGui::Spacing();
+
+        if (ImGui::Button("Perk Packager"))
+            menu_to_show = 4;
+
         if (menu_to_show != 0)
         {
-            ImGui::SetCursorPos({(show_color_picker ? 60.F : 45.F), 9});
+            ImGui::SetCursorPos({(show_color_picker ? 80.F : 45.F), 9});
             if (ImGui::Button("<-"))
                 menu_to_show = 0;
         }
@@ -140,7 +153,7 @@ void menu::render_ui()
     }
     gui::draw_hamburger_menu(hamburger_open, styling::menu_accent.as_imcolor());
 
-    if (ImGui::IsKeyPressed(ImGuiKey_Space, false))
+    if (ImGui::IsKeyPressed(ImGuiKey_Space, false) && !ImGui::IsAnyItemActive())
         show_color_picker = !show_color_picker;
 
     if (show_color_picker)
@@ -197,10 +210,7 @@ void menu::render_ui()
 
     else if (menu_to_show == 4)
     {
-        static std::once_flag flag_setup;
-        std::call_once(flag_setup, PerkPackager::Setup);
-
-        PPMenu::RenderUI();
+        pp_menu::render_ui();
     }
 
 
