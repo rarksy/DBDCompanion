@@ -118,10 +118,10 @@ void CEMenu::RenderUI()
     gui::tool_tip("Changes the quality & amount of foliage used (such as grass, bushes, corn).");
 
     gui::drop_down_box("Shading", ce_vars.shading_quality, qualities);
+    gui::tool_tip("Changes the quality of the shading.\n" "(i'll be real idk what this does)");
 
     gui::drop_down_box("Animations", ce_vars.animation_quality, qualities);
-
-    gui::tool_tip("Changes the quality of the shading.\n" "(i'll be real idk what this does)");
+    gui::tool_tip("Changes the quality of animations at long distances.");
 
     ImGui::NextColumn();
 
