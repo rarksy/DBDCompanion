@@ -213,7 +213,7 @@ namespace ml
         response->append((char*)contents, size * nmemb);
         return size * nmemb;
     }
-    
+
     inline nlohmann::json json_get_from_url(const std::string& url)
     {
         curl_global_init(CURL_GLOBAL_ALL);
@@ -253,6 +253,23 @@ namespace ml
         curl_global_cleanup();
 
         return nlohmann::json::parse(response);
+    }
+
+    inline int get_seconds_since_file_modified(std::string file_path)
+    {
+        if (!file_or_directory_exists(file_path))
+            return -1;
+        
+        struct stat result;
+
+        if (stat(file_path.c_str(), &result) == 0)
+        {
+            time_t mod_time = result.st_mtime;
+            time_t current_time = time(nullptr);
+            double seconds_since_modification = difftime(current_time, mod_time);
+
+            return seconds_since_modification;
+        }
     }
 
     inline bool json_write_data(const std::string& file_path, nlohmann::json json_data)
@@ -319,7 +336,8 @@ namespace ml
         size_t pos = 0;
 
         // Replace <br> with newline
-        while ((pos = html_content.find("<br>", pos)) != std::string::npos) {
+        while ((pos = html_content.find("<br>", pos)) != std::string::npos)
+        {
             html_content.replace(pos, 4, "\n");
             pos += 1;
         }
@@ -328,32 +346,35 @@ namespace ml
         while ((pos = html_content.find('<'), pos) != std::string::npos)
         {
             size_t end_pos = html_content.find('>', pos);
-            
+
             if (end_pos != std::string::npos)
                 html_content.erase(pos, end_pos - pos + 1);
         }
 
         // Replace % with %%
         pos = html_content.find('%');
-        while (pos != std::string::npos) {
+        while (pos != std::string::npos)
+        {
             html_content.replace(pos, 1, "%%");
             pos = html_content.find('%', pos + 2); // Move past the inserted "%%"
         }
-        
+
         return html_content;
     }
 
 
-    inline bool download_file(const std::string& url, const std::string& file_path) {
-        
-        CURL *curl = curl_easy_init();
-        if(curl) {
+    inline bool download_file(const std::string& url, const std::string& file_path)
+    {
+        CURL* curl = curl_easy_init();
+        if (curl)
+        {
             // Create directories if they don't exist
             std::filesystem::create_directories(std::filesystem::path(file_path).parent_path());
 
-            FILE *fp;
+            FILE* fp;
             errno_t err = fopen_s(&fp, file_path.c_str(), "wb");
-            if (err != 0 || !fp) {
+            if (err != 0 || !fp)
+            {
                 std::cerr << "Failed to open file for writing: " << file_path << std::endl;
                 return false;
             }
@@ -367,9 +388,12 @@ namespace ml
             curl_easy_cleanup(curl);
             fclose(fp);
 
-            if (res == CURLE_OK) {
+            if (res == CURLE_OK)
+            {
                 return true;
-            } else {
+            }
+            else
+            {
                 remove(file_path.c_str()); // Delete partially downloaded file
                 return false;
             }
