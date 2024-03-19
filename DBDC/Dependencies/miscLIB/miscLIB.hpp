@@ -32,6 +32,15 @@ namespace ml
         return {content};
     }
 
+    inline std::string to_lower(std::string content)
+    {
+        std::string temp = content;
+
+        std::transform(temp.begin(), temp.end(), temp.begin(), [](unsigned char c){ return std::tolower(c); });
+
+        return temp;
+    }
+
     template <typename T>
     std::vector<std::string> split_to_vector(T content, char delimiter)
     {
@@ -43,6 +52,42 @@ namespace ml
             tokens.push_back(token);
 
         return tokens;
+    }
+
+    inline std::string wide_str_to_str(const std::wstring& wstr)
+    {
+        int len;
+        int slength = (int)wstr.length() + 1;
+        len = WideCharToMultiByte(CP_ACP, 0, wstr.c_str(), slength, 0, 0, 0, 0); 
+        char* buf = new char[len];
+        WideCharToMultiByte(CP_ACP, 0, wstr.c_str(), slength, buf, len, 0, 0); 
+        std::string r(buf);
+        delete[] buf;
+        return r;
+    }
+    
+    inline std::string open_file_dialog() {
+        OPENFILENAME ofn;
+        wchar_t szFile[260];
+
+        ZeroMemory(&ofn, sizeof(ofn));
+        ofn.lStructSize = sizeof(ofn);
+        ofn.hwndOwner = NULL;
+        ofn.lpstrFile = szFile;
+        ofn.lpstrFile[0] = '\0';
+        ofn.nMaxFile = sizeof(szFile);
+        ofn.lpstrFilter = L"PNG Files (*.png)\0*.png\0All Files (*.*)\0*.*\0";
+        ofn.nFilterIndex = 1;
+        ofn.lpstrFileTitle = NULL;
+        ofn.nMaxFileTitle = 0;
+        ofn.lpstrInitialDir = NULL;
+        ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
+        
+        if (GetOpenFileName(&ofn) == TRUE) {
+            return wide_str_to_str(ofn.lpstrFile);
+        } else {
+            return "";
+        }
     }
 
     inline std::filesystem::path get_exe_directory()
