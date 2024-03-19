@@ -309,8 +309,7 @@ void Crosshair::ModifyDynamicCenterPoint()
     }
     else if (CVars.dynamicCenterPointIndex == 3) // Clown
     {
-        allCenterPoints[0].x = backend::screen_height == 1080 ? 950 : 1265; 
-        allCenterPoints[0].y = backend::screen_height == 1080 ? 440 : 570; 
+        allCenterPoints[0].y = 570;
 
         if (GetAsyncKeyState(VK_RBUTTON))
         {
