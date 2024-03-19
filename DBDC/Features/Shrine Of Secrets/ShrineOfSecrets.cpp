@@ -9,21 +9,8 @@
 bool shrine_of_secrets::is_cache_valid()
 {
     const std::string cache_file = backend::exe_directory.string() + backend::settings_directory + "shrine_cache.json";
-
-    if (!std::filesystem::exists(cache_file))
-        return false;
-
-    struct stat result;
-
-    if (stat(cache_file.c_str(), &result) == 0)
-    {
-        time_t mod_time = result.st_mtime;
-        time_t current_time = time(nullptr);
-        double seconds_since_modification = difftime(current_time, mod_time);
-
-        return (seconds_since_modification < 3600); // 1h
-    }
-    return false;
+    
+    return ml::get_seconds_since_file_modified(cache_file) > 3600;
 }
 
 void shrine_of_secrets::cache()
