@@ -15,7 +15,7 @@ void CMenu::Setup()
 void CMenu::RenderUI()
 {
     ImGui::SetCursorPosY(45);
-    
+
     if (ImGui::Checkbox("Enable", &CVars.enabled))
     {
         if (CVars.enabled)
@@ -147,7 +147,7 @@ void CMenu::RenderUI()
         ImGui::SeparatorText("Profiles");
 
         ImGui::Text("Current Profile: %s", Crosshair::ProfileHandling::loadedProfileName.c_str());
-        
+
         ImGui::PushStyleColor(ImGuiCol_Border, menu::styling::menu_accent.to_imvec4());
         if (ImGui::ListBox("##Profiles", &Crosshair::ProfileHandling::currentSelectedProfile,
                            [](void* data, int idx, const char** outText)
@@ -158,8 +158,12 @@ void CMenu::RenderUI()
                            NULL, (int)Crosshair::ProfileHandling::allProfiles.size(), 5))
         {
             if (Crosshair::ProfileHandling::currentSelectedProfile < Crosshair::ProfileHandling::allProfiles.size())
+            {
                 Crosshair::ProfileHandling::selectedProfileName = Crosshair::ProfileHandling::allProfiles.at(
                     Crosshair::ProfileHandling::currentSelectedProfile);
+
+                Crosshair::LoadProfile(Crosshair::ProfileHandling::selectedProfileName, CVars);
+            }
         }
         ImGui::PopStyleColor();
 
@@ -170,6 +174,9 @@ void CMenu::RenderUI()
         if (ImGui::Button("Reset Current Profile", ImVec2(169, 0)))
             Crosshair::ReloadProfiles();
 
+        if (ImGui::Button("Save", ImVec2(169, 0)))
+            Crosshair::SaveProfile(Crosshair::ProfileHandling::selectedProfileName, CVars);
+
         if (ImGui::Button("Create", ImVec2(80, 0)))
             Crosshair::CreateProfile(inputProfileName);
 
@@ -178,13 +185,11 @@ void CMenu::RenderUI()
         if (ImGui::Button("Delete", ImVec2(81, 0)))
             Crosshair::DeleteProfile(Crosshair::ProfileHandling::selectedProfileName);
         
-        if (ImGui::Button("Save", ImVec2(80, 0)))
-            Crosshair::SaveProfile(Crosshair::ProfileHandling::selectedProfileName, CVars);
 
-        ImGui::SameLine();
-
-        if (ImGui::Button("Load", ImVec2(81, 0)))
-            Crosshair::LoadProfile(Crosshair::ProfileHandling::selectedProfileName, CVars);
+        // ImGui::SameLine();
+        //
+        // if (ImGui::Button("Load", ImVec2(81, 0)))
+        //     Crosshair::LoadProfile(Crosshair::ProfileHandling::selectedProfileName, CVars);
 
         ImGui::EndColumns();
     }
