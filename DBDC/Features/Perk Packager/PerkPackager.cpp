@@ -22,16 +22,59 @@ void perk_packager::setup()
         _internal::all_perks_data = ml::json_get_data_from_file(perk_data_file_path);
     }
 
-    for (const auto& character : _internal::all_characters_data)
+    for (const auto& ch : _internal::all_characters_data)
     {
-        Character c;
+        character c;
 
-        c.name = character["name"];
-        c.id = character["id"];
-        c.role = character["role"];
+        c.name = ch["name"];
+        c.id = ch["id"];
+        c.role = ch["role"];
 
-        for (int i = 0; i < character["perks"].size(); i++)
-            c.all_perks.push_back(character["perks"][i]);
+        for (int i = 0; i < ch["perks"].size(); i++)
+        {
+            perk p;
+            p.id = ch["perks"][i];
+            p.name = _internal::all_perks_data[p.id]["name"];
+            p.role = _internal::all_perks_data[p.id]["role"];
+
+            c.perks.push_back(p);
+        }
+
+        all_characters.push_back(c);
+    }
+
+    for (const auto& surv_general_id : _internal::all_survivor_general_perks)
+    {
+        character c;
+
+        c.name = _internal::all_perks_data[surv_general_id]["name"];
+        c.id = "null";
+        c.role = "survivor";
+
+        perk p;
+        p.id = c.id;
+        p.name = c.name;
+        p.role = c.role;
+
+        c.perks.push_back(p);
+
+        all_characters.push_back(c);
+    }
+
+    for (const auto& killer_general_id : _internal::all_killer_general_perks)
+    {
+        character c;
+
+        c.name = _internal::all_perks_data[killer_general_id]["name"];
+        c.id = "null";
+        c.role = "killer";
+
+        perk p;
+        p.id = c.id;
+        p.name = c.name;
+        p.role = c.role;
+
+        c.perks.push_back(p);
 
         all_characters.push_back(c);
     }
