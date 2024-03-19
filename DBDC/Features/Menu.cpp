@@ -14,6 +14,7 @@
 #include "HookTracker\HookTracker.hpp"
 #include "Images/Images.h"
 #include "Perk Packager/PerkPackager.h"
+#include "Perk Packager/PPMenu.h"
 #include "Shrine Of Secrets/ShrineOfSecrets.hpp"
 
 void menu::run_loop()
@@ -186,12 +187,20 @@ void menu::render_ui()
 
     else if (menu_to_show == 3)
     {
-        static std::once_flag flagCrosshair;
-        static std::once_flag flagMenu;
-        std::call_once(flagCrosshair, Crosshair::Setup);
-        std::call_once(flagMenu, CMenu::Setup);
+        static std::once_flag flag_crosshair;
+        static std::once_flag flag_menu;
+        std::call_once(flag_crosshair, Crosshair::Setup);
+        std::call_once(flag_menu, CMenu::Setup);
 
         CMenu::RenderUI();
+    }
+
+    else if (menu_to_show == 4)
+    {
+        static std::once_flag flag_setup;
+        std::call_once(flag_setup, PerkPackager::Setup);
+
+        PPMenu::RenderUI();
     }
 
 
