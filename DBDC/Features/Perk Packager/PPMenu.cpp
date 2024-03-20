@@ -85,11 +85,22 @@ void pp_menu::render_ui()
     ImGui::SameLine();
     if (ImGui::Button("Create Package"))
     {
-        ml::create_directory(backend::exe_directory.string() + backend::settings_directory + _internal::package_selector::package_directory + "DeadByDaylight/Content/");
-
-        for(const auto& p : perk_packager::_internal::package_data)
+        const std::string root_directory = backend::exe_directory.string() + backend::settings_directory + _internal::package_selector::package_directory +
+            _internal::package_selector::loaded_package_name + "\\DeadByDaylight\\Content\\";
+    
+        ml::create_directory(root_directory);
+    
+        for (const auto& p : perk_packager::_internal::package_data)
         {
+            const std::string source = p["local_file_path"];
+            std::filesystem::path destination = p["game_file_path"];
+            std::string destination_string = destination.string();
+    
+            std::replace(destination_string.begin(), destination_string.end(), '/', '\\');
+    
+            ml::create_directory(root_directory + destination.parent_path().string());
             
+            std::filesystem::copy_file(source, root_directory + destination.string(), std::filesystem::copy_options::overwrite_existing);
         }
     }
 
@@ -178,9 +189,9 @@ void pp_menu::render_ui()
 
                     perk_packager::_internal::package_data.erase(perk.name);
                     ml::json_write_data(backend::exe_directory.string() + backend::settings_directory + _internal::package_selector::package_data_directory +
-                                _internal::package_selector::loaded_package_name + ".json",
+                                        _internal::package_selector::loaded_package_name + ".json",
 
-                                perk_packager::_internal::package_data);
+                                        perk_packager::_internal::package_data);
                 }
                 ImGui::PopStyleColor();
             }
