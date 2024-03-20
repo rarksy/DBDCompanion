@@ -10,6 +10,8 @@ namespace pp_menu
     void setup();
     void render_ui();
 
+    void display_perks();
+
     void reload_packages();
 
     namespace _internal
@@ -25,10 +27,13 @@ namespace pp_menu
             inline const std::string package_data_directory = "Perk Packages\\Data\\";
         }
         
-        inline int perk_filter = 0;
         inline static char searched_perk[16];
 
-        inline std::vector<std::string> all_filters = {"All", "Killer", "Survivor"};
+        inline int character_filter_index = 0;
+        inline std::vector<std::string> character_filter = {"All", "Killer", "Survivor"};
+
+        inline int type_filter_index = 0;
+        inline std::vector<std::string> type_filter = {"All", "Perks", "Items"};
     }
     
 }
