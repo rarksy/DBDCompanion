@@ -11,6 +11,7 @@ namespace pp_menu
     void render_ui();
 
     void display_perks();
+    void display_offerings();
 
     void reload_packages();
 

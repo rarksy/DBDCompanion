@@ -223,6 +223,11 @@ void pp_menu::display_perks()
     }
 }
 
+void pp_menu::display_offerings()
+{
+    
+}
+
 void pp_menu::reload_packages()
 {
     const std::filesystem::path iterator_path = backend::exe_directory.string() + backend::settings_directory + _internal::package_selector::package_data_directory;
