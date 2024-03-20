@@ -763,6 +763,10 @@ bool ImGui::InvisibleButton(const char* str_id, const ImVec2& size_arg, ImGuiBut
     bool hovered, held;
     bool pressed = ButtonBehavior(bb, id, &hovered, &held, flags);
 
+    const std::string label = str_id;
+    if (label.find("drawbox") != std::string::npos)
+        ImGui::GetWindowDrawList()->AddRect(bb.Min, bb.Max, ImColor(255, 255, 255));
+
     IMGUI_TEST_ENGINE_ITEM_INFO(id, str_id, g.LastItemData.StatusFlags);
     return pressed;
 }
