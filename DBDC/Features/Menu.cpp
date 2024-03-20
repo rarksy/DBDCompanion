@@ -210,6 +210,9 @@ void menu::render_ui()
 
     else if (menu_to_show == 4)
     {
+        static std::once_flag flag_menu;
+        std::call_once(flag_menu, pp_menu::setup);
+        
         pp_menu::render_ui();
     }
 

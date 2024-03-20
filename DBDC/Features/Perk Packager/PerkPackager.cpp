@@ -1,7 +1,8 @@
 ﻿#include "PerkPackager.h"
-
+#include <ranges>
 #include "PPMenu.h"
 #include "../../Backend/Backend.hpp"
+#include "Images/Images.h"
 
 void perk_packager::setup()
 {
@@ -77,5 +78,25 @@ void perk_packager::setup()
         c.perks.push_back(p);
 
         all_characters.push_back(c);
+    }
+}
+
+void perk_packager::reload()
+{
+    if (_internal::package_data.empty())
+        return;
+    
+    for (auto& chr : all_characters)
+    {
+        for (auto& p : chr.perks)
+        {
+            auto it = _internal::package_data.find(p.name);
+            if (it != _internal::package_data.end())
+            {
+                p.image_path = it.value()["path"];
+                images::load_texture_from_file(p.image_path, &p.image);
+                p.has_selected_image = true;
+            }
+        }
     }
 }

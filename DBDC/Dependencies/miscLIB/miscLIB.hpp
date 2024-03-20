@@ -108,10 +108,14 @@ namespace ml
         if (file_or_directory_exists(file_name))
             return false;
 
+        
+
         std::ofstream file_to_create(file_name);
         file_to_create.close();
 
-        return file_or_directory_exists(file_name);
+        const bool created = file_or_directory_exists(file_name);
+
+        return created;
     }
 
     inline bool create_directory(const std::string& directory_path)
@@ -337,6 +341,9 @@ namespace ml
 
         if (file_to_read.is_open())
         {
+            if (std::filesystem::is_empty(file_path))
+                return nullptr;
+            
             nlohmann::json data;
 
             file_to_read >> data;

@@ -5,13 +5,15 @@
 namespace perk_packager
 {
     void setup();
+    void reload();
 
     struct perk
     {
         std::string name;
         std::string id;
         std::string role;
-        mutable unsigned image = -1;
+        unsigned image = -1;
+        std::string image_path;
 
         mutable bool has_selected_image = false;
     };
@@ -28,8 +30,10 @@ namespace perk_packager
 
     namespace _internal
     {
+        
         inline nlohmann::json all_characters_data;
         inline nlohmann::json all_perks_data;
+        inline nlohmann::json package_data;
         
         inline std::vector<std::string> all_survivor_general_perks =
         {
