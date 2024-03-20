@@ -57,7 +57,7 @@ void pp_menu::render_ui()
     ImGui::InputTextWithHint("##PackageName", "Package Name", _internal::package_selector::input_package_name,
                              IM_ARRAYSIZE(_internal::package_selector::input_package_name));
 
-    if (ImGui::IsItemHovered() &&
+    if (ImGui::GetIO().WantCaptureKeyboard &&
         ImGui::IsKeyPressed(ImGuiKey_Enter, false))
     {
         if (std::ranges::find(_internal::package_selector::all_packages, _internal::package_selector::input_package_name) == _internal::package_selector::all_packages.end())
