@@ -41,8 +41,8 @@ void pp_menu::render_ui()
             _internal::package_selector::loaded_package_name = _internal::package_selector::all_packages.at(
                 _internal::package_selector::loaded_package);
 
-            //
-            
+            perk_packager::clear_images();
+
             perk_packager::_internal::package_data = ml::json_get_data_from_file(
                 backend::exe_directory.string() + backend::settings_directory + _internal::package_selector::package_data_directory +
                 _internal::package_selector::loaded_package_name + ".json"
@@ -60,21 +60,38 @@ void pp_menu::render_ui()
     if (ImGui::IsItemHovered() &&
         ImGui::IsKeyPressed(ImGuiKey_Enter, false))
     {
-        const std::filesystem::path file_path = backend::exe_directory.string() + backend::settings_directory +
-            _internal::package_selector::package_data_directory + _internal::package_selector::input_package_name + ".json";
-
-        if (strlen(_internal::package_selector::input_package_name) > 0 &&
-            !ml::file_or_directory_exists(file_path.string()))
+        if (std::ranges::find(_internal::package_selector::all_packages, _internal::package_selector::input_package_name) == _internal::package_selector::all_packages.end())
         {
-            if (!exists(file_path.parent_path()))
-                ml::create_directory(file_path.parent_path().string());
+            const std::filesystem::path file_path = backend::exe_directory.string() + backend::settings_directory +
+                _internal::package_selector::package_data_directory + _internal::package_selector::input_package_name + ".json";
 
-            ml::create_file(file_path.string());
-            
+            if (strlen(_internal::package_selector::input_package_name) > 0 &&
+                !ml::file_or_directory_exists(file_path.string()))
+            {
+                if (!exists(file_path.parent_path()))
+                    ml::create_directory(file_path.parent_path().string());
+
+                ml::create_file(file_path.string());
+
+                ZeroMemory(_internal::package_selector::input_package_name, sizeof _internal::package_selector::input_package_name);
+
+                reload_packages();
+            }
         }
     }
     ImGui::PopStyleColor();
     gui::tool_tip("Press Enter To Create Package", 500, false);
+
+    ImGui::SameLine();
+    if (ImGui::Button("Create Package"))
+    {
+        ml::create_directory(backend::exe_directory.string() + backend::settings_directory + _internal::package_selector::package_directory + "DeadByDaylight/Content/");
+
+        for(const auto& p : perk_packager::_internal::package_data)
+        {
+            
+        }
+    }
 
     gui::begin_group_box("perk display", ImVec2(0, 380), NULL);
 
@@ -122,14 +139,16 @@ void pp_menu::render_ui()
                 ImGui::SetCursorPos({30, 50});
                 if (ImGui::InvisibleButton("##AddImage", ImVec2(32, 32)))
                 {
-                    perk.image_path = ml::open_file_dialog();
+                    perk.local_image_path = ml::open_file_dialog();
+                    perk.game_file_path = perk_packager::_internal::all_perks_data[perk.id]["image"];
 
-                    if (!perk.image_path.empty())
+                    if (!perk.local_image_path.empty())
                     {
-                        images::load_texture_from_file(perk.image_path, &perk.image);
+                        images::load_texture_from_file(perk.local_image_path, &perk.image);
                         perk.has_selected_image = true;
 
-                        perk_packager::_internal::package_data[perk.name]["path"] = perk.image_path;
+                        perk_packager::_internal::package_data[perk.name]["game_file_path"] = perk.game_file_path;
+                        perk_packager::_internal::package_data[perk.name]["local_file_path"] = perk.local_image_path;
 
                         if (!_internal::package_selector::loaded_package_name.empty())
                             ml::json_write_data(
@@ -155,9 +174,13 @@ void pp_menu::render_ui()
                 {
                     perk.has_selected_image = false;
                     perk.image = -1;
-                    perk.image_path = "";
+                    perk.local_image_path = "";
 
                     perk_packager::_internal::package_data.erase(perk.name);
+                    ml::json_write_data(backend::exe_directory.string() + backend::settings_directory + _internal::package_selector::package_data_directory +
+                                _internal::package_selector::loaded_package_name + ".json",
+
+                                perk_packager::_internal::package_data);
                 }
                 ImGui::PopStyleColor();
             }
@@ -178,8 +201,14 @@ void pp_menu::render_ui()
 
 void pp_menu::reload_packages()
 {
-    for (const auto& entry : std::filesystem::directory_iterator(
-         backend::exe_directory.string() + backend::settings_directory + _internal::package_selector::package_data_directory))
+    const std::filesystem::path iterator_path = backend::exe_directory.string() + backend::settings_directory + _internal::package_selector::package_data_directory;
+
+    if (!exists(iterator_path))
+        return;
+
+    _internal::package_selector::all_packages.clear();
+
+    for (const auto& entry : std::filesystem::directory_iterator(iterator_path))
     {
         if (entry.path().extension() != ".json")
             continue;

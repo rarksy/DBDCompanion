@@ -5,6 +5,7 @@
 namespace perk_packager
 {
     void setup();
+    void clear_images();
     void reload();
 
     struct perk
@@ -13,7 +14,8 @@ namespace perk_packager
         std::string id;
         std::string role;
         unsigned image = -1;
-        std::string image_path;
+        std::string local_image_path;
+        std::string game_file_path;
 
         mutable bool has_selected_image = false;
     };

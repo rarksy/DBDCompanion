@@ -37,6 +37,7 @@ void perk_packager::setup()
             p.id = ch["perks"][i];
             p.name = _internal::all_perks_data[p.id]["name"];
             p.role = _internal::all_perks_data[p.id]["role"];
+            p.game_file_path = _internal::all_perks_data[p.id]["image"];
 
             c.perks.push_back(p);
         }
@@ -49,13 +50,14 @@ void perk_packager::setup()
         character c;
 
         c.name = _internal::all_perks_data[surv_general_id]["name"];
-        c.id = "null";
+        c.id = surv_general_id;
         c.role = "survivor";
 
         perk p;
         p.id = c.id;
         p.name = c.name;
         p.role = c.role;
+        p.game_file_path = _internal::all_perks_data[p.id]["image"];
 
         c.perks.push_back(p);
 
@@ -67,17 +69,32 @@ void perk_packager::setup()
         character c;
 
         c.name = _internal::all_perks_data[killer_general_id]["name"];
-        c.id = "null";
+        c.id = killer_general_id;
         c.role = "killer";
 
         perk p;
         p.id = c.id;
         p.name = c.name;
         p.role = c.role;
+        p.game_file_path = _internal::all_perks_data[p.id]["image"];
 
         c.perks.push_back(p);
 
         all_characters.push_back(c);
+    }
+}
+
+void perk_packager::clear_images()
+{
+    for (auto& chr : all_characters)
+    {
+        for (auto& p : chr.perks)
+        {
+            p.has_selected_image = false;
+            p.image = 0;
+            p.local_image_path = "";
+            p.game_file_path = "";
+        }
     }
 }
 
@@ -93,8 +110,9 @@ void perk_packager::reload()
             auto it = _internal::package_data.find(p.name);
             if (it != _internal::package_data.end())
             {
-                p.image_path = it.value()["path"];
-                images::load_texture_from_file(p.image_path, &p.image);
+                p.local_image_path = it.value()["local_file_path"];
+                p.game_file_path = it.value()["game_file_path"];
+                images::load_texture_from_file(p.local_image_path, &p.image);
                 p.has_selected_image = true;
             }
         }
