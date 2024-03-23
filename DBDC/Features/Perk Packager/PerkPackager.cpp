@@ -14,6 +14,13 @@ void perk_packager::setup()
     {
         _internal::all_characters_data = ml::json_get_from_url("https://dbd.tricky.lol/api/characters");
         _internal::all_perks_data = ml::json_get_from_url("https://dbd.tricky.lol/api/perks");
+
+        if (_internal::all_characters_data.empty() || _internal::all_perks_data.empty())
+        {
+            _internal::unavailable = true;
+            return;
+        }
+        
         ml::json_write_data(character_data_file_path, _internal::all_characters_data);
         ml::json_write_data(perk_data_file_path, _internal::all_perks_data);
     }

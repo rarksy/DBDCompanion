@@ -38,7 +38,9 @@ void menu::run_loop()
         else
         {
             shrine_of_secrets::init();
-            shrine_of_secrets::cache();
+
+            if (!shrine_of_secrets::shrine_data.empty())
+                shrine_of_secrets::cache();
         }
     });
     shrine_load_thread.detach();
@@ -139,7 +141,11 @@ void menu::render_ui()
 
         ImGui::Spacing();
 
-        if (ImGui::Button("Perk Packager"))
+        if (perk_packager::_internal::unavailable)
+        {
+            ImGui::Text("Packager Unavailable");
+        }
+        else if (ImGui::Button("Perk Packager"))
             menu_to_show = 4;
 
         if (menu_to_show != 0)
@@ -212,7 +218,7 @@ void menu::render_ui()
     {
         static std::once_flag flag_menu;
         std::call_once(flag_menu, pp_menu::setup);
-        
+
         pp_menu::render_ui();
     }
 

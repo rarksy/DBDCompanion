@@ -32,6 +32,7 @@ namespace perk_packager
 
     namespace _internal
     {
+        inline bool unavailable = false;
         
         inline nlohmann::json all_characters_data;
         inline nlohmann::json all_perks_data;

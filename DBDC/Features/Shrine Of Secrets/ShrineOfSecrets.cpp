@@ -9,8 +9,10 @@
 bool shrine_of_secrets::is_cache_valid()
 {
     const std::string cache_file = backend::exe_directory.string() + backend::settings_directory + "shrine_cache.json";
+
+    const int sec = ml::get_seconds_since_file_modified(cache_file);
     
-    return ml::get_seconds_since_file_modified(cache_file) > 3600;
+    return sec < 3600;
 }
 
 void shrine_of_secrets::cache()
@@ -64,6 +66,12 @@ void shrine_of_secrets::init()
 {
     shrine_data = ml::json_get_from_url("https://dbd.tricky.lol/api/shrine?includeperkinfo=1");
 
+    if (shrine_data.empty())
+    {
+        unavailable = true;
+        return;
+    }
+
     if (!shrine_data["error"].is_null())
         unavailable = true;
     else
@@ -83,11 +91,11 @@ void shrine_of_secrets::init()
 
             all_perks.push_back(p);
         }
+        
+        reset_time_end = shrine_data["end"];
+
+        is_ready = true;
     }
-
-    reset_time_end = shrine_data["end"];
-
-    is_ready = true;
 }
 
 bool shrine_of_secrets::load_images()
@@ -126,9 +134,18 @@ void shrine_of_secrets::render_ui()
 
     ImGui::SeparatorText("Shrine Of Secrets");
 
-    if (!is_ready)
+    if (!is_ready && !unavailable)
     {
         const std::string loading_text = "Loading Data...";
+        auto windowWidth = ImGui::GetWindowSize().x;
+        auto textWidth = ImGui::CalcTextSize(loading_text.c_str()).x;
+
+        ImGui::SetCursorPosX((windowWidth - textWidth) * 0.5f);
+        ImGui::TextWrapped(loading_text.c_str());
+    }
+    else if (!is_ready && unavailable)
+    {
+        const std::string loading_text = "Shrine Unavailable...";
         auto windowWidth = ImGui::GetWindowSize().x;
         auto textWidth = ImGui::CalcTextSize(loading_text.c_str()).x;
 

@@ -77,7 +77,7 @@ void pp_menu::render_ui()
 
                 reload_packages();
             }
-        }
+        } 
     }
     ImGui::PopStyleColor();
     gui::tool_tip("Press Enter To Create Package", 500, false);

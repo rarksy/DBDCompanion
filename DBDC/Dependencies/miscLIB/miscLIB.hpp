@@ -293,9 +293,9 @@ namespace ml
         curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &http_code);
         if (http_code != 200)
         {
-            curl_easy_cleanup(curl);
+            curl_easy_cleanup(curl);    
             curl_global_cleanup();
-            throw std::runtime_error("HTTP error: " + std::to_string(http_code));
+            return {};
         }
 
         curl_easy_cleanup(curl);
