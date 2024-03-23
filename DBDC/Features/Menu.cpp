@@ -45,11 +45,11 @@ void menu::run_loop()
     });
     shrine_load_thread.detach();
 
-    std::thread perk_packager_load_thread([]
-    {
-        perk_packager::setup();
-    });
-    perk_packager_load_thread.detach();
+    // std::thread perk_packager_load_thread([]
+    // {
+    //     perk_packager::setup();
+    // });
+    // perk_packager_load_thread.detach();
 
     while (!glfwWindowShouldClose(main_window))
     {
@@ -117,7 +117,7 @@ void menu::render_ui()
 
     static bool hamburger_open = true;
     static float hamburger_width = 0.F;
-    static float hamburger_height = styling::menu_height / 3.2F;
+    static float hamburger_height = styling::menu_height / 4.F;
     static bool show_color_picker = false;
 
     if (gui::begin_hamburger_menu(hamburger_open, hamburger_width, hamburger_height, styling::menu_accent.as_imcolor()))
@@ -141,12 +141,12 @@ void menu::render_ui()
 
         ImGui::Spacing();
 
-        if (perk_packager::_internal::unavailable)
-        {
-            ImGui::Text("Packager Unavailable");
-        }
-        else if (ImGui::Button("Perk Packager"))
-            menu_to_show = 4;
+        // if (perk_packager::_internal::unavailable)
+        // {
+        //     ImGui::Text("Packager Unavailable");
+        // }
+        // else if (ImGui::Button("Perk Packager"))
+        //     menu_to_show = 4;
 
         if (menu_to_show != 0)
         {
