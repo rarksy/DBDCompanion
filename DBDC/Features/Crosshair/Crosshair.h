@@ -45,7 +45,7 @@ namespace Crosshair
 
 
         bool useDynamicCenterPoint = false;
-        bool show_dynamic_charge_bar = true;
+        bool show_dynamic_charge_bar = false;
         int dynamicCenterPointIndex = 0;
     };
 
