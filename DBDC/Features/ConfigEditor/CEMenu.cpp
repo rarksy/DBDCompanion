@@ -67,7 +67,7 @@ void CEMenu::RenderUI()
     ImGui::SameLine();
 
     if (ImGui::Button("Restart Game"))
-        misc::RestartGame();
+        misc::restart_game();
     gui::tool_tip("Will close and reopen Dead By Daylight to apply any changed settings.");
     
     ImGui::Columns(3, nullptr, false);
@@ -218,10 +218,10 @@ void CEMenu::RenderUI()
 
     ImGui::SeparatorText("Sensitivity");
 
-    gui::slider("Survivor Mouse", ce_vars.survivor_mouse_sensitivity, 0, 100);
-    gui::slider("Survivor Controller", ce_vars.survivor_controller_sensitivity, 0, 100);
-    gui::slider("Killer Mouse", ce_vars.killer_mouse_sensitivity, 0, 100);
-    gui::slider("Killer Controller", ce_vars.killer_controller_sensitivity, 0, 100);
+    gui::slider("Survivor Mouse", ce_vars.survivor_mouse_sensitivity, 0, 100, false);
+    gui::slider("Survivor Controller", ce_vars.survivor_controller_sensitivity, 0, 100, false);
+    gui::slider("Killer Mouse", ce_vars.killer_mouse_sensitivity, 0, 100, false);
+    gui::slider("Killer Controller", ce_vars.killer_controller_sensitivity, 0, 100, false);
 
     ImGui::SeparatorText("Accessibility");
 
