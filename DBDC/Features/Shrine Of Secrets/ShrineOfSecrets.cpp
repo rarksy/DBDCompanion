@@ -12,7 +12,7 @@ bool shrine_of_secrets::is_cache_valid()
 
     const int sec = ml::get_seconds_since_file_modified(cache_file);
     
-    return sec < 3600;
+    return sec < 3600 && sec != -1;
 }
 
 void shrine_of_secrets::cache()
