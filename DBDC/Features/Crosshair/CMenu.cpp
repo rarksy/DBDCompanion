@@ -171,12 +171,9 @@ void CMenu::RenderUI()
 
         ImGui::InputTextWithHint("##Name", "Profile Name...", inputProfileName, IM_ARRAYSIZE(inputProfileName));
 
-        if (ImGui::Button("Reset Current Profile", ImVec2(169, 0)))
-            Crosshair::ReloadProfiles();
-
         if (ImGui::Button("Save", ImVec2(169, 0)))
             Crosshair::SaveProfile(Crosshair::ProfileHandling::selectedProfileName, CVars);
-
+        
         if (ImGui::Button("Create", ImVec2(80, 0)))
             Crosshair::CreateProfile(inputProfileName);
 
@@ -184,6 +181,9 @@ void CMenu::RenderUI()
 
         if (ImGui::Button("Delete", ImVec2(81, 0)))
             Crosshair::DeleteProfile(Crosshair::ProfileHandling::selectedProfileName);
+        
+        if (ImGui::Button("Reset Current Profile", ImVec2(169, 0)))
+            Crosshair::ReloadProfiles();
         
 
         // ImGui::SameLine();
