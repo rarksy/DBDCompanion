@@ -185,12 +185,6 @@ void CMenu::RenderUI()
         if (ImGui::Button("Reset Current Profile", ImVec2(169, 0)))
             Crosshair::ReloadProfiles();
         
-
-        // ImGui::SameLine();
-        //
-        // if (ImGui::Button("Load", ImVec2(81, 0)))
-        //     Crosshair::LoadProfile(Crosshair::ProfileHandling::selectedProfileName, CVars);
-
         ImGui::EndColumns();
     }
     ImGui::EndDisabled();
