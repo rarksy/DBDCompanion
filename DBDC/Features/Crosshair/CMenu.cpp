@@ -16,9 +16,9 @@ void CMenu::RenderUI()
 {
     ImGui::SetCursorPosY(45);
 
-    if (ImGui::Checkbox("Enable", &CVars.enabled))
+    if (ImGui::Checkbox("Enable", &cvars.enabled))
     {
-        if (CVars.enabled)
+        if (cvars.enabled)
         {
             if (!menu::overlay::is_overlay_created())
             {
@@ -35,7 +35,7 @@ void CMenu::RenderUI()
     ImGui::Spacing();
     ImGui::Spacing();
 
-    ImGui::BeginDisabled(!CVars.enabled);
+    ImGui::BeginDisabled(!cvars.enabled);
     {
         ImGui::Columns(3, nullptr, false);
         ImGui::SetColumnWidth(0, 225);
@@ -43,30 +43,30 @@ void CMenu::RenderUI()
 
         ImGui::SeparatorText("Lines");
 
-        ImGui::CheckboxWithColorPicker("Lines", "Line Color", &CVars.enableLines, CVars.lineColor);
-        ImGui::BeginDisabled(!CVars.enableLines);
+        ImGui::CheckboxWithColorPicker("Lines", "Line Color", &cvars.enableLines, cvars.lineColor);
+        ImGui::BeginDisabled(!cvars.enableLines);
         {
             if (ImGui::BeginCombo("##Lines", "Lines", ImGuiComboFlags_NoArrowButton))
             {
-                ImGui::Selectable("Top", &CVars.enableTopLine, ImGuiSelectableFlags_DontClosePopups);
-                ImGui::Selectable("Left", &CVars.enableLeftLine, ImGuiSelectableFlags_DontClosePopups);
-                ImGui::Selectable("Right", &CVars.enableRightLine, ImGuiSelectableFlags_DontClosePopups);
-                ImGui::Selectable("Bottom", &CVars.enableBottomLine, ImGuiSelectableFlags_DontClosePopups);
+                ImGui::Selectable("Top", &cvars.enableTopLine, ImGuiSelectableFlags_DontClosePopups);
+                ImGui::Selectable("Left", &cvars.enableLeftLine, ImGuiSelectableFlags_DontClosePopups);
+                ImGui::Selectable("Right", &cvars.enableRightLine, ImGuiSelectableFlags_DontClosePopups);
+                ImGui::Selectable("Bottom", &cvars.enableBottomLine, ImGuiSelectableFlags_DontClosePopups);
 
                 ImGui::EndCombo();
             }
-            ImGui::SliderInt("Length", &CVars.lineLength, 1, 100);
-            ImGui::SliderInt("Thickness", &CVars.lineThickness, 1, 10);
-            ImGui::SliderInt("Gap", &CVars.lineGap, 0, 100);
+            ImGui::SliderInt("Length", &cvars.lineLength, 1, 100);
+            ImGui::SliderInt("Thickness", &cvars.lineThickness, 1, 10);
+            ImGui::SliderInt("Gap", &cvars.lineGap, 0, 100);
 
             ImGui::Spacing();
             ImGui::Spacing();
             ImGui::Spacing();
 
-            ImGui::CheckboxWithColorPicker("Outline", "Outline Color", &CVars.enableOutline, CVars.outlineColor);
-            ImGui::BeginDisabled(!CVars.enableOutline);
+            ImGui::CheckboxWithColorPicker("Outline", "Outline Color", &cvars.enableOutline, cvars.outlineColor);
+            ImGui::BeginDisabled(!cvars.enableOutline);
             {
-                ImGui::SliderInt("Thickness##", &CVars.outlineThickness, 1, 10);
+                ImGui::SliderInt("Thickness##", &cvars.outlineThickness, 1, 10);
             }
             ImGui::EndDisabled();
         }
@@ -76,69 +76,69 @@ void CMenu::RenderUI()
 
         ImGui::SeparatorText("Center Dot");
 
-        ImGui::CheckboxWithColorPicker("Center Dot", "Center Dot Color", &CVars.enableCenterDot,
-                                       CVars.centerDotColor);
-        ImGui::BeginDisabled(!CVars.enableCenterDot);
+        ImGui::CheckboxWithColorPicker("Center Dot", "Center Dot Color", &cvars.enableCenterDot,
+                                       cvars.centerDotColor);
+        ImGui::BeginDisabled(!cvars.enableCenterDot);
         {
-            ImGui::Checkbox("Filled", &CVars.filledCenterDot);
-            ImGui::SliderInt("Size", &CVars.centerDotSize, 1, 20);
-            ImGui::BeginDisabled(CVars.filledCenterDot);
-            ImGui::SliderInt("Thickness###", &CVars.centerDotThickness, 1, 5);
+            ImGui::Checkbox("Filled", &cvars.filledCenterDot);
+            ImGui::SliderInt("Size", &cvars.centerDotSize, 1, 20);
+            ImGui::BeginDisabled(cvars.filledCenterDot);
+            ImGui::SliderInt("Thickness###", &cvars.centerDotThickness, 1, 5);
             ImGui::EndDisabled();
-            ImGui::SliderInt("Segments", &CVars.centerDotSegments, 4, 48);
+            ImGui::SliderInt("Segments", &cvars.centerDotSegments, 4, 48);
             ImGui::Spacing();
         }
         ImGui::EndDisabled();
 
         ImGui::SeparatorText("Center Point");
 
-        ImGui::BeginDisabled(CVars.useDynamicCenterPoint);
+        ImGui::BeginDisabled(cvars.useDynamicCenterPoint);
 
         if (ImGui::Button("Reset"))
-            Crosshair::allCenterPoints[0].x = backend::screen_width / 2;
+            Crosshair::all_center_points[0].x = backend::screen_width / 2;
         ImGui::SameLine();
         ImGui::Button("-", ImVec2(20, 0));
         if (ImGui::IsItemActive() && ImGui::IsItemHovered())
-            Crosshair::allCenterPoints[0].x--;
+            Crosshair::all_center_points[0].x--;
         ImGui::SameLine();
         ImGui::Button("+", ImVec2(20, 0));
         if (ImGui::IsItemActive() && ImGui::IsItemHovered())
-            Crosshair::allCenterPoints[0].x++;
+            Crosshair::all_center_points[0].x++;
         ImGui::SameLine();
         ImGui::SetNextItemWidth(80);
-        ImGui::SliderFloat("X", &Crosshair::allCenterPoints[0].x, 0, backend::screen_width, "%.0f");
+        ImGui::SliderFloat("X", &Crosshair::all_center_points[0].x, 0, backend::screen_width, "%.0f");
 
 
         if (ImGui::Button("Reset##"))
-            Crosshair::allCenterPoints[0].y = backend::screen_height / 2;
+            Crosshair::all_center_points[0].y = backend::screen_height / 2;
         ImGui::SameLine();
         ImGui::Button("-##", ImVec2(20, 0));
         if (ImGui::IsItemActive() && ImGui::IsItemHovered())
-            Crosshair::allCenterPoints[0].y--;
+            Crosshair::all_center_points[0].y--;
         ImGui::SameLine();
         ImGui::Button("+##", ImVec2(20, 0));
         if (ImGui::IsItemActive() && ImGui::IsItemHovered())
-            Crosshair::allCenterPoints[0].y++;
+            Crosshair::all_center_points[0].y++;
         ImGui::SameLine();
         ImGui::SetNextItemWidth(80);
-        ImGui::SliderFloat("Y", &Crosshair::allCenterPoints[0].y, 0, backend::screen_height, "%.0f");
+        ImGui::SliderFloat("Y", &Crosshair::all_center_points[0].y, 0, backend::screen_height, "%.0f");
 
         ImGui::EndDisabled();
 
-        if (ImGui::Checkbox("Dynamic Killer Crosshair", &CVars.useDynamicCenterPoint))
+        if (ImGui::Checkbox("Dynamic Killer Crosshair", &cvars.useDynamicCenterPoint))
         {
-            if (CVars.useDynamicCenterPoint)
-                CVars.savedScreenCenterPoint = Crosshair::allCenterPoints[0];
+            if (cvars.useDynamicCenterPoint)
+                cvars.savedScreenCenterPoint = Crosshair::all_center_points[0];
             else
-                Crosshair::allCenterPoints[0] = CVars.savedScreenCenterPoint;
+                Crosshair::all_center_points[0] = cvars.savedScreenCenterPoint;
         }
 
-        ImGui::BeginDisabled(!CVars.useDynamicCenterPoint);
+        ImGui::BeginDisabled(!cvars.useDynamicCenterPoint);
 
-        ImGui::Checkbox("Show Charge Bar", &CVars.show_dynamic_charge_bar);
+        ImGui::Checkbox("Show Charge Bar", &cvars.show_dynamic_charge_bar);
         gui::tool_tip("Will show a bar next to crosshair to indicate power charge");
 
-        gui::drop_down_box("Killer", CVars.dynamicCenterPointIndex, dynamicKillers);
+        gui::drop_down_box("Killer", cvars.dynamicCenterPointIndex, dynamicKillers);
 
         ImGui::EndDisabled();
 
@@ -162,7 +162,7 @@ void CMenu::RenderUI()
                 Crosshair::ProfileHandling::selectedProfileName = Crosshair::ProfileHandling::allProfiles.at(
                     Crosshair::ProfileHandling::currentSelectedProfile);
 
-                Crosshair::LoadProfile(Crosshair::ProfileHandling::selectedProfileName, CVars);
+                Crosshair::LoadProfile(Crosshair::ProfileHandling::selectedProfileName, cvars);
             }
         }
         ImGui::PopStyleColor();
@@ -172,7 +172,7 @@ void CMenu::RenderUI()
         ImGui::InputTextWithHint("##Name", "Profile Name...", inputProfileName, IM_ARRAYSIZE(inputProfileName));
 
         if (ImGui::Button("Save", ImVec2(169, 0)))
-            Crosshair::SaveProfile(Crosshair::ProfileHandling::selectedProfileName, CVars);
+            Crosshair::SaveProfile(Crosshair::ProfileHandling::selectedProfileName, cvars);
         
         if (ImGui::Button("Create", ImVec2(80, 0)))
             Crosshair::CreateProfile(inputProfileName);

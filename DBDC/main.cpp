@@ -76,9 +76,11 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
 #else
 
 
+
+
 int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int) // alternate winmain used for testing
 {
-    
+
 }
 
 #endif

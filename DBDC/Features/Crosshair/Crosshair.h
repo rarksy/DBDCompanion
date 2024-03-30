@@ -13,7 +13,7 @@ namespace Crosshair
     void DrawOutline(const ImVec2& centerPoint);
     void DrawCenterDot(const ImVec2& centerPoint);
     void ModifyDynamicCenterPoint();
-    inline std::vector<ImVec2> allCenterPoints;
+    inline std::vector<ImVec2> all_center_points;
     
     struct Variables
     {
@@ -207,4 +207,4 @@ namespace Crosshair
     }
 }
 
-inline Crosshair::Variables CVars;
+inline Crosshair::Variables cvars;

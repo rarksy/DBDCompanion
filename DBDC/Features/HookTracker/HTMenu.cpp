@@ -36,7 +36,7 @@ void ht_menu::render_ui()
         {
             hook_tracker::free();
 
-            if (!CVars.enabled)
+            if (!cvars.enabled)
                 menu::overlay::destroy_overlay();
         }
     }

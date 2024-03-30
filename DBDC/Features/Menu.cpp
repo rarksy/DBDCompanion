@@ -78,7 +78,7 @@ void menu::run_loop()
             if (hook_tracker::ht_vars::enabled)
                 hook_tracker::render();
 
-            if (CVars.enabled)
+            if (cvars.enabled)
                 Crosshair::DrawCrosshairs();
 
 
