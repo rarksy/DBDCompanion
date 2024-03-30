@@ -45,12 +45,6 @@ void menu::run_loop()
     });
     shrine_load_thread.detach();
 
-    // std::thread perk_packager_load_thread([]
-    // {
-    //     perk_packager::setup();
-    // });
-    // perk_packager_load_thread.detach();
-
     while (!glfwWindowShouldClose(main_window))
     {
         const double start_time = glfwGetTime();
@@ -66,8 +60,6 @@ void menu::run_loop()
 
         menu::create_global_style();
         menu::render_ui();
-
-        //ImGui::ShowDemoWindow();
 
         ImGui::Render();
         glClear(GL_COLOR_BUFFER_BIT);
@@ -130,23 +122,8 @@ void menu::render_ui()
 
         ImGui::Spacing();
 
-        // if (ImGui::Button("Hook Tracker"))
-        //     menu_to_show = 2;
-        // gui::tool_tip("This is a pre-release alpha of the hook Tracker\nIt is not finished and WILL contain bugs");
-        //
-        // ImGui::Spacing();
-
         if (ImGui::Button("Crosshair Menu"))
             menu_to_show = 3;
-
-        ImGui::Spacing();
-
-        // if (perk_packager::_internal::unavailable)
-        // {
-        //     ImGui::Text("Packager Unavailable");
-        // }
-        // else if (ImGui::Button("Perk Packager"))
-        //     menu_to_show = 4;
 
         if (menu_to_show != 0)
         {
@@ -196,14 +173,6 @@ void menu::render_ui()
         CEMenu::RenderUI();
     }
 
-    // else if (menu_to_show == 2)
-    // {
-    //     static std::once_flag menu_flag;
-    //     std::call_once(menu_flag, ht_menu::setup);
-    //
-    //     ht_menu::render_ui();
-    // }
-
     else if (menu_to_show == 3)
     {
         static std::once_flag flag_crosshair;
@@ -221,10 +190,8 @@ void menu::render_ui()
 
         pp_menu::render_ui();
     }
-
-
+    
     ImGui::EndDisabled();
-
 
     ImGui::SetCursorPos({720, 470});
     ImGui::TextColored(ImVec4(0.8F, 0.8F, 0.8F, 0.5F), "(?)");
