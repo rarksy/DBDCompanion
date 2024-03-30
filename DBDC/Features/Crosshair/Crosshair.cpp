@@ -396,13 +396,10 @@ void Crosshair::ModifyDynamicCenterPoint()
             }
             else
             {
-                if (all_center_points.size() > 0)
-                {
-                    for (int i = 1; i < all_center_points.size(); i++)
-                        all_center_points.erase(all_center_points.begin() + i);
+                for (int i = 1; i < all_center_points.size(); i++)
+                    all_center_points.erase(all_center_points.begin() + i);
 
-                    all_center_points[0] = cvars.true_screen_center_point;
-                }   
+                all_center_points[0] = cvars.true_screen_center_point;
             }
         }
     }
