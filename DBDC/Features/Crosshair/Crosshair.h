@@ -40,7 +40,7 @@ namespace Crosshair
         int centerDotSegments = 12;
         ImColor centerDotColor = ImColor(255, 74, 74);
         
-        ImVec2 trueScreenCenterPoint;
+        ImVec2 true_screen_center_point;
         ImVec2 savedScreenCenterPoint;
 
 

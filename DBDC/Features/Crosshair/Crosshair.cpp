@@ -4,8 +4,8 @@
 
 void Crosshair::Setup()
 {
-    cvars.trueScreenCenterPoint = ImVec2(backend::screen_width / 2, backend::screen_height / 2);
-    all_center_points.push_back(cvars.trueScreenCenterPoint);
+    cvars.true_screen_center_point = ImVec2(backend::screen_width / 2, backend::screen_height / 2);
+    all_center_points.push_back(cvars.true_screen_center_point);
 }
 
 void Crosshair::DrawCrosshairs()
@@ -295,7 +295,7 @@ void Crosshair::ModifyDynamicCenterPoint()
 {
     static std::chrono::steady_clock::time_point startTime;
     static bool isRButtonDown;
-    
+
     static double pull_up_time = 0.0;
     static double max_duration = 0.0;
 
@@ -320,7 +320,7 @@ void Crosshair::ModifyDynamicCenterPoint()
 
             if (duration > pull_up_time)
             {
-                const auto y_level = get_y_level(cvars.trueScreenCenterPoint.y, cvars.trueScreenCenterPoint.y + 30, duration - pull_up_time, max_duration);
+                const auto y_level = get_y_level(cvars.true_screen_center_point.y, cvars.true_screen_center_point.y + 30, duration - pull_up_time, max_duration);
                 all_center_points[0].y = y_level;
 
                 if (cvars.show_dynamic_charge_bar)
@@ -359,25 +359,50 @@ void Crosshair::ModifyDynamicCenterPoint()
                 isRButtonDown = false;
 
             all_center_points[0].x = backend::screen_width / 2 + 3;
-            all_center_points[0].y = cvars.trueScreenCenterPoint.y;
+            all_center_points[0].y = cvars.true_screen_center_point.y;
         }
     }
     else if (cvars.dynamicCenterPointIndex == 2) // Trickster
     {
         if (GetAsyncKeyState(VK_RBUTTON))
         {
-            all_center_points[0] = ImVec2(backend::screen_width / 2 - 15, backend::screen_height / 2);
+            if (!isRButtonDown)
+            {
+                startTime = std::chrono::steady_clock::now();
+                isRButtonDown = true;
+            }
+
+            const auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
+                std::chrono::steady_clock::now() - startTime).count();
+
             if (all_center_points.size() < 2)
-                all_center_points.push_back(ImVec2(backend::screen_width / 2 + 15, backend::screen_height / 2));   
+                all_center_points.push_back(ImVec2(backend::screen_width / 2, backend::screen_height / 2));
+
+            if (cvars.true_screen_center_point.x - all_center_points[0].x < 15)
+            {
+                all_center_points[0].x--;
+                all_center_points[1].x++;
+            }
         }
         else
         {
-            if (all_center_points.size() > 0)
-            {
-                for (int i = 1; i < all_center_points.size(); i++)
-                    all_center_points.erase(all_center_points.begin() + i);
+            if (isRButtonDown)
+                isRButtonDown = false;
 
-                all_center_points[0] = cvars.trueScreenCenterPoint;
+            if (cvars.true_screen_center_point.x - all_center_points[0].x > 0)
+            {
+                all_center_points[0].x++;
+                all_center_points[1].x--;
+            }
+            else
+            {
+                if (all_center_points.size() > 0)
+                {
+                    for (int i = 1; i < all_center_points.size(); i++)
+                        all_center_points.erase(all_center_points.begin() + i);
+
+                    all_center_points[0] = cvars.true_screen_center_point;
+                }   
             }
         }
     }
@@ -388,7 +413,7 @@ void Crosshair::ModifyDynamicCenterPoint()
 
         if (max_duration != 1100)
             max_duration = 1100;
-        
+
         if (GetAsyncKeyState(VK_RBUTTON))
         {
             if (!isRButtonDown)
