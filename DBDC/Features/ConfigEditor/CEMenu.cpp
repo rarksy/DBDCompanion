@@ -20,27 +20,27 @@ bool CEMenu::Setup()
     // Anti Aliasing
     images::load_texture_from_memory(antiAliasingOnRawData, sizeof antiAliasingOnRawData, &Image::AntiAliasing::textureOn);
     images::load_texture_from_memory(antiAliasingOffRawData, sizeof antiAliasingOffRawData,
-                                  &Image::AntiAliasing::textureOff);
+                                     &Image::AntiAliasing::textureOff);
 
     // Resolution Quality
     images::load_texture_from_memory(resolutionQuality60RawData, sizeof resolutionQuality60RawData,
-                                  &Image::ResolutionQuality::texture60);
+                                     &Image::ResolutionQuality::texture60);
     images::load_texture_from_memory(resolutionQuality80RawData, sizeof resolutionQuality80RawData,
-                                  &Image::ResolutionQuality::texture80);
+                                     &Image::ResolutionQuality::texture80);
     images::load_texture_from_memory(resolutionQuality100RawData, sizeof resolutionQuality100RawData,
-                                  &Image::ResolutionQuality::texture100);
+                                     &Image::ResolutionQuality::texture100);
 
     // Texture Quality
     images::load_texture_from_memory(textureQualityVeryLowRawData, sizeof textureQualityVeryLowRawData,
-                                  &Image::TextureQuality::textureVeryLow);
+                                     &Image::TextureQuality::textureVeryLow);
     images::load_texture_from_memory(textureQualityLowRawData, sizeof textureQualityLowRawData,
-                                  &Image::TextureQuality::textureLow);
+                                     &Image::TextureQuality::textureLow);
     images::load_texture_from_memory(textureQualityMediumRawData, sizeof textureQualityMediumRawData,
-                                  &Image::TextureQuality::textureMedium);
+                                     &Image::TextureQuality::textureMedium);
     images::load_texture_from_memory(textureQualityHighRawData, sizeof textureQualityHighRawData,
-                                  &Image::TextureQuality::textureHigh);
+                                     &Image::TextureQuality::textureHigh);
     images::load_texture_from_memory(textureQualityUltraRawData, sizeof textureQualityUltraRawData,
-                                  &Image::TextureQuality::textureUltra);
+                                     &Image::TextureQuality::textureUltra);
 
     return true;
 }
@@ -48,7 +48,7 @@ bool CEMenu::Setup()
 void CEMenu::RenderUI()
 {
     ImGui::SetCursorPos({252, 15});
-    
+
     if (ImGui::Button("Copy Settings"))
         config_editor::copy_config();
     gui::tool_tip("Will copy your settings to clipboard, you can send it to anyone else using DBDC.");
@@ -69,7 +69,7 @@ void CEMenu::RenderUI()
     if (ImGui::Button("Restart Game"))
         misc::restart_game();
     gui::tool_tip("Will close and reopen Dead By Daylight to apply any changed settings.");
-    
+
     ImGui::Columns(3, nullptr, false);
     ImGui::SetColumnWidth(0, 258);
     ImGui::SetColumnWidth(1, 227);
@@ -89,7 +89,7 @@ void CEMenu::RenderUI()
             texture = Image::ResolutionQuality::texture100;
     }
     gui::tool_tip("Sets the quality at which the game is rendered.\n"
-                 "Note: 100%% = native resolution", texture, ImVec2(400, 170));
+                  "Note: 100%% = native resolution", texture, ImVec2(400, 170));
 
     gui::drop_down_box("View Distance", ce_vars.view_distance_quality, qualities);
     gui::tool_tip("Changes the level of detail at which objects in the distance are rendered.\n"
@@ -106,8 +106,9 @@ void CEMenu::RenderUI()
     gui::drop_down_box("Post Processing", ce_vars.post_process_quality, qualities);
     gui::tool_tip("Changes the quality of glow related effects (such as fire glow).");
 
-    gui::drop_down_box("Textures", ce_vars.texture_quality, qualities, true, menu::styling::item_width, "Changes the quality of textures & models.", Image::TextureQuality::allTextures,
-                     ImVec2(500, 200));
+    gui::drop_down_box("Textures", ce_vars.texture_quality, qualities, true, menu::styling::item_width, "Changes the quality of textures & models.",
+                       Image::TextureQuality::allTextures,
+                       ImVec2(500, 200));
 
     gui::tool_tip("Changes the quality of textures & models.");
 
@@ -160,9 +161,9 @@ void CEMenu::RenderUI()
 
     gui::checkbox("Anti-Aliasing", ce_vars.anti_alias_mode);
     gui::tool_tip("Blurs the edges of objects to appear less jagged.",
-                 ce_vars.anti_alias_mode.value
-                     ? Image::AntiAliasing::textureOn
-                     : Image::AntiAliasing::textureOff, ImVec2(400, 250));
+                  ce_vars.anti_alias_mode.value
+                      ? Image::AntiAliasing::textureOn
+                      : Image::AntiAliasing::textureOff, ImVec2(400, 250));
 
 
     gui::checkbox("Ambient Occlusion", ce_vars.ambient_occlusion);
@@ -201,7 +202,7 @@ void CEMenu::RenderUI()
         {
             if (std::filesystem::exists(moviesDir + "AdditionalLoadingScreen"))
                 std::filesystem::remove_all(moviesDir + "AdditionalLoadingScreen");
-            
+
             if (std::rename(
                 (moviesDir + "disabled_AdditionalLoadingScreen").c_str(),
                 (moviesDir + "AdditionalLoadingScreen").c_str()) != 0)
@@ -215,6 +216,44 @@ void CEMenu::RenderUI()
 
     gui::checkbox("Skip News Popup", ce_vars.skip_news_popup, 0, 99999);
     gui::tool_tip("Disables the news popup that appears after launching the game.");
+
+    if (ImGui::Checkbox("Launch With DBD", &ce_vars.launch_with_dbd))
+    {
+        if (ce_vars.launch_with_dbd)
+        {
+            char file_name_buffer[MAX_PATH];
+            GetModuleFileNameA(NULL, file_name_buffer, MAX_PATH);
+
+            std::ofstream file_to_write(backend::exe_directory.string() + backend::settings_directory + "dual_load.bat");
+
+            if (file_to_write.is_open())
+            {
+                file_to_write
+                    << "@echo off\n"
+                    << "start \"\" \"" << misc::get_game_root_directory() << "DeadByDaylight.exe\" -provider Steam\n"
+                    << "start \"\" \"" << file_name_buffer << "\"\n"
+                    << "exit";
+
+                file_to_write.close();
+
+                ml::set_clipboard_text("\"" + backend::exe_directory.string() + backend::settings_directory + "dual_load.bat\" %command%");
+
+                MessageBox(
+                    NULL,
+                    L"Launch Command Copied\n\nGo To Steam -> Library -> Right Click \"Dead By Daylight\" -> Properties -> In The \"Launch Options\" Box -> Right Click -> Paste",
+                    L"Notice", MB_OK);
+            }
+        }
+        else
+        {
+            MessageBox(NULL, L"To Disable Dual Loading, Go To Steam -> Library -> Right Click \"Dead By Daylight\" -> Properties -> Clear The \"Launch Options\" Box", L"Notice", MB_OK);
+        }
+    }
+    gui::tool_tip(
+        "Will automatically open DBDC when you launch Dead By Daylight"
+        "\n\n"
+        "Note: Due to how steam works, after enabling, you will need to manually add the launch option that gets copied to your clipboard, instructions appear when enabling / disabling."
+    );
 
     ImGui::SeparatorText("Sensitivity");
 

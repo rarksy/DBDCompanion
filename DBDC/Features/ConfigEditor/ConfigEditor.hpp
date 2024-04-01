@@ -166,6 +166,7 @@ namespace config_editor
         setting survivor_controller_sensitivity = setting(files::game_user_settings, sections::dbd_game_user_settings, "SurvivorControllerSensitivity", 50);
         bool remove_intro_cutscene = false;
         setting skip_news_popup = setting(files::game_user_settings, sections::dbd_game_user_settings, "HighestWeightSeenNews", 0);
+        bool launch_with_dbd = false;
         
         // Accessibility
         setting terror_radius_visual = setting(files::game_user_settings, sections::dbd_game_user_settings, "TerrorRadiusVisualFeedback", 0);
