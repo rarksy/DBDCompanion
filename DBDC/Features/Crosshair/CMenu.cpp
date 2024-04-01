@@ -183,7 +183,7 @@ void CMenu::RenderUI()
             Crosshair::DeleteProfile(Crosshair::ProfileHandling::selectedProfileName);
         
         if (ImGui::Button("Reset Current Profile", ImVec2(169, 0)))
-            Crosshair::ReloadProfiles();
+            Crosshair::ResetProfile(cvars);
         
         ImGui::EndColumns();
     }
