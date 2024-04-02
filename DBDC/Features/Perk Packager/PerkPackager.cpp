@@ -6,16 +6,20 @@
 
 void perk_packager::setup()
 {
-    const std::string character_data_file_path = backend::exe_directory.string() + backend::settings_directory + "character_data.json";
-    const std::string perk_data_file_path = backend::exe_directory.string() + backend::settings_directory + "perk_data.json";
+    ml::create_directory(backend::exe_directory.string() + backend::settings_directory + "data");
+    
+    const std::string character_data_file_path = backend::exe_directory.string() + backend::settings_directory + backend::data_directory + "character_data.json";
+    const std::string perk_data_file_path = backend::exe_directory.string() + backend::settings_directory + backend::data_directory + "perk_data.json";
+    const std::string item_data_file_path = backend::exe_directory.string() + backend::settings_directory + backend::data_directory + "item_data.json";
 
     const int time_since_cache = ml::get_seconds_since_file_modified(character_data_file_path);
     if (time_since_cache > 86400 /* 1d */ || time_since_cache == -1)
     {
         _internal::all_characters_data = ml::json_get_from_url("https://dbd.tricky.lol/api/characters");
         _internal::all_perks_data = ml::json_get_from_url("https://dbd.tricky.lol/api/perks");
+        _internal::all_items_data = ml::json_get_from_url("https://dbd.tricky.lol/api/items");
 
-        if (_internal::all_characters_data.empty() || _internal::all_perks_data.empty())
+        if (_internal::all_characters_data.empty() || _internal::all_perks_data.empty() || _internal::all_items_data.empty())
         {
             _internal::unavailable = true;
             return;
@@ -23,11 +27,13 @@ void perk_packager::setup()
         
         ml::json_write_data(character_data_file_path, _internal::all_characters_data);
         ml::json_write_data(perk_data_file_path, _internal::all_perks_data);
+        ml::json_write_data(item_data_file_path, _internal::all_items_data);
     }
     else
     {
         _internal::all_characters_data = ml::json_get_data_from_file(character_data_file_path);
         _internal::all_perks_data = ml::json_get_data_from_file(perk_data_file_path);
+        _internal::all_items_data = ml::json_get_data_from_file(item_data_file_path);
     }
 
     for (const auto& ch : _internal::all_characters_data)
@@ -89,6 +95,20 @@ void perk_packager::setup()
 
         all_characters.push_back(c);
     }
+
+    for (const auto& i : _internal::all_items_data)
+    {
+        if (i["name"].is_null() || i["role"].is_null() || i["image"].is_null())
+            continue;
+        
+        item _item;
+    
+        _item.name = i["name"];
+        _item.role = i["role"];
+        _item.game_file_path = i["image"];
+    
+        all_items.push_back(_item);
+    }
 }
 
 void perk_packager::clear_images()
@@ -102,6 +122,14 @@ void perk_packager::clear_images()
             p.local_image_path = "";
             p.game_file_path = "";
         }
+    }
+
+    for (auto& i : all_items)
+    {
+        i.has_selected_image = false;
+        i.image = 0;
+        i.local_image_path = "";
+        i.game_file_path = "";
     }
 }
 
@@ -122,6 +150,17 @@ void perk_packager::reload()
                 images::load_texture_from_file(p.local_image_path, &p.image);
                 p.has_selected_image = true;
             }
+        }
+    }
+
+    for (auto& i : all_items)
+    {
+        auto it = _internal::package_data.find(i.name);
+        if (it != _internal::package_data.end())
+        {
+            i.local_image_path = it.value()["local_file_path"];
+            i.game_file_path = it.value()["game_file_path"];
+            images::load_texture_from_file(i.local_image_path, &i.image);
         }
     }
 }

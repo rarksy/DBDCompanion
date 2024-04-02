@@ -20,6 +20,11 @@ namespace perk_packager
         mutable bool has_selected_image = false;
     };
 
+    struct item : perk
+    {
+        std::string item_type;
+    };
+
     struct character
     {
         std::string name;
@@ -29,6 +34,7 @@ namespace perk_packager
     };
 
     inline std::vector<character> all_characters;
+    inline std::vector<item> all_items;
 
     namespace _internal
     {
@@ -36,6 +42,8 @@ namespace perk_packager
         
         inline nlohmann::json all_characters_data;
         inline nlohmann::json all_perks_data;
+        inline nlohmann::json all_items_data;
+        
         inline nlohmann::json package_data;
         
         inline std::vector<std::string> all_survivor_general_perks =
