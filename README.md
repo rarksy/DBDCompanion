@@ -13,8 +13,8 @@ The config editor is always being updated and plans to feature things i **didn't
 # Hook Counter
 ![image](https://github.com/rarksy/DBDCompanion/assets/70506725/2cd129f0-403b-4cbc-a5fc-9ba781babb66)
 
-The hook counter uses image recognition to detect when a survivor has been hooked, when a detection is made a pip icon will be rendered next to the corresponding survivors portrait just like when you're playing survivor!  
-This part of DBDC is still in prototype alpha so it is not polished and WILL contain bugs.  
+The hook counter will use image recognition to detect when a survivor has been hooked, when a detection is made a pip icon will be rendered next to the corresponding survivors portrait just like when you're playing survivor!  
+This part of DBDC is still in development and not currently available
 
 # Crosshair Overlay
 ![image]([https://github.com/rarksy/DBDCompanion/assets/70506725/f1f557eb-a364-4e89-9dfe-c1f5463ddabc](https://preview.redd.it/q191ylber96c1.jpg?width=960&crop=smart&auto=webp&s=737882a9b577611b0f711e36ee086a093fff918c))
