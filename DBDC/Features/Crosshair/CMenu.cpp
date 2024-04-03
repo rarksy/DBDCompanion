@@ -14,7 +14,7 @@ void CMenu::Setup()
 
 void CMenu::RenderUI()
 {
-    ImGui::SetCursorPosY(45);
+    ImGui::SetCursorPosY(55);
 
     if (ImGui::Checkbox("Enable", &cvars.enabled))
     {
@@ -30,10 +30,6 @@ void CMenu::RenderUI()
         else if (!menu::overlay::is_overlay_needed())
             menu::overlay::destroy_overlay();
     }
-
-    ImGui::Spacing();
-    ImGui::Spacing();
-    ImGui::Spacing();
 
     ImGui::BeginDisabled(!cvars.enabled);
     {

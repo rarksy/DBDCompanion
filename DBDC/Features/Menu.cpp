@@ -114,61 +114,6 @@ void menu::render_ui()
     ImGui::SetNextWindowSize(ImVec2(styling::menu_width, styling::menu_height), ImGuiCond_Once);
     ImGui::Begin("menu", nullptr, menu_flags);
 
-    static bool hamburger_open = true;
-    static float hamburger_width = 0.F;
-    static float hamburger_height = styling::menu_height / 3.2F;
-    static bool show_color_picker = false;
-
-    if (gui::begin_hamburger_menu(hamburger_open, hamburger_width, hamburger_height, styling::menu_accent.as_imcolor()))
-    {
-        ImGui::SetCursorPosY(45);
-
-        if (ImGui::Button("Config Editor"))
-            menu_to_show = 1;
-        gui::tool_tip("Allows you to adjust your game settings in\nmore detail than the base game offers");
-
-        ImGui::Spacing();
-
-        if (ImGui::Button("Crosshair Menu"))
-            menu_to_show = 3;
-
-        ImGui::Spacing();
-
-        if (ImGui::Button("Miscellaneous"))
-            menu_to_show = 5;
-
-        if (menu_to_show != 0)
-        {
-            ImGui::SetCursorPos({(show_color_picker ? 80.F : 45.F), 9});
-            if (ImGui::Button("<-"))
-                menu_to_show = 0;
-        }
-
-        gui::end_hamburger_menu(hamburger_open, menu_to_show, hamburger_width, hamburger_height);
-    }
-    gui::draw_hamburger_menu(hamburger_open, styling::menu_accent.as_imcolor());
-
-    if (ImGui::IsKeyPressed(ImGuiKey_Space, false) && !ImGui::IsAnyItemActive())
-        show_color_picker = !show_color_picker;
-
-    if (show_color_picker)
-    {
-        ImGui::SetCursorPos({45, 9});
-        if (gui::color_picker("Menu Accent", &styling::menu_accent))
-        {
-            nlohmann::json accent_data;
-
-            accent_data["menu_accent"]["r"] = styling::menu_accent.r;
-            accent_data["menu_accent"]["g"] = styling::menu_accent.g;
-            accent_data["menu_accent"]["b"] = styling::menu_accent.b;
-            accent_data["menu_accent"]["a"] = styling::menu_accent.a;
-
-            ml::json_write_data(backend::exe_directory.string() + backend::settings_directory + "settings.json", accent_data);
-        }
-    }
-
-    ImGui::BeginDisabled(hamburger_open || hamburger_width > 0.F);
-
     if (menu_to_show == 0)
     {
         shrine_of_secrets::render_ui();
@@ -207,8 +152,102 @@ void menu::render_ui()
     {
         misc_menu::render_ui();
     }
-    
-    ImGui::EndDisabled();
+
+    static bool hamburger_open = true;
+    static float hamburger_width = 1.F;
+    static float hamburger_height = styling::menu_height / 3.2F;
+    static bool show_color_picker = false;
+
+    ImGui::SetCursorPos(ImVec2(5, 5));
+
+    if (hamburger_width > 0.F)
+    {
+        ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.07f, 0.07f, 0.07f, 1.F));
+        gui::begin_group_box("hamburger", ImVec2(hamburger_width, hamburger_height));
+        
+        ImGui::GetWindowDrawList()->AddRectFilledMultiColor(
+            {5, 5},
+            {hamburger_width, hamburger_height},
+            ImColor(std::clamp(styling::menu_accent.r - 200, 0, 255), 15, 15),
+            ImColor(15, 13, 13),
+            ImColor(15, 13, 13),
+            ImColor(15, 13, 13)
+        );
+
+
+        ImGui::GetWindowDrawList()->AddRectFilled({8, 10}, {38, 15}, menu::styling::menu_accent.to_imcolor(), 4.F);
+        ImGui::GetWindowDrawList()->AddRectFilled({8, 20}, {38, 25}, menu::styling::menu_accent.to_imcolor(), 4.F);
+        ImGui::GetWindowDrawList()->AddRectFilled({8, 30}, {38, 35}, menu::styling::menu_accent.to_imcolor(), 4.F);
+
+
+        ImGui::SetCursorPos({7, 9});
+        if (ImGui::InvisibleButton("##HamburgerToggleButtonInsideMenu", {39, 36}))
+            hamburger_open = !hamburger_open;
+
+        if (ImGui::Button("Config Editor"))
+            menu_to_show = 1;
+        gui::tool_tip("Allows you to adjust your game settings in\nmore detail than the base game offers");
+
+        ImGui::Spacing();
+
+        if (ImGui::Button("Crosshair Menu"))
+            menu_to_show = 3;
+
+        ImGui::Spacing();
+
+        if (ImGui::Button("Miscellaneous"))
+            menu_to_show = 5;
+
+        if (menu_to_show != 0)
+        {
+            ImGui::SetCursorPos({hamburger_width - 33, 5});
+            if (ImGui::Button("<-"))
+                menu_to_show = 0;
+        }
+
+        gui::end_group_box();
+
+        static int previous_tab = menu_to_show;
+        if (previous_tab != menu_to_show && !ImGui::IsMouseHoveringRect({0, 0}, {hamburger_width + 5, hamburger_height + 5}))
+        {
+            hamburger_open = false;
+            previous_tab = menu_to_show;
+        }
+        ImGui::PopStyleColor();
+    }
+
+    if (hamburger_open && hamburger_width < 200)
+        hamburger_width += 10;
+    else if (!hamburger_open && hamburger_width > 0)
+        hamburger_width -= 10;
+
+    if (ImGui::IsKeyPressed(ImGuiKey_Space, false) && !ImGui::IsAnyItemActive())
+        show_color_picker = !show_color_picker;
+
+    if (show_color_picker)
+    {
+        ImGui::SetCursorPos({45, 9});
+        if (gui::color_picker("Menu Accent", &styling::menu_accent))
+        {
+            nlohmann::json accent_data;
+
+            accent_data["menu_accent"]["r"] = styling::menu_accent.r;
+            accent_data["menu_accent"]["g"] = styling::menu_accent.g;
+            accent_data["menu_accent"]["b"] = styling::menu_accent.b;
+            accent_data["menu_accent"]["a"] = styling::menu_accent.a;
+
+            ml::json_write_data(backend::exe_directory.string() + backend::settings_directory + "settings.json", accent_data);
+        }
+    }
+
+    ImGui::GetWindowDrawList()->AddRectFilled({8, 10}, {38, 15}, menu::styling::menu_accent.to_imcolor(), 4.F);
+    ImGui::GetWindowDrawList()->AddRectFilled({8, 20}, {38, 25}, menu::styling::menu_accent.to_imcolor(), 4.F);
+    ImGui::GetWindowDrawList()->AddRectFilled({8, 30}, {38, 35}, menu::styling::menu_accent.to_imcolor(), 4.F);
+
+    const auto cursor_pos = ImGui::GetCursorPos();
+    ImGui::SetCursorPos({7, 9});
+    if (ImGui::InvisibleButton("##HamburgerToggleButtonOutsideMenu", {39, 36}))
+        hamburger_open = !hamburger_open;
 
     ImGui::SetCursorPos({720, 470});
     ImGui::TextColored(ImVec4(0.8F, 0.8F, 0.8F, 0.5F), "(?)");

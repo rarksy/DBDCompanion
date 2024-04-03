@@ -99,6 +99,7 @@ void onscreen_timers::render_ui()
 
         bool item_selected = false;
 
+        ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(0.1, 0.1, 0.1, 1));
         if (ImGui::BeginCombo(drop_down_label.c_str(), all_timer_options[t.drop_down_index].first.c_str(), ImGuiComboFlags_NoArrowButton))
         {
             const size_t timer_options_size = all_timer_options.size();
@@ -121,6 +122,7 @@ void onscreen_timers::render_ui()
             }
             ImGui::EndCombo();
         }
+        ImGui::PopStyleColor();
         
         ImGui::SameLine();
         const auto cursor_pos = ImGui::GetCursorPos();
