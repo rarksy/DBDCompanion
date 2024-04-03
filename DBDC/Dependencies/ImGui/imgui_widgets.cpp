@@ -1217,7 +1217,7 @@ bool ImGui::Hotkey(const char* label, int* k, const ImVec2& size_arg)
     }
     else if (g.ActiveId == id)
     {
-        strcpy(buf_display, "Press");
+        strcpy(buf_display, "...");
     }
 
     const ImRect clip_rect(frame_bb.Min.x, frame_bb.Min.y, frame_bb.Min.x + size.x, frame_bb.Min.y + size.y);
