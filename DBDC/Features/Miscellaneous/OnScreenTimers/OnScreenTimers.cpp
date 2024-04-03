@@ -23,42 +23,42 @@ void onscreen_timers::delete_timer(const int& index)
 
 void onscreen_timers::keypress_loop()
 {
-    // for (int i = 0; i < 256; ++i)
-    // {
-    //     if (!(GetAsyncKeyState(i) & 1))
-    //         continue;
-    //
-    //     for (int j = 0; j < all_timers.size(); j++)
-    //     {
-    //         if (j > all_timers.size())
-    //             continue;
-    //         
-    //         timer& t = all_timers[j];
-    //         if (i != t.hotkey)
-    //             continue;
-    //
-    //         t.start_time = std::chrono::steady_clock::now();
-    //         t.end_time = t.start_time + std::chrono::seconds(t.duration);
-    //
-    //         active_timers.push_back(&t);
-    //     }
-    // }
+    for (int i = 0; i < 256; ++i)
+    {
+        if (!(GetAsyncKeyState(i) & 1))
+            continue;
+    
+        for (int j = 0; j < all_timers.size(); j++)
+        {
+            if (j > all_timers.size())
+                continue;
+            
+            timer& t = all_timers[j];
+            if (i != t.hotkey)
+                continue;
+    
+            t.start_time = std::chrono::steady_clock::now();
+            t.end_time = t.start_time + std::chrono::seconds(t.duration);
+    
+            active_timers.push_back(&t);
+        }
+    }
 }
 
 void onscreen_timers::render_timers()
 {
-    // for (int i = 0; i < active_timers.size(); i++)
-    // {
-    //     const timer& t = *active_timers[i];
-    //     const auto time_now = std::chrono::steady_clock::now();
-    //     const std::string duration_to_seconds = std::to_string(std::chrono::duration_cast<std::chrono::seconds>(t.end_time - time_now).count());
-    //     const std::string timer_string = t.name + ": " + duration_to_seconds;
-    //
-    //     ImGui::GetBackgroundDrawList()->AddText(ImVec2(40, (backend::screen_height / 2) - (20 * i)), ImColor(255, 255, 255), timer_string.c_str());
-    //
-    //     if (t.end_time < time_now)
-    //         active_timers.erase(active_timers.begin() + i);
-    // }
+    for (int i = 0; i < active_timers.size(); i++)
+    {
+        const timer& t = *active_timers[i];
+        const auto time_now = std::chrono::steady_clock::now();
+        const std::string duration_to_seconds = std::to_string(std::chrono::duration_cast<std::chrono::seconds>(t.end_time - time_now).count());
+        const std::string timer_string = t.name + ": " + duration_to_seconds;
+    
+        ImGui::GetBackgroundDrawList()->AddText(ImVec2(40, (backend::screen_height / 2) - (20 * i)), ImColor(255, 255, 255), timer_string.c_str());
+    
+        if (t.end_time < time_now)
+            active_timers.erase(active_timers.begin() + i);
+    }
 }
 
 void onscreen_timers::render_ui()
@@ -140,7 +140,7 @@ void onscreen_timers::render_ui()
 
 
     ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPos().x, ImGui::GetCursorPos().y + 6));
-    if (ImGui::Button("Add New Timer", ImVec2(237.F, 0.F)))
+    if (ImGui::Button("Add New Timer", ImVec2(237.F, 0.F)) && all_timers.size() < 12)
         add_new_timer();
     
 }
