@@ -34,7 +34,7 @@ Hook Counter: The hook counter doesn't interact with Dead By Daylight in any way
 In lamens terms: you can remember which survivors have been hooked using your mind, so this is not an advantage.  
 Should the developers make an effort to counteract something this feature will be removed.  
   
-[Crosshair Overlay]([https://cdn.discordapp.com/attachments/1051308034942570528/1193797084143427645/GBP7jv1XYAAd1iN.png?ex=65ae052c&is=659b902c&hm=5eff54bdb5d5a730e913394a1e65273c821d031e4f12dd9f140851af5bb4f893&](https://www.reddit.com/r/deadbydaylight/comments/18i9lmj/well_we_finally_have_direct_confirmation_from_the/)). The developers have officially confirmed their endorsement for crosshair overlays as something you can freely use!
+[Crosshair Overlay](https://www.reddit.com/r/deadbydaylight/comments/18i9lmj/well_we_finally_have_direct_confirmation_from_the/). The developers have officially confirmed their endorsement for crosshair overlays as something you can freely use!
 ## What's The Catch?
 **No catch :)** developing this program allows me to display and improve on my ability to write clean, easy to read code, plus i get to help anyone who might find anything this program has to offer useful!  
 ## Can I Support You?
