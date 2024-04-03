@@ -17,7 +17,7 @@ The hook counter uses image recognition to detect when a survivor has been hooke
 This part of DBDC is still in prototype alpha so it is not polished and WILL contain bugs.  
 
 # Crosshair Overlay
-![image](https://github.com/rarksy/DBDCompanion/assets/70506725/f1f557eb-a364-4e89-9dfe-c1f5463ddabc)
+![image]([https://github.com/rarksy/DBDCompanion/assets/70506725/f1f557eb-a364-4e89-9dfe-c1f5463ddabc](https://preview.redd.it/q191ylber96c1.jpg?width=960&crop=smart&auto=webp&s=737882a9b577611b0f711e36ee086a093fff918c))
 
 
 A basic crosshair overlay allowing you to use and customize a crosshair in game!  
