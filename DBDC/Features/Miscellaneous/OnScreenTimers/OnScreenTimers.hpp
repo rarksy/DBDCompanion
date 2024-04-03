@@ -26,9 +26,9 @@ namespace onscreen_timers
     inline bool enabled;
     
     inline std::vector<timer> all_timers;
-    inline std::vector<timer*> active_timers;
+    inline std::vector<timer> active_timers;
     inline std::vector<std::pair<std::string, double>> all_timer_options = {
-        {"Unhook Endurance (10s)", 10},
+        {"Endurance (10s)", 10},
         {"Exhausted (40s)", 40},
         {"Exhausted (50s)", 50},
         {"Exhausted (60s)", 60},
