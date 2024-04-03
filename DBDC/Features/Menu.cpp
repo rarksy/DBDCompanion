@@ -13,6 +13,7 @@
 #include "../Misc/Misc.hpp"
 #include "HookTracker\HookTracker.hpp"
 #include "Images/Images.h"
+#include "Miscellaneous/MiscMenu.h"
 #include "Perk Packager/PerkPackager.h"
 #include "Perk Packager/PPMenu.h"
 #include "Shrine Of Secrets/ShrineOfSecrets.hpp"
@@ -109,7 +110,7 @@ void menu::render_ui()
 
     static bool hamburger_open = true;
     static float hamburger_width = 0.F;
-    static float hamburger_height = styling::menu_height / 4.F;
+    static float hamburger_height = styling::menu_height / 3.2F;
     static bool show_color_picker = false;
 
     if (gui::begin_hamburger_menu(hamburger_open, hamburger_width, hamburger_height, styling::menu_accent.as_imcolor()))
@@ -124,6 +125,11 @@ void menu::render_ui()
 
         if (ImGui::Button("Crosshair Menu"))
             menu_to_show = 3;
+
+        ImGui::Spacing();
+
+        if (ImGui::Button("Miscellaneous"))
+            menu_to_show = 5;
 
         if (menu_to_show != 0)
         {
@@ -189,6 +195,11 @@ void menu::render_ui()
         std::call_once(flag_menu, pp_menu::setup);
 
         pp_menu::render_ui();
+    }
+
+    else if (menu_to_show == 5)
+    {
+        misc_menu::render_ui();
     }
     
     ImGui::EndDisabled();

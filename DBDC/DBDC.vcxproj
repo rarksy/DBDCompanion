@@ -24,6 +24,8 @@
     <ClCompile Include="Dependencies\ImGui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui_tables.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui_widgets.cpp" />
+    <ClCompile Include="Features\Miscellaneous\MiscMenu.cpp" />
+    <ClCompile Include="Features\Miscellaneous\OnScreenTimers\OnScreenTimers.cpp" />
     <ClCompile Include="Features\Shrine Of Secrets\ShrineOfSecrets.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Features\ConfigEditor\CEMenu.cpp" />
@@ -449,6 +451,8 @@
     <ClInclude Include="Features\HookTracker\HTMenu.h" />
     <ClInclude Include="Features\HookTracker\HookTracker.hpp" />
     <ClInclude Include="Features\Menu.h" />
+    <ClInclude Include="Features\Miscellaneous\MiscMenu.h" />
+    <ClInclude Include="Features\Miscellaneous\OnScreenTimers\OnScreenTimers.hpp" />
     <ClInclude Include="Features\Perk Packager\PerkPackager.h" />
     <ClInclude Include="Features\Perk Packager\PPMenu.h" />
     <ClInclude Include="Features\Shrine Of Secrets\ShrineOfSecrets.hpp" />
