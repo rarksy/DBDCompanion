@@ -63,6 +63,11 @@ void onscreen_timers::render_timers()
 
 void onscreen_timers::render_ui()
 {
+    ImGui::SetCursorPosY(45.F);
+    gui::begin_group_box("onscreen_timer_groupbox", ImVec2(275, 0));
+    ImGui::SeparatorText("Timer Creation");
+    gui::tool_tip("Allows you to setup hotkeys to display timers on your screen for relevant information");
+    
     if (ImGui::Checkbox("Enable", &onscreen_timers::enabled))
     {
         if (onscreen_timers::enabled)
@@ -143,5 +148,7 @@ void onscreen_timers::render_ui()
     ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPos().x, ImGui::GetCursorPos().y + 6));
     if (ImGui::Button("Add New Timer", ImVec2(260.F, 0.F)) && all_timers.size() < 12)
         add_new_timer();
+
+    gui::end_group_box();
     
 }

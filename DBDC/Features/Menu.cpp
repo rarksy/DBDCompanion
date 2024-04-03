@@ -13,7 +13,6 @@
 #include "../Misc/Misc.hpp"
 #include "HookTracker\HookTracker.hpp"
 #include "Images/Images.h"
-#include "Miscellaneous/MiscMenu.h"
 #include "Miscellaneous/OnScreenTimers/OnScreenTimers.hpp"
 #include "Perk Packager/PerkPackager.h"
 #include "Perk Packager/PPMenu.h"
@@ -150,7 +149,7 @@ void menu::render_ui()
 
     else if (menu_to_show == 5)
     {
-        misc_menu::render_ui();
+        onscreen_timers::render_ui();
     }
 
     static bool hamburger_open = true;
@@ -190,12 +189,12 @@ void menu::render_ui()
 
         ImGui::Spacing();
 
-        if (ImGui::Button("Crosshair Menu"))
+        if (ImGui::Button("Crosshair Overlay"))
             menu_to_show = 3;
 
         ImGui::Spacing();
 
-        if (ImGui::Button("Miscellaneous"))
+        if (ImGui::Button("On-Screen Timers"))
             menu_to_show = 5;
 
         if (menu_to_show != 0)
