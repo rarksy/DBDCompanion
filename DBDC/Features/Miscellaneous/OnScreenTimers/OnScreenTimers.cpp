@@ -4,6 +4,7 @@
 #include "../../GUI/GUI.h"
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_internal.h"
+#include <conio.h>
 
 void onscreen_timers::add_new_timer()
 {
@@ -17,44 +18,80 @@ void onscreen_timers::add_new_timer()
 
 void onscreen_timers::keypress_loop()
 {
-    const size_t size = all_timers.size();
-    for (int i = 0; i < size; i++)
+    for (int i = 0; i < 256; ++i)
     {
-        timer& t = all_timers[i];
-        if (GetAsyncKeyState(t.hotkey))
+        if (!(GetAsyncKeyState(i) & 1))
+            continue;
+
+        for (int j = 0; j < all_timers.size(); j++)
         {
-            //t.start_time = std::chrono::system_clock::now();
+            timer& t = all_timers[j];
+            if (i != t.hotkey)
+                continue;
+
+            t.start_time = std::chrono::steady_clock::now();
+            t.end_time = t.start_time + std::chrono::seconds(t.duration);
+
+            active_timers.push_back(&t);
         }
-            
     }
 }
 
 void onscreen_timers::render_timers()
 {
-    
+    for (int i = 0; i < active_timers.size(); i++)
+    {
+        const timer& t = *active_timers[i];
+        const auto time_now = std::chrono::steady_clock::now();
+        const std::string duration_to_seconds = std::to_string(std::chrono::duration_cast<std::chrono::seconds>(t.end_time - time_now).count());
+        const std::string timer_string = t.name + ": " + duration_to_seconds;
+
+        ImGui::GetBackgroundDrawList()->AddText(ImVec2(40, (backend::screen_height / 2) - (20 * i)), ImColor(255, 255, 255), timer_string.c_str());
+
+        if (t.end_time < time_now)
+            active_timers.erase(active_timers.begin() + i);
+    }
 }
 
 void onscreen_timers::render_ui()
 {
+    if (ImGui::Checkbox("Enable", &onscreen_timers::enabled))
+    {
+        if (onscreen_timers::enabled)
+        {
+            if (!menu::overlay::is_overlay_created())
+            {
+                menu::overlay::create_overlay();
+                ImGui::SetCurrentContext(menu::main_context);
+                glfwMakeContextCurrent(menu::main_window);
+            }
+        }
+        else
+        {
+            if (!menu::overlay::is_overlay_needed())
+                menu::overlay::destroy_overlay();
+        }
+    }
+
     const size_t timers_size = all_timers.size();
-    
+
     for (int i = 0; i < timers_size; i++)
     {
         timer& t = all_timers[i];
 
         const std::string temp_label = "##";
-        
+
         const std::string hotkey_label = temp_label + "Timer" + std::to_string(i);
         ImGui::Hotkey(hotkey_label.c_str(), &t.hotkey);
-    
+
         ImGui::SameLine();
-    
+
         const std::string drop_down_label = temp_label + "DropDown" + std::to_string(i);
-    
+
         ImGui::SetNextItemWidth(170.F);
-    
+
         bool item_selected = false;
-    
+
         if (ImGui::BeginCombo(drop_down_label.c_str(), all_timer_options[t.drop_down_index].first.c_str(), ImGuiComboFlags_NoArrowButton))
         {
             const size_t timer_options_size = all_timer_options.size();
@@ -64,6 +101,11 @@ void onscreen_timers::render_ui()
                 if (ImGui::Selectable(all_timer_options[n].first.c_str(), is_selected))
                 {
                     t.drop_down_index = n;
+
+                    const auto option = all_timer_options[t.drop_down_index];
+
+                    t.name = option.first;
+                    t.duration = option.second;
                     item_selected = true;
                 }
                 // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
@@ -73,7 +115,7 @@ void onscreen_timers::render_ui()
             ImGui::EndCombo();
         }
     }
-    
+
     if (ImGui::Button("Add New Timer", ImVec2(230.F, 0.F)))
         add_new_timer();
 }

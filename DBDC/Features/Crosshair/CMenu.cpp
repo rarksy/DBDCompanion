@@ -27,8 +27,8 @@ void CMenu::RenderUI()
                 glfwMakeContextCurrent(menu::main_window);
             }
         }
-
-        else menu::overlay::destroy_overlay();
+        else if (!menu::overlay::is_overlay_needed())
+            menu::overlay::destroy_overlay();
     }
 
     ImGui::Spacing();
@@ -173,7 +173,7 @@ void CMenu::RenderUI()
 
         if (ImGui::Button("Save", ImVec2(169, 0)))
             Crosshair::SaveProfile(Crosshair::ProfileHandling::selectedProfileName, cvars);
-        
+
         if (ImGui::Button("Create", ImVec2(80, 0)))
             Crosshair::CreateProfile(inputProfileName);
 
@@ -181,10 +181,10 @@ void CMenu::RenderUI()
 
         if (ImGui::Button("Delete", ImVec2(81, 0)))
             Crosshair::DeleteProfile(Crosshair::ProfileHandling::selectedProfileName);
-        
+
         if (ImGui::Button("Reset Current Profile", ImVec2(169, 0)))
             Crosshair::ResetProfile(cvars);
-        
+
         ImGui::EndColumns();
     }
     ImGui::EndDisabled();

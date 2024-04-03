@@ -8,7 +8,10 @@
 #include "../Backend/Backend.hpp"
 #include "Exe Icons/256x256.hpp"
 #include <ctime>
+
+#include "Crosshair/Crosshair.h"
 #include "GUI/GUI.h"
+#include "Miscellaneous/OnScreenTimers/OnScreenTimers.hpp"
 #include "miscLIB/miscLIB.hpp"
 
 struct color
@@ -84,6 +87,10 @@ namespace menu
         inline GLFWwindow* window = nullptr;
         inline ImGuiContext* context = nullptr;
 
+        inline bool is_overlay_needed()
+        {
+            return (!cvars.enabled && !onscreen_timers::enabled);
+        }
 
         inline bool is_overlay_created()
         {

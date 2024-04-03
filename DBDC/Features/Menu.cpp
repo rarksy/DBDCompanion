@@ -14,6 +14,7 @@
 #include "HookTracker\HookTracker.hpp"
 #include "Images/Images.h"
 #include "Miscellaneous/MiscMenu.h"
+#include "Miscellaneous/OnScreenTimers/OnScreenTimers.hpp"
 #include "Perk Packager/PerkPackager.h"
 #include "Perk Packager/PPMenu.h"
 #include "Shrine Of Secrets/ShrineOfSecrets.hpp"
@@ -82,12 +83,17 @@ void menu::run_loop()
             if (cvars.enabled)
                 Crosshair::DrawCrosshairs();
 
+            if (onscreen_timers::enabled)
+                onscreen_timers::render_timers();
+
 
             ImGui::Render();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
             glfwSwapBuffers(menu::overlay::window);
         }
+
+        onscreen_timers::keypress_loop();
 
         const double end_time = glfwGetTime();
         const double elapsed_time = end_time - start_time;

@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include <chrono>
 #include <vector>
 #include <string>
 
@@ -13,21 +14,21 @@ namespace onscreen_timers
     struct timer
     {
         std::string name;
-        double duration;
+        int duration;
         int hotkey;
         int drop_down_index = 0;
 
-        double start_time = 0;
-        double end_time = 0;
+        std::chrono::steady_clock::time_point start_time;
+        std::chrono::steady_clock::time_point end_time;
     };
 
-    inline int t_k = 0;
+    inline bool enabled;
     
     inline std::vector<timer> all_timers;
-    inline std::vector<timer> active_timers;
+    inline std::vector<timer*> active_timers;
     inline std::vector<std::pair<std::string, double>> all_timer_options = {
-        {"Unhook Endurance", 10.0},
-        {"Decisive Strike", 60.0},
-        {"Off The Record", 80.0},
+        {"Unhook Endurance", 10},
+        {"Decisive Strike", 60},
+        {"Off The Record", 80},
     };
 }
