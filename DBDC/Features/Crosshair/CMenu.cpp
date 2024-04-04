@@ -13,7 +13,7 @@ void CMenu::Setup()
 
 void CMenu::RenderUI()
 {
-    ImGui::SetCursorPos({50, 9});
+    ImGui::SetCursorPos({50, 12});
 
     if (ImGui::Checkbox("Enable", &cvars.enabled))
     {
