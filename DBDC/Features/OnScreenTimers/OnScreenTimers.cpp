@@ -123,9 +123,7 @@ void onscreen_timers::render_ui()
             break;
         }
         ImGui::Spacing();
-        
     }
-
 
     ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPos().x, ImGui::GetCursorPos().y + 6));
     if (ImGui::Button("Add New Timer", ImVec2(260.F, 0.F)) && all_timers.size() < 12)
