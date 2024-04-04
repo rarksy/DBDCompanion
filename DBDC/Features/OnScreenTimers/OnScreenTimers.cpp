@@ -126,6 +126,8 @@ void onscreen_timers::render_ui()
         {
             if (!menu::overlay::is_overlay_needed())
                 menu::overlay::destroy_overlay();
+
+            active_timers.clear();
         }
     }
 
