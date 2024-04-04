@@ -30,7 +30,7 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
     GetModuleFileNameA(NULL, pathBuffer, MAX_PATH);
     backend::exe_directory = std::filesystem::path(pathBuffer).parent_path();
     
-    ml::create_directory(backend::exe_directory.string() + backend::settings_directory + "\\data\\");
+    ml::create_directory(backend::exe_directory.string() + backend::settings_directory + backend::data_directory);
     
     menu::main_window = backend::setup_window("Dead By Daylight Companion", menu::styling::menu_width, menu::styling::menu_height);
     
