@@ -212,6 +212,10 @@ void menu::render_ui()
             hamburger_open = false;
             previous_tab = menu_to_show;
         }
+
+        if (!ImGui::IsMouseHoveringRect({0, 0}, {hamburger_width + 5, hamburger_height + 5}) && ImGui::IsKeyPressed(ImGuiKey_MouseLeft))
+            hamburger_open = false;
+        
         ImGui::PopStyleColor();
     }
 
