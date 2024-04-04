@@ -1,7 +1,7 @@
 ﻿#include "PPMenu.h"
 
 #include "PerkPackager.h"
-#include "../GUI/GUI.h"
+#include "GUI/GUI.h"
 #include "Images/Images.h"
 #include "ImGui/imgui.h"
 

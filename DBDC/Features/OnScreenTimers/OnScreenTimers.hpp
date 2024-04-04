@@ -3,6 +3,8 @@
 #include <vector>
 #include <string>
 
+#include "color/color.hpp"
+
 namespace onscreen_timers
 {
     void add_new_timer();
@@ -20,6 +22,7 @@ namespace onscreen_timers
         std::string name;
         int duration;
         int hotkey;
+        color text_color = color(255, 255, 255);
 
         std::chrono::steady_clock::time_point start_time;
         std::chrono::steady_clock::time_point end_time;

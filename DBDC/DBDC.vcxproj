@@ -16,6 +16,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Backend\Backend.cpp" />
+    <ClCompile Include="Dependencies\GUI\GUI.cpp" />
     <ClCompile Include="Dependencies\Images\Images.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui_demo.cpp" />
@@ -32,7 +33,6 @@
     <ClCompile Include="Features\ConfigEditor\ConfigEditor.cpp" />
     <ClCompile Include="Features\Crosshair\CMenu.cpp" />
     <ClCompile Include="Features\Crosshair\Crosshair.cpp" />
-    <ClCompile Include="Features\GUI\GUI.cpp" />
     <ClCompile Include="Features\HookTracker\HTMenu.cpp" />
     <ClCompile Include="Features\HookTracker\HookTracker.cpp" />
     <ClCompile Include="Features\Menu.cpp" />
@@ -43,6 +43,7 @@
   <ItemGroup>
     <ClInclude Include="Backend\Backend.hpp" />
     <ClInclude Include="Dependencies\Base64\Base64.hpp" />
+    <ClInclude Include="Dependencies\color\color.hpp" />
     <ClInclude Include="Dependencies\curl\curl.h" />
     <ClInclude Include="Dependencies\curl\curlver.h" />
     <ClInclude Include="Dependencies\curl\easy.h" />
@@ -63,6 +64,7 @@
     <ClInclude Include="Dependencies\GLFW\GL\glew.h" />
     <ClInclude Include="Dependencies\GLFW\GL\glxew.h" />
     <ClInclude Include="Dependencies\GLFW\GL\wglew.h" />
+    <ClInclude Include="Dependencies\GUI\GUI.h" />
     <ClInclude Include="Dependencies\Images\AntiAliasing\Off.hpp" />
     <ClInclude Include="Dependencies\Images\AntiAliasing\On.hpp" />
     <ClInclude Include="Dependencies\Images\HookTracker\Hook.hpp" />
@@ -448,7 +450,6 @@
     <ClInclude Include="Features\ConfigEditor\ConfigEditor.hpp" />
     <ClInclude Include="Features\Crosshair\CMenu.h" />
     <ClInclude Include="Features\Crosshair\Crosshair.h" />
-    <ClInclude Include="Features\GUI\GUI.h" />
     <ClInclude Include="Features\HookTracker\HTMenu.h" />
     <ClInclude Include="Features\HookTracker\HookTracker.hpp" />
     <ClInclude Include="Features\Menu.h" />

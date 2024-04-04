@@ -1,7 +1,7 @@
 ﻿#include "ShrineOfSecrets.hpp"
 
 #include "../../Misc/Misc.hpp"
-#include "../GUI/GUI.h"
+#include "GUI/GUI.h"
 #include "Images/Images.h"
 #include "ImGui/imgui.h"
 #include "miscLIB/miscLIB.hpp"

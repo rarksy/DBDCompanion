@@ -88,7 +88,8 @@ void menu::run_loop()
             glfwSwapBuffers(menu::overlay::window);
         }
 
-        onscreen_timers::keypress_loop();
+        if (onscreen_timers::enabled)
+            onscreen_timers::keypress_loop();
 
         const double end_time = glfwGetTime();
         const double elapsed_time = end_time - start_time;
@@ -147,7 +148,7 @@ void menu::render_ui()
     {
         static std::once_flag flag_load;
         std::call_once(flag_load, onscreen_timers::load_timer_profile);
-        
+
         onscreen_timers::render_ui();
     }
 
@@ -162,7 +163,7 @@ void menu::render_ui()
     {
         ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.07f, 0.07f, 0.07f, 1.F));
         gui::begin_group_box("hamburger", ImVec2(hamburger_width, hamburger_height));
-        
+
         ImGui::GetWindowDrawList()->AddRectFilledMultiColor(
             {5, 5},
             {hamburger_width, hamburger_height},
@@ -241,7 +242,7 @@ void menu::render_ui()
     ImGui::GetWindowDrawList()->AddRectFilled({8, 10}, {38, 15}, menu::styling::menu_accent.to_imcolor(), 4.F);
     ImGui::GetWindowDrawList()->AddRectFilled({8, 20}, {38, 25}, menu::styling::menu_accent.to_imcolor(), 4.F);
     ImGui::GetWindowDrawList()->AddRectFilled({8, 30}, {38, 35}, menu::styling::menu_accent.to_imcolor(), 4.F);
-    
+
     ImGui::SetCursorPos({4, 4});
     if (ImGui::InvisibleButton("##HamburgerToggleButtonOutsideMenu", {39, 36}))
         hamburger_open = !hamburger_open;

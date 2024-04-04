@@ -1,8 +1,7 @@
 ﻿#include "OnScreenTimers.hpp"
 #include <Windows.h>
 
-#include "../GUI/GUI.h"
-#include "ImGui/imgui.h"
+#include "GUI/GUI.h"
 #include "ImGui/imgui_internal.h"
 #include "ImGui/imgui_stdlib.h"
 #include <conio.h>
@@ -63,7 +62,7 @@ void onscreen_timers::render_timers()
         const std::string duration_to_seconds = std::to_string(std::chrono::duration_cast<std::chrono::seconds>(t.end_time - time_now).count());
         const std::string timer_string = std::string(t.name) + ": " + duration_to_seconds;
 
-        ImGui::GetBackgroundDrawList()->AddText(ImVec2(40, (backend::screen_height / 2.75) - (20 * i)), ImColor(255, 255, 255), timer_string.c_str());
+        ImGui::GetBackgroundDrawList()->AddText(ImVec2(40, (backend::screen_height / 2.75) - (20 * i)), t.text_color.to_imcolor(), timer_string.c_str());
 
         if (t.end_time < time_now)
             active_timers.erase(active_timers.begin() + i);
@@ -82,6 +81,10 @@ bool onscreen_timers::save_timer_profile()
         data[i]["name"] = t.name;
         data[i]["duration"] = t.duration;
         data[i]["hotkey"] = t.hotkey;
+
+        for (int j = 0; j < 3; j++)
+            data[i]["color"][j] = t.text_color[j];
+        
     }
 
     return ml::json_write_data(backend::exe_directory.string() + backend::settings_directory + "\\data\\timer_profile.json", data);
@@ -98,6 +101,9 @@ void onscreen_timers::load_timer_profile()
         _timer.name = t["name"];
         _timer.duration = t["duration"];
         _timer.hotkey = t["hotkey"];
+
+        for (int j = 0; j < 3; j++)
+            _timer.text_color[j] = t["color"][j];
 
         all_timers.push_back(_timer);
     }
@@ -147,11 +153,13 @@ void onscreen_timers::render_ui()
 
         ImGui::SameLine();
 
-        const std::string text_box_label = temp_label + "text_box" + std::to_string(i);
-        const std::string duration_box_label = temp_label + "duration_box" + std::to_string(i);
-
-        ImGui::SetNextItemWidth(160.F);
-        if (ImGui::InputTextWithHint(text_box_label.c_str(), "Input Timer Name...", &t.name))
+        const std::string label_index = std::to_string(i);
+        const std::string text_box_label = temp_label + "text_box" + label_index;
+        const std::string duration_box_label = temp_label + "duration_box" + label_index;
+        const std::string color_picker_label = temp_label + "color_picker" + label_index;
+        
+        ImGui::SetNextItemWidth(120.F);
+        if (ImGui::InputTextWithHint(text_box_label.c_str(), "Timer Name", &t.name))
             save_timer_profile();
         gui::tool_tip("Sets the name that will be displayed when the timer is activated");
 
@@ -161,7 +169,11 @@ void onscreen_timers::render_ui()
         if (ImGui::InputInt(duration_box_label.c_str(), &t.duration, NULL, NULL))
             save_timer_profile();
         gui::tool_tip("Controls the duration of the timer (numbers only)");
-
+        ImGui::SameLine();
+        
+        if (gui::color_picker(color_picker_label.c_str(), &t.text_color))
+            save_timer_profile();
+        gui::tool_tip("Sets the color of the text used to display the timer");
 
         ImGui::SameLine();
         const auto cursor_pos = ImGui::GetCursorPos();

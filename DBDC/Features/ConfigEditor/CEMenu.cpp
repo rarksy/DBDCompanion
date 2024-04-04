@@ -1,7 +1,7 @@
 ﻿#include "CEMenu.hpp"
 #include "../Menu.h"
 #include "../Misc/Misc.hpp"
-#include "../GUI/GUI.h"
+#include "GUI/GUI.h"
 #include <Windows.h>
 #include <Images/Images.h>
 #include "ConfigEditor.hpp"
