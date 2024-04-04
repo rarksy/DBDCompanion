@@ -1207,7 +1207,7 @@ bool ImGui::Hotkey(const char* label, int* k, const ImVec2& size_arg)
     }
 
     // Render
-    char buf_display[64] = "None";
+    char buf_display[64] = "";
 
     RenderFrame(frame_bb.Min, frame_bb.Max, GetColorU32(ImGuiCol_FrameBg), true, style.FrameRounding);
 
