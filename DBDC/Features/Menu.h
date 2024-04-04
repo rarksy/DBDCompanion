@@ -31,7 +31,7 @@ namespace menu
 
         inline bool is_overlay_needed()
         {
-            return (!cvars.enabled && !onscreen_timers::enabled);
+            return (cvars.enabled || onscreen_timers::enabled);
         }
 
         inline bool is_overlay_created()
