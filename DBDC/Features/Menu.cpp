@@ -7,12 +7,8 @@
 #include "Crosshair/CMenu.h"
 #include "Crosshair/Crosshair.h"
 #include "GUI/GUI.h"
-#include "HookTracker\HTMenu.h"
 #include <Windows.h>
-
-#include "../Misc/Misc.hpp"
 #include "HookTracker\HookTracker.hpp"
-#include "Images/Images.h"
 #include "OnScreenTimers/OnScreenTimers.hpp"
 #include "Perk Packager/PerkPackager.h"
 #include "Perk Packager/PPMenu.h"
@@ -245,8 +241,7 @@ void menu::render_ui()
     ImGui::GetWindowDrawList()->AddRectFilled({8, 10}, {38, 15}, menu::styling::menu_accent.to_imcolor(), 4.F);
     ImGui::GetWindowDrawList()->AddRectFilled({8, 20}, {38, 25}, menu::styling::menu_accent.to_imcolor(), 4.F);
     ImGui::GetWindowDrawList()->AddRectFilled({8, 30}, {38, 35}, menu::styling::menu_accent.to_imcolor(), 4.F);
-
-    const auto cursor_pos = ImGui::GetCursorPos();
+    
     ImGui::SetCursorPos({4, 4});
     if (ImGui::InvisibleButton("##HamburgerToggleButtonOutsideMenu", {39, 36}))
         hamburger_open = !hamburger_open;

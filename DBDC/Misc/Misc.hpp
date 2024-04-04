@@ -2,7 +2,6 @@
 #include <string>
 #include <vector>
 #include <opencv2/opencv.hpp>
-#include <Windows.h>
 
 namespace misc
 {

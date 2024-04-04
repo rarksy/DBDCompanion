@@ -2,10 +2,6 @@
 #include <vector>
 
 #include "ImGui/imgui.h"
-#include <opencv2/opencv.hpp>
-#include <GLFW/glfw3.h>
-
-#include "../../Backend/Backend.hpp"
 #include "../ConfigEditor/ConfigEditor.hpp"
 
 // use math to get portrait x & y 

@@ -372,9 +372,6 @@ void Crosshair::ModifyDynamicCenterPoint()
                 isRButtonDown = true;
             }
 
-            const auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
-                std::chrono::steady_clock::now() - startTime).count();
-
             if (all_center_points.size() < 2)
                 all_center_points.push_back(ImVec2(backend::screen_width / 2, backend::screen_height / 2));
 

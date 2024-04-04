@@ -1,5 +1,4 @@
 ﻿#include "PerkPackager.h"
-#include <ranges>
 #include "PPMenu.h"
 #include "../../Backend/Backend.hpp"
 #include "Images/Images.h"

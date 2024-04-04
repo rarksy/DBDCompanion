@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include <nlohmann/json.hpp>
 
 #include "GLFW/glfw3.h"
 #include "ImGui/imgui.h"
@@ -7,10 +6,8 @@
 #include "stb_image.h"
 #include "../Backend/Backend.hpp"
 #include "Exe Icons/256x256.hpp"
-#include <ctime>
 
 #include "Crosshair/Crosshair.h"
-#include "GUI/GUI.h"
 #include "OnScreenTimers/OnScreenTimers.hpp"
 #include "miscLIB/miscLIB.hpp"
 

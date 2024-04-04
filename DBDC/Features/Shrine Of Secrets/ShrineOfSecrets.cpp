@@ -57,9 +57,6 @@ bool shrine_of_secrets::load_cache()
 
     is_ready = true;
     return true;
-
-
-    return false;
 }
 
 void shrine_of_secrets::init()
