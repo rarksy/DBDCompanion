@@ -182,8 +182,8 @@ void menu::render_ui()
         ImGui::GetWindowDrawList()->AddRectFilled({8, 30}, {38, 35}, menu::styling::menu_accent.to_imcolor(), 4.F);
 
 
-        ImGui::SetCursorPos({7, 9});
-        if (ImGui::InvisibleButton("##HamburgerToggleButtonInsideMenu", {39, 36}))
+        ImGui::SetCursorPos({0, 0});
+        if (ImGui::InvisibleButton("##HamburgerToggleButtonInsideMenudrawbox", {39, 36}))
             hamburger_open = !hamburger_open;
 
         if (ImGui::Button("Config Editor"))
@@ -247,7 +247,7 @@ void menu::render_ui()
     ImGui::GetWindowDrawList()->AddRectFilled({8, 30}, {38, 35}, menu::styling::menu_accent.to_imcolor(), 4.F);
 
     const auto cursor_pos = ImGui::GetCursorPos();
-    ImGui::SetCursorPos({7, 9});
+    ImGui::SetCursorPos({4, 4});
     if (ImGui::InvisibleButton("##HamburgerToggleButtonOutsideMenu", {39, 36}))
         hamburger_open = !hamburger_open;
 
