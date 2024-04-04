@@ -149,6 +149,9 @@ void menu::render_ui()
 
     else if (menu_to_show == 5)
     {
+        static std::once_flag flag_load;
+        std::call_once(flag_load, onscreen_timers::load_timer_profile);
+        
         onscreen_timers::render_ui();
     }
 

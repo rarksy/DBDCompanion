@@ -9,6 +9,9 @@ namespace onscreen_timers
     void delete_timer(const int& index);
     void keypress_loop();
     void render_timers();
+
+    bool save_timer_profile();
+    void load_timer_profile();
     
     void render_ui();
 
@@ -17,7 +20,6 @@ namespace onscreen_timers
         std::string name;
         int duration;
         int hotkey;
-        int drop_down_index = 0;
 
         std::chrono::steady_clock::time_point start_time;
         std::chrono::steady_clock::time_point end_time;
@@ -29,10 +31,4 @@ namespace onscreen_timers
     
     inline std::vector<timer> all_timers;
     inline std::vector<timer> active_timers;
-    inline std::vector<std::pair<std::string, double>> all_timer_options = {
-        {"Unhook Endurance (10s)", 10},
-        {"Exhausted (40s)", 40},
-        {"Decisive Strike (60s)", 60},
-        {"Off The Record (80s)", 80},
-    };
 }
