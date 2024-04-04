@@ -57,12 +57,23 @@ void onscreen_timers::keypress_loop()
 
 void onscreen_timers::render_timers()
 {
+    const auto time_now = std::chrono::steady_clock::now();
+
     for (int i = 0; i < active_timers.size(); i++)
     {
-        const timer t = active_timers[i];
-        const auto time_now = std::chrono::steady_clock::now();
-        const std::string duration_to_seconds = std::to_string(std::chrono::duration_cast<std::chrono::seconds>(t.end_time - time_now).count());
-        const std::string timer_string = std::string(t.name) + ": " + duration_to_seconds;
+        const timer& t = active_timers[i];
+        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(t.end_time - time_now);
+        double seconds_with_one_decimal = duration.count() / 1000.0;
+
+        if (seconds_with_one_decimal < 0) {
+            seconds_with_one_decimal = 0;
+        }
+
+        std::string timer_string = std::string(t.name) + ": " + std::to_string(seconds_with_one_decimal);
+        
+        size_t pos = timer_string.find('.');
+        if (pos != std::string::npos && timer_string.length() > pos + 2) 
+            timer_string = timer_string.substr(0, pos + 2);
 
         ImGui::GetBackgroundDrawList()->AddText(ImVec2(40, (backend::screen_height / 2.75) - (20 * i)), t.text_color.to_imcolor(), timer_string.c_str());
 
