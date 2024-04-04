@@ -289,7 +289,7 @@ void menu::create_global_style()
     colors[ImGuiCol_Button] = styling::menu_accent.to_imvec4();
     colors[ImGuiCol_ButtonHovered] = RGBToImVec4(styling::menu_accent.r, styling::menu_accent.g + 70, styling::menu_accent.b + 70);
     colors[ImGuiCol_ButtonActive] = RGBToImVec4(styling::menu_accent.r, styling::menu_accent.g + 120, styling::menu_accent.b + 120);
-
+    
     // Main Window
     colors[ImGuiCol_FrameBg] = RGBToImVec4(20, 20, 20);
     colors[ImGuiCol_FrameBgHovered] = RGBToImVec4(styling::menu_accent.r, styling::menu_accent.g + 70, styling::menu_accent.b + 70);
@@ -298,6 +298,7 @@ void menu::create_global_style()
     style.DisabledAlpha = 0.3F;
     style.FrameBorderSize = 1.7F;
     style.DisabledAlpha = 0.1f;
+    style.ChildRounding = 3.F;
 
     // Slider
     colors[ImGuiCol_Slider] = styling::menu_accent.to_imvec4();
