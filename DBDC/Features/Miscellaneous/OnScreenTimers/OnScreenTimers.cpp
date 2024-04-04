@@ -4,13 +4,14 @@
 #include "../../GUI/GUI.h"
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_internal.h"
+#include "ImGui/imgui_stdlib.h"
 #include <conio.h>
 
 void onscreen_timers::add_new_timer()
 {
     timer t;
-    t.name = all_timer_options[0].first;
-    t.duration = all_timer_options[0].second;
+    t.name = "";
+    t.duration = 10;
     t.hotkey = VK_F1;
 
     all_timers.push_back(t);
@@ -52,7 +53,7 @@ void onscreen_timers::render_timers()
         const timer t = active_timers[i];
         const auto time_now = std::chrono::steady_clock::now();
         const std::string duration_to_seconds = std::to_string(std::chrono::duration_cast<std::chrono::seconds>(t.end_time - time_now).count());
-        const std::string timer_string = t.name + ": " + duration_to_seconds;
+        const std::string timer_string = std::string(t.name) + ": " + duration_to_seconds;
     
         ImGui::GetBackgroundDrawList()->AddText(ImVec2(40, (backend::screen_height / 2.75) - (20 * i)), ImColor(255, 255, 255), timer_string.c_str());
     
@@ -67,7 +68,8 @@ void onscreen_timers::render_ui()
     gui::begin_group_box("onscreen_timer_groupbox", ImVec2(275, 0));
     ImGui::SeparatorText("Timer Creation");
     gui::tool_tip("Allows you to setup hotkeys to display timers on your screen for relevant information");
-    
+
+    ImGui::SetCursorPosY(30.F);
     if (ImGui::Checkbox("Enable", &onscreen_timers::enabled))
     {
         if (onscreen_timers::enabled)
@@ -98,41 +100,21 @@ void onscreen_timers::render_ui()
         
         ImGui::SameLine();
 
-        const std::string drop_down_label = temp_label + "DropDown" + std::to_string(i);
+        const std::string text_box_label = temp_label + "text_box" + std::to_string(i);
+        const std::string duration_box_label = temp_label + "duration_box" + std::to_string(i);
 
-        ImGui::SetNextItemWidth(200.F);
+        ImGui::SetNextItemWidth(160.F);
 
-        bool item_selected = false;
-
-        ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(0.1, 0.1, 0.1, 1));
-        if (ImGui::BeginCombo(drop_down_label.c_str(), all_timer_options[t.drop_down_index].first.c_str(), ImGuiComboFlags_NoArrowButton))
-        {
-            const size_t timer_options_size = all_timer_options.size();
-            for (int n = 0; n < timer_options_size; n++)
-            {
-                const bool is_selected = (t.drop_down_index == n);
-                if (ImGui::Selectable(all_timer_options[n].first.c_str(), is_selected))
-                {
-                    t.drop_down_index = n;
-        
-                    const auto option = all_timer_options[t.drop_down_index];
-        
-                    t.name = option.first;
-                    t.duration = option.second;
-                    item_selected = true;
-                }
-        
-                if (is_selected)
-                    ImGui::SetItemDefaultFocus();
-            }
-            ImGui::EndCombo();
-        }
-        ImGui::PopStyleColor();
+        ImGui::InputTextWithHint(text_box_label.c_str(), "Input Timer Name...", &t.name);
+        ImGui::SameLine();
+        ImGui::SetNextItemWidth(40.F);
+        ImGui::InputInt(duration_box_label.c_str(), &t.duration, NULL, NULL);
         
         ImGui::SameLine();
         const auto cursor_pos = ImGui::GetCursorPos();
+        ImGui::SetCursorPos(ImVec2(cursor_pos.x - 4, cursor_pos.y + 1));
         ImGui::Text("X");
-        ImGui::SetCursorPos(ImVec2(cursor_pos.x - 1, cursor_pos.y + 3));
+        ImGui::SetCursorPos(ImVec2(cursor_pos.x - 5, cursor_pos.y + 4));
         const std::string button_label = "delete_button" + std::to_string(i);
         
         if (ImGui::InvisibleButton(button_label.c_str(), ImVec2(14, 20)))

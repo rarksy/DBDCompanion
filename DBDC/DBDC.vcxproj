@@ -22,6 +22,7 @@
     <ClCompile Include="Dependencies\ImGui\imgui_draw.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui_impl_glfw.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="Dependencies\ImGui\imgui_stdlib.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui_tables.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="Features\Miscellaneous\OnScreenTimers\OnScreenTimers.cpp" />
@@ -83,6 +84,7 @@
     <ClInclude Include="Dependencies\ImGui\imgui_impl_opengl3.h" />
     <ClInclude Include="Dependencies\ImGui\imgui_impl_opengl3_loader.h" />
     <ClInclude Include="Dependencies\ImGui\imgui_internal.h" />
+    <ClInclude Include="Dependencies\ImGui\imgui_stdlib.h" />
     <ClInclude Include="Dependencies\ImGui\imstb_rectpack.h" />
     <ClInclude Include="Dependencies\ImGui\imstb_textedit.h" />
     <ClInclude Include="Dependencies\ImGui\imstb_truetype.h" />

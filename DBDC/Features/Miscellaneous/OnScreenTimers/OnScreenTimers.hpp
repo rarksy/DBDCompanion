@@ -24,6 +24,8 @@ namespace onscreen_timers
     };
 
     inline bool enabled;
+
+    
     
     inline std::vector<timer> all_timers;
     inline std::vector<timer> active_timers;
