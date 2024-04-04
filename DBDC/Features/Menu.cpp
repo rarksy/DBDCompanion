@@ -191,11 +191,13 @@ void menu::render_ui()
 
         if (ImGui::Button("Crosshair Overlay"))
             menu_to_show = 3;
+        gui::tool_tip("Allows you to use a crosshair overlay with many customization options");
 
         ImGui::Spacing();
 
         if (ImGui::Button("On-Screen Timers"))
             menu_to_show = 5;
+        gui::tool_tip("Allows you to setup hotkeys to display timers on your screen for relevant information");
 
         if (menu_to_show != 0)
         {

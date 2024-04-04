@@ -16,7 +16,6 @@
 
 int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
 {
-
     if (!backend::init_glfw())
         return -1;
     

@@ -128,7 +128,6 @@ void onscreen_timers::render_ui()
     gui::begin_group_box("onscreen_timer_groupbox", ImVec2(275, 0));
     ImGui::SetCursorPosY(2.F);
     ImGui::SeparatorText("Timer Creation");
-    gui::tool_tip("Allows you to setup hotkeys to display timers on your screen for relevant information");
 
     ImGui::SetCursorPosY(25.F);
     if (ImGui::Checkbox("Enable", &onscreen_timers::enabled))
