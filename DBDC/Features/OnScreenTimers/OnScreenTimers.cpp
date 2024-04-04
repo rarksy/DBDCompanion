@@ -62,7 +62,7 @@ void onscreen_timers::render_timers()
     for (int i = 0; i < active_timers.size(); i++)
     {
         const timer& t = active_timers[i];
-        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(t.end_time - time_now);
+        const auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(t.end_time - time_now);
         double seconds_with_one_decimal = duration.count() / 1000.0;
 
         if (seconds_with_one_decimal < 0) {
