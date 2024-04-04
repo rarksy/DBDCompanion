@@ -192,7 +192,7 @@ std::string misc::CompressString(const std::string& input)
         throw(std::runtime_error("deflateInit failed while compressing."));
 
     zs.next_in = (Bytef*)input.data();
-    zs.avail_in = input.size();
+    zs.avail_in = static_cast<uInt>(input.size());
 
     int ret;
     char outbuffer[10240];

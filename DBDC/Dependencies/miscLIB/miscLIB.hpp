@@ -317,8 +317,9 @@ namespace ml
             time_t current_time = time(nullptr);
             double seconds_since_modification = difftime(current_time, mod_time);
 
-            return seconds_since_modification;
+            return static_cast<int>(seconds_since_modification);
         }
+        return -1;
     }
 
     inline bool json_write_data(const std::string& file_path, nlohmann::json json_data)
@@ -356,7 +357,7 @@ namespace ml
         return nullptr;
     }
 
-    inline std::string unix_format_number(int num)
+    inline std::string unix_format_number(time_t num)
     {
         return (num < 10 ? "0" + std::to_string(num) : std::to_string(num));
     }

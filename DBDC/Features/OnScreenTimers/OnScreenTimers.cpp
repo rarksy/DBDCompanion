@@ -151,7 +151,6 @@ void onscreen_timers::render_ui()
         const std::string duration_box_label = temp_label + "duration_box" + std::to_string(i);
 
         ImGui::SetNextItemWidth(160.F);
-
         if (ImGui::InputTextWithHint(text_box_label.c_str(), "Input Timer Name...", &t.name))
             save_timer_profile();
         gui::tool_tip("Sets the name that will be displayed when the timer is activated");

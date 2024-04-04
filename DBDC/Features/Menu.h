@@ -49,10 +49,10 @@ struct color
 
     void apply_from_imvec4(ImVec4 imvec4)
     {
-        this->r = imvec4.x * 255;
-        this->g = imvec4.y * 255;
-        this->b = imvec4.z * 255;
-        this->a = imvec4.w * 255;
+        this->r = static_cast<int>(imvec4.x * 255.F);
+        this->g = static_cast<int>(imvec4.y * 255.F);
+        this->b = static_cast<int>(imvec4.z * 255.F);
+        this->a = static_cast<int>(imvec4.w * 255.F);
     }
 
     ImColor* as_imcolor()
