@@ -183,7 +183,7 @@ void menu::render_ui()
 
 
         ImGui::SetCursorPos({0, 0});
-        if (ImGui::InvisibleButton("##HamburgerToggleButtonInsideMenudrawbox", {39, 36}))
+        if (ImGui::InvisibleButton("##HamburgerToggleButtonInsideMenu", {39, 36}))
             hamburger_open = !hamburger_open;
 
         if (ImGui::Button("Config Editor"))
