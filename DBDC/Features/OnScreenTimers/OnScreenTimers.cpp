@@ -130,6 +130,7 @@ void onscreen_timers::render_ui()
             active_timers.clear();
         }
     }
+    gui::tool_tip("Allows timers to be displayed\nNote: Disabling this will disable any currently running timers");
 
     const size_t timers_size = all_timers.size();
     for (int i = 0; i < timers_size; i++)
@@ -141,6 +142,8 @@ void onscreen_timers::render_ui()
         const std::string hotkey_label = temp_label + "Timer" + std::to_string(i);
         if (ImGui::Hotkey(hotkey_label.c_str(), &t.hotkey, ImVec2(30, 0)))
             save_timer_profile();
+        gui::tool_tip("Sets the key used to activate the timer");
+
 
         ImGui::SameLine();
 
@@ -151,11 +154,15 @@ void onscreen_timers::render_ui()
 
         if (ImGui::InputTextWithHint(text_box_label.c_str(), "Input Timer Name...", &t.name))
             save_timer_profile();
+        gui::tool_tip("Sets the name that will be displayed when the timer is activated");
+
         
         ImGui::SameLine();
         ImGui::SetNextItemWidth(40.F);
         if (ImGui::InputInt(duration_box_label.c_str(), &t.duration, NULL, NULL))
             save_timer_profile();
+        gui::tool_tip("Controls the duration of the timer (numbers only)");
+
 
         ImGui::SameLine();
         const auto cursor_pos = ImGui::GetCursorPos();
@@ -169,6 +176,8 @@ void onscreen_timers::render_ui()
             delete_timer(i);
             break;
         }
+        gui::tool_tip("Deletes the timer");
+
         ImGui::Spacing();
     }
 
