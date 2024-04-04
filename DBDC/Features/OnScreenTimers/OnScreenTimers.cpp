@@ -14,6 +14,8 @@ void onscreen_timers::add_new_timer()
     t.hotkey = VK_F1;
 
     all_timers.push_back(t);
+
+    save_timer_profile();
 }
 
 void onscreen_timers::delete_timer(const int& index)
@@ -113,10 +115,11 @@ void onscreen_timers::render_ui()
 {
     ImGui::SetCursorPosY(45.F);
     gui::begin_group_box("onscreen_timer_groupbox", ImVec2(275, 0));
+    ImGui::SetCursorPosY(2.F);
     ImGui::SeparatorText("Timer Creation");
     gui::tool_tip("Allows you to setup hotkeys to display timers on your screen for relevant information");
 
-    ImGui::SetCursorPosY(30.F);
+    ImGui::SetCursorPosY(25.F);
     if (ImGui::Checkbox("Enable", &onscreen_timers::enabled))
     {
         if (onscreen_timers::enabled)
@@ -191,10 +194,13 @@ void onscreen_timers::render_ui()
 
         ImGui::Spacing();
     }
-
-    ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPos().x, ImGui::GetCursorPos().y + 6));
-    if (ImGui::Button("Add New Timer", ImVec2(260.F, 0.F)) && all_timers.size() < 12)
-        add_new_timer();
+    
+    if (all_timers.size() < 12)
+    {
+        ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPos().x, ImGui::GetCursorPos().y + 6));
+        if (ImGui::Button("Add New Timer", ImVec2(260.F, 0.F)) && all_timers.size() < 12)
+            add_new_timer();   
+    }
 
     gui::end_group_box();
 }
