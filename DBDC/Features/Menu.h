@@ -11,7 +11,7 @@
 
 #include "Crosshair/Crosshair.h"
 #include "GUI/GUI.h"
-#include "Miscellaneous/OnScreenTimers/OnScreenTimers.hpp"
+#include "OnScreenTimers/OnScreenTimers.hpp"
 #include "miscLIB/miscLIB.hpp"
 
 struct color

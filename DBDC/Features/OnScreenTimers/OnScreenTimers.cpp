@@ -1,7 +1,7 @@
 ﻿#include "OnScreenTimers.hpp"
 #include <Windows.h>
 
-#include "../../GUI/GUI.h"
+#include "../GUI/GUI.h"
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_internal.h"
 #include "ImGui/imgui_stdlib.h"

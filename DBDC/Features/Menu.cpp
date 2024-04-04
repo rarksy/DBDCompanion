@@ -13,7 +13,7 @@
 #include "../Misc/Misc.hpp"
 #include "HookTracker\HookTracker.hpp"
 #include "Images/Images.h"
-#include "Miscellaneous/OnScreenTimers/OnScreenTimers.hpp"
+#include "OnScreenTimers/OnScreenTimers.hpp"
 #include "Perk Packager/PerkPackager.h"
 #include "Perk Packager/PPMenu.h"
 #include "Shrine Of Secrets/ShrineOfSecrets.hpp"
