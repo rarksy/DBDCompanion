@@ -9,11 +9,6 @@
 #include "Exe Icons/256x256.hpp"
 #include "ImGui/imgui_impl_glfw.h"
 #include "miscLIB/miscLIB.hpp"
-#include <opencv2/opencv.hpp>
-
-#include "Features/HookTracker/HookTracker.hpp"
-#include "Images/HookTracker/Hook.hpp"
-#include "Misc/Misc.hpp"
 
 //#define debug_winmain
 
@@ -76,41 +71,8 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
 }
 #else
 
-
-#include <iostream>
-#include <Psapi.h>
-
 int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int) // alternate winmain used for testing
 {
-    AllocConsole();
-    FILE *fDummy;
-    freopen_s(&fDummy, "CONOUT$", "w", stdout);
-    
-    // Get a handle to the current process
-    HANDLE hProcess = GetCurrentProcess();
-
-    // Enumerate the loaded modules
-    HMODULE hModules[1024];
-    DWORD cbNeeded;
-    if (EnumProcessModules(hProcess, hModules, sizeof(hModules), &cbNeeded)) {
-        // Calculate how many modules were actually enumerated
-        int moduleCount = cbNeeded / sizeof(HMODULE);
-        
-        // Iterate through each module and print its filename
-        for (int i = 0; i < moduleCount; ++i) {
-            TCHAR szModule[MAX_PATH];
-            if (GetModuleFileNameEx(hProcess, hModules[i], szModule, sizeof(szModule) / sizeof(TCHAR))) {
-                std::wcout << szModule << std::endl;
-            }
-        }
-    } else {
-        std::cerr << "Failed to enumerate process modules." << std::endl;
-    }
-
-    // Close the handle to the process
-    CloseHandle(hProcess);
-
-    Sleep(10000);
 
     return 0;
 }
