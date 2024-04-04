@@ -21,7 +21,7 @@
 void menu::run_loop()
 {
     {
-        const auto accent_data = ml::json_get_data_from_file(backend::exe_directory.string() + backend::settings_directory + "settings.json");
+        const auto accent_data = ml::json_get_data_from_file(backend::exe_directory.string() + backend::settings_directory + "\\data\\settings.json");
 
         if (accent_data.contains("menu_accent"))
         {
@@ -238,7 +238,7 @@ void menu::render_ui()
             accent_data["menu_accent"]["b"] = styling::menu_accent.b;
             accent_data["menu_accent"]["a"] = styling::menu_accent.a;
 
-            ml::json_write_data(backend::exe_directory.string() + backend::settings_directory + "settings.json", accent_data);
+            ml::json_write_data(backend::exe_directory.string() + backend::settings_directory + "\\data\\settings.json", accent_data);
         }
     }
 

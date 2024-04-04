@@ -21,7 +21,7 @@ void onscreen_timers::delete_timer(const int& index)
 {
     all_timers.erase(all_timers.begin() + index);
 
-    const std::string file_path = backend::exe_directory.string() + backend::settings_directory + "timer_profile.json";
+    const std::string file_path = backend::exe_directory.string() + backend::settings_directory + "\\data\\timer_profile.json";
 
     nlohmann::json data = ml::json_get_data_from_file(file_path);
 
@@ -84,12 +84,12 @@ bool onscreen_timers::save_timer_profile()
         data[i]["hotkey"] = t.hotkey;
     }
 
-    return ml::json_write_data(backend::exe_directory.string() + backend::settings_directory + "timer_profile.json", data);
+    return ml::json_write_data(backend::exe_directory.string() + backend::settings_directory + "\\data\\timer_profile.json", data);
 }
 
 void onscreen_timers::load_timer_profile()
 {
-    nlohmann::json data = ml::json_get_data_from_file(backend::exe_directory.string() + backend::settings_directory + "timer_profile.json");
+    nlohmann::json data = ml::json_get_data_from_file(backend::exe_directory.string() + backend::settings_directory + "\\data\\timer_profile.json");
 
     for (const auto& t : data)
     {
