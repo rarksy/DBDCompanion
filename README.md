@@ -13,11 +13,12 @@ The config editor is always being updated and plans to feature things i **didn't
 # Hook Counter
 ![image](https://github.com/rarksy/DBDCompanion/assets/70506725/2cd129f0-403b-4cbc-a5fc-9ba781babb66)
 
-The hook counter uses image recognition to detect when a survivor has been hooked, when a detection is made a pip icon will be rendered next to the corresponding survivors portrait just like when you're playing survivor!  
-This part of DBDC is still in prototype alpha so it is not polished and WILL contain bugs.  
+The hook counter will use image recognition to detect when a survivor has been hooked, when a detection is made a pip icon will be rendered next to the corresponding survivors portrait just like when you're playing survivor!  
+This part of DBDC is still in development and not currently available
 
 # Crosshair Overlay
-![image](https://github.com/rarksy/DBDCompanion/assets/70506725/f1f557eb-a364-4e89-9dfe-c1f5463ddabc)
+![image](https://github.com/rarksy/DBDCompanion/assets/70506725/b09ecf97-9a3f-46f3-ab1c-62299d2aba0d)
+
 
 
 A basic crosshair overlay allowing you to use and customize a crosshair in game!  
@@ -34,7 +35,7 @@ Hook Counter: The hook counter doesn't interact with Dead By Daylight in any way
 In lamens terms: you can remember which survivors have been hooked using your mind, so this is not an advantage.  
 Should the developers make an effort to counteract something this feature will be removed.  
   
-[Crosshair Overlay](https://cdn.discordapp.com/attachments/1051308034942570528/1193797084143427645/GBP7jv1XYAAd1iN.png?ex=65ae052c&is=659b902c&hm=5eff54bdb5d5a730e913394a1e65273c821d031e4f12dd9f140851af5bb4f893&). The developers have officially confirmed their endorsement for crosshair overlays as something you can freely use!
+[Crosshair Overlay](https://www.reddit.com/r/deadbydaylight/comments/18i9lmj/well_we_finally_have_direct_confirmation_from_the/). The developers have officially confirmed their endorsement for crosshair overlays as something you can freely use!
 ## What's The Catch?
 **No catch :)** developing this program allows me to display and improve on my ability to write clean, easy to read code, plus i get to help anyone who might find anything this program has to offer useful!  
 ## Can I Support You?
