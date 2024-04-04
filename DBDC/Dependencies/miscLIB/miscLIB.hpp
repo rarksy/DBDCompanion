@@ -32,6 +32,15 @@ namespace ml
         return {content};
     }
 
+    inline std::string to_lower(std::string content)
+    {
+        std::string temp = content;
+
+        std::transform(temp.begin(), temp.end(), temp.begin(), [](unsigned char c){ return std::tolower(c); });
+
+        return temp;
+    }
+
     template <typename T>
     std::vector<std::string> split_to_vector(T content, char delimiter)
     {
@@ -43,6 +52,42 @@ namespace ml
             tokens.push_back(token);
 
         return tokens;
+    }
+
+    inline std::string wide_str_to_str(const std::wstring& wstr)
+    {
+        int len;
+        int slength = (int)wstr.length() + 1;
+        len = WideCharToMultiByte(CP_ACP, 0, wstr.c_str(), slength, 0, 0, 0, 0); 
+        char* buf = new char[len];
+        WideCharToMultiByte(CP_ACP, 0, wstr.c_str(), slength, buf, len, 0, 0); 
+        std::string r(buf);
+        delete[] buf;
+        return r;
+    }
+    
+    inline std::string open_file_dialog() {
+        OPENFILENAME ofn;
+        wchar_t szFile[260];
+
+        ZeroMemory(&ofn, sizeof(ofn));
+        ofn.lStructSize = sizeof(ofn);
+        ofn.hwndOwner = NULL;
+        ofn.lpstrFile = szFile;
+        ofn.lpstrFile[0] = '\0';
+        ofn.nMaxFile = sizeof(szFile);
+        ofn.lpstrFilter = L"PNG Files (*.png)\0*.png\0All Files (*.*)\0*.*\0";
+        ofn.nFilterIndex = 1;
+        ofn.lpstrFileTitle = NULL;
+        ofn.nMaxFileTitle = 0;
+        ofn.lpstrInitialDir = NULL;
+        ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
+        
+        if (GetOpenFileName(&ofn) == TRUE) {
+            return wide_str_to_str(ofn.lpstrFile);
+        } else {
+            return "";
+        }
     }
 
     inline std::filesystem::path get_exe_directory()
@@ -63,10 +108,14 @@ namespace ml
         if (file_or_directory_exists(file_name))
             return false;
 
+        
+
         std::ofstream file_to_create(file_name);
         file_to_create.close();
 
-        return file_or_directory_exists(file_name);
+        const bool created = file_or_directory_exists(file_name);
+
+        return created;
     }
 
     inline bool create_directory(const std::string& directory_path)
@@ -213,8 +262,8 @@ namespace ml
         response->append((char*)contents, size * nmemb);
         return size * nmemb;
     }
-    
-    inline nlohmann::json json_get(const std::string& url)
+
+    inline nlohmann::json json_get_from_url(const std::string& url)
     {
         curl_global_init(CURL_GLOBAL_ALL);
 
@@ -244,9 +293,9 @@ namespace ml
         curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &http_code);
         if (http_code != 200)
         {
-            curl_easy_cleanup(curl);
+            curl_easy_cleanup(curl);    
             curl_global_cleanup();
-            throw std::runtime_error("HTTP error: " + std::to_string(http_code));
+            return {};
         }
 
         curl_easy_cleanup(curl);
@@ -255,7 +304,60 @@ namespace ml
         return nlohmann::json::parse(response);
     }
 
-    inline std::string unix_format_number(int num)
+    inline int get_seconds_since_file_modified(std::string file_path)
+    {
+        if (!file_or_directory_exists(file_path))
+            return -1;
+        
+        struct stat result;
+
+        if (stat(file_path.c_str(), &result) == 0)
+        {
+            time_t mod_time = result.st_mtime;
+            time_t current_time = time(nullptr);
+            double seconds_since_modification = difftime(current_time, mod_time);
+
+            return static_cast<int>(seconds_since_modification);
+        }
+        return -1;
+    }
+
+    inline bool json_write_data(const std::string& file_path, nlohmann::json json_data)
+    {
+        std::ofstream file_to_write(file_path);
+
+        if (file_to_write.is_open())
+        {
+            file_to_write << json_data.dump(4);
+            file_to_write.close();
+
+            return true;
+        }
+        return false;
+    }
+
+    inline nlohmann::json json_get_data_from_file(const std::string& file_path)
+    {
+        std::ifstream file_to_read(file_path);
+
+        if (file_to_read.is_open())
+        {
+            if (std::filesystem::is_empty(file_path))
+                return nullptr;
+            
+            nlohmann::json data;
+
+            file_to_read >> data;
+
+            file_to_read.close();
+
+            return data;
+        }
+
+        return nullptr;
+    }
+
+    inline std::string unix_format_number(time_t num)
     {
         return (num < 10 ? "0" + std::to_string(num) : std::to_string(num));
     }
@@ -280,5 +382,75 @@ namespace ml
             unix_format_number(remainingMinutes) + ":" +
             unix_format_number(remainingSeconds)
         );
+    }
+
+    inline std::string html_formatter(std::string html_content)
+    {
+        size_t pos = 0;
+
+        // Replace <br> with newline
+        while ((pos = html_content.find("<br>", pos)) != std::string::npos)
+        {
+            html_content.replace(pos, 4, "\n");
+            pos += 1;
+        }
+
+        pos = 0;
+        while ((pos = html_content.find('<'), pos) != std::string::npos)
+        {
+            size_t end_pos = html_content.find('>', pos);
+
+            if (end_pos != std::string::npos)
+                html_content.erase(pos, end_pos - pos + 1);
+        }
+
+        // Replace % with %%
+        pos = html_content.find('%');
+        while (pos != std::string::npos)
+        {
+            html_content.replace(pos, 1, "%%");
+            pos = html_content.find('%', pos + 2); // Move past the inserted "%%"
+        }
+
+        return html_content;
+    }
+
+
+    inline bool download_file(const std::string& url, const std::string& file_path)
+    {
+        CURL* curl = curl_easy_init();
+        if (curl)
+        {
+            // Create directories if they don't exist
+            std::filesystem::create_directories(std::filesystem::path(file_path).parent_path());
+
+            FILE* fp;
+            errno_t err = fopen_s(&fp, file_path.c_str(), "wb");
+            if (err != 0 || !fp)
+            {
+                std::cerr << "Failed to open file for writing: " << file_path << std::endl;
+                return false;
+            }
+
+            curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+            curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
+            curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, NULL);
+            curl_easy_setopt(curl, CURLOPT_FAILONERROR, 1L);
+
+            CURLcode res = curl_easy_perform(curl);
+            curl_easy_cleanup(curl);
+            fclose(fp);
+
+            if (res == CURLE_OK)
+            {
+                return true;
+            }
+            else
+            {
+                remove(file_path.c_str()); // Delete partially downloaded file
+                return false;
+            }
+        }
+        return false;
     }
 }

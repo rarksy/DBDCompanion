@@ -16,20 +16,23 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Backend\Backend.cpp" />
+    <ClCompile Include="Dependencies\GUI\GUI.cpp" />
     <ClCompile Include="Dependencies\Images\Images.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui_demo.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui_draw.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui_impl_glfw.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="Dependencies\ImGui\imgui_stdlib.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui_tables.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui_widgets.cpp" />
+    <ClCompile Include="Features\OnScreenTimers\OnScreenTimers.cpp" />
+    <ClCompile Include="Features\Shrine Of Secrets\ShrineOfSecrets.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Features\ConfigEditor\CEMenu.cpp" />
     <ClCompile Include="Features\ConfigEditor\ConfigEditor.cpp" />
     <ClCompile Include="Features\Crosshair\CMenu.cpp" />
     <ClCompile Include="Features\Crosshair\Crosshair.cpp" />
-    <ClCompile Include="Features\GUI\GUI.cpp" />
     <ClCompile Include="Features\HookTracker\HTMenu.cpp" />
     <ClCompile Include="Features\HookTracker\HookTracker.cpp" />
     <ClCompile Include="Features\Menu.cpp" />
@@ -40,6 +43,7 @@
   <ItemGroup>
     <ClInclude Include="Backend\Backend.hpp" />
     <ClInclude Include="Dependencies\Base64\Base64.hpp" />
+    <ClInclude Include="Dependencies\color\color.hpp" />
     <ClInclude Include="Dependencies\curl\curl.h" />
     <ClInclude Include="Dependencies\curl\curlver.h" />
     <ClInclude Include="Dependencies\curl\easy.h" />
@@ -60,6 +64,7 @@
     <ClInclude Include="Dependencies\GLFW\GL\glew.h" />
     <ClInclude Include="Dependencies\GLFW\GL\glxew.h" />
     <ClInclude Include="Dependencies\GLFW\GL\wglew.h" />
+    <ClInclude Include="Dependencies\GUI\GUI.h" />
     <ClInclude Include="Dependencies\Images\AntiAliasing\Off.hpp" />
     <ClInclude Include="Dependencies\Images\AntiAliasing\On.hpp" />
     <ClInclude Include="Dependencies\Images\HookTracker\Hook.hpp" />
@@ -81,6 +86,7 @@
     <ClInclude Include="Dependencies\ImGui\imgui_impl_opengl3.h" />
     <ClInclude Include="Dependencies\ImGui\imgui_impl_opengl3_loader.h" />
     <ClInclude Include="Dependencies\ImGui\imgui_internal.h" />
+    <ClInclude Include="Dependencies\ImGui\imgui_stdlib.h" />
     <ClInclude Include="Dependencies\ImGui\imstb_rectpack.h" />
     <ClInclude Include="Dependencies\ImGui\imstb_textedit.h" />
     <ClInclude Include="Dependencies\ImGui\imstb_truetype.h" />
@@ -444,12 +450,13 @@
     <ClInclude Include="Features\ConfigEditor\ConfigEditor.hpp" />
     <ClInclude Include="Features\Crosshair\CMenu.h" />
     <ClInclude Include="Features\Crosshair\Crosshair.h" />
-    <ClInclude Include="Features\GUI\GUI.h" />
     <ClInclude Include="Features\HookTracker\HTMenu.h" />
     <ClInclude Include="Features\HookTracker\HookTracker.hpp" />
     <ClInclude Include="Features\Menu.h" />
+    <ClInclude Include="Features\OnScreenTimers\OnScreenTimers.hpp" />
     <ClInclude Include="Features\Perk Packager\PerkPackager.h" />
     <ClInclude Include="Features\Perk Packager\PPMenu.h" />
+    <ClInclude Include="Features\Shrine Of Secrets\ShrineOfSecrets.hpp" />
     <ClInclude Include="Misc\Misc.hpp" />
   </ItemGroup>
   <ItemGroup>

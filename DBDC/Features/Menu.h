@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include <nlohmann/json.hpp>
 
 #include "GLFW/glfw3.h"
 #include "ImGui/imgui.h"
@@ -7,65 +6,11 @@
 #include "stb_image.h"
 #include "../Backend/Backend.hpp"
 #include "Exe Icons/256x256.hpp"
-#include <ctime>
-#include "GUI/GUI.h"
+
+#include "Crosshair/Crosshair.h"
+#include "OnScreenTimers/OnScreenTimers.hpp"
 #include "miscLIB/miscLIB.hpp"
-
-struct color
-{
-    int r;
-    int g;
-    int b;
-    int a = 255;
-
-    color() : r(0), g(0), b(0)
-    {
-    }
-
-    color(int _r, int _g, int _b, int _a = 255) : r(_r), g(_g), b(_b), a(_a)
-    {
-    }
-
-    ImVec4 to_imvec4()
-    {
-        return {r / 255.F, g / 255.F, b / 255.F, a / 255.F};
-    }
-
-    ImColor to_imcolor()
-    {
-        return ImColor(r, g, b, a);
-    }
-
-    void apply_from_imcolor(const ImColor& imcolor)
-    {
-        this->r = static_cast<int>(imcolor.Value.x);
-        this->g = static_cast<int>(imcolor.Value.y);
-        this->b = static_cast<int>(imcolor.Value.z);
-        this->a = static_cast<int>(imcolor.Value.w);
-    }
-
-    void apply_from_imvec4(ImVec4 imvec4)
-    {
-        this->r = imvec4.x * 255;
-        this->g = imvec4.y * 255;
-        this->b = imvec4.z * 255;
-        this->a = imvec4.w * 255;
-    }
-
-    ImColor* as_imcolor()
-    {
-        static ImColor im_color;
-        im_color = this->to_imcolor();
-        return &im_color;
-    }
-
-    ImVec4* as_imvec4()
-    {
-        static ImVec4 im_vec4;
-        im_vec4 = this->to_imvec4();
-        return &im_vec4;
-    }
-};
+#include "color/color.hpp"
 
 namespace menu
 {
@@ -76,49 +21,6 @@ namespace menu
     inline GLFWwindow* main_window = nullptr;
     inline ImGuiContext* main_context = nullptr;
 
-    struct shrine_of_secrets
-    {
-        struct perk
-        {
-            std::string id;
-            std::string name;
-            std::string description;
-        };
-
-        nlohmann::json shrine_data;
-        std::vector<perk> perk_data;
-
-        bool unavailable = false;
-
-        shrine_of_secrets()
-        {
-            this->shrine_data = ml::json_get("https://dbd.tricky.lol/api/shrine?includeperkinfo=1");
-
-            if (!this->shrine_data["error"].is_null())
-                this->unavailable = true;
-            else
-            {
-                for (int i = 0; i < 4; i++)
-                {
-                    const auto perk_info = ml::json_get("https://dbd.tricky.lol/api/perkinfo?perk=" + menu::shrine_of_secrets::shrine_data["perks"][i]["id"].get_ref<std::string&>());
-
-                    perk _perk;
-
-                    _perk.id = perk_info["id"];
-                    _perk.name = perk_info["name"];
-                    _perk.description = perk_info["description"];
-
-                    perk_data.push_back(_perk);
-                }
-            }
-        }
-
-        perk get_perk(const int& perk_index)
-        {
-            return perk_data[perk_index];
-        }
-    };
-
     namespace overlay
     {
         inline int window_width;
@@ -127,6 +29,10 @@ namespace menu
         inline GLFWwindow* window = nullptr;
         inline ImGuiContext* context = nullptr;
 
+        inline bool is_overlay_needed()
+        {
+            return (cvars.enabled || onscreen_timers::enabled);
+        }
 
         inline bool is_overlay_created()
         {
@@ -168,6 +74,7 @@ namespace menu
         inline constexpr int item_width = 100;
 
         inline constexpr float font_size = 22.F;
+        inline ImFont* child_font = nullptr;
 
         inline color menu_accent = color(255, 83, 83);
     }

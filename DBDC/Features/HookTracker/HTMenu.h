@@ -2,12 +2,11 @@
 #include <string>
 #include <vector>
 
-#include "ImGui/imgui.h"
 
-namespace HTMenu
+namespace ht_menu
 {
-    void Setup();
-    void RenderUI();
+    void setup();
+    void render_ui();
 
     inline std::vector<std::string> UIScales = {"70", "75", "80", "85", "90", "95", "100"};
 }

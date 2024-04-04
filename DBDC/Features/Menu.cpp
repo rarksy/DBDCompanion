@@ -7,30 +7,40 @@
 #include "Crosshair/CMenu.h"
 #include "Crosshair/Crosshair.h"
 #include "GUI/GUI.h"
-#include "HookTracker\HTMenu.h"
 #include <Windows.h>
-
-#include "../Misc/Misc.hpp"
 #include "HookTracker\HookTracker.hpp"
-#include "Images/Images.h"
+#include "OnScreenTimers/OnScreenTimers.hpp"
 #include "Perk Packager/PerkPackager.h"
+#include "Perk Packager/PPMenu.h"
+#include "Shrine Of Secrets/ShrineOfSecrets.hpp"
 
 void menu::run_loop()
 {
     {
-        const mINI::INIFile file(backend::exe_directory.string() + backend::settings_directory + "Settings");
-        mINI::INIStructure ini;
-        file.read(ini);
+        const auto accent_data = ml::json_get_data_from_file(backend::exe_directory.string() + backend::settings_directory + backend::data_directory + "settings.json");
 
-        if (!ini["Settings"]["MenuAccentR"].empty())
+        if (accent_data.contains("menu_accent"))
         {
-            styling::menu_accent.r = std::atoi(ini["Settings"]["MenuAccentR"].c_str());
-            styling::menu_accent.g = std::atoi(ini["Settings"]["MenuAccentG"].c_str());
-            styling::menu_accent.b = std::atoi(ini["Settings"]["MenuAccentB"].c_str());
-            styling::menu_accent.a = std::atoi(ini["Settings"]["MenuAccentA"].c_str());
+            styling::menu_accent.r = accent_data["menu_accent"]["r"].get<int>();
+            styling::menu_accent.g = accent_data["menu_accent"]["g"].get<int>();
+            styling::menu_accent.b = accent_data["menu_accent"]["b"].get<int>();
+            styling::menu_accent.a = accent_data["menu_accent"]["a"].get<int>();
         }
     }
 
+    std::thread shrine_load_thread([]
+    {
+        if (shrine_of_secrets::is_cache_valid())
+            shrine_of_secrets::load_cache();
+        else
+        {
+            shrine_of_secrets::init();
+
+            if (!shrine_of_secrets::shrine_data.empty())
+                shrine_of_secrets::cache();
+        }
+    });
+    shrine_load_thread.detach();
 
     while (!glfwWindowShouldClose(main_window))
     {
@@ -62,11 +72,14 @@ void menu::run_loop()
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
 
-            if (HTVars.enabled)
-                HookTracker::RenderDetection();
+            if (hook_tracker::ht_vars::enabled)
+                hook_tracker::render();
 
-            if (CVars.enabled)
+            if (cvars.enabled)
                 Crosshair::DrawCrosshairs();
+
+            if (onscreen_timers::enabled)
+                onscreen_timers::render_timers();
 
 
             ImGui::Render();
@@ -74,6 +87,9 @@ void menu::run_loop()
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
             glfwSwapBuffers(menu::overlay::window);
         }
+
+        if (onscreen_timers::enabled)
+            onscreen_timers::keypress_loop();
 
         const double end_time = glfwGetTime();
         const double elapsed_time = end_time - start_time;
@@ -94,65 +110,10 @@ void menu::render_ui()
     ImGui::SetNextWindowSize(ImVec2(styling::menu_width, styling::menu_height), ImGuiCond_Once);
     ImGui::Begin("menu", nullptr, menu_flags);
 
-    static bool hamburger_open = true;
-    static float hamburger_width = 0.F;
-    static float hamburger_height = styling::menu_height / 3.F;
-    static bool show_color_picker = false;
-
-    if (gui::begin_hamburger_menu(hamburger_open, hamburger_width, hamburger_height, styling::menu_accent.as_imcolor()))
-    {
-        ImGui::SetCursorPosY(45);
-
-        if (ImGui::Button("Config Editor"))
-            menu_to_show = 1;
-        gui::tool_tip("Allows you to adjust your game settings in\nmore detail than the base game offers");
-
-        ImGui::Spacing();
-
-        if (ImGui::Button("Hook Tracker"))
-            menu_to_show = 2;
-        gui::tool_tip("This is a pre-release alpha of the hook Tracker\nIt is not finished and WILL contain bugs");
-
-        ImGui::Spacing();
-
-        if (ImGui::Button("Crosshair Menu"))
-            menu_to_show = 3;
-
-        if (menu_to_show != 0)
-        {
-            ImGui::SetCursorPos({(show_color_picker ? 60.F : 45.F), 9});
-            if (ImGui::Button("<-"))
-                menu_to_show = 0;
-        }
-
-        gui::end_hamburger_menu(hamburger_open, menu_to_show, hamburger_width, hamburger_height);
-    }
-    gui::draw_hamburger_menu(hamburger_open, styling::menu_accent.as_imcolor());
-
-    if (ImGui::IsKeyPressed(ImGuiKey_Space, false))
-        show_color_picker = !show_color_picker;
-
-    if (show_color_picker)
-    {
-        ImGui::SetCursorPos({45, 9});
-        if (gui::color_picker("Menu Accent", &styling::menu_accent))
-        {
-            const mINI::INIFile file(backend::exe_directory.string() + backend::settings_directory + "Settings");
-            mINI::INIStructure ini;
-            file.read(ini);
-
-            ini["Settings"]["MenuAccentR"] = std::to_string(styling::menu_accent.r);
-            ini["Settings"]["MenuAccentG"] = std::to_string(styling::menu_accent.g);
-            ini["Settings"]["MenuAccentB"] = std::to_string(styling::menu_accent.b);
-            ini["Settings"]["MenuAccentA"] = std::to_string(styling::menu_accent.a);
-            file.write(ini);
-        }
-    }
-
-    ImGui::BeginDisabled(hamburger_open || hamburger_width > 0.F);
-
     if (menu_to_show == 0)
     {
+        shrine_of_secrets::render_ui();
+
         ImGui::SetCursorPos({10, 470});
         ImGui::TextColored(ImVec4(0.1F, 0.1F, 0.1F, 0.3F), "I DONT KNOW HOW TO MAKE A GOOD MAIN MENU");
     }
@@ -165,27 +126,132 @@ void menu::render_ui()
         CEMenu::RenderUI();
     }
 
-    else if (menu_to_show == 2)
-    {
-        static std::once_flag flag;
-        std::call_once(flag, HTMenu::Setup);
-
-        HTMenu::RenderUI();
-    }
-
     else if (menu_to_show == 3)
     {
-        static std::once_flag flagCrosshair;
-        static std::once_flag flagMenu;
-        std::call_once(flagCrosshair, Crosshair::Setup);
-        std::call_once(flagMenu, CMenu::Setup);
+        static std::once_flag flag_crosshair;
+        static std::once_flag flag_menu;
+        std::call_once(flag_crosshair, Crosshair::Setup);
+        std::call_once(flag_menu, CMenu::Setup);
 
         CMenu::RenderUI();
     }
 
+    else if (menu_to_show == 4)
+    {
+        static std::once_flag flag_menu;
+        std::call_once(flag_menu, pp_menu::setup);
 
-    ImGui::EndDisabled();
+        pp_menu::render_ui();
+    }
 
+    else if (menu_to_show == 5)
+    {
+        static std::once_flag flag_load;
+        std::call_once(flag_load, onscreen_timers::load_timer_profile);
+
+        onscreen_timers::render_ui();
+    }
+
+    static bool hamburger_open = true;
+    static float hamburger_width = 1.F;
+    static float hamburger_height = styling::menu_height / 3.2F;
+    static bool show_color_picker = false;
+
+    ImGui::SetCursorPos(ImVec2(5, 5));
+
+    if (hamburger_width > 0.F)
+    {
+        ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.07f, 0.07f, 0.07f, 1.F));
+        gui::begin_group_box("hamburger", ImVec2(hamburger_width, hamburger_height));
+
+        ImGui::GetWindowDrawList()->AddRectFilledMultiColor(
+            {5, 5},
+            {hamburger_width, hamburger_height},
+            ImColor(std::clamp(styling::menu_accent.r - 200, 0, 255), 15, 15),
+            ImColor(15, 13, 13),
+            ImColor(15, 13, 13),
+            ImColor(15, 13, 13)
+        );
+
+
+        ImGui::GetWindowDrawList()->AddRectFilled({11, 13}, {41, 18}, menu::styling::menu_accent.to_imcolor(), 4.F);
+        ImGui::GetWindowDrawList()->AddRectFilled({11, 23}, {41, 28}, menu::styling::menu_accent.to_imcolor(), 4.F);
+        ImGui::GetWindowDrawList()->AddRectFilled({11, 33}, {41, 38}, menu::styling::menu_accent.to_imcolor(), 4.F);
+
+
+        ImGui::SetCursorPos({3, 3});
+        if (ImGui::InvisibleButton("##HamburgerToggleButtonInsideMenu", {39, 36}))
+            hamburger_open = !hamburger_open;
+
+        if (ImGui::Button("Config Editor"))
+            menu_to_show = 1;
+        gui::tool_tip("Allows you to adjust your game settings in\nmore detail than the base game offers");
+
+        ImGui::Spacing();
+
+        if (ImGui::Button("Crosshair Overlay"))
+            menu_to_show = 3;
+        gui::tool_tip("Allows you to use a crosshair overlay with many customization options");
+
+        ImGui::Spacing();
+
+        if (ImGui::Button("On-Screen Timers"))
+            menu_to_show = 5;
+        gui::tool_tip("Allows you to setup hotkeys to display timers on your screen for relevant information");
+
+        if (menu_to_show != 0)
+        {
+            ImGui::SetCursorPos({hamburger_width - 33, 5});
+            if (ImGui::Button("<-"))
+                menu_to_show = 0;
+        }
+
+        gui::end_group_box();
+
+        static int previous_tab = menu_to_show;
+        if (previous_tab != menu_to_show && !ImGui::IsMouseHoveringRect({0, 0}, {hamburger_width + 5, hamburger_height + 5}))
+        {
+            hamburger_open = false;
+            previous_tab = menu_to_show;
+        }
+
+        if (!ImGui::IsMouseHoveringRect({0, 0}, {hamburger_width + 5, hamburger_height + 5}) && ImGui::IsKeyPressed(ImGuiKey_MouseLeft))
+            hamburger_open = false;
+        
+        ImGui::PopStyleColor();
+    }
+
+    if (hamburger_open && hamburger_width < 200)
+        hamburger_width += 10;
+    else if (!hamburger_open && hamburger_width > 0)
+        hamburger_width -= 10;
+
+    if (ImGui::IsKeyPressed(ImGuiKey_Space, false) && !ImGui::IsAnyItemActive())
+        show_color_picker = !show_color_picker;
+
+    if (show_color_picker)
+    {
+        ImGui::SetCursorPos({45, 11});
+        if (gui::color_picker("Menu Accent", &styling::menu_accent))
+        {
+            nlohmann::json accent_data;
+
+            accent_data["menu_accent"]["r"] = styling::menu_accent.r;
+            accent_data["menu_accent"]["g"] = styling::menu_accent.g;
+            accent_data["menu_accent"]["b"] = styling::menu_accent.b;
+            accent_data["menu_accent"]["a"] = styling::menu_accent.a;
+
+            ml::json_write_data(backend::exe_directory.string() + backend::settings_directory + backend::data_directory + "settings.json", accent_data);
+        }
+    }
+
+    ImGui::GetWindowDrawList()->AddRectFilled({11, 13}, {41, 18}, menu::styling::menu_accent.to_imcolor(), 4.F);
+    ImGui::GetWindowDrawList()->AddRectFilled({11, 23}, {41, 28}, menu::styling::menu_accent.to_imcolor(), 4.F);
+    ImGui::GetWindowDrawList()->AddRectFilled({11, 33}, {41, 38}, menu::styling::menu_accent.to_imcolor(), 4.F);
+
+    ImGui::SetCursorPos({7, 7});
+    if (ImGui::InvisibleButton("##HamburgerToggleButtonOutsideMenu", {39, 36}))
+        hamburger_open = !hamburger_open;
 
     ImGui::SetCursorPos({720, 470});
     ImGui::TextColored(ImVec4(0.8F, 0.8F, 0.8F, 0.5F), "(?)");
@@ -225,7 +291,7 @@ void menu::create_global_style()
     colors[ImGuiCol_Button] = styling::menu_accent.to_imvec4();
     colors[ImGuiCol_ButtonHovered] = RGBToImVec4(styling::menu_accent.r, styling::menu_accent.g + 70, styling::menu_accent.b + 70);
     colors[ImGuiCol_ButtonActive] = RGBToImVec4(styling::menu_accent.r, styling::menu_accent.g + 120, styling::menu_accent.b + 120);
-
+    
     // Main Window
     colors[ImGuiCol_FrameBg] = RGBToImVec4(20, 20, 20);
     colors[ImGuiCol_FrameBgHovered] = RGBToImVec4(styling::menu_accent.r, styling::menu_accent.g + 70, styling::menu_accent.b + 70);
@@ -234,6 +300,7 @@ void menu::create_global_style()
     style.DisabledAlpha = 0.3F;
     style.FrameBorderSize = 1.7F;
     style.DisabledAlpha = 0.1f;
+    style.ChildRounding = 3.F;
 
     // Slider
     colors[ImGuiCol_Slider] = styling::menu_accent.to_imvec4();

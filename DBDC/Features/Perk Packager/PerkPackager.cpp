@@ -1,21 +1,126 @@
 ﻿#include "PerkPackager.h"
-
 #include "PPMenu.h"
+#include "../../Backend/Backend.hpp"
+#include "Images/Images.h"
 
-void PerkPackager::Setup()
+void perk_packager::setup()
 {
-    survivorData = ml::json_get("https://dbd.tricky.lol/api/characters?role=survivor&includeperks=1");
+    const std::string character_data_file_path = backend::exe_directory.string() + backend::settings_directory + "character_data.json";
+    const std::string perk_data_file_path = backend::exe_directory.string() + backend::settings_directory + "perk_data.json";
 
-    for (auto& survivor : Characters::allSurvivors)
+    const int time_since_cache = ml::get_seconds_since_file_modified(character_data_file_path);
+    if (time_since_cache > 86400 /* 1d */ || time_since_cache == -1)
     {
-        survivor.name = survivorData[survivor.id]["name"];
+        _internal::all_characters_data = ml::json_get_from_url("https://dbd.tricky.lol/api/characters");
+        _internal::all_perks_data = ml::json_get_from_url("https://dbd.tricky.lol/api/perks");
 
-        if (!survivorData[survivor.id]["dlc"].is_null())
-            survivor.dlc = survivorData[survivor.id]["dlc"];
-
-        std::cout << survivor.dlc << std::endl;
+        if (_internal::all_characters_data.empty() || _internal::all_perks_data.empty())
+        {
+            _internal::unavailable = true;
+            return;
+        }
+        
+        ml::json_write_data(character_data_file_path, _internal::all_characters_data);
+        ml::json_write_data(perk_data_file_path, _internal::all_perks_data);
+    }
+    else
+    {
+        _internal::all_characters_data = ml::json_get_data_from_file(character_data_file_path);
+        _internal::all_perks_data = ml::json_get_data_from_file(perk_data_file_path);
     }
 
+    for (const auto& ch : _internal::all_characters_data)
+    {
+        character c;
 
-    PPMenu::isSetup = true;
+        c.name = ch["name"];
+        c.id = ch["id"];
+        c.role = ch["role"];
+
+        for (int i = 0; i < ch["perks"].size(); i++)
+        {
+            perk p;
+            p.id = ch["perks"][i];
+            p.name = _internal::all_perks_data[p.id]["name"];
+            p.role = _internal::all_perks_data[p.id]["role"];
+            p.game_file_path = _internal::all_perks_data[p.id]["image"];
+
+            c.perks.push_back(p);
+        }
+
+        all_characters.push_back(c);
+    }
+
+    for (const auto& surv_general_id : _internal::all_survivor_general_perks)
+    {
+        character c;
+
+        c.name = _internal::all_perks_data[surv_general_id]["name"];
+        c.id = surv_general_id;
+        c.role = "survivor";
+
+        perk p;
+        p.id = c.id;
+        p.name = c.name;
+        p.role = c.role;
+        p.game_file_path = _internal::all_perks_data[p.id]["image"];
+
+        c.perks.push_back(p);
+
+        all_characters.push_back(c);
+    }
+
+    for (const auto& killer_general_id : _internal::all_killer_general_perks)
+    {
+        character c;
+
+        c.name = _internal::all_perks_data[killer_general_id]["name"];
+        c.id = killer_general_id;
+        c.role = "killer";
+
+        perk p;
+        p.id = c.id;
+        p.name = c.name;
+        p.role = c.role;
+        p.game_file_path = _internal::all_perks_data[p.id]["image"];
+
+        c.perks.push_back(p);
+
+        all_characters.push_back(c);
+    }
+}
+
+void perk_packager::clear_images()
+{
+    for (auto& chr : all_characters)
+    {
+        for (auto& p : chr.perks)
+        {
+            p.has_selected_image = false;
+            p.image = 0;
+            p.local_image_path = "";
+            p.game_file_path = "";
+        }
+    }
+}
+
+void perk_packager::reload()
+{
+    if (_internal::package_data.empty())
+        return;
+    
+    for (auto& chr : all_characters)
+    {
+        for (auto& p : chr.perks)
+        {
+            auto it = _internal::package_data.find(p.name);
+            if (it != _internal::package_data.end())
+            {
+                p.local_image_path = it.value()["local_file_path"];
+                p.game_file_path = it.value()["game_file_path"];
+                images::load_texture_from_file(p.local_image_path, &p.image);
+                p.has_selected_image = true;
+            }
+        }
+    }
 }

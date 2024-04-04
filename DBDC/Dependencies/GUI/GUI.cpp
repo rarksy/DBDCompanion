@@ -1,6 +1,6 @@
 ﻿#include "GUI.h"
-#include  "../Menu.h"
-#include "../ConfigEditor/ConfigEditor.hpp"
+#include  "../Features/Menu.h"
+#include "../Features/ConfigEditor/ConfigEditor.hpp"
 
 
 bool gui::begin_hamburger_menu(bool& open, float& width, float& height, const ImColor* color)
@@ -117,6 +117,7 @@ bool gui::slider(const char* label, config_editor::setting& setting, int minValu
 bool gui::drop_down_box(const char* label, int& index, std::vector<std::string> items, bool useIndex, float widgetSize, std::string caption, std::vector<unsigned*> textures,
                         ImVec2 textureSize)
 {
+    ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(0.1, 0.1, 0.1, 1));
     ImGui::SetNextItemWidth(widgetSize);
 
     auto it = std::ranges::find_if(items, [&index](const auto& v)
@@ -143,14 +144,44 @@ bool gui::drop_down_box(const char* label, int& index, std::vector<std::string> 
 
         ImGui::EndCombo();
     }
+    ImGui::PopStyleColor();
 
     return itemSelected;
+}
+
+bool gui::drop_down_box(const char* label, std::string preview_value, int& id, std::vector<std::string> items, const float& box_width)
+{
+    ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(0.1, 0.1, 0.1, 1));
+    ImGui::SetNextItemWidth(box_width);
+    
+    bool item_selected = false;
+    
+    if (ImGui::BeginCombo(label, preview_value.c_str(), ImGuiComboFlags_NoArrowButton))
+    {
+        for (int n = 0; n < items.size(); n++)
+        {
+            const bool is_selected = (id == n);
+            if (ImGui::Selectable(items[n].c_str(), is_selected))
+            {
+                id = n;
+                item_selected = true;
+            }
+            // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+            if (is_selected)
+                ImGui::SetItemDefaultFocus();
+        }
+        ImGui::EndCombo();
+    }
+    ImGui::PopStyleColor();
+
+    return item_selected;
 }
 
 bool gui::drop_down_box(const char* label, config_editor::setting& setting, std::vector<std::string> items, bool useIndex, float widgetSize, std::string caption,
                         std::vector<unsigned*> textures, ImVec2 textureSize)
 {
     ImGui::SetNextItemWidth(widgetSize);
+    ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(0.1, 0.1, 0.1, 1));
 
     auto it = std::ranges::find_if(items, [&setting](const auto& v)
     {
@@ -178,6 +209,7 @@ bool gui::drop_down_box(const char* label, config_editor::setting& setting, std:
         ImGui::EndCombo();
     }
 
+    ImGui::PopStyleColor();
     return itemSelected;
 }
 
@@ -245,16 +277,14 @@ void RenderGroupBox(float x, float y, float width, float height, ImU32 color, fl
     window->DrawList->AddRect(ImVec2(x, y), ImVec2(x + width, y + height), color, rounding, 0, thickness);
 }
 
-void gui::begin_group_box(const char* group_name, ImVec2 size)
+void gui::begin_group_box(const char* group_name, ImVec2 size, ImGuiWindowFlags flags)
 {
-    ImGui::BeginGroup();
-    ImGui::Text(group_name);
-    RenderGroupBox(ImGui::GetItemRectMin().x, ImGui::GetItemRectMin().y, size.x, size.y, ImGui::GetColorU32(ImGuiCol_Border));
-    ImGui::Indent();
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.01f, 0.01f, 0.01f, 0.01f));
+    ImGui::BeginChild(group_name, size, true, flags);
 }
 
 void gui::end_group_box()
 {
-    ImGui::Unindent();
-    ImGui::EndGroup();
+    ImGui::EndChild();
+    ImGui::PopStyleColor();
 }

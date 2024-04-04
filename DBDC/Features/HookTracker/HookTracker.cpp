@@ -1,12 +1,41 @@
 ﻿#include <chrono>
 #include <Windows.h>
-
 #include "HookTracker.hpp"
-#include "HTMenu.h"
-#include "Images/HookTracker/Hook.hpp"
-#include "Images/HookTracker/Stage2.hpp"
 #include "../Backend/Backend.hpp"
 #include "../Misc/Misc.hpp"
+#include "Images/HookTracker/Hook.hpp"
+
+double calculatePercentage(double X, double P) {
+    return X * (P / 100.0); 
+}
+void hook_tracker::setup()
+{
+    in_game_ui_scale.load_value();
+    const double resize_percentage = 1.0 + (100.0 - (double)in_game_ui_scale.value / 100);
+
+    for (int i = 0; i < 4; i++)
+    {
+        hook_tracker::survivor surv;
+
+        surv.index = i;
+
+        if (backend::screen_height == 1440)
+        {
+            const auto region = hook_tracker::_internal::survivor_regions_1440[i];
+            double y = region.y * resize_percentage;
+            surv.location.x = region.x;
+            surv.location.y = y;
+            surv.size = hook_tracker::_internal::vec2(300, 100);
+        }
+
+        hook_tracker::all_survivors.push_back(surv);
+    }
+}
+
+void hook_tracker::free()
+{
+    all_survivors.clear();
+}
 
 bool TemplateMatch(cv::Mat Frame, cv::Mat ElementToFind, double Threshold, cv::Point& Detectedlocation)
 {
@@ -19,113 +48,57 @@ bool TemplateMatch(cv::Mat Frame, cv::Mat ElementToFind, double Threshold, cv::P
     return AccuracyValue >= Threshold;
 }
 
-void HookTracker::DetectionLoop()
+void hook_tracker::detection_loop()
 {
-    constexpr int targetFramerate = 3;
-    constexpr std::chrono::duration<double> targetFrameDuration(1.0 / targetFramerate);
+    using hook_tracker::_internal::vec2;
 
-    cv::Mat stage1Image;
-    cv::Mat stage2Image;
+    cv::Mat hook_image;
 
     {
-        const std::vector stage1ByteArray(hookRawData, hookRawData + sizeof hookRawData);
-        const std::vector stage2ByteArray(stage2RawData, stage2RawData + sizeof stage2RawData);
-
-        stage1Image = cv::imdecode(stage1ByteArray, cv::IMREAD_GRAYSCALE);
-        stage2Image = cv::imdecode(stage2ByteArray, cv::IMREAD_GRAYSCALE);
+        const std::vector hook_data(hookRawData, hookRawData + sizeof hookRawData);
+        hook_image = cv::imdecode(hook_data, cv::IMREAD_GRAYSCALE);
     }
 
-    if (backend::screen_height == 1080)
+    while (ht_vars::enabled)
     {
-        cv::resize(stage1Image, stage1Image, cv::Size(), 1.0 / HTVars.resizeMultiplier1080p, 1.0 / HTVars.resizeMultiplier1080p, cv::INTER_AREA);
-        cv::resize(stage2Image, stage2Image, cv::Size(), 1.0 / HTVars.resizeMultiplier1080p, 1.0 / HTVars.resizeMultiplier1080p, cv::INTER_AREA);
-    }
-
-    cv::resize(stage1Image, stage1Image, cv::Size(
-                   static_cast<int>(stage1Image.cols * HTVars.hudScaleFactor.value / 100.0),
-                   static_cast<int>(stage1Image.rows * HTVars.hudScaleFactor.value / 100.0))
-    );
-
-    cv::resize(stage2Image, stage2Image, cv::Size(
-                   static_cast<int>(stage2Image.cols * HTVars.hudScaleFactor.value / 100.0),
-                   static_cast<int>(stage2Image.rows * HTVars.hudScaleFactor.value / 100.0))
-    );
-    
-    cv::Rect region(0, 0, backend::screen_width / 3, backend::screen_height);
-    cv::Mat frame;
-    cv::Point detectedLocation;
-
-    
-    while (HTVars.enabled)
-    {
-        const auto frameStartTime = std::chrono::steady_clock::now();
-
-        frame = misc::GetScreenshot(region);
-
-        if (HTVars.track1stStage)
+        for (int i = 0; i < 4; i++)
         {
-            if (TemplateMatch(frame, stage1Image, HTVars.firstThreshold, detectedLocation))
-                HandleDetection(detectedLocation, Internal::survivorLocationsStage1, HTVars.firstDetectionRange);
+            auto& surv = all_survivors[i];
+            const cv::Rect area_to_scan(surv.location.x, surv.location.y, surv.size.x, surv.size.y);
+            const auto frame = misc::get_screenshot(area_to_scan);
+
+            cv::Point detected_location;
+            const bool found_hooked_survivor = TemplateMatch(frame, hook_image, 0.9, detected_location);
+            
+            if (found_hooked_survivor && !surv.currently_hooked)
+            {
+                surv.currently_hooked = true;
+                surv.hook_stage++;
+            }
+            else if (!found_hooked_survivor && surv.currently_hooked)
+                surv.currently_hooked = false;
         }
-
-        if (HTVars.track2ndStage)
-        {
-            if (TemplateMatch(frame, stage2Image, HTVars.secondThreshold, detectedLocation))
-                HandleDetection(detectedLocation, Internal::survivorLocationsStage2, HTVars.secondDetectionRange);
-        }
-
-        const auto frameEndTime = std::chrono::steady_clock::now();
-        const std::chrono::duration<double> elapsedTime = frameEndTime - frameStartTime;
-        const auto timeToSleep = targetFrameDuration - elapsedTime;
-
-        if (timeToSleep > std::chrono::duration<double>(0))
-            std::this_thread::sleep_until(frameStartTime + targetFrameDuration);
     }
 }
 
-void HookTracker::HandleDetection(const cv::Point& detectedLocation, std::vector<ImVec2>& locations, int detectionRange)
+void hook_tracker::render()
 {
-    bool addSurvivor = true;
-
-    const size_t stage1LocationsSize = locations.size();
-    for (size_t i = 0; i < stage1LocationsSize; i++)
+    for (int i = 0; i < 4; i++)
     {
-        const auto survivor = locations[i];
+        const auto surv = hook_tracker::all_survivors[i];
+        ImGui::GetBackgroundDrawList()->AddRect(surv.location.to_imvec2(), (surv.location + surv.size).to_imvec2(), ImColor(255, 0, 0));
 
-        if (detectedLocation.y > survivor.y - detectionRange &&
-            detectedLocation.y < survivor.y + detectionRange)
+        switch (surv.hook_stage)
         {
-            addSurvivor = false;
+        default:
+            break;
+
+        case 1:
+            ImGui::GetBackgroundDrawList()->AddText(surv.location.to_imvec2(), ImColor(255, 0, 0), "1");
+            break;
+        case 2:
+            ImGui::GetBackgroundDrawList()->AddText(surv.location.to_imvec2(), ImColor(255, 0, 0), "2");
             break;
         }
-    }
-
-    if (addSurvivor || locations.empty())
-    {
-        locations.push_back(ImVec2(detectedLocation.x, detectedLocation.y));
-
-        if (HTVars.playSoundOnHook)
-            PlaySoundA(HTVars.soundFilePath, nullptr, SND_ASYNC);
-    }
-}
-
-void HookTracker::RenderDetection()
-{
-    
-    const size_t stage1Size = Internal::survivorLocationsStage1.size();
-    const size_t stage2Size = Internal::survivorLocationsStage2.size();
-
-    for (size_t i = 0; i < stage1Size; i++)
-    {
-        const auto location = Internal::survivorLocationsStage1[i];
-        ImGui::GetBackgroundDrawList()->AddRect(location, ImVec2(location.x + 10, location.y + 10),
-                                                ImColor(255, 0, 0));
-    }
-
-    for (size_t i = 0; i < stage2Size; i++)
-    {
-        const auto location = Internal::survivorLocationsStage2[i];
-        ImGui::GetBackgroundDrawList()->AddRectFilled(location, ImVec2(location.x + 10, location.y + 10),
-                                                ImColor(255, 0, 0));
     }
 }

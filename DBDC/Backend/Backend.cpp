@@ -52,6 +52,7 @@ void backend::setup_imgui(GLFWwindow* window, ImGuiContext*& context)
 
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
     io.Fonts->AddFontFromMemoryCompressedTTF(Rethink_compressed_data, Rethink_compressed_size, menu::styling::font_size);
+    menu::styling::child_font = io.Fonts->AddFontFromMemoryCompressedTTF(Rethink_compressed_data, Rethink_compressed_size, 16.F);
     io.IniFilename = nullptr;
 }
 

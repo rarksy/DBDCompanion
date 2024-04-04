@@ -12,7 +12,7 @@
 #include "miscLIB/miscLIB.hpp"
 #include "zlib/zlib.h"
 
-void misc::RestartGame(bool dx12)
+void misc::restart_game()
 {
     if (ml::is_exe_running(L"DeadByDaylight-Win64-Shipping.exe"))
     {
@@ -26,14 +26,11 @@ void misc::RestartGame(bool dx12)
             CloseHandle(handle);
         }
     }
-
-    std::string renderApi = dx12 ? " -DX12" : "";
-    std::string runString = "steam://rungameid/381210" + renderApi;
-
-    ShellExecuteA(NULL, "open", runString.c_str(), NULL, NULL, SW_SHOWDEFAULT);
+    
+    ShellExecuteA(NULL, "open", "steam://rungameid/381210", NULL, NULL, SW_SHOWDEFAULT);
 }
 
-cv::Mat misc::GetScreenshot(const cv::Rect& region, bool grayscale)
+cv::Mat misc::get_screenshot(const cv::Rect& region, bool grayscale)
 {
     const int regionWidth = region.width;
     const int regionHeight = region.height;
@@ -64,7 +61,7 @@ cv::Mat misc::GetScreenshot(const cv::Rect& region, bool grayscale)
     return screenshot;
 }
 
-std::vector<std::string> misc::GetAllLibraryDirectories()
+std::vector<std::string> misc::get_all_steam_library_directories()
 {
     std::vector<std::string> paths;
     std::ifstream configFile("C:\\Program Files (x86)\\Steam\\steamapps\\libraryfolders.vdf"); // HATE this
@@ -109,7 +106,7 @@ std::string misc::get_game_root_directory()
     // C:\Program Files (x86)\Steam\steamapps/libraryfolders.vdf
     // use it to check all steam libraries for dbd root directory
 
-    const std::vector<std::string> allPaths = GetAllLibraryDirectories();
+    const std::vector<std::string> allPaths = get_all_steam_library_directories();
 
     for (const auto& path : allPaths)
     {
@@ -195,7 +192,7 @@ std::string misc::CompressString(const std::string& input)
         throw(std::runtime_error("deflateInit failed while compressing."));
 
     zs.next_in = (Bytef*)input.data();
-    zs.avail_in = input.size();
+    zs.avail_in = static_cast<uInt>(input.size());
 
     int ret;
     char outbuffer[10240];

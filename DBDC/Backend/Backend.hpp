@@ -19,5 +19,6 @@ namespace backend
     inline int screen_height;
     inline std::filesystem::path exe_directory;
     inline const std::string settings_directory = "\\DBDC\\";
+    inline const std::string data_directory = "\\data\\";
     
 }
