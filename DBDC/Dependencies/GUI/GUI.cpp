@@ -1,6 +1,6 @@
 ﻿#include "GUI.h"
-#include  "../Menu.h"
-#include "../ConfigEditor/ConfigEditor.hpp"
+#include  "../Features/Menu.h"
+#include "../Features/ConfigEditor/ConfigEditor.hpp"
 
 
 bool gui::begin_hamburger_menu(bool& open, float& width, float& height, const ImColor* color)
