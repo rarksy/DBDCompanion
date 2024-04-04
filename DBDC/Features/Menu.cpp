@@ -174,12 +174,12 @@ void menu::render_ui()
         );
 
 
-        ImGui::GetWindowDrawList()->AddRectFilled({8, 10}, {38, 15}, menu::styling::menu_accent.to_imcolor(), 4.F);
-        ImGui::GetWindowDrawList()->AddRectFilled({8, 20}, {38, 25}, menu::styling::menu_accent.to_imcolor(), 4.F);
-        ImGui::GetWindowDrawList()->AddRectFilled({8, 30}, {38, 35}, menu::styling::menu_accent.to_imcolor(), 4.F);
+        ImGui::GetWindowDrawList()->AddRectFilled({11, 13}, {41, 18}, menu::styling::menu_accent.to_imcolor(), 4.F);
+        ImGui::GetWindowDrawList()->AddRectFilled({11, 23}, {41, 28}, menu::styling::menu_accent.to_imcolor(), 4.F);
+        ImGui::GetWindowDrawList()->AddRectFilled({11, 33}, {41, 38}, menu::styling::menu_accent.to_imcolor(), 4.F);
 
 
-        ImGui::SetCursorPos({0, 0});
+        ImGui::SetCursorPos({3, 3});
         if (ImGui::InvisibleButton("##HamburgerToggleButtonInsideMenu", {39, 36}))
             hamburger_open = !hamburger_open;
 
@@ -229,7 +229,7 @@ void menu::render_ui()
 
     if (show_color_picker)
     {
-        ImGui::SetCursorPos({45, 9});
+        ImGui::SetCursorPos({45, 11});
         if (gui::color_picker("Menu Accent", &styling::menu_accent))
         {
             nlohmann::json accent_data;
@@ -243,11 +243,11 @@ void menu::render_ui()
         }
     }
 
-    ImGui::GetWindowDrawList()->AddRectFilled({8, 10}, {38, 15}, menu::styling::menu_accent.to_imcolor(), 4.F);
-    ImGui::GetWindowDrawList()->AddRectFilled({8, 20}, {38, 25}, menu::styling::menu_accent.to_imcolor(), 4.F);
-    ImGui::GetWindowDrawList()->AddRectFilled({8, 30}, {38, 35}, menu::styling::menu_accent.to_imcolor(), 4.F);
+    ImGui::GetWindowDrawList()->AddRectFilled({11, 13}, {41, 18}, menu::styling::menu_accent.to_imcolor(), 4.F);
+    ImGui::GetWindowDrawList()->AddRectFilled({11, 23}, {41, 28}, menu::styling::menu_accent.to_imcolor(), 4.F);
+    ImGui::GetWindowDrawList()->AddRectFilled({11, 33}, {41, 38}, menu::styling::menu_accent.to_imcolor(), 4.F);
 
-    ImGui::SetCursorPos({4, 4});
+    ImGui::SetCursorPos({7, 7});
     if (ImGui::InvisibleButton("##HamburgerToggleButtonOutsideMenu", {39, 36}))
         hamburger_open = !hamburger_open;
 
