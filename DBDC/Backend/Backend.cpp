@@ -72,7 +72,24 @@ bool backend::check_for_update()
     
     const std::string version = data["tag_name"];
 
-    return version != DBDC_VERSION;
+    if (version != DBDC_VERSION)
+    {
+        updated_binary_url = data["assets"][0]["browser_download_url"];
+        
+        return true;
+    }
+}
+
+bool backend::update()
+{   
+    if (updated_binary_url.empty())
+        return false;
+
+    ml::download_file(updated_binary_url, backend::exe_directory.string() + backend::settings_directory + backend::data_directory + "new_binary.7z");
+
+
+    return true;
+    
 }
 
 void backend::shutdown_imgui()
