@@ -63,14 +63,14 @@ bool backend::check_for_update()
     
     if (!ml::file_or_directory_exists(file_path) || ml::get_seconds_since_file_modified(file_path) > 1200)
     {
-        data = ml::json_get_from_url("https://api.github.com/repos/rarksy/DBDCompanion/releases?latest");
+        data = ml::json_get_from_url("https://api.github.com/repos/rarksy/DBDCompanion/releases")[0];
 
         ml::json_write_data(file_path, data);
     }
     else
         data = ml::json_get_data_from_file(file_path);
     
-    const std::string version = data[0]["tag_name"];
+    const std::string version = data["tag_name"];
 
     return version != DBDC_VERSION;
 }
