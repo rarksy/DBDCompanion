@@ -253,6 +253,14 @@ void menu::render_ui()
     if (ImGui::InvisibleButton("##HamburgerToggleButtonOutsideMenu", {39, 36}))
         hamburger_open = !hamburger_open;
 
+    // Update Button
+
+    if (backend::update_available)
+    {
+        ImGui::SetCursorPos({30, 460});
+        if (ImGui::Button("Update Available!"));
+    }
+
     ImGui::SetCursorPos({720, 470});
     ImGui::TextColored(ImVec4(0.8F, 0.8F, 0.8F, 0.5F), "(?)");
     gui::tool_tip(
