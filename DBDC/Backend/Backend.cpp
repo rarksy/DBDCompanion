@@ -56,6 +56,16 @@ void backend::setup_imgui(GLFWwindow* window, ImGuiContext*& context)
     io.IniFilename = nullptr;
 }
 
+bool backend::check_for_update()
+{
+    //return ml::json_get_from_url("https://api.github.com/repos/rarksy/DBDCompanion/releases?latest")[0]["author"]["tag_name"] == DBDC_VERSION;
+
+    const auto data = ml::json_get_from_url("https://api.github.com/repos/rarksy/DBDCompanion/releases?latest");
+    const std::string version = data[0]["tag_name"];
+
+    return version != DBDC_VERSION;
+}
+
 void backend::shutdown_imgui()
 {
     ImGui_ImplOpenGL3_Shutdown();

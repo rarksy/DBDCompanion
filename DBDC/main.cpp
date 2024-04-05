@@ -16,6 +16,12 @@
 
 int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
 {
+    std::thread update_thread([]
+    {
+       backend::update_available = backend::check_for_update();
+    });
+    update_thread.detach();
+    
     if (!backend::init_glfw())
         return -1;
     
