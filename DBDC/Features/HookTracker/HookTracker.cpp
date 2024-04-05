@@ -1,9 +1,7 @@
 ﻿#include <chrono>
 #include <Windows.h>
-#include <iostream>
-
 #include "HookTracker.hpp"
-#include "../Dependencies/miscLIB/miscLIB.hpp"
+#include "../Backend/Backend.hpp"
 #include "../Misc/Misc.hpp"
 #include "Images/HookTracker/Hook.hpp"
 

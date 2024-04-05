@@ -13,7 +13,7 @@ namespace Crosshair
     void DrawOutline(const ImVec2& centerPoint);
     void DrawCenterDot(const ImVec2& centerPoint);
     void ModifyDynamicCenterPoint();
-    inline std::vector<ImVec2> allCenterPoints;
+    inline std::vector<ImVec2> all_center_points;
     
     struct Variables
     {
@@ -40,12 +40,12 @@ namespace Crosshair
         int centerDotSegments = 12;
         ImColor centerDotColor = ImColor(255, 74, 74);
         
-        ImVec2 trueScreenCenterPoint;
+        ImVec2 true_screen_center_point;
         ImVec2 savedScreenCenterPoint;
 
 
         bool useDynamicCenterPoint = false;
-        bool show_dynamic_charge_bar = true;
+        bool show_dynamic_charge_bar = false;
         int dynamicCenterPointIndex = 0;
     };
 
@@ -207,4 +207,4 @@ namespace Crosshair
     }
 }
 
-inline Crosshair::Variables CVars;
+inline Crosshair::Variables cvars;

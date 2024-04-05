@@ -2,7 +2,7 @@
 #include <vector>
 #include <string>
 #include "ImGui/imgui.h"
-#include "../ConfigEditor/ConfigEditor.hpp"
+#include "../Features/ConfigEditor/ConfigEditor.hpp"
 #include "../Features/Menu.h"
 
 struct color;

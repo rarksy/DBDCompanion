@@ -1,9 +1,7 @@
 ﻿#include "HTMenu.h"
-#include <ranges>
 #include "ImGui/imgui.h"
 #include "../Menu.h"
 #include "../Crosshair/Crosshair.h"
-#include "../GUI/GUI.h"
 #include "HookTracker.hpp"
 #include "../ConfigEditor/ConfigEditor.hpp"
 
@@ -36,7 +34,7 @@ void ht_menu::render_ui()
         {
             hook_tracker::free();
 
-            if (!CVars.enabled)
+            if (!cvars.enabled)
                 menu::overlay::destroy_overlay();
         }
     }

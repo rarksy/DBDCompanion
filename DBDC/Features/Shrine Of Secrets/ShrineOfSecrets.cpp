@@ -1,18 +1,18 @@
 ﻿#include "ShrineOfSecrets.hpp"
 
 #include "../../Misc/Misc.hpp"
-#include "../GUI/GUI.h"
+#include "GUI/GUI.h"
 #include "Images/Images.h"
 #include "ImGui/imgui.h"
 #include "miscLIB/miscLIB.hpp"
 
 bool shrine_of_secrets::is_cache_valid()
 {
-    const std::string cache_file = backend::exe_directory.string() + backend::settings_directory + "shrine_cache.json";
+    const std::string cache_file = backend::exe_directory.string() + backend::settings_directory + backend::data_directory + "shrine_cache.json";
 
     const int sec = ml::get_seconds_since_file_modified(cache_file);
     
-    return sec < 3600;
+    return sec < 3600 && sec != -1;
 }
 
 void shrine_of_secrets::cache()
@@ -30,12 +30,12 @@ void shrine_of_secrets::cache()
 
     data["shrine_data"]["reset_time"] = reset_time_end;
 
-    ml::json_write_data(backend::exe_directory.string() + backend::settings_directory + "shrine_cache.json", data);
+    ml::json_write_data(backend::exe_directory.string() + backend::settings_directory + backend::data_directory + "shrine_cache.json", data);
 }
 
 bool shrine_of_secrets::load_cache()
 {
-    nlohmann::json data = ml::json_get_data_from_file(backend::exe_directory.string() + backend::settings_directory + "shrine_cache.json");
+    nlohmann::json data = ml::json_get_data_from_file(backend::exe_directory.string() + backend::settings_directory + backend::data_directory + "shrine_cache.json");
 
     if (data == nullptr)
         return false;
@@ -57,9 +57,6 @@ bool shrine_of_secrets::load_cache()
 
     is_ready = true;
     return true;
-
-
-    return false;
 }
 
 void shrine_of_secrets::init()

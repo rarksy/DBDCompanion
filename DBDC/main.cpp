@@ -9,11 +9,6 @@
 #include "Exe Icons/256x256.hpp"
 #include "ImGui/imgui_impl_glfw.h"
 #include "miscLIB/miscLIB.hpp"
-#include <opencv2/opencv.hpp>
-
-#include "Features/HookTracker/HookTracker.hpp"
-#include "Images/HookTracker/Hook.hpp"
-#include "Misc/Misc.hpp"
 
 //#define debug_winmain
 
@@ -34,7 +29,7 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
     GetModuleFileNameA(NULL, pathBuffer, MAX_PATH);
     backend::exe_directory = std::filesystem::path(pathBuffer).parent_path();
     
-    ml::create_directory(backend::exe_directory.string() + backend::settings_directory);
+    ml::create_directory(backend::exe_directory.string() + backend::settings_directory + backend::data_directory);
     
     menu::main_window = backend::setup_window("Dead By Daylight Companion", menu::styling::menu_width, menu::styling::menu_height);
     
@@ -75,10 +70,10 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
 }
 #else
 
-
 int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int) // alternate winmain used for testing
 {
-    
+
+    return 0;
 }
 
 #endif
