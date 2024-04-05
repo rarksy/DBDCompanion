@@ -58,9 +58,18 @@ void backend::setup_imgui(GLFWwindow* window, ImGuiContext*& context)
 
 bool backend::check_for_update()
 {
-    //return ml::json_get_from_url("https://api.github.com/repos/rarksy/DBDCompanion/releases?latest")[0]["author"]["tag_name"] == DBDC_VERSION;
+    const std::string file_path = backend::exe_directory.string() + backend::settings_directory + backend::data_directory + "version.json";
+    nlohmann::json data;
+    
+    if (!ml::file_or_directory_exists(file_path) || ml::get_seconds_since_file_modified(file_path) > 1200)
+    {
+        data = ml::json_get_from_url("https://api.github.com/repos/rarksy/DBDCompanion/releases?latest");
 
-    const auto data = ml::json_get_from_url("https://api.github.com/repos/rarksy/DBDCompanion/releases?latest");
+        ml::json_write_data(file_path, data);
+    }
+    else
+        data = ml::json_get_data_from_file(file_path);
+    
     const std::string version = data[0]["tag_name"];
 
     return version != DBDC_VERSION;
