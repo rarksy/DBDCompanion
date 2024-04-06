@@ -4,6 +4,7 @@
 #include "GUI/GUI.h"
 #include "Images/Images.h"
 #include "ImGui/imgui.h"
+#include "ImGui/imgui_stdlib.h"
 
 void pp_menu::setup()
 {
@@ -40,12 +41,12 @@ void pp_menu::render_ui()
             _internal::package_selector::loaded_package_name = _internal::package_selector::all_packages.at(
                 _internal::package_selector::loaded_package);
 
-            perk_packager::clear_images();
-
             perk_packager::_internal::package_data = ml::json_get_data_from_file(
                 backend::exe_directory.string() + backend::settings_directory + _internal::package_selector::package_data_directory +
                 _internal::package_selector::loaded_package_name + ".json"
             );
+
+            perk_packager::clear_images();
 
             perk_packager::reload();
         }
@@ -53,18 +54,20 @@ void pp_menu::render_ui()
 
     ImGui::SetCursorPos({429.F, 69.F});
     ImGui::SetNextItemWidth(150.F);
-    ImGui::InputTextWithHint("##PackageName", "Package Name", _internal::package_selector::input_package_name,
-                             IM_ARRAYSIZE(_internal::package_selector::input_package_name));
+    ImGui::InputTextWithHint("##PackageName", "Package Name", &_internal::package_selector::input_package_name);
 
     if (ImGui::GetIO().WantCaptureKeyboard &&
         ImGui::IsKeyPressed(ImGuiKey_Enter, false))
     {
+        auto lastNonSpace = std::find_if_not(_internal::package_selector::input_package_name.rbegin(), _internal::package_selector::input_package_name.rend(), ::isspace);
+        _internal::package_selector::input_package_name.resize(_internal::package_selector::input_package_name.rend() - lastNonSpace);
+
         if (std::ranges::find(_internal::package_selector::all_packages, _internal::package_selector::input_package_name) == _internal::package_selector::all_packages.end())
         {
             const std::filesystem::path file_path = backend::exe_directory.string() + backend::settings_directory +
                 _internal::package_selector::package_data_directory + _internal::package_selector::input_package_name + ".json";
 
-            if (strlen(_internal::package_selector::input_package_name) > 0 &&
+            if (_internal::package_selector::input_package_name.size() > 0 &&
                 !ml::file_or_directory_exists(file_path.string()))
             {
                 if (!exists(file_path.parent_path()))
@@ -72,7 +75,7 @@ void pp_menu::render_ui()
 
                 ml::create_file(file_path.string());
 
-                ZeroMemory(_internal::package_selector::input_package_name, sizeof _internal::package_selector::input_package_name);
+                _internal::package_selector::input_package_name = "";
 
                 reload_packages();
             }
@@ -82,7 +85,7 @@ void pp_menu::render_ui()
     gui::tool_tip("Press Enter To Create Package", 500, false);
 
     ImGui::SameLine();
-    if (ImGui::Button("Create Package"))
+    if (ImGui::Button("Create Package") && _internal::package_selector::input_package_name.size() > 0)
     {
         const std::string root_directory = backend::exe_directory.string() + backend::settings_directory + _internal::package_selector::package_directory +
             _internal::package_selector::loaded_package_name + "\\DeadByDaylight\\Content\\";
@@ -113,7 +116,7 @@ void pp_menu::render_ui()
         display_base_item(perk_packager::all_offerings);
     if (_internal::type_filter_index == 0 || _internal::type_filter_index == 4)
         display_base_item(perk_packager::all_addons);
-    
+
     gui::end_group_box();
 }
 

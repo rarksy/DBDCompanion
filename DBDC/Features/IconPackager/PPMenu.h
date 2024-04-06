@@ -22,7 +22,7 @@ namespace pp_menu
             inline int loaded_package = -1;
             inline std::string loaded_package_name;
             inline std::vector<std::string> all_packages;
-            inline static char input_package_name[16];
+            inline static std::string input_package_name;
 
             inline const std::string package_directory = "Perk Packages\\";
             inline const std::string package_data_directory = "Perk Packages\\Data\\";

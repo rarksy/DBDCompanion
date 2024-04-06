@@ -182,6 +182,7 @@ void perk_packager::reload_package_data(std::vector<T>& vec_obj)
 
         if (it.value().contains("local_file_path"))
         {
+            entry.has_selected_image = true;
             entry.local_image_path = it.value()["local_file_path"];
             images::load_texture_from_file(entry.local_image_path, &entry.image);
         }
