@@ -8,11 +8,13 @@ namespace perk_packager
     void clear_images();
     void reload();
 
-    struct perk
+
+    struct base
     {
         std::string name;
         std::string id;
         std::string role;
+
         unsigned image = -1;
         std::string local_image_path;
         std::string game_file_path;
@@ -20,9 +22,16 @@ namespace perk_packager
         mutable bool has_selected_image = false;
     };
 
-    struct item : perk
+    struct perk : base
     {
-        std::string item_type;
+    };
+
+    struct item : base
+    {
+    };
+
+    struct offering : base
+    {
     };
 
     struct character
@@ -35,6 +44,7 @@ namespace perk_packager
 
     inline std::vector<character> all_characters;
     inline std::vector<item> all_items;
+    inline std::vector<offering> all_offerings;
 
     namespace _internal
     {
@@ -43,6 +53,7 @@ namespace perk_packager
         inline nlohmann::json all_characters_data;
         inline nlohmann::json all_perks_data;
         inline nlohmann::json all_items_data;
+        inline nlohmann::json all_offerings_data;
         
         inline nlohmann::json package_data;
         

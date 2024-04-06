@@ -12,6 +12,7 @@ namespace pp_menu
 
     void display_perks();
     void display_items();
+    void display_offerings();
 
     void reload_packages();
 
@@ -34,7 +35,7 @@ namespace pp_menu
         inline std::vector<std::string> character_filter = {"All", "Killer", "Survivor"};
 
         inline int type_filter_index = 0;
-        inline std::vector<std::string> type_filter = {"All", "Perks", "Items"};
+        inline std::vector<std::string> type_filter = {"All", "Perks", "Items", "Offerings"};
     }
     
 }

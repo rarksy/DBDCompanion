@@ -8,6 +8,7 @@
 #include "Crosshair/Crosshair.h"
 #include "GUI/GUI.h"
 #include <Windows.h>
+
 #include "HookTracker\HookTracker.hpp"
 #include "OnScreenTimers/OnScreenTimers.hpp"
 #include "Perk Packager/PerkPackager.h"
@@ -42,6 +43,9 @@ void menu::run_loop()
     });
     shrine_load_thread.detach();
 
+    std::thread perk_packager_load_thread(perk_packager::setup);
+    perk_packager_load_thread.detach();
+
     while (!glfwWindowShouldClose(main_window))
     {
         const double start_time = glfwGetTime();
@@ -50,7 +54,7 @@ void menu::run_loop()
 
         ImGui::SetCurrentContext(menu::main_context);
         glfwPollEvents();
-
+        
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
@@ -154,7 +158,7 @@ void menu::render_ui()
 
     static bool hamburger_open = true;
     static float hamburger_width = 1.F;
-    static float hamburger_height = styling::menu_height / 3.2F;
+    static float hamburger_height = styling::menu_height / 2.5F;
     static bool show_color_picker = false;
 
     ImGui::SetCursorPos(ImVec2(5, 5));
@@ -192,6 +196,12 @@ void menu::render_ui()
         if (ImGui::Button("Crosshair Overlay"))
             menu_to_show = 3;
         gui::tool_tip("Allows you to use a crosshair overlay with many customization options");
+
+        ImGui::Spacing();
+
+        if (ImGui::Button("Perk Packager"))
+            menu_to_show = 4;
+        gui::tool_tip("");
 
         ImGui::Spacing();
 
