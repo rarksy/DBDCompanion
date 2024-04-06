@@ -34,6 +34,10 @@ namespace perk_packager
     {
     };
 
+    struct addon : base
+    {
+    };
+
     struct character
     {
         std::string name;
@@ -45,6 +49,7 @@ namespace perk_packager
     inline std::vector<character> all_characters;
     inline std::vector<item> all_items;
     inline std::vector<offering> all_offerings;
+    inline std::vector<addon> all_addons;
 
     namespace _internal
     {
@@ -54,6 +59,7 @@ namespace perk_packager
         inline nlohmann::json all_perks_data;
         inline nlohmann::json all_items_data;
         inline nlohmann::json all_offerings_data;
+        inline nlohmann::json all_addons_data;
         
         inline nlohmann::json package_data;
         

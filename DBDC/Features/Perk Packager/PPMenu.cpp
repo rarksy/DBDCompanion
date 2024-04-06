@@ -114,6 +114,9 @@ void pp_menu::render_ui()
     
     if (_internal::type_filter_index == 0 || _internal::type_filter_index == 3)
         display_offerings();
+
+    if (_internal::type_filter_index == 0 || _internal::type_filter_index == 4)
+        display_addons();
     
     
     gui::end_group_box();
@@ -424,6 +427,113 @@ void pp_menu::display_offerings()
                 offering.local_image_path = "";
 
                 perk_packager::_internal::package_data.erase(offering.name);
+                ml::json_write_data(backend::exe_directory.string() + backend::settings_directory + _internal::package_selector::package_data_directory +
+                                    _internal::package_selector::loaded_package_name + ".json",
+
+                                    perk_packager::_internal::package_data);
+            }
+            ImGui::PopStyleColor();
+        }
+
+        gui::end_group_box();
+
+        if (i == 0)
+            ImGui::SameLine();
+
+        current_x += 93.F;
+        remaining_width = ImGui::GetContentRegionAvail().x;
+        new_line = false;
+    }
+}
+
+void pp_menu::display_addons()
+{
+        const static auto start_cursor_pos = ImGui::GetCursorPos();
+    float remaining_width = ImGui::GetContentRegionAvail().x;
+    float current_x = ImGui::GetCursorPosX();
+    bool new_line = false;
+    for (int i = 0; i < perk_packager::all_addons.size(); i++)
+    {
+        auto& addon = perk_packager::all_addons[i];
+
+        const std::string searched_item = ml::to_lower(_internal::searched_text);
+
+        const bool found_searched_item = ml::to_lower(addon.name).find(ml::to_lower(searched_item)) != std::string::npos;
+
+        if (!found_searched_item)
+            continue;
+
+        const bool has_filter = _internal::character_filter_index != 0;
+        const bool is_correct_filter = ml::to_lower(_internal::character_filter[_internal::character_filter_index]) == addon.role;
+
+
+        if (has_filter && !is_correct_filter)
+            continue;
+
+        if (current_x + 93.F > remaining_width)
+        {
+            ImGui::NewLine();
+            current_x = ImGui::GetCursorPosX();
+            new_line = true;
+        }
+
+        if (!new_line && i > 0 || ImGui::GetCursorPos().x == start_cursor_pos.x)
+            ImGui::SameLine();
+
+        const std::string box_name = addon.name + ml::to_string(i);
+        gui::begin_group_box(box_name.c_str(), ImVec2(93.F, 93.F));
+
+
+        if (addon.has_selected_image == false)
+        {
+            ImGui::PushFont(menu::styling::child_font);
+            ImGui::TextWrapped(addon.name.c_str());
+            ImGui::PopFont();
+
+            ImGui::SetCursorPos({41, 55});
+            ImGui::Text("+");
+
+            ImGui::SetCursorPos({30, 50});
+            if (ImGui::InvisibleButton("##AddImage", ImVec2(32, 32)))
+            {
+                addon.local_image_path = ml::open_file_dialog();
+                addon.game_file_path = perk_packager::_internal::all_perks_data[addon.id]["image"];
+
+                if (!addon.local_image_path.empty())
+                {
+                    images::load_texture_from_file(addon.local_image_path, &addon.image);
+                    addon.has_selected_image = true;
+
+                    perk_packager::_internal::package_data[addon.name]["game_file_path"] = addon.game_file_path;
+                    perk_packager::_internal::package_data[addon.name]["local_file_path"] = addon.local_image_path;
+
+                    if (!_internal::package_selector::loaded_package_name.empty())
+                        ml::json_write_data(
+                            backend::exe_directory.string() + backend::settings_directory + _internal::package_selector::package_data_directory +
+                            _internal::package_selector::loaded_package_name + ".json",
+
+                            perk_packager::_internal::package_data
+                        );
+                }
+            }
+        }
+        else
+        {
+            ImGui::SetCursorPos({1, 1});
+            ImGui::Image((void*)addon.image, ImVec2(91, 91));
+            gui::tool_tip(addon.name, 500, false);
+
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
+            ImGui::SetCursorPos({80, -1});
+            ImGui::Text("x");
+            ImGui::SetCursorPos({79, 4});
+            if (ImGui::InvisibleButton("x", ImVec2(10, 15)))
+            {
+                addon.has_selected_image = false;
+                addon.image = -1;
+                addon.local_image_path = "";
+
+                perk_packager::_internal::package_data.erase(addon.name);
                 ml::json_write_data(backend::exe_directory.string() + backend::settings_directory + _internal::package_selector::package_data_directory +
                                     _internal::package_selector::loaded_package_name + ".json",
 
