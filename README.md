@@ -21,7 +21,11 @@ The crosshair overlay is always open to suggestions for features and other ideas
 
 ![image](https://cdn.discordapp.com/attachments/1224595291018362972/1225363590668750890/DBDC_pA84aUu0VL.gif?ex=6620dbc6&is=660e66c6&hm=835d8d7ded55c785313923c2225342846ba74a1f25578b851c5a68424ca57e7a&)
 
-The timers menu allows you to create custom timers with different lengths and activate them at any time using the key bound to that timer
+The timer menu features an on-screen timer that appears when you press the key currently bound to the relevant timer, customization includes:  
+- Timer name
+- Timer duration
+- Timer text color
+- Setting multiple timers to the same key for dual activation (for relevant things such as unhook endurance and Decisive Strike activating at the same time)  
 
 # Hook Counter !( Not Released Yet )!
 ![image](https://github.com/rarksy/DBDCompanion/assets/70506725/2cd129f0-403b-4cbc-a5fc-9ba781babb66)
