@@ -263,7 +263,7 @@ void menu::render_ui()
     if (ImGui::InvisibleButton("##HamburgerToggleButtonOutsideMenu", {39, 36}))
         hamburger_open = !hamburger_open;
 
-    ImGui::SetCursorPos({720, 470});
+    ImGui::SetCursorPos({menu_to_show == 4 ? 10.F : 720.F, 470});
     ImGui::TextColored(ImVec4(0.8F, 0.8F, 0.8F, 0.5F), "(?)");
     gui::tool_tip(
         "Hold right click when hovering an option to view information about it.\n"

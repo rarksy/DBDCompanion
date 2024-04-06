@@ -18,6 +18,8 @@ namespace perk_packager
 
     struct base
     {
+        std::string owner;
+        
         std::string name;
         std::string id;
         std::string role;
@@ -31,7 +33,6 @@ namespace perk_packager
 
     struct perk : base
     {
-        std::string owner;
     };
 
     struct item : base

@@ -13,28 +13,24 @@ void pp_menu::setup()
 
 void pp_menu::render_ui()
 {
-    ImGui::SetCursorPos({10, 55});
-    ImGui::SetNextItemWidth(150.F);
-    ImGui::InputTextWithHint("##PerkSearch", "Perk Search", _internal::searched_text, IM_ARRAYSIZE(_internal::searched_text));
-    ImGui::SameLine();
-
-    ImGui::SetCursorPosY(20.F);
-    gui::drop_down_box("Character Filter", _internal::character_filter[_internal::character_filter_index], _internal::character_filter_index, _internal::character_filter, 80.F);
-    ImGui::SetCursorPos({168.F, 55.f});
+    ImGui::Columns(4, nullptr, false);
+    ImGui::SetCursorPosY(45.F);
+    ImGui::SeparatorText("Filtering");
+    gui::drop_down_box("Role Filter", _internal::character_filter[_internal::character_filter_index], _internal::character_filter_index, _internal::character_filter, 80.F);
     gui::drop_down_box("Type Filter", _internal::type_filter[_internal::type_filter_index], _internal::type_filter_index, _internal::type_filter, 80.F);
+    ImGui::SetNextItemWidth(170.F);
+    ImGui::InputTextWithHint("##PerkSearch", "Perk Search", _internal::searched_text, IM_ARRAYSIZE(_internal::searched_text));
 
+    ImGui::SeparatorText("Packaging");
     ImGui::PushStyleColor(ImGuiCol_Border, menu::styling::menu_accent.to_imvec4());
-
-    ImGui::SameLine();
-    ImGui::SetCursorPos({429.F, 6.F});
-    ImGui::SetNextItemWidth(150.F);
+    ImGui::SetNextItemWidth(170.F);
     if (ImGui::ListBox("##Packages", &_internal::package_selector::loaded_package,
                        [](void* data, int idx, const char** outText)
                        {
                            *outText = _internal::package_selector::all_packages.at(idx).c_str();
                            return true;
                        },
-                       NULL, (int)_internal::package_selector::all_packages.size(), 2))
+                       NULL, (int)_internal::package_selector::all_packages.size(), 4))
     {
         if (_internal::package_selector::loaded_package < _internal::package_selector::all_packages.size())
         {
@@ -51,9 +47,8 @@ void pp_menu::render_ui()
             perk_packager::reload();
         }
     }
-
-    ImGui::SetCursorPos({429.F, 69.F});
-    ImGui::SetNextItemWidth(150.F);
+    
+    ImGui::SetNextItemWidth(170.F);
     ImGui::InputTextWithHint("##PackageName", "Package Name", &_internal::package_selector::input_package_name);
 
     if (ImGui::GetIO().WantCaptureKeyboard &&
@@ -84,8 +79,9 @@ void pp_menu::render_ui()
     ImGui::PopStyleColor();
     gui::tool_tip("Press Enter To Create Package profile", 500, false);
 
-    ImGui::SameLine();
-    if (ImGui::Button("Compile Package") && _internal::package_selector::input_package_name.size() > 0)
+    ImGui::Spacing();
+    
+    if (ImGui::Button("Compile Package", {170, 0}) && _internal::package_selector::input_package_name.size() > 0)
     {
         const std::string root_directory = backend::exe_directory.string() + backend::settings_directory + _internal::package_selector::package_directory +
             _internal::package_selector::loaded_package_name + "\\DeadByDaylight\\Content\\";
@@ -106,7 +102,17 @@ void pp_menu::render_ui()
         }
     }
 
-    gui::begin_group_box("perk display", ImVec2(0, 380), NULL);
+    ImGui::Spacing();
+    
+    if (ImGui::Button("Apply Package", {170, 0}));
+
+    ImGui::Spacing();
+    
+    if (ImGui::Button("Delete Package", {170, 0}));
+    
+    ImGui::EndColumns();
+    ImGui::SetCursorPos({205, 10});
+    gui::begin_group_box("perk display", ImVec2({0, 0}), NULL);
 
     if (_internal::type_filter_index == 0 || _internal::type_filter_index == 1)
         display_base_item(perk_packager::all_perks);
@@ -135,17 +141,16 @@ void pp_menu::display_base_item(std::vector<T>& vec_obj)
         const std::string searched_item = ml::to_lower(pp_menu::_internal::searched_text);
         const bool found_searched_item = ml::to_lower(obj.name).find(ml::to_lower(searched_item)) != std::string::npos;
 
-        if (!found_searched_item)
+        if (!found_searched_item && (ml::to_lower(obj.owner).find(ml::to_lower(searched_item)) == std::string::npos))
             continue;
 
         const bool has_filter = pp_menu::_internal::character_filter_index != 0;
         const bool is_correct_filter = ml::to_lower(pp_menu::_internal::character_filter[pp_menu::_internal::character_filter_index]) == obj.role;
 
-
         if (has_filter && !is_correct_filter)
             continue;
 
-        if (current_x + 93.F > remaining_width)
+        if (current_x + 94.F > remaining_width)
         {
             ImGui::NewLine();
             current_x = ImGui::GetCursorPosX();
@@ -156,7 +161,7 @@ void pp_menu::display_base_item(std::vector<T>& vec_obj)
             ImGui::SameLine();
 
         const std::string box_name = obj.name + ml::to_string(i);
-        gui::begin_group_box(box_name.c_str(), ImVec2(93.F, 93.F));
+        gui::begin_group_box(box_name.c_str(), ImVec2(94.F, 94.F));
 
 
         if (obj.has_selected_image == false)
@@ -222,7 +227,7 @@ void pp_menu::display_base_item(std::vector<T>& vec_obj)
         if (i == 0)
             ImGui::SameLine();
 
-        current_x += 93.F;
+        current_x += 94.F;
         remaining_width = ImGui::GetContentRegionAvail().x;
         new_line = false;
     }
