@@ -23,7 +23,7 @@ The crosshair overlay is always open to suggestions for features and other ideas
 
 The timers menu allows you to create custom timers with different lengths and activate them at any time using the key bound to that timer
 
-# Hook Counter
+# Hook Counter !( Not Released Yet )!
 ![image](https://github.com/rarksy/DBDCompanion/assets/70506725/2cd129f0-403b-4cbc-a5fc-9ba781babb66)
 
 The hook counter will use image recognition to detect when a survivor has been hooked, when a detection is made a pip icon will be rendered next to the corresponding survivors portrait just like when you're playing survivor!  
