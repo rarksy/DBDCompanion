@@ -113,8 +113,7 @@ void pp_menu::render_ui()
         display_base_item(perk_packager::all_offerings);
     if (_internal::type_filter_index == 0 || _internal::type_filter_index == 4)
         display_base_item(perk_packager::all_addons);
-
-
+    
     gui::end_group_box();
 }
 
