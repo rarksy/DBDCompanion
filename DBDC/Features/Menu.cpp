@@ -11,8 +11,8 @@
 
 #include "HookTracker\HookTracker.hpp"
 #include "OnScreenTimers/OnScreenTimers.hpp"
-#include "Perk Packager/PerkPackager.h"
-#include "Perk Packager/PPMenu.h"
+#include "IconPackager\IconPackager.hpp"
+#include "IconPackager/PPMenu.h"
 #include "Shrine Of Secrets/ShrineOfSecrets.hpp"
 
 void menu::run_loop()

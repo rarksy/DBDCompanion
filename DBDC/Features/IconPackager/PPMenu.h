@@ -10,10 +10,8 @@ namespace pp_menu
     void setup();
     void render_ui();
 
-    void display_perks();
-    void display_items();
-    void display_offerings();
-    void display_addons();
+    template<typename T>
+    void display_base_item(std::vector<T>& vec_obj);
 
     void reload_packages();
 
@@ -38,5 +36,6 @@ namespace pp_menu
         inline int type_filter_index = 0;
         inline std::vector<std::string> type_filter = {"All", "Perks", "Items", "Offerings", "Addons"};
     }
+    
     
 }
