@@ -113,6 +113,13 @@ void menu::render_ui()
     ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Once);
     ImGui::SetNextWindowSize(ImVec2(styling::menu_width, styling::menu_height), ImGuiCond_Once);
     ImGui::Begin("menu", nullptr, menu_flags);
+    static bool hamburger_open = true;
+    static float hamburger_width = 1.F;
+    static float hamburger_height = 240.F;
+    static bool show_color_picker = false;
+
+    ImGui::BeginDisabled(hamburger_open);
+    
 
     if (menu_to_show == 0)
     {
@@ -156,10 +163,7 @@ void menu::render_ui()
         onscreen_timers::render_ui();
     }
 
-    static bool hamburger_open = true;
-    static float hamburger_width = 1.F;
-    static float hamburger_height = 240.F;
-    static bool show_color_picker = false;
+    ImGui::EndDisabled();
 
     ImGui::SetCursorPos(ImVec2(5, 5));
 
