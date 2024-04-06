@@ -110,15 +110,41 @@ void menu::run_loop()
 
 void menu::render_ui()
 {
-    ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Once);
-    ImGui::SetNextWindowSize(ImVec2(styling::menu_width, styling::menu_height), ImGuiCond_Once);
-    ImGui::Begin("menu", nullptr, menu_flags);
+    auto& style = ImGui::GetStyle();
     static bool hamburger_open = true;
     static float hamburger_width = 1.F;
     static float hamburger_height = 240.F;
     static bool show_color_picker = false;
 
-    ImGui::BeginDisabled(hamburger_open);
+    static float disabled_alpha = 0.01F;
+    
+    if (hamburger_open)
+    {
+        if (disabled_alpha > 0.1F)
+        {
+            disabled_alpha -= 0.04F;
+            style.DisabledAlpha = disabled_alpha;
+        }
+        else style.DisabledAlpha = 0.1F;
+    }
+    else
+    {
+        if (disabled_alpha < 1.0F && hamburger_width > 0)
+        {
+            disabled_alpha += 0.04F;
+            style.DisabledAlpha = disabled_alpha;
+        }
+
+
+        // figure out widget fade on menu close
+    }
+
+    
+    ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Once);
+    ImGui::SetNextWindowSize(ImVec2(styling::menu_width, styling::menu_height), ImGuiCond_Once);
+    ImGui::Begin("menu", nullptr, menu_flags);
+    
+    ImGui::BeginDisabled(hamburger_open || hamburger_width > 0);
     
 
     if (menu_to_show == 0)
@@ -248,9 +274,14 @@ void menu::render_ui()
     }
 
     if (hamburger_open && hamburger_width < 200)
+    {
         hamburger_width += 10;
+        
+    }
     else if (!hamburger_open && hamburger_width > 0)
+    {
         hamburger_width -= 10;
+    }
 
     if (ImGui::IsKeyPressed(ImGuiKey_Space, false) && !ImGui::IsAnyItemActive())
         show_color_picker = !show_color_picker;
@@ -325,7 +356,7 @@ void menu::create_global_style()
     style.FrameRounding = 2.F;
     style.DisabledAlpha = 0.3F;
     style.FrameBorderSize = 1.7F;
-    style.DisabledAlpha = 0.1f;
+    //style.DisabledAlpha = 0.1f;
     style.ChildRounding = 3.F;
 
     // Slider
