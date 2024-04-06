@@ -8,21 +8,25 @@ DBDC is in early access and still has a long road of updates, features and suppo
 ![image](https://github.com/rarksy/DBDCompanion/assets/70506725/9b849738-8db3-419c-b85f-323f76e21b61)
 
 The config editor features the most extensive range of options that allow you to customize the look and graphical fidelity of your game to your liking!  
-The config editor is always being updated and plans to feature things i **didn't even know were possible** until looking into them recently ;) stay tuned for that!
+The config editor is always being updated and plans to feature things i **didn't even know were possible** until looking into them recently ;) stay tuned for that!  
+
+# Crosshair Overlay
+![image](https://github.com/rarksy/DBDCompanion/assets/70506725/b09ecf97-9a3f-46f3-ab1c-62299d2aba0d)
+
+A basic crosshair overlay allowing you to use and customize a crosshair in game!  
+The crosshair overlay is always open to suggestions for features and other ideas.
+
+# On-Screen Timers
+
+![image](https://cdn.discordapp.com/attachments/1224595291018362972/1225363590668750890/DBDC_pA84aUu0VL.gif?ex=6620dbc6&is=660e66c6&hm=835d8d7ded55c785313923c2225342846ba74a1f25578b851c5a68424ca57e7a&)
+
+The timers menu allows you to create custom timers with different lengths and activate them at any time using the key bound to that timer
 
 # Hook Counter
 ![image](https://github.com/rarksy/DBDCompanion/assets/70506725/2cd129f0-403b-4cbc-a5fc-9ba781babb66)
 
 The hook counter will use image recognition to detect when a survivor has been hooked, when a detection is made a pip icon will be rendered next to the corresponding survivors portrait just like when you're playing survivor!  
 This part of DBDC is still in development and not currently available
-
-# Crosshair Overlay
-![image](https://github.com/rarksy/DBDCompanion/assets/70506725/b09ecf97-9a3f-46f3-ab1c-62299d2aba0d)
-
-
-
-A basic crosshair overlay allowing you to use and customize a crosshair in game!  
-The crosshair overlay is always open to suggestions for features and other ideas.
 
 # F.A.Q.
 
