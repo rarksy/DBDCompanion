@@ -5,7 +5,8 @@ DBDC is in early access and still has a long road of updates, features and suppo
 **DBDC is entirely free to use**, although any support is greatly appreciated!  
 # Config Editor
  
-![image](https://github.com/rarksy/DBDCompanion/assets/70506725/9b849738-8db3-419c-b85f-323f76e21b61)
+![image](https://github.com/rarksy/DBDCompanion/assets/70506725/d38aa825-949f-49cb-b26d-f0b613b81ad6)
+
 
 The config editor features the most extensive range of options that allow you to customize the look and graphical fidelity of your game to your liking!  
 The config editor is always being updated and plans to feature things i **didn't even know were possible** until looking into them recently ;) stay tuned for that!  
