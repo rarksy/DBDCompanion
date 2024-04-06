@@ -57,6 +57,7 @@
     <ClInclude Include="Dependencies\curl\urlapi.h" />
     <ClInclude Include="Dependencies\curl\websockets.h" />
     <ClInclude Include="Dependencies\Exe Icons\256x256.hpp" />
+    <ClInclude Include="Dependencies\Fonts\Inter-ExtraLight.hpp" />
     <ClInclude Include="Dependencies\Fonts\Rethink.hpp" />
     <ClInclude Include="Dependencies\GLFW\glfw3.h" />
     <ClInclude Include="Dependencies\GLFW\glfw3native.h" />
