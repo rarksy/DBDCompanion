@@ -12,7 +12,7 @@
 #include "HookTracker\HookTracker.hpp"
 #include "OnScreenTimers/OnScreenTimers.hpp"
 #include "IconPackager\IconPackager.hpp"
-#include "IconPackager/PPMenu.h"
+#include "IconPackager\IPMenu.hpp"
 #include "Shrine Of Secrets/ShrineOfSecrets.hpp"
 
 void menu::run_loop()
@@ -143,9 +143,9 @@ void menu::render_ui()
     else if (menu_to_show == 4)
     {
         static std::once_flag flag_menu;
-        std::call_once(flag_menu, pp_menu::setup);
+        std::call_once(flag_menu, ip_menu::setup);
 
-        pp_menu::render_ui();
+        ip_menu::render_ui();
     }
 
     else if (menu_to_show == 5)
@@ -199,7 +199,7 @@ void menu::render_ui()
 
         ImGui::Spacing();
 
-        if (ImGui::Button("Perk Packager"))
+        if (ImGui::Button("Icon Packager"))
             menu_to_show = 4;
         gui::tool_tip("");
 

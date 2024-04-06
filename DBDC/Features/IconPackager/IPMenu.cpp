@@ -1,17 +1,18 @@
-﻿#include "PPMenu.h"
+﻿#include "IPMenu.hpp"
 
 #include "IconPackager.hpp"
+#include "../../Misc/Misc.hpp"
 #include "GUI/GUI.h"
 #include "Images/Images.h"
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_stdlib.h"
 
-void pp_menu::setup()
+void ip_menu::setup()
 {
     reload_packages();
 }
 
-void pp_menu::render_ui()
+void ip_menu::render_ui()
 {
     ImGui::Columns(4, nullptr, false);
     ImGui::SetCursorPosY(45.F);
@@ -30,7 +31,7 @@ void pp_menu::render_ui()
                            *outText = _internal::package_selector::all_packages.at(idx).c_str();
                            return true;
                        },
-                       NULL, (int)_internal::package_selector::all_packages.size(), 4))
+                       NULL, (int)_internal::package_selector::all_packages.size(), 3))
     {
         if (_internal::package_selector::loaded_package < _internal::package_selector::all_packages.size())
         {
@@ -47,12 +48,11 @@ void pp_menu::render_ui()
             perk_packager::reload();
         }
     }
-    
+
     ImGui::SetNextItemWidth(170.F);
     ImGui::InputTextWithHint("##PackageName", "Package Name", &_internal::package_selector::input_package_name);
 
-    if (ImGui::GetIO().WantCaptureKeyboard &&
-        ImGui::IsKeyPressed(ImGuiKey_Enter, false))
+    if (ImGui::Button("Create Package", {170.F, 0}))
     {
         auto lastNonSpace = std::find_if_not(_internal::package_selector::input_package_name.rbegin(), _internal::package_selector::input_package_name.rend(), ::isspace);
         _internal::package_selector::input_package_name.resize(_internal::package_selector::input_package_name.rend() - lastNonSpace);
@@ -80,8 +80,8 @@ void pp_menu::render_ui()
     gui::tool_tip("Press Enter To Create Package profile", 500, false);
 
     ImGui::Spacing();
-    
-    if (ImGui::Button("Compile Package", {170, 0}) && _internal::package_selector::input_package_name.size() > 0)
+
+    if (ImGui::Button("Compile Package", {170, 0}))
     {
         const std::string root_directory = backend::exe_directory.string() + backend::settings_directory + _internal::package_selector::package_directory +
             _internal::package_selector::loaded_package_name + "\\DeadByDaylight\\Content\\";
@@ -99,17 +99,54 @@ void pp_menu::render_ui()
             ml::create_directory(root_directory + destination.parent_path().string());
 
             std::filesystem::copy_file(source, root_directory + destination.string(), std::filesystem::copy_options::overwrite_existing);
+
+            ml::open_directory(backend::exe_directory.string() + backend::settings_directory + _internal::package_selector::package_directory);
         }
     }
 
     ImGui::Spacing();
-    
-    if (ImGui::Button("Apply Package", {170, 0}));
+
+    if (ImGui::Button("Apply Package", {170, 0}))
+    {
+        const auto result = MessageBoxA(NULL, "This Will Apply All Currently Selected Icons To Your Game, Continue?", "Note...", MB_YESNO);
+
+        if (result == IDYES)
+        {
+            const std::string root_directory = misc::get_game_root_directory() + "\\DeadByDaylight\\Content\\";
+
+            for (const auto& p : perk_packager::_internal::package_data)
+            {
+                const std::string source = p["local_file_path"];
+                std::filesystem::path destination = p["game_file_path"];
+                std::string destination_string = destination.string();
+
+                std::replace(destination_string.begin(), destination_string.end(), '/', '\\');
+
+                ml::create_directory(root_directory + destination.parent_path().string());
+
+                std::filesystem::copy_file(source, root_directory + destination.string(), std::filesystem::copy_options::overwrite_existing);
+            }   
+        }
+    }
 
     ImGui::Spacing();
-    
-    if (ImGui::Button("Delete Package", {170, 0}));
-    
+
+    if (ImGui::Button("Delete Package", {170, 0}))
+    {
+        const auto result = MessageBoxA(NULL, "Are You Sure?", "Note...", MB_YESNO);
+
+        if (result == IDYES)
+        {
+            const auto it = std::ranges::find(_internal::package_selector::all_packages, _internal::package_selector::loaded_package_name);
+            _internal::package_selector::all_packages.erase(it);
+
+            const std::filesystem::path file_path = backend::exe_directory.string() + backend::settings_directory +
+                _internal::package_selector::package_data_directory + _internal::package_selector::loaded_package_name + ".json";
+
+            std::filesystem::remove(file_path);   
+        }
+    }
+
     ImGui::EndColumns();
     ImGui::SetCursorPos({205, 10});
     gui::begin_group_box("perk display", ImVec2({0, 0}), NULL);
@@ -127,7 +164,7 @@ void pp_menu::render_ui()
 }
 
 template <typename T>
-void pp_menu::display_base_item(std::vector<T>& vec_obj)
+void ip_menu::display_base_item(std::vector<T>& vec_obj)
 {
     const static auto start_cursor_pos = ImGui::GetCursorPos();
     float remaining_width = ImGui::GetContentRegionAvail().x;
@@ -138,14 +175,14 @@ void pp_menu::display_base_item(std::vector<T>& vec_obj)
     {
         auto& obj = vec_obj[i];
 
-        const std::string searched_item = ml::to_lower(pp_menu::_internal::searched_text);
+        const std::string searched_item = ml::to_lower(ip_menu::_internal::searched_text);
         const bool found_searched_item = ml::to_lower(obj.name).find(ml::to_lower(searched_item)) != std::string::npos;
 
         if (!found_searched_item && (ml::to_lower(obj.owner).find(ml::to_lower(searched_item)) == std::string::npos))
             continue;
 
-        const bool has_filter = pp_menu::_internal::character_filter_index != 0;
-        const bool is_correct_filter = ml::to_lower(pp_menu::_internal::character_filter[pp_menu::_internal::character_filter_index]) == obj.role;
+        const bool has_filter = ip_menu::_internal::character_filter_index != 0;
+        const bool is_correct_filter = ml::to_lower(ip_menu::_internal::character_filter[ip_menu::_internal::character_filter_index]) == obj.role;
 
         if (has_filter && !is_correct_filter)
             continue;
@@ -187,10 +224,10 @@ void pp_menu::display_base_item(std::vector<T>& vec_obj)
                     perk_packager::_internal::package_data[obj.name]["game_file_path"] = obj.game_file_path;
                     perk_packager::_internal::package_data[obj.name]["local_file_path"] = obj.local_image_path;
 
-                    if (!pp_menu::_internal::package_selector::loaded_package_name.empty())
+                    if (!ip_menu::_internal::package_selector::loaded_package_name.empty())
                         ml::json_write_data(
-                            backend::exe_directory.string() + backend::settings_directory + pp_menu::_internal::package_selector::package_data_directory +
-                            pp_menu::_internal::package_selector::loaded_package_name + ".json",
+                            backend::exe_directory.string() + backend::settings_directory + ip_menu::_internal::package_selector::package_data_directory +
+                            ip_menu::_internal::package_selector::loaded_package_name + ".json",
 
                             perk_packager::_internal::package_data
                         );
@@ -214,8 +251,8 @@ void pp_menu::display_base_item(std::vector<T>& vec_obj)
                 obj.local_image_path = "";
 
                 perk_packager::_internal::package_data.erase(obj.name);
-                ml::json_write_data(backend::exe_directory.string() + backend::settings_directory + pp_menu::_internal::package_selector::package_data_directory +
-                                    pp_menu::_internal::package_selector::loaded_package_name + ".json",
+                ml::json_write_data(backend::exe_directory.string() + backend::settings_directory + ip_menu::_internal::package_selector::package_data_directory +
+                                    ip_menu::_internal::package_selector::loaded_package_name + ".json",
 
                                     perk_packager::_internal::package_data);
             }
@@ -233,7 +270,7 @@ void pp_menu::display_base_item(std::vector<T>& vec_obj)
     }
 }
 
-void pp_menu::reload_packages()
+void ip_menu::reload_packages()
 {
     const std::filesystem::path iterator_path = backend::exe_directory.string() + backend::settings_directory + _internal::package_selector::package_data_directory;
 

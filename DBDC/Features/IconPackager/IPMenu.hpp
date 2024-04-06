@@ -3,7 +3,7 @@
 #include <string>
 
 
-namespace pp_menu
+namespace ip_menu
 {
     inline bool isSetup = false;
     
@@ -24,8 +24,8 @@ namespace pp_menu
             inline std::vector<std::string> all_packages;
             inline static std::string input_package_name;
 
-            inline const std::string package_directory = "Perk Packages\\";
-            inline const std::string package_data_directory = "Perk Packages\\Data\\";
+            inline const std::string package_directory = "Icon Packages\\";
+            inline const std::string package_data_directory = "Icon Packages\\Data\\";
         }
         
         inline static char searched_text[16];
