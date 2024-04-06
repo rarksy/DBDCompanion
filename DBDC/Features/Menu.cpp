@@ -158,7 +158,7 @@ void menu::render_ui()
 
     static bool hamburger_open = true;
     static float hamburger_width = 1.F;
-    static float hamburger_height = styling::menu_height / 2.5F;
+    static float hamburger_height = 240.F;
     static bool show_color_picker = false;
 
     ImGui::SetCursorPos(ImVec2(5, 5));
@@ -187,25 +187,37 @@ void menu::render_ui()
         if (ImGui::InvisibleButton("##HamburgerToggleButtonInsideMenu", {39, 36}))
             hamburger_open = !hamburger_open;
 
-        if (ImGui::Button("Config Editor"))
+        ImGui::PushFont(styling::child_font);
+        ImGui::SetCursorPosX((ImGui::GetWindowSize().x - ImGui::CalcTextSize("Customization").x) * 0.5F);
+        ImGui::TextColored(color(120, 120, 120, 185).to_imvec4(), "Customization");
+        ImGui::PopFont();
+
+        if (ImGui::Button("Config Editor", ImVec2(185, 0)))
             menu_to_show = 1;
         gui::tool_tip("Allows you to adjust your game settings in\nmore detail than the base game offers");
 
         ImGui::Spacing();
 
-        if (ImGui::Button("Crosshair Overlay"))
+        if (ImGui::Button("Icon Packager", ImVec2(185, 0)))
+            menu_to_show = 4;
+        gui::tool_tip("");
+
+        ImGui::Spacing();
+        ImGui::Spacing();
+        ImGui::Spacing();
+
+        ImGui::PushFont(styling::child_font);
+        ImGui::SetCursorPosX((ImGui::GetWindowSize().x - ImGui::CalcTextSize("Overlay Features").x) * 0.5F);
+        ImGui::TextColored(color(120, 120, 120, 185).to_imvec4(), "Overlay Features");
+        ImGui::PopFont();
+
+        if (ImGui::Button("Crosshair Overlay", ImVec2(185, 0)))
             menu_to_show = 3;
         gui::tool_tip("Allows you to use a crosshair overlay with many customization options");
 
         ImGui::Spacing();
 
-        if (ImGui::Button("Icon Packager"))
-            menu_to_show = 4;
-        gui::tool_tip("");
-
-        ImGui::Spacing();
-
-        if (ImGui::Button("On-Screen Timers"))
+        if (ImGui::Button("On-Screen Timers", ImVec2(185, 0)))
             menu_to_show = 5;
         gui::tool_tip("Allows you to setup hotkeys to display timers on your screen for relevant information");
 
