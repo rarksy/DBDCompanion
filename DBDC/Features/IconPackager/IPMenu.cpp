@@ -148,8 +148,8 @@ void ip_menu::render_ui()
     }
 
     ImGui::EndColumns();
-    ImGui::SetCursorPos({205, 10});
-    gui::begin_group_box("perk display", ImVec2({0, 0}), NULL);
+    ImGui::SetCursorPos({195, 10});
+    gui::begin_group_box("perk display", ImVec2({540, 0}), NULL);
 
     if (_internal::type_filter_index == 0 || _internal::type_filter_index == 1)
         display_base_item(perk_packager::all_perks);
