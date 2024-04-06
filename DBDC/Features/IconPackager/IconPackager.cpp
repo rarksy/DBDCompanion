@@ -53,6 +53,32 @@ bool perk_packager::setup()
                     all_perks.push_back(p);
                 }
             }
+
+            for (const auto& general_surv_perk_id : _internal::all_survivor_general_perks)
+            {
+                perk p;
+                const auto perk_info = _internal::all_perks_data[general_surv_perk_id];
+
+                p.name = perk_info["name"];
+                p.role = perk_info["role"];
+                p.game_file_path = perk_info["image"];
+                p.id = general_surv_perk_id;
+
+                all_perks.push_back(p);
+            }
+
+            for (const auto& general_killer_perk_id : _internal::all_killer_general_perks)
+            {
+                perk p;
+                const auto perk_info = _internal::all_perks_data[general_killer_perk_id];
+
+                p.name = perk_info["name"];
+                p.role = perk_info["role"];
+                p.game_file_path = perk_info["image"];
+                p.id = general_killer_perk_id;
+
+                all_perks.push_back(p);
+            }
         }
     }
     return true;

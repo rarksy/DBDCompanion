@@ -105,16 +105,20 @@ void pp_menu::render_ui()
 
     gui::begin_group_box("perk display", ImVec2(0, 380), NULL);
 
-    display_base_item(perk_packager::all_offerings);
-    display_base_item(perk_packager::all_addons);
-    display_base_item(perk_packager::all_items);
-    display_base_item(perk_packager::all_perks);
+    if (_internal::type_filter_index == 0 || _internal::type_filter_index == 1)
+        display_base_item(perk_packager::all_perks);
+    if (_internal::type_filter_index == 0 || _internal::type_filter_index == 2)
+        display_base_item(perk_packager::all_items);
+    if (_internal::type_filter_index == 0 || _internal::type_filter_index == 3)
+        display_base_item(perk_packager::all_offerings);
+    if (_internal::type_filter_index == 0 || _internal::type_filter_index == 4)
+        display_base_item(perk_packager::all_addons);
 
 
     gui::end_group_box();
 }
 
-template<typename T>
+template <typename T>
 void pp_menu::display_base_item(std::vector<T>& vec_obj)
 {
     const static auto start_cursor_pos = ImGui::GetCursorPos();

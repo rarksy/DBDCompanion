@@ -38,6 +38,10 @@ namespace perk_packager
     {
     };
 
+    struct power : base
+    {
+    };
+
     struct offering : base
     {
     };
@@ -48,6 +52,7 @@ namespace perk_packager
 
     inline std::vector<perk> all_perks;
     inline std::vector<item> all_items;
+    inline std::vector<power> all_powers;
     inline std::vector<offering> all_offerings;
     inline std::vector<addon> all_addons;
 
@@ -58,6 +63,7 @@ namespace perk_packager
         inline nlohmann::json all_characters_data;
         inline nlohmann::json all_perks_data;
         inline nlohmann::json all_items_data;
+        inline nlohmann::json all_powers_data;
         inline nlohmann::json all_offerings_data;
         inline nlohmann::json all_addons_data;
 
