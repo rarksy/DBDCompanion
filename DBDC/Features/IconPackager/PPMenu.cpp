@@ -82,10 +82,10 @@ void pp_menu::render_ui()
         }
     }
     ImGui::PopStyleColor();
-    gui::tool_tip("Press Enter To Create Package", 500, false);
+    gui::tool_tip("Press Enter To Create Package profile", 500, false);
 
     ImGui::SameLine();
-    if (ImGui::Button("Create Package") && _internal::package_selector::input_package_name.size() > 0)
+    if (ImGui::Button("Compile Package") && _internal::package_selector::input_package_name.size() > 0)
     {
         const std::string root_directory = backend::exe_directory.string() + backend::settings_directory + _internal::package_selector::package_directory +
             _internal::package_selector::loaded_package_name + "\\DeadByDaylight\\Content\\";
