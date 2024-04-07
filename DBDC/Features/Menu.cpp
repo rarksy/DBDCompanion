@@ -149,9 +149,6 @@ void menu::render_ui()
     if (menu_to_show == 0)
     {
         shrine_of_secrets::render_ui();
-
-        //ImGui::SetCursorPos({10, 470});
-        //ImGui::TextColored(ImVec4(0.1F, 0.1F, 0.1F, 0.3F), "I DONT KNOW HOW TO MAKE A GOOD MAIN MENU");
     }
 
     if (menu_to_show == 1)
@@ -226,6 +223,9 @@ void menu::render_ui()
         ImGui::SetCursorPos({3, 3});
         if (ImGui::InvisibleButton("##HamburgerToggleButtonInsideMenu", {39, 36}))
             hamburger_open = !hamburger_open;
+
+        if (ImGui::IsKeyPressed(ImGuiKey_Space, false) && !ImGui::IsAnyItemActive())
+            styling::show_color_picker = !styling::show_color_picker;
 
         static bool color_picker_active = false;
         if (styling::show_color_picker)
@@ -311,9 +311,6 @@ void menu::render_ui()
     {
         hamburger_width -= 10;
     }
-
-    if (ImGui::IsKeyPressed(ImGuiKey_Space, false) && !ImGui::IsAnyItemActive())
-        styling::show_color_picker = !styling::show_color_picker;
 
     ImGui::GetWindowDrawList()->AddRectFilled({11, 13}, {41, 18}, hamburger_accent, 4.F);
     ImGui::GetWindowDrawList()->AddRectFilled({11, 23}, {41, 28}, hamburger_accent, 4.F);
