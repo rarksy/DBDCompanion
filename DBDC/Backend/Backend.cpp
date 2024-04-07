@@ -61,41 +61,68 @@ bool backend::check_for_update()
 {
     const std::string file_path = backend::exe_directory.string() + backend::settings_directory + backend::data_directory + "version.json";
     nlohmann::json data;
-    
+    const std::string releases_url = "https://api.github.com/repos/rarksy/DBDCompanion/releases";
+
     if (!ml::file_or_directory_exists(file_path) || ml::get_seconds_since_file_modified(file_path) > 1200)
     {
-        data = ml::json_get_from_url("https://api.github.com/repos/rarksy/DBDCompanion/releases")[0];
+        data = ml::json_get_from_url(releases_url)[0];
 
         ml::json_write_data(file_path, data);
     }
     else
         data = ml::json_get_data_from_file(file_path);
-    
+
     const std::string version = data["tag_name"];
 
     if (version != DBDC_VERSION)
     {
-        updated_binary_url = data["assets"][0]["browser_download_url"];
-        
-        return true;
+        for (const auto& asset : data["assets"])
+        {
+            std::string path = asset["browser_download_url"];
+            if (path.find("updater.exe") != std::string::npos)
+            {
+                updated_binary_url = asset["browser_download_url"];
+                return true;
+            }
+        }
+        return false;
     }
 
     return false;
 }
 
 bool backend::update()
-{   
+{
     if (updated_binary_url.empty())
         return false;
 
-    const auto file_path = backend::exe_directory.string() + backend::settings_directory + backend::data_directory + "new_binary.7z";
+    const auto file_path = backend::exe_directory.string() + "\\new_binary.exe";
+    if (!ml::download_file(updated_binary_url, file_path))
+        return false;
 
-    ml::download_file(updated_binary_url, backend::exe_directory.string() + backend::settings_directory + backend::data_directory + "new_binary.7z");
+    std::ofstream file_to_write(backend::exe_directory.string() + "\\update.bat");
 
-    ml::extract_file_from_7z(file_path, "DBD Companion\\DBDC.exe", backend::exe_directory.string() + "new_binary.exe");
+    if (file_to_write.is_open())
+    {
+        file_to_write
+            << "@echo off\n"
+            << "Title DBDC Updater\n"
+            << "color 5\n"
+            << "echo Updating DBDC!\n"
+            << "taskkill /f /im " << exe_name << "\n"
+            << "timeout /t 1 /nobreak >nul" << "\n"
+            << "del " << exe_directory.string() + "\\" + exe_name << "\n"
+            << "timeout /t 1 /nobreak >nul" << "\n"
+            << "ren " << exe_directory.string() + "\\" + "new_binary.exe " << exe_name << "\n"
+            << "timeout /t 1 /nobreak >nul" << "\n"
+            << "start " << exe_directory.string() + "\\" + exe_name;
+
+        file_to_write.close();
+    }
+
+    ml::open_directory(backend::exe_directory.string() + "\\update.bat");
 
     return true;
-    
 }
 
 void backend::shutdown_imgui()

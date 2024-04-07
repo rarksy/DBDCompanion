@@ -28,6 +28,7 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
 
     char pathBuffer[MAX_PATH];
     GetModuleFileNameA(NULL, pathBuffer, MAX_PATH);
+    backend::exe_name = std::filesystem::path(pathBuffer).filename().string();
     backend::exe_directory = std::filesystem::path(pathBuffer).parent_path();
 
     ml::create_directory(backend::exe_directory.string() + backend::settings_directory + backend::data_directory);
@@ -47,6 +48,9 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
     std::thread update_thread([]
     {
         backend::update_available = backend::check_for_update();
+
+        if (ml::file_or_directory_exists(backend::exe_directory.string() + "\\update.bat"))
+            std::filesystem::remove(backend::exe_directory.string() + "\\update.bat");
     });
     update_thread.detach();
     images::load_texture_from_memory(update_icon_raw_data, sizeof update_icon_raw_data, &menu::icons::update_icon);

@@ -241,7 +241,8 @@ void CEMenu::RenderUI()
         }
         else
         {
-            MessageBox(NULL, L"To Disable Dual Loading, Go To Steam -> Library -> Right Click \"Dead By Daylight\" -> Properties -> Clear The \"Launch Options\" Box", L"Notice", MB_OK);
+            MessageBox(NULL, L"To Disable Dual Loading, Go To Steam -> Library -> Right Click \"Dead By Daylight\" -> Properties -> Clear The \"Launch Options\" Box", L"Notice",
+                       MB_OK);
         }
     }
     gui::tool_tip(

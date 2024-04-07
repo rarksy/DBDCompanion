@@ -356,13 +356,7 @@ void menu::render_ui()
             const auto result = MessageBoxA(NULL, "Download New Client?", "Notice", MB_YESNO);
 
             if (result == IDYES)
-            {
-                std::thread update_thread([]
-                {
-                    backend::update();
-                });
-                update_thread.detach();
-            }
+                backend::update();
         }
     }
 

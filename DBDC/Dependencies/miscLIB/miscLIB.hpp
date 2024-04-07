@@ -10,6 +10,7 @@
 #include <TlHelp32.h>
 #include <fstream>
 #include <ctime>
+#pragma comment(lib, "urlmon.lib")
 
 #include "../curl/curl.h"
 #include "../nlohmann/json.hpp"
@@ -416,95 +417,70 @@ namespace ml
         return html_content;
     }
 
+    inline size_t write_data(void *ptr, size_t size, size_t nmemb, std::ofstream& stream) {
+        stream.write(static_cast<const char*>(ptr), size * nmemb);
+        return size * nmemb;
+    }
 
     inline bool download_file(const std::string& url, const std::string& file_path)
     {
-        CURL* curl = curl_easy_init();
-        if (curl)
-        {
-            // Create directories if they don't exist
-            std::filesystem::create_directories(std::filesystem::path(file_path).parent_path());
+        const HRESULT result = URLDownloadToFileA(NULL, url.c_str(), file_path.c_str(), 0, NULL);
 
-            FILE* fp;
-            errno_t err = fopen_s(&fp, file_path.c_str(), "wb");
-            if (err != 0 || !fp)
-            {
-                std::cerr << "Failed to open file for writing: " << file_path << std::endl;
-                return false;
-            }
-
-            curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-            curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
-            curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, NULL);
-            curl_easy_setopt(curl, CURLOPT_FAILONERROR, 1L);
-
-            CURLcode res = curl_easy_perform(curl);
-            curl_easy_cleanup(curl);
-            fclose(fp);
-
-            if (res == CURLE_OK)
-            {
-                return true;
-            }
-            else
-            {
-                remove(file_path.c_str()); // Delete partially downloaded file
-                return false;
-            }
-        }
-        return false;
+        return result == S_OK;
     }
 
-    inline bool extract_file_from_7z(const std::string& archive_path, const std::string& file_path, const std::string& destination)
-    {
-        std::ifstream file(archive_path, std::ios::binary);
-        if (!file) {
-            std::cerr << "Error: Could not open archive file." << std::endl;
-            return false;
-        }
-
-        mz_zip_archive archive;
-        mz_bool success = mz_zip_reader_init_file(&archive, archive_path.c_str(), 0);
-        if (!success)
-        {
-            std::cerr << "Error: Failed to initialize archive reader." << std::endl;
-            file.close();
-            return false;
-        }
-
-        int index = mz_zip_reader_locate_file(&archive, file_path.c_str(), nullptr, 0);
-        if (index < 0) {
-            std::cerr << "Error: File not found in archive." << std::endl;
-            mz_zip_reader_end(&archive);
-            file.close();
-            return false;
-        }
-        
-        size_t uncomp_size;
-        void* p = mz_zip_reader_extract_to_heap(&archive, index, &uncomp_size, 0);
-        if (!p) {
-            std::cerr << "Error: Failed to extract file from archive." << std::endl;
-            mz_zip_reader_end(&archive);
-            file.close();
-            return false;
-        }
-
-        std::ofstream outFile(destination, std::ios::binary);
-        if (!outFile) {
-            std::cerr << "Error: Could not create destination file." << std::endl;
-            mz_free(p);
-            mz_zip_reader_end(&archive);
-            file.close();
-            return false;
-        }
-
-        outFile.write(reinterpret_cast<const char*>(p), uncomp_size);
-
-        mz_free(p);
-        mz_zip_reader_end(&archive);
-        file.close();
-        outFile.close();
-
-        return true;
-    }
+    // inline bool extract_file_from_zip(const char* archive_path, const char* file_path, const char* destination)
+    // {
+    //     std::vector<unsigned char> file_data;
+    //
+    //     // Open the .zip archive for reading
+    //     mz_zip_archive zip_archive;
+    //     memset(&zip_archive, 0, sizeof(zip_archive));
+    //     if (!mz_zip_reader_init_file(&zip_archive, archive_path, 0)) {
+    //         std::cerr << "Failed to open .zip archive for reading." << std::endl;
+    //         return false;
+    //     }
+    //
+    //     // Find the index of the file within the archive
+    //     int file_index = mz_zip_reader_locate_file(&zip_archive, file_path, NULL, 0);
+    //     if (file_index < 0) {
+    //         std::cerr << "File not found in .zip archive." << std::endl;
+    //         mz_zip_reader_end(&zip_archive);
+    //         return false;
+    //     }
+    //
+    //     // Get information about the file
+    //     mz_zip_archive_file_stat file_stat;
+    //     if (!mz_zip_reader_file_stat(&zip_archive, file_index, &file_stat)) {
+    //         std::cerr << "Failed to get information about file in .zip archive." << std::endl;
+    //         mz_zip_reader_end(&zip_archive);
+    //         return false;
+    //     }
+    //
+    //     // Allocate memory for the file's data
+    //     file_data.resize(static_cast<size_t>(file_stat.m_uncomp_size));
+    //
+    //     // Read the compressed data from the .zip archive
+    //     if (!mz_zip_reader_extract_to_mem(&zip_archive, file_index, file_data.data(), file_data.size(), 0)) {
+    //         std::cerr << "Failed to extract file from .zip archive." << std::endl;
+    //         mz_zip_reader_end(&zip_archive);
+    //         return false;
+    //     }
+    //
+    //     mz_zip_reader_end(&zip_archive);
+    //
+    //     // Write the extracted file to disk
+    //     FILE* output_file = fopen(destination, "wb");
+    //     if (!output_file) {
+    //         std::cerr << "Failed to open output file for writing." << std::endl;
+    //         return false;
+    //     }
+    //
+    //     fwrite(file_data.data(), 1, file_data.size(), output_file);
+    //     fclose(output_file);
+    //
+    //     std::cout << "File extracted successfully: " << destination << std::endl;
+    //
+    //     return true;
+    // }
 }
