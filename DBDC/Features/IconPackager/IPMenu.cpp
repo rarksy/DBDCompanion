@@ -99,9 +99,9 @@ void ip_menu::render_ui()
             ml::create_directory(root_directory + destination.parent_path().string());
 
             std::filesystem::copy_file(source, root_directory + destination.string(), std::filesystem::copy_options::overwrite_existing);
-
-            ml::open_directory(backend::exe_directory.string() + backend::settings_directory + _internal::package_selector::package_directory);
         }
+
+        ml::open_directory(backend::exe_directory.string() + backend::settings_directory + _internal::package_selector::package_directory);
     }
 
     ImGui::Spacing();

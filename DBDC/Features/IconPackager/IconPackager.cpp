@@ -6,8 +6,7 @@
 bool perk_packager::setup()
 {
     ml::create_directory(backend::exe_directory.string() + backend::settings_directory + "data");
-
-    // endpoint | json_data | all_instances
+    
     const std::vector<std::pair<std::string, nlohmann::json&>> endpoints_data =
     {
         {"offerings", _internal::all_offerings_data},
