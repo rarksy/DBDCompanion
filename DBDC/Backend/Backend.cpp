@@ -81,6 +81,8 @@ bool backend::check_for_update()
         
         return true;
     }
+
+    return false;
 }
 
 bool backend::update()
