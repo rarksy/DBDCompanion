@@ -10,7 +10,6 @@
 
 #include "Base64/Base64.hpp"
 #include "miscLIB/miscLIB.hpp"
-#include "zlib/zlib.h"
 
 void misc::restart_game()
 {

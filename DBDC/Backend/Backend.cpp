@@ -5,8 +5,6 @@
 #include <ImGui/imgui_impl_glfw.h>
 #include <ImGui/imgui_impl_opengl3.h>
 
-#include "Fonts/Inter-ExtraLight.hpp"
-
 int backend::init_glfw()
 {
     if (!glfwInit())
@@ -90,8 +88,11 @@ bool backend::update()
     if (updated_binary_url.empty())
         return false;
 
+    const auto file_path = backend::exe_directory.string() + backend::settings_directory + backend::data_directory + "new_binary.7z";
+
     ml::download_file(updated_binary_url, backend::exe_directory.string() + backend::settings_directory + backend::data_directory + "new_binary.7z");
 
+    ml::extract_file_from_7z(file_path, "DBD Companion\\DBDC.exe", backend::exe_directory.string() + "new_binary.exe");
 
     return true;
     

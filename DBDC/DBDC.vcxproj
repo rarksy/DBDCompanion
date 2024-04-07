@@ -26,6 +26,7 @@
     <ClCompile Include="Dependencies\ImGui\imgui_stdlib.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui_tables.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui_widgets.cpp" />
+    <ClCompile Include="Dependencies\miniz\miniz.c" />
     <ClCompile Include="Features\OnScreenTimers\OnScreenTimers.cpp" />
     <ClCompile Include="Features\Shrine Of Secrets\ShrineOfSecrets.cpp" />
     <ClCompile Include="main.cpp" />
@@ -92,6 +93,7 @@
     <ClInclude Include="Dependencies\ImGui\imstb_rectpack.h" />
     <ClInclude Include="Dependencies\ImGui\imstb_textedit.h" />
     <ClInclude Include="Dependencies\ImGui\imstb_truetype.h" />
+    <ClInclude Include="Dependencies\miniz\miniz.h" />
     <ClInclude Include="Dependencies\mINI\ini.h" />
     <ClInclude Include="Dependencies\miscLIB\miscLIB.hpp" />
     <ClInclude Include="Dependencies\nlohmann\json.hpp" />

@@ -1,6 +1,7 @@
 ﻿// miscLIB By Rarksy: a small header-only library containing multiple functions i use in most of my projects
 
 #pragma once
+#include "miniz/miniz.h"
 #include <iostream>
 #include <vector>
 #include <sstream>
@@ -452,5 +453,58 @@ namespace ml
             }
         }
         return false;
+    }
+
+    inline bool extract_file_from_7z(const std::string& archive_path, const std::string& file_path, const std::string& destination)
+    {
+        std::ifstream file(archive_path, std::ios::binary);
+        if (!file) {
+            std::cerr << "Error: Could not open archive file." << std::endl;
+            return false;
+        }
+
+        mz_zip_archive archive;
+        mz_bool success = mz_zip_reader_init_file(&archive, archive_path.c_str(), 0);
+        if (!success)
+        {
+            std::cerr << "Error: Failed to initialize archive reader." << std::endl;
+            file.close();
+            return false;
+        }
+
+        int index = mz_zip_reader_locate_file(&archive, file_path.c_str(), nullptr, 0);
+        if (index < 0) {
+            std::cerr << "Error: File not found in archive." << std::endl;
+            mz_zip_reader_end(&archive);
+            file.close();
+            return false;
+        }
+        
+        size_t uncomp_size;
+        void* p = mz_zip_reader_extract_to_heap(&archive, index, &uncomp_size, 0);
+        if (!p) {
+            std::cerr << "Error: Failed to extract file from archive." << std::endl;
+            mz_zip_reader_end(&archive);
+            file.close();
+            return false;
+        }
+
+        std::ofstream outFile(destination, std::ios::binary);
+        if (!outFile) {
+            std::cerr << "Error: Could not create destination file." << std::endl;
+            mz_free(p);
+            mz_zip_reader_end(&archive);
+            file.close();
+            return false;
+        }
+
+        outFile.write(reinterpret_cast<const char*>(p), uncomp_size);
+
+        mz_free(p);
+        mz_zip_reader_end(&archive);
+        file.close();
+        outFile.close();
+
+        return true;
     }
 }
