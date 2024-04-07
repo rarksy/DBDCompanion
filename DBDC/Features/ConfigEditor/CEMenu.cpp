@@ -8,11 +8,6 @@
 
 bool CEMenu::Setup()
 {
-    do
-    {
-    }
-    while (!config_editor::initialize_config());
-
     config_editor::load_config();
 
     // Load Images

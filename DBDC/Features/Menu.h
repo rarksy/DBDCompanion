@@ -74,9 +74,11 @@ namespace menu
         inline constexpr int item_width = 100;
 
         inline constexpr float font_size = 22.F;
+        inline ImFont* main_font = nullptr;
         inline ImFont* child_font = nullptr;
 
         inline color menu_accent = color(255, 83, 83);
+        inline bool show_color_picker = false;
     }
 
     namespace icons

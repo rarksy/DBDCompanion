@@ -8,10 +8,11 @@
 #include "Crosshair/Crosshair.h"
 #include "GUI/GUI.h"
 #include <Windows.h>
+
 #include "HookTracker\HookTracker.hpp"
 #include "OnScreenTimers/OnScreenTimers.hpp"
-#include "Perk Packager/PerkPackager.h"
-#include "Perk Packager/PPMenu.h"
+#include "IconPackager\IconPackager.hpp"
+#include "IconPackager\IPMenu.hpp"
 #include "Shrine Of Secrets/ShrineOfSecrets.hpp"
 
 void menu::run_loop()
@@ -41,6 +42,9 @@ void menu::run_loop()
         }
     });
     shrine_load_thread.detach();
+
+    std::thread perk_packager_load_thread(perk_packager::setup);
+    perk_packager_load_thread.detach();
 
     while (!glfwWindowShouldClose(main_window))
     {
@@ -106,9 +110,42 @@ void menu::run_loop()
 
 void menu::render_ui()
 {
+    auto& style = ImGui::GetStyle();
+    static bool hamburger_open = true;
+    static float hamburger_width = 1.F;
+    static float hamburger_height = 240.F;
+
+    static float disabled_alpha = 0.01F;
+
+    if (hamburger_open)
+    {
+        if (disabled_alpha > 0.1F)
+        {
+            disabled_alpha -= 0.04F;
+            style.DisabledAlpha = disabled_alpha;
+        }
+        else style.DisabledAlpha = 0.1F;
+    }
+    else
+    {
+        if (disabled_alpha < 1.0F && hamburger_width > 0)
+        {
+            disabled_alpha += 0.04F;
+            style.DisabledAlpha = disabled_alpha;
+        }
+
+
+        // figure out widget fade on menu close
+    }
+
+
     ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Once);
     ImGui::SetNextWindowSize(ImVec2(styling::menu_width, styling::menu_height), ImGuiCond_Once);
     ImGui::Begin("menu", nullptr, menu_flags);
+
+
+    ImGui::BeginDisabled(hamburger_open || hamburger_width > 0);
+
 
     if (menu_to_show == 0)
     {
@@ -120,10 +157,24 @@ void menu::render_ui()
 
     if (menu_to_show == 1)
     {
-        static std::once_flag flag;
-        std::call_once(flag, CEMenu::Setup);
+        static bool setup = false;
+        if (!setup)
+            setup = config_editor::initialize_config();
+        else
+        {
+            static std::once_flag setup_flag;
+            std::call_once(setup_flag, CEMenu::Setup);
+        }
 
         CEMenu::RenderUI();
+    }
+
+    else if (menu_to_show == 2)
+    {
+        static std::once_flag flag_menu;
+        std::call_once(flag_menu, ip_menu::setup);
+
+        ip_menu::render_ui();
     }
 
     else if (menu_to_show == 3)
@@ -138,26 +189,21 @@ void menu::render_ui()
 
     else if (menu_to_show == 4)
     {
-        static std::once_flag flag_menu;
-        std::call_once(flag_menu, pp_menu::setup);
-
-        pp_menu::render_ui();
-    }
-
-    else if (menu_to_show == 5)
-    {
         static std::once_flag flag_load;
         std::call_once(flag_load, onscreen_timers::load_timer_profile);
 
         onscreen_timers::render_ui();
     }
 
-    static bool hamburger_open = true;
-    static float hamburger_width = 1.F;
-    static float hamburger_height = styling::menu_height / 3.2F;
-    static bool show_color_picker = false;
+    ImGui::EndDisabled();
 
     ImGui::SetCursorPos(ImVec2(5, 5));
+
+    const auto hamburger_accent = ImGui::GetColorU32(ImGui::IsMouseHoveringRect({3, 3}, {39, 36})
+                                                         ? ImGui::IsKeyDown(ImGuiKey_MouseLeft)
+                                                               ? ImGuiCol_ButtonActive
+                                                               : ImGuiCol_ButtonHovered
+                                                         : ImGuiCol_Button);
 
     if (hamburger_width > 0.F)
     {
@@ -173,30 +219,47 @@ void menu::render_ui()
             ImColor(15, 13, 13)
         );
 
-
-        ImGui::GetWindowDrawList()->AddRectFilled({11, 13}, {41, 18}, menu::styling::menu_accent.to_imcolor(), 4.F);
-        ImGui::GetWindowDrawList()->AddRectFilled({11, 23}, {41, 28}, menu::styling::menu_accent.to_imcolor(), 4.F);
-        ImGui::GetWindowDrawList()->AddRectFilled({11, 33}, {41, 38}, menu::styling::menu_accent.to_imcolor(), 4.F);
+        ImGui::GetWindowDrawList()->AddRectFilled({11, 13}, {41, 18}, hamburger_accent, 4.F);
+        ImGui::GetWindowDrawList()->AddRectFilled({11, 23}, {41, 28}, hamburger_accent, 4.F);
+        ImGui::GetWindowDrawList()->AddRectFilled({11, 33}, {41, 38}, hamburger_accent, 4.F);
 
 
         ImGui::SetCursorPos({3, 3});
         if (ImGui::InvisibleButton("##HamburgerToggleButtonInsideMenu", {39, 36}))
             hamburger_open = !hamburger_open;
 
-        if (ImGui::Button("Config Editor"))
+        ImGui::PushFont(styling::child_font);
+        ImGui::SetCursorPosX((ImGui::GetWindowSize().x - ImGui::CalcTextSize("Customization").x) * 0.5F);
+        ImGui::TextColored(color(120, 120, 120, 185).to_imvec4(), "Customization");
+        ImGui::PopFont();
+
+        if (ImGui::Button("Config Editor", ImVec2(185, 0)))
             menu_to_show = 1;
         gui::tool_tip("Allows you to adjust your game settings in\nmore detail than the base game offers");
 
         ImGui::Spacing();
 
-        if (ImGui::Button("Crosshair Overlay"))
+        if (ImGui::Button("Icon Packager", ImVec2(185, 0)))
+            menu_to_show = 2;
+        gui::tool_tip("");
+
+        ImGui::Spacing();
+        ImGui::Spacing();
+        ImGui::Spacing();
+
+        ImGui::PushFont(styling::child_font);
+        ImGui::SetCursorPosX((ImGui::GetWindowSize().x - ImGui::CalcTextSize("Overlay Features").x) * 0.5F);
+        ImGui::TextColored(color(120, 120, 120, 185).to_imvec4(), "Overlay Features");
+        ImGui::PopFont();
+
+        if (ImGui::Button("Crosshair Overlay", ImVec2(185, 0)))
             menu_to_show = 3;
         gui::tool_tip("Allows you to use a crosshair overlay with many customization options");
 
         ImGui::Spacing();
 
-        if (ImGui::Button("On-Screen Timers"))
-            menu_to_show = 5;
+        if (ImGui::Button("On-Screen Timers", ImVec2(185, 0)))
+            menu_to_show = 4;
         gui::tool_tip("Allows you to setup hotkeys to display timers on your screen for relevant information");
 
         if (menu_to_show != 0)
@@ -217,21 +280,25 @@ void menu::render_ui()
 
         if (!ImGui::IsMouseHoveringRect({0, 0}, {hamburger_width + 5, hamburger_height + 5}) && ImGui::IsKeyPressed(ImGuiKey_MouseLeft))
             hamburger_open = false;
-        
+
         ImGui::PopStyleColor();
     }
 
     if (hamburger_open && hamburger_width < 200)
+    {
         hamburger_width += 10;
+    }
     else if (!hamburger_open && hamburger_width > 0)
+    {
         hamburger_width -= 10;
+    }
 
     if (ImGui::IsKeyPressed(ImGuiKey_Space, false) && !ImGui::IsAnyItemActive())
-        show_color_picker = !show_color_picker;
+        styling::show_color_picker = !styling::show_color_picker;
 
-    if (show_color_picker)
+    if (styling::show_color_picker)
     {
-        ImGui::SetCursorPos({45, 11});
+        ImGui::SetCursorPos({45.F, 11});
         if (gui::color_picker("Menu Accent", &styling::menu_accent))
         {
             nlohmann::json accent_data;
@@ -245,23 +312,15 @@ void menu::render_ui()
         }
     }
 
-    ImGui::GetWindowDrawList()->AddRectFilled({11, 13}, {41, 18}, menu::styling::menu_accent.to_imcolor(), 4.F);
-    ImGui::GetWindowDrawList()->AddRectFilled({11, 23}, {41, 28}, menu::styling::menu_accent.to_imcolor(), 4.F);
-    ImGui::GetWindowDrawList()->AddRectFilled({11, 33}, {41, 38}, menu::styling::menu_accent.to_imcolor(), 4.F);
+    ImGui::GetWindowDrawList()->AddRectFilled({11, 13}, {41, 18}, hamburger_accent, 4.F);
+    ImGui::GetWindowDrawList()->AddRectFilled({11, 23}, {41, 28}, hamburger_accent, 4.F);
+    ImGui::GetWindowDrawList()->AddRectFilled({11, 33}, {41, 38}, hamburger_accent, 4.F);
 
     ImGui::SetCursorPos({7, 7});
     if (ImGui::InvisibleButton("##HamburgerToggleButtonOutsideMenu", {39, 36}))
         hamburger_open = !hamburger_open;
 
-    // Update Button
-
-    if (backend::update_available)
-    {
-        ImGui::SetCursorPos({30, 460});
-        if (ImGui::Button("Update Available!"));
-    }
-
-    ImGui::SetCursorPos({720, 470});
+    ImGui::SetCursorPos({menu_to_show == 2 ? 10.F : 720.F, 470});
     ImGui::TextColored(ImVec4(0.8F, 0.8F, 0.8F, 0.5F), "(?)");
     gui::tool_tip(
         "Hold right click when hovering an option to view information about it.\n"
@@ -299,7 +358,7 @@ void menu::create_global_style()
     colors[ImGuiCol_Button] = styling::menu_accent.to_imvec4();
     colors[ImGuiCol_ButtonHovered] = RGBToImVec4(styling::menu_accent.r, styling::menu_accent.g + 70, styling::menu_accent.b + 70);
     colors[ImGuiCol_ButtonActive] = RGBToImVec4(styling::menu_accent.r, styling::menu_accent.g + 120, styling::menu_accent.b + 120);
-    
+
     // Main Window
     colors[ImGuiCol_FrameBg] = RGBToImVec4(20, 20, 20);
     colors[ImGuiCol_FrameBgHovered] = RGBToImVec4(styling::menu_accent.r, styling::menu_accent.g + 70, styling::menu_accent.b + 70);
@@ -307,7 +366,7 @@ void menu::create_global_style()
     style.FrameRounding = 2.F;
     style.DisabledAlpha = 0.3F;
     style.FrameBorderSize = 1.7F;
-    style.DisabledAlpha = 0.1f;
+    //style.DisabledAlpha = 0.1f;
     style.ChildRounding = 3.F;
 
     // Slider

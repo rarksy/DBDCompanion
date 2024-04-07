@@ -5,6 +5,8 @@
 #include <ImGui/imgui_impl_glfw.h>
 #include <ImGui/imgui_impl_opengl3.h>
 
+#include "Fonts/Inter-ExtraLight.hpp"
+
 int backend::init_glfw()
 {
     if (!glfwInit())
@@ -52,7 +54,8 @@ void backend::setup_imgui(GLFWwindow* window, ImGuiContext*& context)
 
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
     io.Fonts->AddFontFromMemoryCompressedTTF(Rethink_compressed_data, Rethink_compressed_size, menu::styling::font_size);
-    menu::styling::child_font = io.Fonts->AddFontFromMemoryCompressedTTF(Rethink_compressed_data, Rethink_compressed_size, 16.F);
+    if (menu::styling::child_font == nullptr)
+        menu::styling::child_font = io.Fonts->AddFontFromMemoryCompressedTTF(Rethink_compressed_data, Rethink_compressed_size, 15.F);
     io.IniFilename = nullptr;
 }
 

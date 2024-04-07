@@ -36,8 +36,8 @@
     <ClCompile Include="Features\HookTracker\HTMenu.cpp" />
     <ClCompile Include="Features\HookTracker\HookTracker.cpp" />
     <ClCompile Include="Features\Menu.cpp" />
-    <ClCompile Include="Features\Perk Packager\PerkPackager.cpp" />
-    <ClCompile Include="Features\Perk Packager\PPMenu.cpp" />
+    <ClCompile Include="Features\IconPackager\IconPackager.cpp" />
+    <ClCompile Include="Features\IconPackager\IPMenu.cpp" />
     <ClCompile Include="Misc\Misc.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -57,6 +57,7 @@
     <ClInclude Include="Dependencies\curl\urlapi.h" />
     <ClInclude Include="Dependencies\curl\websockets.h" />
     <ClInclude Include="Dependencies\Exe Icons\256x256.hpp" />
+    <ClInclude Include="Dependencies\Fonts\Inter-ExtraLight.hpp" />
     <ClInclude Include="Dependencies\Fonts\Rethink.hpp" />
     <ClInclude Include="Dependencies\GLFW\glfw3.h" />
     <ClInclude Include="Dependencies\GLFW\glfw3native.h" />
@@ -454,8 +455,8 @@
     <ClInclude Include="Features\HookTracker\HookTracker.hpp" />
     <ClInclude Include="Features\Menu.h" />
     <ClInclude Include="Features\OnScreenTimers\OnScreenTimers.hpp" />
-    <ClInclude Include="Features\Perk Packager\PerkPackager.h" />
-    <ClInclude Include="Features\Perk Packager\PPMenu.h" />
+    <ClInclude Include="Features\IconPackager\IconPackager.hpp" />
+    <ClInclude Include="Features\IconPackager\IPMenu.hpp" />
     <ClInclude Include="Features\Shrine Of Secrets\ShrineOfSecrets.hpp" />
     <ClInclude Include="Misc\Misc.hpp" />
   </ItemGroup>
