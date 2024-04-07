@@ -74,14 +74,16 @@ namespace menu
         inline constexpr int item_width = 100;
 
         inline constexpr float font_size = 22.F;
+        inline ImFont* main_font = nullptr;
         inline ImFont* child_font = nullptr;
 
         inline color menu_accent = color(255, 83, 83);
+        inline bool show_color_picker = false;
     }
 
     namespace icons
     {
-        inline GLuint config_editor;
+        inline GLuint update_icon;
     }
 
 
@@ -90,5 +92,7 @@ namespace menu
     inline constexpr ImGuiWindowFlags menu_flags =
         ImGuiWindowFlags_NoResize |
         ImGuiWindowFlags_NoTitleBar |
-        ImGuiWindowFlags_NoMove;
+        ImGuiWindowFlags_NoMove |
+        ImGuiWindowFlags_NoScrollbar |
+        ImGuiWindowFlags_NoScrollWithMouse;
 }

@@ -26,6 +26,7 @@
     <ClCompile Include="Dependencies\ImGui\imgui_stdlib.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui_tables.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui_widgets.cpp" />
+    <ClCompile Include="Dependencies\miniz\miniz.c" />
     <ClCompile Include="Features\OnScreenTimers\OnScreenTimers.cpp" />
     <ClCompile Include="Features\Shrine Of Secrets\ShrineOfSecrets.cpp" />
     <ClCompile Include="main.cpp" />
@@ -36,8 +37,8 @@
     <ClCompile Include="Features\HookTracker\HTMenu.cpp" />
     <ClCompile Include="Features\HookTracker\HookTracker.cpp" />
     <ClCompile Include="Features\Menu.cpp" />
-    <ClCompile Include="Features\Perk Packager\PerkPackager.cpp" />
-    <ClCompile Include="Features\Perk Packager\PPMenu.cpp" />
+    <ClCompile Include="Features\IconPackager\IconPackager.cpp" />
+    <ClCompile Include="Features\IconPackager\IPMenu.cpp" />
     <ClCompile Include="Misc\Misc.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -57,6 +58,7 @@
     <ClInclude Include="Dependencies\curl\urlapi.h" />
     <ClInclude Include="Dependencies\curl\websockets.h" />
     <ClInclude Include="Dependencies\Exe Icons\256x256.hpp" />
+    <ClInclude Include="Dependencies\Fonts\Inter-ExtraLight.hpp" />
     <ClInclude Include="Dependencies\Fonts\Rethink.hpp" />
     <ClInclude Include="Dependencies\GLFW\glfw3.h" />
     <ClInclude Include="Dependencies\GLFW\glfw3native.h" />
@@ -80,6 +82,7 @@
     <ClInclude Include="Dependencies\Images\TextureQuality\Medium.hpp" />
     <ClInclude Include="Dependencies\Images\TextureQuality\Ultra.hpp" />
     <ClInclude Include="Dependencies\Images\TextureQuality\VeryLow.hpp" />
+    <ClInclude Include="Dependencies\Images\Updater\UpdateIcon.hpp" />
     <ClInclude Include="Dependencies\ImGui\imconfig.h" />
     <ClInclude Include="Dependencies\ImGui\imgui.h" />
     <ClInclude Include="Dependencies\ImGui\imgui_impl_glfw.h" />
@@ -90,6 +93,7 @@
     <ClInclude Include="Dependencies\ImGui\imstb_rectpack.h" />
     <ClInclude Include="Dependencies\ImGui\imstb_textedit.h" />
     <ClInclude Include="Dependencies\ImGui\imstb_truetype.h" />
+    <ClInclude Include="Dependencies\miniz\miniz.h" />
     <ClInclude Include="Dependencies\mINI\ini.h" />
     <ClInclude Include="Dependencies\miscLIB\miscLIB.hpp" />
     <ClInclude Include="Dependencies\nlohmann\json.hpp" />
@@ -454,8 +458,8 @@
     <ClInclude Include="Features\HookTracker\HookTracker.hpp" />
     <ClInclude Include="Features\Menu.h" />
     <ClInclude Include="Features\OnScreenTimers\OnScreenTimers.hpp" />
-    <ClInclude Include="Features\Perk Packager\PerkPackager.h" />
-    <ClInclude Include="Features\Perk Packager\PPMenu.h" />
+    <ClInclude Include="Features\IconPackager\IconPackager.hpp" />
+    <ClInclude Include="Features\IconPackager\IPMenu.hpp" />
     <ClInclude Include="Features\Shrine Of Secrets\ShrineOfSecrets.hpp" />
     <ClInclude Include="Misc\Misc.hpp" />
   </ItemGroup>
@@ -527,7 +531,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
