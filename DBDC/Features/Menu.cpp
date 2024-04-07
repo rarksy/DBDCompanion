@@ -114,7 +114,6 @@ void menu::render_ui()
     static bool hamburger_open = true;
     static float hamburger_width = 1.F;
     static float hamburger_height = 240.F;
-    static bool show_color_picker = false;
 
     static float disabled_alpha = 0.01F;
     
@@ -163,6 +162,14 @@ void menu::render_ui()
         CEMenu::RenderUI();
     }
 
+    else if (menu_to_show == 2)
+    {
+        static std::once_flag flag_menu;
+        std::call_once(flag_menu, ip_menu::setup);
+
+        ip_menu::render_ui();
+    }
+
     else if (menu_to_show == 3)
     {
         static std::once_flag flag_crosshair;
@@ -174,14 +181,6 @@ void menu::render_ui()
     }
 
     else if (menu_to_show == 4)
-    {
-        static std::once_flag flag_menu;
-        std::call_once(flag_menu, ip_menu::setup);
-
-        ip_menu::render_ui();
-    }
-
-    else if (menu_to_show == 5)
     {
         static std::once_flag flag_load;
         std::call_once(flag_load, onscreen_timers::load_timer_profile);
@@ -229,7 +228,7 @@ void menu::render_ui()
         ImGui::Spacing();
 
         if (ImGui::Button("Icon Packager", ImVec2(185, 0)))
-            menu_to_show = 4;
+            menu_to_show = 2;
         gui::tool_tip("");
 
         ImGui::Spacing();
@@ -248,7 +247,7 @@ void menu::render_ui()
         ImGui::Spacing();
 
         if (ImGui::Button("On-Screen Timers", ImVec2(185, 0)))
-            menu_to_show = 5;
+            menu_to_show = 4;
         gui::tool_tip("Allows you to setup hotkeys to display timers on your screen for relevant information");
 
         if (menu_to_show != 0)
@@ -284,11 +283,11 @@ void menu::render_ui()
     }
 
     if (ImGui::IsKeyPressed(ImGuiKey_Space, false) && !ImGui::IsAnyItemActive())
-        show_color_picker = !show_color_picker;
+        styling::show_color_picker = !styling::show_color_picker;
 
-    if (show_color_picker)
+    if (styling::show_color_picker)
     {
-        ImGui::SetCursorPos({45, 11});
+        ImGui::SetCursorPos({45.F, 11});
         if (gui::color_picker("Menu Accent", &styling::menu_accent))
         {
             nlohmann::json accent_data;

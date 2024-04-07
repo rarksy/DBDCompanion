@@ -78,6 +78,7 @@ namespace menu
         inline ImFont* child_font = nullptr;
 
         inline color menu_accent = color(255, 83, 83);
+        inline bool show_color_picker = false;
     }
 
     namespace icons
