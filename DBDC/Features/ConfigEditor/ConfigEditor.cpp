@@ -7,6 +7,7 @@
 
 #include <ShlObj_core.h>
 
+#include "../Menu.h"
 #include "../../Backend/Backend.hpp"
 #include "miscLIB/miscLIB.hpp"
 
@@ -14,7 +15,7 @@ bool config_editor::initialize_config()
 {
     const auto path = get_settings_folder_location();
 
-    if (exists(path))
+    if (exists(path) && !path.empty())
     {
         settings_folder_location = path;
         return true;
@@ -24,8 +25,11 @@ bool config_editor::initialize_config()
         nullptr, "Unable To Locate Settings Folder\nPlease Locate Manually Or Press No To Exit.", "Notice...",
         MB_YESNO);
 
-    if (result == IDNO)
-        exit(1);
+    if (result != IDYES)
+    {
+        menu::menu_to_show = 0;
+        return false;
+    }
 
 
     CoInitialize(NULL);
@@ -264,7 +268,15 @@ std::filesystem::path config_editor::get_settings_folder_location()
 {
     auto local_app_data_path = std::filesystem::temp_directory_path().parent_path().parent_path();
 
-    local_app_data_path /= "DeadByDaylight\\Saved\\Config\\WindowsClient\\";
+    const std::string steam_path = local_app_data_path.string() + "\\DeadByDaylight\\Saved\\Config\\WindowsClient\\";
 
-    return local_app_data_path;
+    if (!std::filesystem::exists(steam_path))
+    {
+        const std::string egs_path = local_app_data_path.string() + "\\DeadByDaylight\\Saved\\Config\\EGS\\";
+        if (std::filesystem::exists(egs_path))
+            return egs_path;
+    }
+    else return steam_path;
+
+    return "";
 }

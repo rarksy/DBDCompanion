@@ -54,7 +54,7 @@ void menu::run_loop()
 
         ImGui::SetCurrentContext(menu::main_context);
         glfwPollEvents();
-        
+
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
@@ -116,7 +116,7 @@ void menu::render_ui()
     static float hamburger_height = 240.F;
 
     static float disabled_alpha = 0.01F;
-    
+
     if (hamburger_open)
     {
         if (disabled_alpha > 0.1F)
@@ -138,14 +138,14 @@ void menu::render_ui()
         // figure out widget fade on menu close
     }
 
-    
+
     ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Once);
     ImGui::SetNextWindowSize(ImVec2(styling::menu_width, styling::menu_height), ImGuiCond_Once);
     ImGui::Begin("menu", nullptr, menu_flags);
-    
-    
+
+
     ImGui::BeginDisabled(hamburger_open || hamburger_width > 0);
-    
+
 
     if (menu_to_show == 0)
     {
@@ -157,8 +157,14 @@ void menu::render_ui()
 
     if (menu_to_show == 1)
     {
-        static std::once_flag flag;
-        std::call_once(flag, CEMenu::Setup);
+        static bool setup = false;
+        if (!setup)
+            setup = config_editor::initialize_config();
+        else
+        {
+            static std::once_flag setup_flag;
+            std::call_once(setup_flag, CEMenu::Setup);
+        }
 
         CEMenu::RenderUI();
     }
@@ -193,7 +199,11 @@ void menu::render_ui()
 
     ImGui::SetCursorPos(ImVec2(5, 5));
 
-    const auto hamburger_accent = ImGui::GetColorU32(ImGui::IsMouseHoveringRect({3, 3}, {39, 36}) ? ImGui::IsKeyDown(ImGuiKey_MouseLeft) ? ImGuiCol_ButtonActive : ImGuiCol_ButtonHovered : ImGuiCol_Button);
+    const auto hamburger_accent = ImGui::GetColorU32(ImGui::IsMouseHoveringRect({3, 3}, {39, 36})
+                                                         ? ImGui::IsKeyDown(ImGuiKey_MouseLeft)
+                                                               ? ImGuiCol_ButtonActive
+                                                               : ImGuiCol_ButtonHovered
+                                                         : ImGuiCol_Button);
 
     if (hamburger_width > 0.F)
     {
@@ -208,7 +218,7 @@ void menu::render_ui()
             ImColor(15, 13, 13),
             ImColor(15, 13, 13)
         );
-        
+
         ImGui::GetWindowDrawList()->AddRectFilled({11, 13}, {41, 18}, hamburger_accent, 4.F);
         ImGui::GetWindowDrawList()->AddRectFilled({11, 23}, {41, 28}, hamburger_accent, 4.F);
         ImGui::GetWindowDrawList()->AddRectFilled({11, 33}, {41, 38}, hamburger_accent, 4.F);
@@ -270,14 +280,13 @@ void menu::render_ui()
 
         if (!ImGui::IsMouseHoveringRect({0, 0}, {hamburger_width + 5, hamburger_height + 5}) && ImGui::IsKeyPressed(ImGuiKey_MouseLeft))
             hamburger_open = false;
-        
+
         ImGui::PopStyleColor();
     }
 
     if (hamburger_open && hamburger_width < 200)
     {
         hamburger_width += 10;
-        
     }
     else if (!hamburger_open && hamburger_width > 0)
     {
@@ -349,7 +358,7 @@ void menu::create_global_style()
     colors[ImGuiCol_Button] = styling::menu_accent.to_imvec4();
     colors[ImGuiCol_ButtonHovered] = RGBToImVec4(styling::menu_accent.r, styling::menu_accent.g + 70, styling::menu_accent.b + 70);
     colors[ImGuiCol_ButtonActive] = RGBToImVec4(styling::menu_accent.r, styling::menu_accent.g + 120, styling::menu_accent.b + 120);
-    
+
     // Main Window
     colors[ImGuiCol_FrameBg] = RGBToImVec4(20, 20, 20);
     colors[ImGuiCol_FrameBgHovered] = RGBToImVec4(styling::menu_accent.r, styling::menu_accent.g + 70, styling::menu_accent.b + 70);
