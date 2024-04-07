@@ -114,7 +114,6 @@ void menu::render_ui()
     static bool hamburger_open = true;
     static float hamburger_width = 1.F;
     static float hamburger_height = 240.F;
-
     static float disabled_alpha = 0.01F;
 
     if (hamburger_open)
@@ -151,8 +150,8 @@ void menu::render_ui()
     {
         shrine_of_secrets::render_ui();
 
-        ImGui::SetCursorPos({10, 470});
-        ImGui::TextColored(ImVec4(0.1F, 0.1F, 0.1F, 0.3F), "I DONT KNOW HOW TO MAKE A GOOD MAIN MENU");
+        //ImGui::SetCursorPos({10, 470});
+        //ImGui::TextColored(ImVec4(0.1F, 0.1F, 0.1F, 0.3F), "I DONT KNOW HOW TO MAKE A GOOD MAIN MENU");
     }
 
     if (menu_to_show == 1)
@@ -228,6 +227,26 @@ void menu::render_ui()
         if (ImGui::InvisibleButton("##HamburgerToggleButtonInsideMenu", {39, 36}))
             hamburger_open = !hamburger_open;
 
+        static bool color_picker_active = false;
+        if (styling::show_color_picker)
+        {
+            ImGui::SetCursorPos({44.F, 7});
+            if (gui::color_picker("Menu Accent", &styling::menu_accent))
+            {
+                nlohmann::json accent_data;
+
+                accent_data["menu_accent"]["r"] = styling::menu_accent.r;
+                accent_data["menu_accent"]["g"] = styling::menu_accent.g;
+                accent_data["menu_accent"]["b"] = styling::menu_accent.b;
+                accent_data["menu_accent"]["a"] = styling::menu_accent.a;
+
+                ml::json_write_data(backend::exe_directory.string() + backend::settings_directory + backend::data_directory + "settings.json", accent_data);
+            }
+            color_picker_active = ImGui::IsItemActive();
+        }
+
+        ImGui::SetCursorPosY(50.F);
+
         ImGui::PushFont(styling::child_font);
         ImGui::SetCursorPosX((ImGui::GetWindowSize().x - ImGui::CalcTextSize("Customization").x) * 0.5F);
         ImGui::TextColored(color(120, 120, 120, 185).to_imvec4(), "Customization");
@@ -278,7 +297,7 @@ void menu::render_ui()
             previous_tab = menu_to_show;
         }
 
-        if (!ImGui::IsMouseHoveringRect({0, 0}, {hamburger_width + 5, hamburger_height + 5}) && ImGui::IsKeyPressed(ImGuiKey_MouseLeft))
+        if (!ImGui::IsMouseHoveringRect({0, 0}, {hamburger_width + 5, hamburger_height + 5}) && ImGui::IsKeyPressed(ImGuiKey_MouseLeft) && !color_picker_active)
             hamburger_open = false;
 
         ImGui::PopStyleColor();
@@ -295,22 +314,6 @@ void menu::render_ui()
 
     if (ImGui::IsKeyPressed(ImGuiKey_Space, false) && !ImGui::IsAnyItemActive())
         styling::show_color_picker = !styling::show_color_picker;
-
-    if (styling::show_color_picker)
-    {
-        ImGui::SetCursorPos({45.F, 11});
-        if (gui::color_picker("Menu Accent", &styling::menu_accent))
-        {
-            nlohmann::json accent_data;
-
-            accent_data["menu_accent"]["r"] = styling::menu_accent.r;
-            accent_data["menu_accent"]["g"] = styling::menu_accent.g;
-            accent_data["menu_accent"]["b"] = styling::menu_accent.b;
-            accent_data["menu_accent"]["a"] = styling::menu_accent.a;
-
-            ml::json_write_data(backend::exe_directory.string() + backend::settings_directory + backend::data_directory + "settings.json", accent_data);
-        }
-    }
 
     ImGui::GetWindowDrawList()->AddRectFilled({11, 13}, {41, 18}, hamburger_accent, 4.F);
     ImGui::GetWindowDrawList()->AddRectFilled({11, 23}, {41, 28}, hamburger_accent, 4.F);
@@ -339,6 +342,29 @@ void menu::render_ui()
 
     if (ImGui::IsItemHovered() && ImGui::IsKeyPressed(ImGuiKey_Enter, false))
         ShellExecuteA(NULL, "open", "https://discord.gg/vKjjS8yazu", NULL, NULL, SW_SHOWNORMAL);
+
+    if (backend::update_available)
+    {
+        const ImVec2 cursor_pos = {menu_to_show == 2 ? 20.F : 695.F, 470};
+        ImGui::SetCursorPos(cursor_pos);
+        ImGui::Image(reinterpret_cast<void*>(icons::update_icon), ImVec2(23, 23));
+        gui::tool_tip("Update Available\n  Click To Install", 500, false);
+
+        ImGui::SetCursorPos(cursor_pos);
+        if (ImGui::InvisibleButton("updatebutton", ImVec2(24, 24)))
+        {
+            const auto result = MessageBoxA(NULL, "Download New Client?", "Notice", MB_YESNO);
+
+            if (result == IDYES)
+            {
+                std::thread update_thread([]
+                {
+                    backend::update();
+                });
+                update_thread.detach();
+            }
+        }
+    }
 
     ImGui::End();
 }

@@ -81,6 +81,7 @@
     <ClInclude Include="Dependencies\Images\TextureQuality\Medium.hpp" />
     <ClInclude Include="Dependencies\Images\TextureQuality\Ultra.hpp" />
     <ClInclude Include="Dependencies\Images\TextureQuality\VeryLow.hpp" />
+    <ClInclude Include="Dependencies\Images\Updater\UpdateIcon.hpp" />
     <ClInclude Include="Dependencies\ImGui\imconfig.h" />
     <ClInclude Include="Dependencies\ImGui\imgui.h" />
     <ClInclude Include="Dependencies\ImGui\imgui_impl_glfw.h" />

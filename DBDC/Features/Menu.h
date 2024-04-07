@@ -83,7 +83,7 @@ namespace menu
 
     namespace icons
     {
-        inline GLuint config_editor;
+        inline GLuint update_icon;
     }
 
 
@@ -92,5 +92,7 @@ namespace menu
     inline constexpr ImGuiWindowFlags menu_flags =
         ImGuiWindowFlags_NoResize |
         ImGuiWindowFlags_NoTitleBar |
-        ImGuiWindowFlags_NoMove;
+        ImGuiWindowFlags_NoMove |
+        ImGuiWindowFlags_NoScrollbar |
+        ImGuiWindowFlags_NoScrollWithMouse;
 }

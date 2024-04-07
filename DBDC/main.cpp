@@ -7,6 +7,7 @@
 #include "Dependencies/Images/Icons/ConfigEditor.hpp"
 #include "stb_image.h"
 #include "Exe Icons/256x256.hpp"
+#include "Images/Updater/UpdateIcon.hpp"
 #include "ImGui/imgui_impl_glfw.h"
 #include "miscLIB/miscLIB.hpp"
 
@@ -48,8 +49,8 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
         backend::update_available = backend::check_for_update();
     });
     update_thread.detach();
+    images::load_texture_from_memory(update_icon_raw_data, sizeof update_icon_raw_data, &menu::icons::update_icon);
 
-    images::load_texture_from_memory(configEditorIconRawData, sizeof configEditorIconRawData, &menu::icons::config_editor);
 
     menu::run_loop();
 
