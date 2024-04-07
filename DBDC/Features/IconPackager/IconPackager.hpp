@@ -51,11 +51,16 @@ namespace perk_packager
     {
     };
 
+    struct portrait : base
+    {
+    };
+
     inline std::vector<perk> all_perks;
     inline std::vector<item> all_items;
     inline std::vector<power> all_powers;
     inline std::vector<offering> all_offerings;
     inline std::vector<addon> all_addons;
+    inline std::vector<portrait> all_portraits;
 
     namespace _internal
     {

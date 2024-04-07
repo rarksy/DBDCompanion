@@ -143,6 +143,7 @@ void menu::render_ui()
     ImGui::SetNextWindowSize(ImVec2(styling::menu_width, styling::menu_height), ImGuiCond_Once);
     ImGui::Begin("menu", nullptr, menu_flags);
     
+    
     ImGui::BeginDisabled(hamburger_open || hamburger_width > 0);
     
 
@@ -192,6 +193,8 @@ void menu::render_ui()
 
     ImGui::SetCursorPos(ImVec2(5, 5));
 
+    const auto hamburger_accent = ImGui::GetColorU32(ImGui::IsMouseHoveringRect({3, 3}, {39, 36}) ? ImGui::IsKeyDown(ImGuiKey_MouseLeft) ? ImGuiCol_ButtonActive : ImGuiCol_ButtonHovered : ImGuiCol_Button);
+
     if (hamburger_width > 0.F)
     {
         ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.07f, 0.07f, 0.07f, 1.F));
@@ -205,11 +208,10 @@ void menu::render_ui()
             ImColor(15, 13, 13),
             ImColor(15, 13, 13)
         );
-
-
-        ImGui::GetWindowDrawList()->AddRectFilled({11, 13}, {41, 18}, menu::styling::menu_accent.to_imcolor(), 4.F);
-        ImGui::GetWindowDrawList()->AddRectFilled({11, 23}, {41, 28}, menu::styling::menu_accent.to_imcolor(), 4.F);
-        ImGui::GetWindowDrawList()->AddRectFilled({11, 33}, {41, 38}, menu::styling::menu_accent.to_imcolor(), 4.F);
+        
+        ImGui::GetWindowDrawList()->AddRectFilled({11, 13}, {41, 18}, hamburger_accent, 4.F);
+        ImGui::GetWindowDrawList()->AddRectFilled({11, 23}, {41, 28}, hamburger_accent, 4.F);
+        ImGui::GetWindowDrawList()->AddRectFilled({11, 33}, {41, 38}, hamburger_accent, 4.F);
 
 
         ImGui::SetCursorPos({3, 3});
@@ -301,9 +303,9 @@ void menu::render_ui()
         }
     }
 
-    ImGui::GetWindowDrawList()->AddRectFilled({11, 13}, {41, 18}, menu::styling::menu_accent.to_imcolor(), 4.F);
-    ImGui::GetWindowDrawList()->AddRectFilled({11, 23}, {41, 28}, menu::styling::menu_accent.to_imcolor(), 4.F);
-    ImGui::GetWindowDrawList()->AddRectFilled({11, 33}, {41, 38}, menu::styling::menu_accent.to_imcolor(), 4.F);
+    ImGui::GetWindowDrawList()->AddRectFilled({11, 13}, {41, 18}, hamburger_accent, 4.F);
+    ImGui::GetWindowDrawList()->AddRectFilled({11, 23}, {41, 28}, hamburger_accent, 4.F);
+    ImGui::GetWindowDrawList()->AddRectFilled({11, 33}, {41, 38}, hamburger_accent, 4.F);
 
     ImGui::SetCursorPos({7, 7});
     if (ImGui::InvisibleButton("##HamburgerToggleButtonOutsideMenu", {39, 36}))

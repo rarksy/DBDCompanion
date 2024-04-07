@@ -25,11 +25,11 @@ bool perk_packager::setup()
             return false;
 
         if (pair.first == "offerings")
-            load_instance_data(&all_offerings, _internal::all_offerings_data);
+            load_instance_data(&all_offerings, pair.second);
         else if (pair.first == "addons")
-            load_instance_data(&all_addons, _internal::all_addons_data);
+            load_instance_data(&all_addons, pair.second);
         else if (pair.first == "items")
-            load_instance_data(&all_items, _internal::all_items_data);
+            load_instance_data(&all_items, pair.second);
         else if (pair.first == "perks")
         {
             _internal::unavailable = !get_endpoint_data("characters", _internal::all_characters_data);
