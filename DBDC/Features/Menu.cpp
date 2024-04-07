@@ -350,7 +350,7 @@ void menu::render_ui()
         ImGui::SetCursorPos(cursor_pos);
         if (ImGui::InvisibleButton("updatebutton", ImVec2(24, 24)))
         {
-            const auto result = MessageBoxA(NULL, "Download New Client?", "Notice", MB_YESNO);
+            const auto result = MessageBoxA(NULL, "Download Latest Update?", "Notice", MB_YESNO);
 
             if (result == IDYES)
                 backend::update();
