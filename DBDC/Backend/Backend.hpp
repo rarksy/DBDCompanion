@@ -3,7 +3,7 @@
 #include <GLFW/glfw3.h>
 #include "ImGui/imgui_internal.h"
 
-#define DBDC_VERSION std::string("master_v0.6")
+#define DBDC_VERSION std::string("master_v0.7")
 
 namespace backend
 {
