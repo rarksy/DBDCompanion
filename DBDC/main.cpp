@@ -11,7 +11,6 @@
 #include "miscLIB/miscLIB.hpp"
 
 //#define debug_winmain
-
 #ifndef debug_winmain
 
 int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
