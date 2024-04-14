@@ -34,7 +34,7 @@ namespace ip_menu
         inline std::vector<std::string> character_filter = {"All", "Killer", "Survivor"};
 
         inline int type_filter_index = 0;
-        inline std::vector<std::string> type_filter = {"All", "Perks", "Items", "Offerings", "Addons", "Portraits"};
+        inline std::vector<std::string> type_filter = {"All", "Perks", "Items", "Offerings", "Addons", "Portraits", "Status Effects"};
     }
     
     
