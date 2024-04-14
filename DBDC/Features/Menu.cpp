@@ -132,19 +132,15 @@ void menu::render_ui()
             disabled_alpha += 0.04F;
             style.DisabledAlpha = disabled_alpha;
         }
-
-
         // figure out widget fade on menu close
     }
-
-
+    
     ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Once);
     ImGui::SetNextWindowSize(ImVec2(styling::menu_width, styling::menu_height), ImGuiCond_Once);
     ImGui::Begin("menu", nullptr, menu_flags);
 
 
     ImGui::BeginDisabled(hamburger_open || hamburger_width > 0);
-
 
     if (menu_to_show == 0)
     {
@@ -304,13 +300,11 @@ void menu::render_ui()
     }
 
     if (hamburger_open && hamburger_width < 200)
-    {
         hamburger_width += 10;
-    }
+    
     else if (!hamburger_open && hamburger_width > 0)
-    {
         hamburger_width -= 10;
-    }
+    
 
     ImGui::GetWindowDrawList()->AddRectFilled({11, 13}, {41, 18}, hamburger_accent, 4.F);
     ImGui::GetWindowDrawList()->AddRectFilled({11, 23}, {41, 28}, hamburger_accent, 4.F);

@@ -4,7 +4,6 @@
 #include "Images/Images.h"
 #include "ImGui/imgui_impl_opengl3.h"
 #include "Features/Menu.h"
-#include "Dependencies/Images/Icons/ConfigEditor.hpp"
 #include "stb_image.h"
 #include "Exe Icons/256x256.hpp"
 #include "Images/Updater/UpdateIcon.hpp"
