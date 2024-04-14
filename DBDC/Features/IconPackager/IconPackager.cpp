@@ -39,6 +39,13 @@ bool perk_packager::setup()
                 if (character["name"].is_null() || character["role"].is_null() || character["image"].is_null())
                     continue;
 
+                portrait po;
+                po.name = character["name"];
+                po.game_file_path = character["image"];
+                po.role = character["role"];
+
+                all_portraits.push_back(po);
+
                 for (int j = 0; j < 3; j++)
                 {
                     const auto perk_info = _internal::all_perks_data[character["perks"][j]];
@@ -89,6 +96,7 @@ void perk_packager::clear_images()
     clear_instance_images(all_addons);
     clear_instance_images(all_items);
     clear_instance_images(all_perks);
+    clear_instance_images(all_portraits);
 }
 
 
@@ -101,6 +109,7 @@ void perk_packager::reload()
     reload_package_data(all_addons);
     reload_package_data(all_items);
     reload_package_data(all_perks);
+    reload_package_data(all_portraits);
 }
 
 bool perk_packager::get_endpoint_data(const std::string& endpoint, nlohmann::json& data)
