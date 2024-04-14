@@ -22,10 +22,10 @@ void menu::run_loop()
 
         if (accent_data.contains("menu_accent"))
         {
-            styling::menu_accent.r = accent_data["menu_accent"]["r"].get<int>();
-            styling::menu_accent.g = accent_data["menu_accent"]["g"].get<int>();
-            styling::menu_accent.b = accent_data["menu_accent"]["b"].get<int>();
-            styling::menu_accent.a = accent_data["menu_accent"]["a"].get<int>();
+            styling::menu_accent.r = accent_data["menu_accent"]["r"];
+            styling::menu_accent.g = accent_data["menu_accent"]["g"];
+            styling::menu_accent.b = accent_data["menu_accent"]["b"];
+            styling::menu_accent.a = accent_data["menu_accent"]["a"];
         }
     }
 
