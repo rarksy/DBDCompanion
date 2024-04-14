@@ -263,6 +263,11 @@ void ip_menu::display_base_item(std::vector<T>& vec_obj)
 
         gui::end_group_box();
 
+        gui::tool_tip(
+            "Type: " + obj.base_type +
+            "\n"
+            );
+
         if (i == 0)
             ImGui::SameLine();
 

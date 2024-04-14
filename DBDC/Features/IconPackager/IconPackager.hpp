@@ -33,26 +33,34 @@ namespace perk_packager
 
     struct perk : base
     {
+        std::string base_type = "Perk";
     };
 
     struct item : base
     {
+        std::string base_type = "Item";
+
     };
 
     struct power : base
     {
+        std::string base_type = "Power";
+
     };
 
     struct offering : base
     {
+        std::string base_type = "Offering";
     };
 
     struct addon : base
     {
+        std::string base_type = "Addon";
     };
 
     struct portrait : base
     {
+        std::string base_type = "Portrait";
     };
 
     inline std::vector<perk> all_perks;

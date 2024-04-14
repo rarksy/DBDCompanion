@@ -329,10 +329,11 @@ void menu::render_ui()
         "Press Enter To Join The Discord Server.\n\n"
         "Build Version: Early Access "
 #ifdef _DEBUG
-        "Debug"
+        "Debug " +
 #else
-        "Release"
+        "Release "
 #endif
+        DBDC_VERSION.substr(7) + 
         "\nBuild Date: " + std::string(__DATE__)
         + "\nBuild Time: " + std::string(__TIME__), 500, false
     );
