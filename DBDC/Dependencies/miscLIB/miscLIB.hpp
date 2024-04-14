@@ -43,6 +43,15 @@ namespace ml
         return temp;
     }
 
+    inline std::string remove_character(std::string content, char c)
+    {
+        std::string modified = content;
+
+        modified.erase(remove(modified.begin(), modified.end(), c), modified.end());
+
+        return modified;
+    }
+
     template <typename T>
     std::vector<std::string> split_to_vector(T content, char delimiter)
     {

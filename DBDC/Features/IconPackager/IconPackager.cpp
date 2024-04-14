@@ -6,7 +6,7 @@
 bool perk_packager::setup()
 {
     ml::create_directory(backend::exe_directory.string() + backend::settings_directory + "data");
-    
+
     const std::vector<std::pair<std::string, nlohmann::json&>> endpoints_data =
     {
         {"offerings", _internal::all_offerings_data},
@@ -87,6 +87,17 @@ bool perk_packager::setup()
             }
         }
     }
+
+    for (const auto& se : _internal::all_status_effects_data)
+    {
+        status_effect e;
+
+        e.name = se.first;
+        e.game_file_path = "UI/Icons/StatusEffects/iconStatusEffects_" + se.second + ".png";
+        
+        all_status_effects.push_back(e);
+    }
+
     return true;
 }
 
@@ -97,6 +108,7 @@ void perk_packager::clear_images()
     clear_instance_images(all_items);
     clear_instance_images(all_perks);
     clear_instance_images(all_portraits);
+    clear_instance_images(all_status_effects);
 }
 
 
@@ -110,6 +122,7 @@ void perk_packager::reload()
     reload_package_data(all_items);
     reload_package_data(all_perks);
     reload_package_data(all_portraits);
+    reload_package_data(all_status_effects);
 }
 
 bool perk_packager::get_endpoint_data(const std::string& endpoint, nlohmann::json& data)

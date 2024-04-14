@@ -19,7 +19,7 @@ namespace perk_packager
     struct base
     {
         std::string owner;
-        
+
         std::string name;
         std::string id;
         std::string role;
@@ -39,13 +39,11 @@ namespace perk_packager
     struct item : base
     {
         std::string base_type = "Item";
-
     };
 
     struct power : base
     {
         std::string base_type = "Power";
-
     };
 
     struct offering : base
@@ -63,12 +61,18 @@ namespace perk_packager
         std::string base_type = "Portrait";
     };
 
+    struct status_effect : base
+    {
+        std::string base_type = "Status Effect";
+    };
+
     inline std::vector<perk> all_perks;
     inline std::vector<item> all_items;
     inline std::vector<power> all_powers;
     inline std::vector<offering> all_offerings;
     inline std::vector<addon> all_addons;
     inline std::vector<portrait> all_portraits;
+    inline std::vector<status_effect> all_status_effects;
 
     namespace _internal
     {
@@ -117,5 +121,41 @@ namespace perk_packager
             "Unrelenting",
             "Whispers",
         };
+
+        inline std::vector<std::pair<std::string, std::string>> all_status_effects_data =
+        {
+            {"Bleeding", "bleeding"},
+            {"Blessed", "blessed"},
+            {"Bloodlust", "bloodlust"},
+            {"Broken", "broken"},
+            {"Cleansing", "cleansing"},
+            {"Deep Wound", "deepWound"},
+            {"Endurance", "endurance"},
+            {"Exhausted", "exhausted"},
+            {"Expertise", "expertise"},
+            {"Exposed", "exposed"},
+            {"Glyph", "glyph"},
+            {"Healing", "healing"},
+            {"Hearing", "hearing"},
+            {"Hindered", "hindered"},
+            {"Incapacitated", "incapacitated"},
+            {"Killer Endurance", "killerEndurance"},
+            {"Luck", "luck"},
+            {"Madness", "madness"},
+            {"Mangled", "mangled"},
+            {"Mori", "mori"},
+            {"Oblivious", "oblivious"},
+            {"Progression Speed", "progressionSpeed"},
+            {"Reparing", "repairing"},
+            {"Sabotaging", "sabotaging"},
+            {"Skill Check Difficulty", "skillCheckDifficulty"},
+            {"Skill Check Probability", "skillCheckProbability"},
+            {"Skills", "skills"},
+            {"Sleep Penalty", "sleepPenalty"},
+            {"Speed", "speed"},
+            {"Undetectable", "undetectable"},
+            {"Vision", "vision"},
+        };
+
     }
 }

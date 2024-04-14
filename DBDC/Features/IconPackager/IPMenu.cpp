@@ -161,6 +161,8 @@ void ip_menu::render_ui()
         display_base_item(perk_packager::all_addons);
     if (_internal::type_filter_index == 0 || _internal::type_filter_index == 5)
         display_base_item(perk_packager::all_portraits);
+    if (_internal::type_filter_index == 0 || _internal::type_filter_index == 6)
+        display_base_item(perk_packager::all_status_effects);
 
     gui::end_group_box();
 }
