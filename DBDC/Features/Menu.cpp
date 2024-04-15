@@ -347,11 +347,13 @@ void menu::render_ui()
         {
             hamburger_open = false;
             previous_tab = menu_to_show;
+            settings_open = false;
         }
 
         if (!ImGui::IsMouseHoveringRect({0, 0}, {hamburger_width + 5, hamburger_height + 5}) && !ImGui::IsAnyItemActive() && ImGui::IsKeyPressed(ImGuiKey_MouseLeft))
         {
             hamburger_open = false;
+            settings_open = false;
         }
         ImGui::PopStyleColor();
     }
