@@ -147,6 +147,7 @@ namespace config_editor
         setting desired_screen_height = setting(files::game_user_settings, sections::dbd_game_user_settings, "DesiredScreenHeight", 1080);
         setting resolution_width = setting(files::game_user_settings, sections::dbd_game_user_settings, "ResolutionSizeX", 1920);
         setting resolution_height = setting(files::game_user_settings, sections::dbd_game_user_settings, "ResolutionSizeY", 1080);
+        int fps_limit_mode_index = 0;
         setting fps_limit_mode = setting(files::game_user_settings, sections::dbd_game_user_settings, "FPSLimitMode", 60);
         
         setting use_vsync = setting(files::game_user_settings, sections::dbd_game_user_settings, "bUseVSync", 1);

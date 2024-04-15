@@ -7,6 +7,7 @@
 
 #include <ShlObj_core.h>
 
+#include "CEMenu.hpp"
 #include "../Menu.h"
 #include "../../Backend/Backend.hpp"
 #include "miscLIB/miscLIB.hpp"
@@ -94,6 +95,14 @@ void config_editor::load_config()
     ce_vars.resolution_width.load_value();
     ce_vars.resolution_height.load_value();
     ce_vars.fps_limit_mode.load_value();
+
+    const auto find_fps_limit_mode = std::ranges::find(CEMenu::fpsLimitModes, std::to_string(ce_vars.fps_limit_mode.value));
+    if (find_fps_limit_mode != CEMenu::fpsLimitModes.end())
+    {
+        const int index = std::ranges::distance(CEMenu::fpsLimitModes.begin(), find_fps_limit_mode);
+        ce_vars.fps_limit_mode_index = index;
+    }
+    
     ce_vars.use_vsync.load_value();
     ce_vars.anti_alias_mode.load_value();
     ce_vars.ambient_occlusion.load_value();
@@ -224,6 +233,14 @@ bool config_editor::import_config()
     ce_vars.resolution_width.import_value(imported_game_user_settings);
     ce_vars.resolution_height.import_value(imported_game_user_settings);
     ce_vars.fps_limit_mode.import_value(imported_game_user_settings);
+
+    const auto find_fps_limit_mode = std::ranges::find(CEMenu::fpsLimitModes, std::to_string(ce_vars.fps_limit_mode.value));
+    if (find_fps_limit_mode != CEMenu::fpsLimitModes.end())
+    {
+        const int index = std::ranges::distance(CEMenu::fpsLimitModes.begin(), find_fps_limit_mode);
+        ce_vars.fps_limit_mode_index = index;
+    }
+    
     ce_vars.killer_fov.import_value(imported_game_user_settings);
 
     ce_vars.remove_intro_cutscene = !std::filesystem::exists(misc::get_game_root_directory() + "DeadByDaylight\\Content\\Movies\\" + "AdditionalLoadingScreen");

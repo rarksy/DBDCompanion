@@ -144,7 +144,7 @@ void CEMenu::RenderUI()
     ImGui::EndDisabled();
     
     ImGui::BeginDisabled(ce_vars.use_vsync.value);
-    gui::drop_down_box("FPS Limit Mode", fpsLimitModes[fps_limit_mode_index].c_str(), fps_limit_mode_index, fpsLimitModes, 40.F);
+    gui::drop_down_box("FPS Limit Mode", fpsLimitModes[ce_vars.fps_limit_mode_index].c_str(), ce_vars.fps_limit_mode_index, fpsLimitModes, 40.F);
     ImGui::EndDisabled();
     gui::tool_tip("Sets the maximum achievable framerate.\n" "Values are clamped and cannot go above/below the available options.");
     
