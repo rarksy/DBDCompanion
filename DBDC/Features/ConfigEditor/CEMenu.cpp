@@ -71,20 +71,10 @@ void CEMenu::RenderUI()
 
     ImGui::SeparatorText("Graphics Quality");
     gui::tool_tip("Features settings that affect the graphical fidelity of Dead By Daylight.");
-
-    static GLuint texture = Image::ResolutionQuality::texture100;
-    if (gui::slider("Resolution Quality", ce_vars.resolution_quality, 60, 100))
-    {
-        const auto value = ce_vars.resolution_quality.value;
-        if (value < 79)
-            texture = Image::ResolutionQuality::texture60;
-        else if (value < 99)
-            texture = Image::ResolutionQuality::texture80;
-        else
-            texture = Image::ResolutionQuality::texture100;
-    }
+    
+    gui::slider("Resolution Quality", ce_vars.resolution_quality, 60, 100);
     gui::tool_tip("Sets the quality at which the game is rendered.\n"
-                  "Note: 100%% = native resolution", texture, ImVec2(400, 170));
+                  "Note: 100%% = native resolution");
 
     gui::drop_down_box("View Distance", ce_vars.view_distance_quality, qualities);
     gui::tool_tip("Changes the level of detail at which objects in the distance are rendered.\n"
