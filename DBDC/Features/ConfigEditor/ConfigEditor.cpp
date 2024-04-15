@@ -267,7 +267,6 @@ bool config_editor::get_read_only(const std::string& file)
 std::filesystem::path config_editor::get_settings_folder_location()
 {
     auto local_app_data_path = std::filesystem::temp_directory_path().parent_path().parent_path();
-
     const std::string steam_path = local_app_data_path.string() + "\\DeadByDaylight\\Saved\\Config\\WindowsClient\\";
 
     if (!std::filesystem::exists(steam_path))
@@ -277,6 +276,8 @@ std::filesystem::path config_editor::get_settings_folder_location()
             return egs_path;
     }
     else return steam_path;
+
+    MessageBoxA(nullptr, (std::filesystem::exists(steam_path) ? "Settings Path Found" : "Settings Path Not Found"), "Debug", MB_OK);
 
     return "";
 }

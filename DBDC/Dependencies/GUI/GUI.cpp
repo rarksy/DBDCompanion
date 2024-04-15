@@ -166,7 +166,7 @@ bool gui::drop_down_box(const char* label, std::string preview_value, int& id, s
                 id = n;
                 item_selected = true;
             }
-            // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+            
             if (is_selected)
                 ImGui::SetItemDefaultFocus();
         }
@@ -181,7 +181,7 @@ bool gui::drop_down_box(const char* label, config_editor::setting& setting, std:
                         std::vector<unsigned*> textures, ImVec2 textureSize)
 {
     ImGui::SetNextItemWidth(widgetSize);
-    ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(0.1, 0.1, 0.1, 1));
+    ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(0.1F, 0.1F, 0.1F, 1.F));
 
     auto it = std::ranges::find_if(items, [&setting](const auto& v)
     {
@@ -192,19 +192,19 @@ bool gui::drop_down_box(const char* label, config_editor::setting& setting, std:
 
     if (ImGui::BeginCombo(label, useIndex ? items[setting.value].c_str() : it->c_str(), ImGuiComboFlags_NoArrowButton))
     {
-        for (int i = 0; i < items.size(); i++)
-        {
-            const bool isSelected = (setting.value == i);
-            if (ImGui::Selectable(items[i].c_str(), isSelected))
-            {
-                setting.value = useIndex ? i : std::atoi(items[i].c_str());
-                setting.set_value();
-                itemSelected = true;
-            }
-
-            if (!textures.empty())
-                gui::tool_tip(caption, *textures[i], textureSize);
-        }
+         for (int i = 0; i < items.size(); i++)
+         {
+             const bool isSelected = (setting.value == i);
+             if (ImGui::Selectable(items[i].c_str(), isSelected))
+             {
+                 setting.value = useIndex ? i : std::atoi(items[i].c_str());
+                 setting.set_value();
+                 itemSelected = true;
+             }
+        
+             if (!textures.empty())
+                 gui::tool_tip(caption, *textures[i], textureSize);
+         }
 
         ImGui::EndCombo();
     }

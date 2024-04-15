@@ -151,7 +151,9 @@ void menu::render_ui()
     {
         static bool setup = false;
         if (!setup)
+        {
             setup = config_editor::initialize_config();
+        }
         else
         {
             static std::once_flag setup_flag;
@@ -325,7 +327,7 @@ void menu::render_ui()
 #ifdef _DEBUG
         "Debug " +
 #else
-        "Release "
+        "Release " +
 #endif
         DBDC_VERSION.substr(7) + 
         "\nBuild Date: " + std::string(__DATE__)

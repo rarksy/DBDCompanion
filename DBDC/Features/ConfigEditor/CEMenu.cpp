@@ -120,13 +120,13 @@ void CEMenu::RenderUI()
     gui::tool_tip("Changes the quality of animations at long distances.");
 
     ImGui::NextColumn();
-
+    
     ImGui::SeparatorText("Rendering");
     gui::tool_tip("Features settings that affect the way the game renders.");
-
+    
     gui::drop_down_box("Window Mode", ce_vars.window_mode, windowModes);
     gui::tool_tip("Changes the rendering mode used to display the game.");
-
+    
     ImGui::BeginDisabled(ce_vars.window_mode.value);
     {
         gui::input_int("##ResolutionW", ce_vars.resolution_width, 49);
@@ -136,55 +136,53 @@ void CEMenu::RenderUI()
         gui::tool_tip("Sets the desired resolution for the game window.");
         ImGui::SameLine();
         gui::input_int("##ResolutionH", ce_vars.resolution_height, 48);
-
+    
         gui::tool_tip("Sets the desired height for the game window.");
         ImGui::SameLine(133);
         ImGui::Text("Resolution");
     }
     ImGui::EndDisabled();
-
+    
     ImGui::BeginDisabled(ce_vars.use_vsync.value);
-
-    gui::drop_down_box("FPS Limit Mode", ce_vars.fps_limit_mode, fpsLimitModes, false, 40);
-
+    gui::drop_down_box("FPS Limit Mode", fpsLimitModes[fps_limit_mode_index].c_str(), fps_limit_mode_index, fpsLimitModes, 40.F);
     ImGui::EndDisabled();
     gui::tool_tip("Sets the maximum achievable framerate.\n" "Values are clamped and cannot go above/below the available options.");
-
+    
     gui::checkbox("VSync", ce_vars.use_vsync);
     gui::tool_tip("Syncs Dead By Daylight's framerate to your refresh rate.\n"
         "Note: Can cause input delay.");
-
+    
     gui::checkbox("Anti-Aliasing", ce_vars.anti_alias_mode);
     gui::tool_tip("Blurs the edges of objects to appear less jagged.",
                   ce_vars.anti_alias_mode.value
                       ? Image::AntiAliasing::textureOn
                       : Image::AntiAliasing::textureOff, ImVec2(400, 250));
-
-
+    
+    
     gui::checkbox("Ambient Occlusion", ce_vars.ambient_occlusion);
     gui::checkbox("A/O Static Fraction", ce_vars.ambient_occlusion_static_fraction);
     gui::checkbox("Bloom", ce_vars.bloom);
     gui::checkbox("Lens Flare", ce_vars.lens_flare);
     gui::checkbox("Motion Blur", ce_vars.motion_blur);
-
+    
     ImGui::NextColumn();
-
+    
     ImGui::SeparatorText("Misc");
     gui::tool_tip("Features settings that affect the user experience.");
-
+    
     gui::slider("Killer FOV", ce_vars.killer_fov, 87, 103);
     gui::tool_tip("Changes the FOV used for 1st person killers.");
-
+    
     if (ImGui::Checkbox("Remove Intro Cutscene", &ce_vars.remove_intro_cutscene))
     {
         const std::string gameDir = misc::get_game_root_directory();
         const std::string moviesDir = gameDir + "DeadByDaylight/Content/Movies/";
-
+    
         if (ce_vars.remove_intro_cutscene)
         {
             if (std::filesystem::exists(moviesDir + "disabled_AdditionalLoadingScreen"))
                 std::filesystem::remove_all(moviesDir + "disabled_AdditionalLoadingScreen");
-
+    
             if (std::rename(
                 (moviesDir + "AdditionalLoadingScreen").c_str(),
                 (moviesDir + "disabled_AdditionalLoadingScreen").c_str()) != 0)
@@ -197,7 +195,7 @@ void CEMenu::RenderUI()
         {
             if (std::filesystem::exists(moviesDir + "AdditionalLoadingScreen"))
                 std::filesystem::remove_all(moviesDir + "AdditionalLoadingScreen");
-
+    
             if (std::rename(
                 (moviesDir + "disabled_AdditionalLoadingScreen").c_str(),
                 (moviesDir + "AdditionalLoadingScreen").c_str()) != 0)
@@ -208,19 +206,19 @@ void CEMenu::RenderUI()
         }
     }
     gui::tool_tip("Skips the cutscene that plays after launching the game.");
-
+    
     gui::checkbox("Skip News Popup", ce_vars.skip_news_popup, 0, 99999);
     gui::tool_tip("Disables the news popup that appears after launching the game.");
-
+    
     if (ImGui::Checkbox("Launch With DBD", &ce_vars.launch_with_dbd))
     {
         if (ce_vars.launch_with_dbd)
         {
             char file_name_buffer[MAX_PATH];
             GetModuleFileNameA(NULL, file_name_buffer, MAX_PATH);
-
+    
             std::ofstream file_to_write(backend::exe_directory.string() + backend::settings_directory + "dual_load.bat");
-
+    
             if (file_to_write.is_open())
             {
                 file_to_write
@@ -228,11 +226,11 @@ void CEMenu::RenderUI()
                     << "start \"\" \"" << misc::get_game_root_directory() << "DeadByDaylight.exe\" -provider Steam\n"
                     << "start \"\" \"" << file_name_buffer << "\"\n"
                     << "exit";
-
+    
                 file_to_write.close();
-
+    
                 ml::set_clipboard_text("\"" + backend::exe_directory.string() + backend::settings_directory + "dual_load.bat\" %command%");
-
+    
                 MessageBox(
                     NULL,
                     L"Launch Command Copied\n\nGo To Steam -> Library -> Right Click \"Dead By Daylight\" -> Properties -> In The \"Launch Options\" Box -> Right Click -> Paste",
@@ -250,32 +248,28 @@ void CEMenu::RenderUI()
         "\n\n"
         "Note: Due to how steam works, after enabling, you will need to manually add the launch option that gets copied to your clipboard, instructions appear when enabling / disabling."
     );
-
+    
     ImGui::SeparatorText("Sensitivity");
-
+    
     gui::slider("Survivor Mouse", ce_vars.survivor_mouse_sensitivity, 0, 100, false);
     gui::slider("Survivor Controller", ce_vars.survivor_controller_sensitivity, 0, 100, false);
     gui::slider("Killer Mouse", ce_vars.killer_mouse_sensitivity, 0, 100, false);
     gui::slider("Killer Controller", ce_vars.killer_controller_sensitivity, 0, 100, false);
-
+    
     ImGui::SeparatorText("Accessibility");
-
+    
     gui::checkbox("Terror Radius Visual", ce_vars.terror_radius_visual);
     gui::tool_tip("Adds a visual heartbeat whenever inside the killers terror radius");
-
+    
     gui::drop_down_box("Colorblind Mode", ce_vars.color_blind_mode, colorBlindModes);
     gui::tool_tip("Adjusts the games color pallet.");
-
+    
     ImGui::BeginDisabled(!ce_vars.color_blind_mode.value);
-
+    
     gui::slider("Strength", ce_vars.color_blind_mode_strength, 0, 100);
     gui::tool_tip("Adjusts the strength of the changed color pallet.");
-
+    
     ImGui::EndDisabled();
-
-    //if (ImGui::Button("Start In DX12")) // doesnt actually work, malding
-    //Misc::RestartGame(true);
-    //GUI::ToolTip("Will close and reopen Dead By Daylight Using DirectX 12.\nThis will also apply any changed settings.");
 
     ImGui::EndColumns();
 }
