@@ -134,7 +134,7 @@ void menu::render_ui()
         }
         // figure out widget fade on menu close
     }
-    
+
     ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Once);
     ImGui::SetNextWindowSize(ImVec2(styling::menu_width, styling::menu_height), ImGuiCond_Once);
     ImGui::Begin("menu", nullptr, menu_flags);
@@ -222,26 +222,11 @@ void menu::render_ui()
         if (ImGui::InvisibleButton("##HamburgerToggleButtonInsideMenu", {39, 36}))
             hamburger_open = !hamburger_open;
 
-        if (ImGui::IsKeyPressed(ImGuiKey_Space, false) && !ImGui::IsAnyItemActive())
-            styling::show_color_picker = !styling::show_color_picker;
-
-        static bool color_picker_active = false;
-        if (styling::show_color_picker)
-        {
-            ImGui::SetCursorPos({44.F, 7});
-            if (gui::color_picker("Menu Accent", &styling::menu_accent))
-            {
-                nlohmann::json accent_data;
-
-                accent_data["menu_accent"]["r"] = styling::menu_accent.r;
-                accent_data["menu_accent"]["g"] = styling::menu_accent.g;
-                accent_data["menu_accent"]["b"] = styling::menu_accent.b;
-                accent_data["menu_accent"]["a"] = styling::menu_accent.a;
-
-                ml::json_write_data(backend::exe_directory.string() + backend::settings_directory + backend::data_directory + "settings.json", accent_data);
-            }
-            color_picker_active = ImGui::IsItemActive();
-        }
+        // ImGui::SetCursorPos({170, 7});
+        // static bool settings_open = false;
+        // GLuint& button_texture =  settings_open ? icons::back_icon : icons::settings_icon;
+        // if (gui::image_button("settings_back_button", button_texture, ImVec2(40, 25)))
+        //     settings_open = !settings_open;
 
         ImGui::SetCursorPosY(50.F);
 
@@ -286,6 +271,29 @@ void menu::render_ui()
                 menu_to_show = 0;
         }
 
+
+        if (ImGui::IsKeyPressed(ImGuiKey_Space, false) && !ImGui::IsAnyItemActive())
+            styling::show_color_picker = !styling::show_color_picker;
+
+        static bool color_picker_active = false;
+        if (styling::show_color_picker)
+        {
+            ImGui::SetCursorPos({44.F, 7});
+            if (gui::color_picker("Menu Accent", &styling::menu_accent))
+            {
+                nlohmann::json accent_data;
+
+                accent_data["menu_accent"]["r"] = styling::menu_accent.r;
+                accent_data["menu_accent"]["g"] = styling::menu_accent.g;
+                accent_data["menu_accent"]["b"] = styling::menu_accent.b;
+                accent_data["menu_accent"]["a"] = styling::menu_accent.a;
+
+                ml::json_write_data(backend::exe_directory.string() + backend::settings_directory + backend::data_directory + "settings.json", accent_data);
+            }
+            color_picker_active = ImGui::IsItemActive();
+        }
+
+
         gui::end_group_box();
 
         static int previous_tab = menu_to_show;
@@ -295,7 +303,7 @@ void menu::render_ui()
             previous_tab = menu_to_show;
         }
 
-        if (!ImGui::IsMouseHoveringRect({0, 0}, {hamburger_width + 5, hamburger_height + 5}) && ImGui::IsKeyPressed(ImGuiKey_MouseLeft) && !color_picker_active)
+        if (!ImGui::IsMouseHoveringRect({0, 0}, {hamburger_width + 5, hamburger_height + 5}) && ImGui::IsKeyPressed(ImGuiKey_MouseLeft))
             hamburger_open = false;
 
         ImGui::PopStyleColor();
@@ -303,10 +311,10 @@ void menu::render_ui()
 
     if (hamburger_open && hamburger_width < 200)
         hamburger_width += 10;
-    
+
     else if (!hamburger_open && hamburger_width > 0)
         hamburger_width -= 10;
-    
+
 
     ImGui::GetWindowDrawList()->AddRectFilled({11, 13}, {41, 18}, hamburger_accent, 4.F);
     ImGui::GetWindowDrawList()->AddRectFilled({11, 23}, {41, 28}, hamburger_accent, 4.F);
@@ -329,7 +337,7 @@ void menu::render_ui()
 #else
         "Release " +
 #endif
-        DBDC_VERSION.substr(7) + 
+        DBDC_VERSION.substr(7) +
         "\nBuild Date: " + std::string(__DATE__)
         + "\nBuild Time: " + std::string(__TIME__), 500, false
     );
@@ -337,21 +345,19 @@ void menu::render_ui()
     if (ImGui::IsItemHovered() && ImGui::IsKeyPressed(ImGuiKey_Enter, false))
         ShellExecuteA(NULL, "open", "https://discord.gg/vKjjS8yazu", NULL, NULL, SW_SHOWNORMAL);
 
+
     if (backend::update_available)
     {
         const ImVec2 cursor_pos = {menu_to_show == 2 ? 20.F : 695.F, 470};
         ImGui::SetCursorPos(cursor_pos);
-        ImGui::Image(reinterpret_cast<void*>(icons::update_icon), ImVec2(23, 23));
-        gui::tool_tip("Update Available\n  Click To Install", 500, false);
-
-        ImGui::SetCursorPos(cursor_pos);
-        if (ImGui::InvisibleButton("updatebutton", ImVec2(24, 24)))
+        if (gui::image_button("updatebutton", icons::update_icon, ImVec2(23, 23)))
         {
             const auto result = MessageBoxA(NULL, "Download Latest Update?", "Notice", MB_YESNO);
 
             if (result == IDYES)
                 backend::update();
         }
+        gui::tool_tip("Update Available\n  Click To Install", 500, false);
     }
 
     ImGui::End();

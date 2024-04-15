@@ -83,7 +83,10 @@ namespace menu
 
     namespace icons
     {
+        inline GLuint help_icon;
         inline GLuint update_icon;
+        inline GLuint settings_icon;
+        inline GLuint back_icon;
     }
 
 

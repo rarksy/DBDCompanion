@@ -6,6 +6,9 @@
 #include "Features/Menu.h"
 #include "stb_image.h"
 #include "Exe Icons/256x256.hpp"
+#include "Images/Icons/BackIcon.hpp"
+#include "Images/Icons/HelpIcon.hpp"
+#include "Images/Icons/SettingsIcon.hpp"
 #include "Images/Updater/UpdateIcon.hpp"
 #include "ImGui/imgui_impl_glfw.h"
 #include "miscLIB/miscLIB.hpp"
@@ -51,9 +54,9 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
             std::filesystem::remove(backend::exe_directory.string() + "\\update.bat");
     });
     update_thread.detach();
+    
     images::load_texture_from_memory(update_icon_raw_data, sizeof update_icon_raw_data, &menu::icons::update_icon);
-
-
+    
     menu::run_loop();
 
     if (menu::overlay::window != nullptr)

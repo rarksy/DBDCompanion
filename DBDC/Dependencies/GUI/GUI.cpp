@@ -102,6 +102,18 @@ bool gui::checkbox(const char* label, config_editor::setting& setting, int disab
     return valueChanged;
 }
 
+bool gui::image_button(const char* label, GLuint image_texture, const ImVec2& size)
+{
+    const auto cursor_pos = ImGui::GetCursorPos();
+    ImGui::Image(reinterpret_cast<void*>(image_texture), ImVec2(23, 23));
+
+    ImGui::SetCursorPos(cursor_pos);
+    const bool return_value = ImGui::InvisibleButton(label, size);
+    ImGui::SetMouseCursor(ImGui::IsItemHovered() ? ImGuiMouseCursor_Hand : ImGuiMouseCursor_Arrow);
+
+    return return_value;
+}
+
 bool gui::slider(const char* label, config_editor::setting& setting, int minValue, int maxValue, bool clampMinMax)
 {
     ImGui::SetNextItemWidth(static_cast<float>(menu::styling::item_width));
@@ -117,7 +129,7 @@ bool gui::slider(const char* label, config_editor::setting& setting, int minValu
 bool gui::drop_down_box(const char* label, int& index, std::vector<std::string> items, bool useIndex, float widgetSize, std::string caption, std::vector<unsigned*> textures,
                         ImVec2 textureSize)
 {
-    ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(0.1, 0.1, 0.1, 1));
+    ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(0.1F, 0.1F, 0.1F, 1.F));
     ImGui::SetNextItemWidth(widgetSize);
 
     auto it = std::ranges::find_if(items, [&index](const auto& v)
@@ -151,11 +163,11 @@ bool gui::drop_down_box(const char* label, int& index, std::vector<std::string> 
 
 bool gui::drop_down_box(const char* label, std::string preview_value, int& id, std::vector<std::string> items, const float& box_width)
 {
-    ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(0.1, 0.1, 0.1, 1));
+    ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(0.1F, 0.1F, 0.1F, 1.F));
     ImGui::SetNextItemWidth(box_width);
-    
+
     bool item_selected = false;
-    
+
     if (ImGui::BeginCombo(label, preview_value.c_str(), ImGuiComboFlags_NoArrowButton))
     {
         for (int n = 0; n < items.size(); n++)
@@ -166,7 +178,7 @@ bool gui::drop_down_box(const char* label, std::string preview_value, int& id, s
                 id = n;
                 item_selected = true;
             }
-            
+
             if (is_selected)
                 ImGui::SetItemDefaultFocus();
         }
@@ -192,19 +204,19 @@ bool gui::drop_down_box(const char* label, config_editor::setting& setting, std:
 
     if (ImGui::BeginCombo(label, useIndex ? items[setting.value].c_str() : it->c_str(), ImGuiComboFlags_NoArrowButton))
     {
-         for (int i = 0; i < items.size(); i++)
-         {
-             const bool isSelected = (setting.value == i);
-             if (ImGui::Selectable(items[i].c_str(), isSelected))
-             {
-                 setting.value = useIndex ? i : std::atoi(items[i].c_str());
-                 setting.set_value();
-                 itemSelected = true;
-             }
-        
-             if (!textures.empty())
-                 gui::tool_tip(caption, *textures[i], textureSize);
-         }
+        for (int i = 0; i < items.size(); i++)
+        {
+            const bool isSelected = (setting.value == i);
+            if (ImGui::Selectable(items[i].c_str(), isSelected))
+            {
+                setting.value = useIndex ? i : std::atoi(items[i].c_str());
+                setting.set_value();
+                itemSelected = true;
+            }
+
+            if (!textures.empty())
+                gui::tool_tip(caption, *textures[i], textureSize);
+        }
 
         ImGui::EndCombo();
     }

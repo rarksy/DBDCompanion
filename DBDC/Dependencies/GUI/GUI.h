@@ -15,12 +15,17 @@ namespace gui
     
     bool checkbox(const char* label, config_editor::setting& setting, bool invert = false);
     bool checkbox(const char* label, config_editor::setting& setting, int disabledValue, int enabledValue, bool invert = false);
+
+    bool image_button(const char* label, GLuint image_texture, const ImVec2& size);
+    
     bool slider(const char* label, config_editor::setting& setting, int minValue, int maxValue, bool clampMinMax = true);
+    
     bool drop_down_box(const char* label, config_editor::setting& setting, std::vector<std::string> items, bool useIndex = true, float widgetSize = 100.F,
                      std::string caption = "", std::vector<unsigned*> textures = {}, ImVec2 textureSize = ImVec2(250, 100));
     bool drop_down_box(const char* label, int& index, std::vector<std::string> items, bool useIndex = true, float widgetSize = 100.F, std::string caption = "", std::vector<unsigned*> textures = {},
                  ImVec2 textureSize = ImVec2(250, 100));
     bool drop_down_box(const char* label, std::string preview_value, int& id, std::vector<std::string> items, const float& box_width = 100.F);
+    
     bool input_int(const char* label, config_editor::setting& setting, float widgetWidth = 100.F);
 
     void tool_tip(std::string message, float text_wrap_size = 500.F, bool holdRightClick = true);
