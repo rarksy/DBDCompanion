@@ -9,6 +9,7 @@
 #include "GUI/GUI.h"
 #include <Windows.h>
 
+#include "../Misc/Misc.hpp"
 #include "HookTracker\HookTracker.hpp"
 #include "OnScreenTimers/OnScreenTimers.hpp"
 #include "IconPackager\IconPackager.hpp"
@@ -197,7 +198,8 @@ void menu::render_ui()
                                                          ? ImGui::IsKeyDown(ImGuiKey_MouseLeft)
                                                                ? ImGuiCol_ButtonActive
                                                                : ImGuiCol_ButtonHovered
-                                                         : ImGuiCol_Button);
+                                                         : ImGuiCol_Button
+    );
 
     if (hamburger_width > 0.F)
     {
@@ -222,76 +224,120 @@ void menu::render_ui()
         if (ImGui::InvisibleButton("##HamburgerToggleButtonInsideMenu", {39, 36}))
             hamburger_open = !hamburger_open;
 
-        // ImGui::SetCursorPos({170, 7});
-        // static bool settings_open = false;
-        // GLuint& button_texture =  settings_open ? icons::back_icon : icons::settings_icon;
-        // if (gui::image_button("settings_back_button", button_texture, ImVec2(40, 25)))
-        //     settings_open = !settings_open;
+        static bool settings_open = false;
+        const GLuint& settings_button_texture = (settings_open || menu_to_show != 0) ? icons::back_icon : icons::settings_icon;
 
-        ImGui::SetCursorPosY(50.F);
-
-        ImGui::PushFont(styling::child_font);
-        ImGui::SetCursorPosX((ImGui::GetWindowSize().x - ImGui::CalcTextSize("Customization").x) * 0.5F);
-        ImGui::TextColored(color(120, 120, 120, 185).to_imvec4(), "Customization");
-        ImGui::PopFont();
-
-        if (ImGui::Button("Config Editor", ImVec2(185, 0)))
-            menu_to_show = 1;
-        gui::tool_tip("Allows you to adjust your game settings in\nmore detail than the base game offers");
-
-        ImGui::Spacing();
-
-        if (ImGui::Button("Icon Packager", ImVec2(185, 0)))
-            menu_to_show = 2;
-        gui::tool_tip("");
-
-        ImGui::Spacing();
-        ImGui::Spacing();
-        ImGui::Spacing();
-
-        ImGui::PushFont(styling::child_font);
-        ImGui::SetCursorPosX((ImGui::GetWindowSize().x - ImGui::CalcTextSize("Overlay Features").x) * 0.5F);
-        ImGui::TextColored(color(120, 120, 120, 185).to_imvec4(), "Overlay Features");
-        ImGui::PopFont();
-
-        if (ImGui::Button("Crosshair Overlay", ImVec2(185, 0)))
-            menu_to_show = 3;
-        gui::tool_tip("Allows you to use a crosshair overlay with many customization options");
-
-        ImGui::Spacing();
-
-        if (ImGui::Button("On-Screen Timers", ImVec2(185, 0)))
-            menu_to_show = 4;
-        gui::tool_tip("Allows you to setup hotkeys to display timers on your screen for relevant information");
-
-        if (menu_to_show != 0)
+        ImGui::SetCursorPos({173, 7});
+        if (gui::image_button("settingsbutton", settings_button_texture, {40, 30}))
         {
-            ImGui::SetCursorPos({hamburger_width - 33, 5});
-            if (ImGui::Button("<-"))
+            if (menu_to_show != 0)
                 menu_to_show = 0;
+            else
+                settings_open = !settings_open;
         }
 
-
-        if (ImGui::IsKeyPressed(ImGuiKey_Space, false) && !ImGui::IsAnyItemActive())
-            styling::show_color_picker = !styling::show_color_picker;
-
-        static bool color_picker_active = false;
-        if (styling::show_color_picker)
+        if (!settings_open)
         {
-            ImGui::SetCursorPos({44.F, 7});
-            if (gui::color_picker("Menu Accent", &styling::menu_accent))
-            {
-                nlohmann::json accent_data;
+            ImGui::SetCursorPosY(50.F);
 
-                accent_data["menu_accent"]["r"] = styling::menu_accent.r;
-                accent_data["menu_accent"]["g"] = styling::menu_accent.g;
-                accent_data["menu_accent"]["b"] = styling::menu_accent.b;
-                accent_data["menu_accent"]["a"] = styling::menu_accent.a;
+            ImGui::PushFont(styling::child_font);
+            ImGui::SetCursorPosX((ImGui::GetWindowSize().x - ImGui::CalcTextSize("Customization").x) * 0.5F);
+            ImGui::TextColored(color(120, 120, 120, 185).to_imvec4(), "Customization");
+            ImGui::PopFont();
 
-                ml::json_write_data(backend::exe_directory.string() + backend::settings_directory + backend::data_directory + "settings.json", accent_data);
-            }
-            color_picker_active = ImGui::IsItemActive();
+            if (ImGui::Button("Config Editor", ImVec2(185, 0)))
+                menu_to_show = 1;
+            gui::tool_tip("Allows you to adjust your game settings in\nmore detail than the base game offers");
+
+            ImGui::Spacing();
+
+            if (ImGui::Button("Icon Packager", ImVec2(185, 0)))
+                menu_to_show = 2;
+            gui::tool_tip("");
+
+            ImGui::Spacing();
+            ImGui::Spacing();
+            ImGui::Spacing();
+
+            ImGui::PushFont(styling::child_font);
+            ImGui::SetCursorPosX((ImGui::GetWindowSize().x - ImGui::CalcTextSize("Overlay Features").x) * 0.5F);
+            ImGui::TextColored(color(120, 120, 120, 185).to_imvec4(), "Overlay Features");
+            ImGui::PopFont();
+
+            if (ImGui::Button("Crosshair Overlay", ImVec2(185, 0)))
+                menu_to_show = 3;
+            gui::tool_tip("Allows you to use a crosshair overlay with many customization options");
+
+            ImGui::Spacing();
+
+            if (ImGui::Button("On-Screen Timers", ImVec2(185, 0)))
+                menu_to_show = 4;
+            gui::tool_tip("Allows you to setup hotkeys to display timers on your screen for relevant information");
         }
+        else
+        {
+            gui::color_picker("Menu Accent", &menu::styling::menu_accent, true);
+            if (ImGui::Checkbox("Launch With DBD", &ce_vars.launch_with_dbd))
+            {
+                if (ce_vars.launch_with_dbd)
+                {
+                    char file_name_buffer[MAX_PATH];
+                    GetModuleFileNameA(NULL, file_name_buffer, MAX_PATH);
+    
+                    std::ofstream file_to_write(backend::exe_directory.string() + backend::settings_directory + "dual_load.bat");
+    
+                    if (file_to_write.is_open())
+                    {
+                        file_to_write
+                            << "@echo off\n"
+                            << "start \"\" \"" << misc::get_game_root_directory() << "DeadByDaylight.exe\" -provider Steam\n"
+                            << "start \"\" \"" << file_name_buffer << "\"\n"
+                            << "exit";
+    
+                        file_to_write.close();
+    
+                        ml::set_clipboard_text("\"" + backend::exe_directory.string() + backend::settings_directory + "dual_load.bat\" %command%");
+    
+                        MessageBox(
+                            NULL,
+                            L"Launch Command Copied\n\nGo To Steam -> Library -> Right Click \"Dead By Daylight\" -> Properties -> In The \"Launch Options\" Box -> Right Click -> Paste",
+                            L"Notice", MB_OK);
+                    }
+                }
+                else
+                {
+                    MessageBox(NULL, L"To Disable Dual Loading, Go To Steam -> Library -> Right Click \"Dead By Daylight\" -> Properties -> Clear The \"Launch Options\" Box", L"Notice",
+                               MB_OK);
+                }
+            }
+            gui::tool_tip(
+                "Will automatically open DBDC when you launch Dead By Daylight"
+                "\n\n"
+                "Note: Due to how steam works, after enabling, you will need to manually add the launch option that gets copied to your clipboard, instructions appear when enabling / disabling."
+            );
+        }
+
+
+        // if (ImGui::IsKeyPressed(ImGuiKey_Space, false) && !ImGui::IsAnyItemActive())
+        //     styling::show_color_picker = !styling::show_color_picker;
+        //
+        // static bool color_picker_active = false;
+        // if (styling::show_color_picker)
+        // {
+        //     ImGui::SetCursorPos({44.F, 7});
+        //     if (gui::color_picker("Menu Accent", &styling::menu_accent))
+        //     {
+        //         nlohmann::json accent_data;
+        //
+        //         accent_data["menu_accent"]["r"] = styling::menu_accent.r;
+        //         accent_data["menu_accent"]["g"] = styling::menu_accent.g;
+        //         accent_data["menu_accent"]["b"] = styling::menu_accent.b;
+        //         accent_data["menu_accent"]["a"] = styling::menu_accent.a;
+        //
+        //         ml::json_write_data(backend::exe_directory.string() + backend::settings_directory + backend::data_directory + "settings.json", accent_data);
+        //     }
+        //     color_picker_active = ImGui::IsItemActive();
+        // }
 
 
         gui::end_group_box();
@@ -303,9 +349,10 @@ void menu::render_ui()
             previous_tab = menu_to_show;
         }
 
-        if (!ImGui::IsMouseHoveringRect({0, 0}, {hamburger_width + 5, hamburger_height + 5}) && ImGui::IsKeyPressed(ImGuiKey_MouseLeft))
+        if (!ImGui::IsMouseHoveringRect({0, 0}, {hamburger_width + 5, hamburger_height + 5}) && !ImGui::IsAnyItemActive() && ImGui::IsKeyPressed(ImGuiKey_MouseLeft))
+        {
             hamburger_open = false;
-
+        }
         ImGui::PopStyleColor();
     }
 
@@ -314,7 +361,6 @@ void menu::render_ui()
 
     else if (!hamburger_open && hamburger_width > 0)
         hamburger_width -= 10;
-
 
     ImGui::GetWindowDrawList()->AddRectFilled({11, 13}, {41, 18}, hamburger_accent, 4.F);
     ImGui::GetWindowDrawList()->AddRectFilled({11, 23}, {41, 28}, hamburger_accent, 4.F);
@@ -326,21 +372,24 @@ void menu::render_ui()
 
     ImGui::SetCursorPos({menu_to_show == 2 ? 10.F : 720.F, 470});
     ImGui::TextColored(ImVec4(0.8F, 0.8F, 0.8F, 0.5F), "(?)");
-    gui::tool_tip(
-        "Hold right click when hovering an option to view information about it.\n"
-        "Tip: Some options have images associated to assist in selection."
-        "\n\nDead By Daylight Companion By Rarksy\n"
-        "Press Enter To Join The Discord Server.\n\n"
-        "Build Version: Early Access "
-#ifdef _DEBUG
-        "Debug " +
-#else
-        "Release " +
-#endif
-        DBDC_VERSION.substr(7) +
-        "\nBuild Date: " + std::string(__DATE__)
-        + "\nBuild Time: " + std::string(__TIME__), 500, false
-    );
+    if (ImGui::IsItemHovered())
+    {
+        ImGui::BeginTooltip();
+        ImGui::Text("Hold right click on any option\nto view information about it.");
+        ImGui::Spacing();
+        ImGui::Text("Press enter to join the discord.");
+        ImGui::Spacing();
+        ImGui::Spacing();
+        ImGui::Spacing();
+        ImGui::PushFont(styling::child_font);
+        ImGui::Text("DBD Companion ( %s )", DBDC_VERSION.substr(7).c_str());
+        ImGui::PopFont();
+
+        ImGui::EndTooltip();
+
+        if (ImGui::IsKeyPressed(ImGuiKey_Enter, false))
+            ShellExecuteA(NULL, "open", "https://discord.gg/vKjjS8yazu", NULL, NULL, SW_SHOWNORMAL);
+    }
 
     if (ImGui::IsItemHovered() && ImGui::IsKeyPressed(ImGuiKey_Enter, false))
         ShellExecuteA(NULL, "open", "https://discord.gg/vKjjS8yazu", NULL, NULL, SW_SHOWNORMAL);

@@ -42,7 +42,7 @@ bool CEMenu::Setup()
 
 void CEMenu::RenderUI()
 {
-    ImGui::SetCursorPos({252, 15});
+    ImGui::SetCursorPos({272, 15});
 
     if (ImGui::Button("Copy Settings"))
         config_editor::copy_config();
@@ -199,45 +199,6 @@ void CEMenu::RenderUI()
     
     gui::checkbox("Skip News Popup", ce_vars.skip_news_popup, 0, 99999);
     gui::tool_tip("Disables the news popup that appears after launching the game.");
-    
-    if (ImGui::Checkbox("Launch With DBD", &ce_vars.launch_with_dbd))
-    {
-        if (ce_vars.launch_with_dbd)
-        {
-            char file_name_buffer[MAX_PATH];
-            GetModuleFileNameA(NULL, file_name_buffer, MAX_PATH);
-    
-            std::ofstream file_to_write(backend::exe_directory.string() + backend::settings_directory + "dual_load.bat");
-    
-            if (file_to_write.is_open())
-            {
-                file_to_write
-                    << "@echo off\n"
-                    << "start \"\" \"" << misc::get_game_root_directory() << "DeadByDaylight.exe\" -provider Steam\n"
-                    << "start \"\" \"" << file_name_buffer << "\"\n"
-                    << "exit";
-    
-                file_to_write.close();
-    
-                ml::set_clipboard_text("\"" + backend::exe_directory.string() + backend::settings_directory + "dual_load.bat\" %command%");
-    
-                MessageBox(
-                    NULL,
-                    L"Launch Command Copied\n\nGo To Steam -> Library -> Right Click \"Dead By Daylight\" -> Properties -> In The \"Launch Options\" Box -> Right Click -> Paste",
-                    L"Notice", MB_OK);
-            }
-        }
-        else
-        {
-            MessageBox(NULL, L"To Disable Dual Loading, Go To Steam -> Library -> Right Click \"Dead By Daylight\" -> Properties -> Clear The \"Launch Options\" Box", L"Notice",
-                       MB_OK);
-        }
-    }
-    gui::tool_tip(
-        "Will automatically open DBDC when you launch Dead By Daylight"
-        "\n\n"
-        "Note: Due to how steam works, after enabling, you will need to manually add the launch option that gets copied to your clipboard, instructions appear when enabling / disabling."
-    );
     
     ImGui::SeparatorText("Sensitivity");
     

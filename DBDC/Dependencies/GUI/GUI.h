@@ -31,7 +31,7 @@ namespace gui
     void tool_tip(std::string message, float text_wrap_size = 500.F, bool holdRightClick = true);
     void tool_tip(std::string message, unsigned int texture, const ImVec2& size, bool holdRightClick = true);
 
-    bool color_picker(const char* label, color* col);
+    bool color_picker(const char* label, color* col, bool show_label = false);
 
 
     void begin_group_box(const char* group_name, ImVec2 size = ImVec2(0, 0), ImGuiWindowFlags flags = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);

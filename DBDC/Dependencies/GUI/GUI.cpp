@@ -266,12 +266,16 @@ void gui::tool_tip(std::string message, unsigned int texture, const ImVec2& size
     }
 }
 
-bool gui::color_picker(const char* label, color* col)
+bool gui::color_picker(const char* label, color* col, bool show_label)
 {
     ImGui::PushID(label);
 
     ImVec4 colorVec4 = col->to_imvec4();
-    const bool valueChanged = ImGui::ColorEdit4(label, &colorVec4.x, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_NoTooltip);
+    auto flags = ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoTooltip;
+    if (!show_label)
+        flags |= ImGuiColorEditFlags_NoLabel;
+        
+    const bool valueChanged = ImGui::ColorEdit4(label, &colorVec4.x, flags);
 
     if (valueChanged)
     {

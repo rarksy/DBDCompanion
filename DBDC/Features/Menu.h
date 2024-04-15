@@ -73,7 +73,7 @@ namespace menu
         inline constexpr int menu_height = 500;
         inline constexpr int item_width = 100;
 
-        inline constexpr float font_size = 22.F;
+        inline constexpr float font_size = 21.F;
         inline ImFont* main_font = nullptr;
         inline ImFont* child_font = nullptr;
 

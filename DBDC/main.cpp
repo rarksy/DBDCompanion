@@ -7,7 +7,6 @@
 #include "stb_image.h"
 #include "Exe Icons/256x256.hpp"
 #include "Images/Icons/BackIcon.hpp"
-#include "Images/Icons/HelpIcon.hpp"
 #include "Images/Icons/SettingsIcon.hpp"
 #include "Images/Updater/UpdateIcon.hpp"
 #include "ImGui/imgui_impl_glfw.h"
@@ -18,6 +17,11 @@
 
 int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
 {
+    const char mutex_name[] = "com_rarksy_apps_deadbydaylightcompanion";
+    HANDLE mutex_handle = CreateMutexA(NULL, TRUE, mutex_name);
+    if( ERROR_ALREADY_EXISTS == GetLastError())
+        return(1);
+    
     if (!backend::init_glfw())
         return -1;
 
@@ -56,6 +60,8 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
     update_thread.detach();
     
     images::load_texture_from_memory(update_icon_raw_data, sizeof update_icon_raw_data, &menu::icons::update_icon);
+    images::load_texture_from_memory(settings_icon_raw_data, sizeof settings_icon_raw_data, &menu::icons::settings_icon);
+    images::load_texture_from_memory(back_icon_raw_data, sizeof back_icon_raw_data, &menu::icons::back_icon);
     
     menu::run_loop();
 
@@ -77,6 +83,9 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
     glfwDestroyWindow(menu::main_window);
 
     glfwTerminate();
+
+    ReleaseMutex(mutex_handle);
+    CloseHandle(mutex_handle);
 
     return 0;
 }
