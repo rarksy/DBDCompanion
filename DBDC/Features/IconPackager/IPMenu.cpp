@@ -18,9 +18,14 @@ void ip_menu::render_ui()
     ImGui::SetCursorPosY(45.F);
     ImGui::SeparatorText("Filtering");
     gui::drop_down_box("Role Filter", _internal::character_filter[_internal::character_filter_index], _internal::character_filter_index, _internal::character_filter, 80.F);
+    gui::tool_tip("Filters Results Based On Item Role", 500, false);
+
     gui::drop_down_box("Type Filter", _internal::type_filter[_internal::type_filter_index], _internal::type_filter_index, _internal::type_filter, 80.F);
+    gui::tool_tip("Filters Results Based On Item Type", 500, false);
+
     ImGui::SetNextItemWidth(170.F);
     ImGui::InputTextWithHint("##PerkSearch", "Perk Search", _internal::searched_text, IM_ARRAYSIZE(_internal::searched_text));
+    gui::tool_tip("Filters Results Based On Text Input", 500, false);
 
     ImGui::SeparatorText("Packaging");
     ImGui::PushStyleColor(ImGuiCol_Border, menu::styling::menu_accent.to_imvec4());
@@ -51,6 +56,7 @@ void ip_menu::render_ui()
 
     ImGui::SetNextItemWidth(170.F);
     ImGui::InputTextWithHint("##PackageName", "Package Name", &_internal::package_selector::input_package_name);
+    gui::tool_tip("Created Package Will Use The Name Entered Here", 500, false);
 
     if (ImGui::Button("Create Package", {170.F, 0}))
     {
@@ -77,7 +83,7 @@ void ip_menu::render_ui()
         }
     }
     ImGui::PopStyleColor();
-    gui::tool_tip("Press Enter To Create Package profile", 500, false);
+    gui::tool_tip("Will Create A Package With The Specified Name, Ready For Pack Creation", 500, false);
 
     ImGui::Spacing();
 
@@ -103,6 +109,7 @@ void ip_menu::render_ui()
 
         ml::open_directory(backend::exe_directory.string() + backend::settings_directory + _internal::package_selector::package_directory);
     }
+    gui::tool_tip("Will Compile The Created Package Into The Final Icon Pack", 500, false);
 
     ImGui::Spacing();
 
@@ -128,6 +135,7 @@ void ip_menu::render_ui()
             }   
         }
     }
+    gui::tool_tip("Will Apply The Current Package To Your Game", 500, false);
 
     ImGui::Spacing();
 
@@ -146,6 +154,7 @@ void ip_menu::render_ui()
             std::filesystem::remove(file_path);   
         }
     }
+    gui::tool_tip("Will Delete The Current Package", 500, false);
 
     ImGui::EndColumns();
     ImGui::SetCursorPos({195, 10});
