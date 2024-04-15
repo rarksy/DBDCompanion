@@ -17,7 +17,7 @@
 
 int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
 {
-    const char mutex_name[] = "com_rarksy_apps_deadbydaylightcompanion";
+    const char* mutex_name = "com_rarksy_apps_deadbydaylightcompanion";
     HANDLE mutex_handle = CreateMutexA(NULL, TRUE, mutex_name);
     if( ERROR_ALREADY_EXISTS == GetLastError())
         return(1);
