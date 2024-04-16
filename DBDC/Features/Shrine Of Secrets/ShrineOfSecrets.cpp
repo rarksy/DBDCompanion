@@ -125,7 +125,7 @@ shrine_of_secrets::perk shrine_of_secrets::get_perk(const int& perk_index)
 
 void shrine_of_secrets::render_ui()
 {
-    ImGui::SetCursorPos({10, 165});
+    ImGui::SetCursorPos({10, 225});
 
     ImGui::BeginChild("ShrineChild", ImVec2(190, 0));
 

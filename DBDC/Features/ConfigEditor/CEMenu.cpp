@@ -42,7 +42,7 @@ bool CEMenu::Setup()
 
 void CEMenu::RenderUI()
 {
-    ImGui::SetCursorPos({272, 15});
+    ImGui::SetCursorPos({327, 15});
 
     if (ImGui::Button("Copy Settings"))
         config_editor::copy_config();
@@ -56,14 +56,9 @@ void CEMenu::RenderUI()
 
     ImGui::SameLine();
 
-    if (ImGui::Button("Open Folder"))
+    if (ImGui::Button("Open Settings Folder"))
         misc::OpenSettingsFolder();
-
-    ImGui::SameLine();
-
-    if (ImGui::Button("Restart Game"))
-        misc::restart_game();
-    gui::tool_tip("Will close and reopen Dead By Daylight to apply any changed settings.");
+    
 
     ImGui::Columns(3, nullptr, false);
     ImGui::SetColumnWidth(0, 258);

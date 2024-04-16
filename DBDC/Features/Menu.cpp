@@ -145,6 +145,16 @@ void menu::render_ui()
 
     if (menu_to_show == 0)
     {
+        ImGui::SetCursorPosY(50.F);
+        ImGui::BeginChild("Quick Tools Child", ImVec2(180, 0));
+        ImGui::SeparatorText("Quick Tools");
+        ImGui::SetCursorPosX(2);
+        
+        if (ImGui::Button("Restart Game", {176, 0}))
+            misc::restart_game();
+
+        ImGui::EndChild();
+        
         shrine_of_secrets::render_ui();
     }
 
@@ -410,7 +420,6 @@ void menu::create_global_style()
     style.FrameRounding = 2.F;
     style.DisabledAlpha = 0.3F;
     style.FrameBorderSize = 1.7F;
-    //style.DisabledAlpha = 0.1f;
     style.ChildRounding = 3.F;
 
     // Slider
