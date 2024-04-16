@@ -17,7 +17,10 @@ void ip_menu::render_ui()
     ImGui::Columns(4, nullptr, false);
     ImGui::SetCursorPosY(45.F);
     ImGui::SeparatorText("Filtering");
-    gui::drop_down_box("Role Filter", _internal::character_filter[_internal::character_filter_index], _internal::character_filter_index, _internal::character_filter, 80.F);
+    if (gui::drop_down_box("Role Filter", _internal::character_filter[_internal::role_filter_index], _internal::role_filter_index, _internal::character_filter, 80.F))
+    {
+        _internal::type_filter[1] = (_internal::role_filter_index == 0 ? "Powers" : "Items");
+    }
     gui::tool_tip("Filters Results Based On Item Role", 500, false);
 
     gui::drop_down_box("Type Filter", _internal::type_filter[_internal::type_filter_index], _internal::type_filter_index, _internal::type_filter, 80.F);
@@ -160,18 +163,28 @@ void ip_menu::render_ui()
     ImGui::SetCursorPos({195, 10});
     gui::begin_group_box("perk display", ImVec2({540, 0}), NULL);
 
-    if (_internal::type_filter_index == 0 || _internal::type_filter_index == 1)
+    switch (_internal::type_filter_index) {
+    case 0:
         display_base_item(perk_packager::all_perks);
-    if (_internal::type_filter_index == 0 || _internal::type_filter_index == 2)
+        break;
+    case 1:
         display_base_item(perk_packager::all_items);
-    if (_internal::type_filter_index == 0 || _internal::type_filter_index == 3)
+        break;
+    case 2:
         display_base_item(perk_packager::all_offerings);
-    if (_internal::type_filter_index == 0 || _internal::type_filter_index == 4)
+        break;
+    case 3:
         display_base_item(perk_packager::all_addons);
-    if (_internal::type_filter_index == 0 || _internal::type_filter_index == 5)
+        break;
+    case 4:
         display_base_item(perk_packager::all_portraits);
-    if (_internal::type_filter_index == 0 || _internal::type_filter_index == 6)
+        break;
+    case 5:
         display_base_item(perk_packager::all_status_effects);
+        break;
+    default:
+            break;
+    }
 
     gui::end_group_box();
 }
@@ -193,11 +206,10 @@ void ip_menu::display_base_item(std::vector<T>& vec_obj)
 
         if (!found_searched_item && (ml::to_lower(obj.owner).find(ml::to_lower(searched_item)) == std::string::npos))
             continue;
+        
+        const bool is_correct_filter = ml::to_lower(ip_menu::_internal::character_filter[ip_menu::_internal::role_filter_index]) == obj.role;
 
-        const bool has_filter = ip_menu::_internal::character_filter_index != 0;
-        const bool is_correct_filter = ml::to_lower(ip_menu::_internal::character_filter[ip_menu::_internal::character_filter_index]) == obj.role;
-
-        if (has_filter && !is_correct_filter)
+        if (!is_correct_filter)
             continue;
 
         if (current_x + 94.F > remaining_width)

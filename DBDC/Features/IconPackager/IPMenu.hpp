@@ -30,11 +30,11 @@ namespace ip_menu
         
         inline static char searched_text[16];
 
-        inline int character_filter_index = 0;
-        inline std::vector<std::string> character_filter = {"All", "Killer", "Survivor"};
+        inline int role_filter_index = 0;
+        inline std::vector<std::string> character_filter = {"Killer", "Survivor"};
 
         inline int type_filter_index = 0;
-        inline std::vector<std::string> type_filter = {"All", "Perks", "Items", "Offerings", "Addons", "Portraits", "Status Effects"};
+        inline std::vector<std::string> type_filter = {"Perks", "Powers", "Offerings", "Addons", "Portraits", "Status Effects"};
     }
     
     
