@@ -329,6 +329,20 @@ void menu::render_ui()
             ImGui::SetCursorPos({5, 210});
             if (gui::image_button("discord_join_button", icons::discord_icon, ImVec2(31, 23)))
                 ShellExecuteA(NULL, "open", "https://discord.gg/vKjjS8yazu", NULL, NULL, SW_SHOWNORMAL);
+
+            ImGui::SetCursorPos({175, 213});
+            ImGui::TextColored(ImVec4(0.8F, 0.8F, 0.8F, 0.5F), "(?)");
+            if (ImGui::IsItemHovered())
+            {
+                ImGui::BeginTooltip();
+                ImGui::Text("Hold right click on any option\nto view information about it.");
+                ImGui::Spacing();
+                ImGui::PushFont(styling::child_font);
+                ImGui::Text("DBD Companion ( %s )", DBDC_VERSION.substr(7).c_str());
+                ImGui::PopFont();
+
+                ImGui::EndTooltip();
+            }
         }
 
         gui::end_group_box();
@@ -363,24 +377,10 @@ void menu::render_ui()
     if (ImGui::InvisibleButton("##HamburgerToggleButtonOutsideMenu", {39, 36}))
         hamburger_open = !hamburger_open;
 
-    ImGui::SetCursorPos({menu_to_show == 2 ? 10.F : 720.F, 470});
-    ImGui::TextColored(ImVec4(0.8F, 0.8F, 0.8F, 0.5F), "(?)");
-    if (ImGui::IsItemHovered())
-    {
-        ImGui::BeginTooltip();
-        ImGui::Text("Hold right click on any option\nto view information about it.");
-        ImGui::Spacing();
-        ImGui::PushFont(styling::child_font);
-        ImGui::Text("DBD Companion ( %s )", DBDC_VERSION.substr(7).c_str());
-        ImGui::PopFont();
-
-        ImGui::EndTooltip();
-    }
-
 
     if (backend::update_available)
     {
-        const ImVec2 cursor_pos = {menu_to_show == 2 ? 20.F : 695.F, 470};
+        const ImVec2 cursor_pos = {menu_to_show == 2 ? 5.F : 720.F, 470};
         ImGui::SetCursorPos(cursor_pos);
         if (gui::image_button("updatebutton", icons::update_icon, ImVec2(23, 23)))
         {
