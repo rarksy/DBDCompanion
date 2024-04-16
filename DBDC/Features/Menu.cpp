@@ -226,10 +226,13 @@ void menu::render_ui()
             hamburger_open = !hamburger_open;
 
         static bool settings_open = false;
-        const GLuint& settings_button_texture = (settings_open || menu_to_show != 0) ? icons::back_icon : icons::settings_icon;
+        const bool show_settings = (settings_open || menu_to_show != 0);
+        const GLuint& settings_button_texture = show_settings ? icons::back_icon : icons::settings_icon;
+        const ImVec2 settings_button_size = show_settings ? ImVec2(23, 23) : ImVec2(27,27);
+        const ImVec2 settings_button_pos = show_settings ? ImVec2(171, 6) : ImVec2(168, 6);
 
-        ImGui::SetCursorPos({173, 7});
-        if (gui::image_button("settingsbutton", settings_button_texture, {23, 23}))
+        ImGui::SetCursorPos(settings_button_pos);
+        if (gui::image_button("settingsbutton", settings_button_texture, settings_button_size))
         {
             if (menu_to_show != 0)
                 menu_to_show = 0;
@@ -363,18 +366,11 @@ void menu::render_ui()
         ImGui::BeginTooltip();
         ImGui::Text("Hold right click on any option\nto view information about it.");
         ImGui::Spacing();
-        ImGui::Text("Press enter to join the discord.");
-        ImGui::Spacing();
-        ImGui::Spacing();
-        ImGui::Spacing();
         ImGui::PushFont(styling::child_font);
         ImGui::Text("DBD Companion ( %s )", DBDC_VERSION.substr(7).c_str());
         ImGui::PopFont();
 
         ImGui::EndTooltip();
-
-        if (ImGui::IsKeyPressed(ImGuiKey_Enter, false))
-            ShellExecuteA(NULL, "open", "https://discord.gg/vKjjS8yazu", NULL, NULL, SW_SHOWNORMAL);
     }
 
 

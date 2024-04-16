@@ -284,12 +284,6 @@ bool gui::color_picker(const char* label, color* col, bool show_label)
     return valueChanged;
 }
 
-void RenderGroupBox(float x, float y, float width, float height, ImU32 color, float rounding = 0.0f, float thickness = 1.0f)
-{
-    ImGuiWindow* window = ImGui::GetCurrentWindow();
-    window->DrawList->AddRect(ImVec2(x, y), ImVec2(x + width, y + height), color, rounding, 0, thickness);
-}
-
 void gui::begin_group_box(const char* group_name, ImVec2 size, ImGuiWindowFlags flags)
 {
     ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.01f, 0.01f, 0.01f, 0.01f));
@@ -300,4 +294,13 @@ void gui::end_group_box()
 {
     ImGui::EndChild();
     ImGui::PopStyleColor();
+}
+
+bool gui::tab(GLuint image, std::string label)
+{
+    ImGui::PushID(label.c_str());
+
+    const auto cursor_pos = ImGui::GetCursorPos();
+
+    return true;
 }
