@@ -7,6 +7,7 @@
 #include "stb_image.h"
 #include "Exe Icons/256x256.hpp"
 #include "Images/Icons/BackIcon.hpp"
+#include "Images/Icons/DiscordIcon.hpp"
 #include "Images/Icons/SettingsIcon.hpp"
 #include "Images/Updater/UpdateIcon.hpp"
 #include "ImGui/imgui_impl_glfw.h"
@@ -62,6 +63,7 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
     images::load_texture_from_memory(update_icon_raw_data, sizeof update_icon_raw_data, &menu::icons::update_icon);
     images::load_texture_from_memory(settings_icon_raw_data, sizeof settings_icon_raw_data, &menu::icons::settings_icon);
     images::load_texture_from_memory(back_icon_raw_data, sizeof back_icon_raw_data, &menu::icons::back_icon);
+    images::load_texture_from_memory(discord_icon_raw_data, sizeof discord_icon_raw_data, &menu::icons::discord_icon);
     
     menu::run_loop();
 

@@ -105,13 +105,10 @@ bool gui::checkbox(const char* label, config_editor::setting& setting, int disab
 bool gui::image_button(const char* label, GLuint image_texture, const ImVec2& size)
 {
     const auto cursor_pos = ImGui::GetCursorPos();
-    ImGui::Image(reinterpret_cast<void*>(image_texture), ImVec2(23, 23));
+    ImGui::Image(reinterpret_cast<void*>(image_texture), size);
 
     ImGui::SetCursorPos(cursor_pos);
-    const bool return_value = ImGui::InvisibleButton(label, size);
-    ImGui::SetMouseCursor(ImGui::IsItemHovered() ? ImGuiMouseCursor_Hand : ImGuiMouseCursor_Arrow);
-
-    return return_value;
+    return ImGui::InvisibleButton(label, size);
 }
 
 bool gui::slider(const char* label, config_editor::setting& setting, int minValue, int maxValue, bool clampMinMax)

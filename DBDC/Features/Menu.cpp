@@ -194,12 +194,14 @@ void menu::render_ui()
 
     ImGui::SetCursorPos(ImVec2(5, 5));
 
-    const auto hamburger_accent = ImGui::GetColorU32(ImGui::IsMouseHoveringRect({3, 3}, {39, 36})
+    const ImRect hamburger_activation_rect = ImRect({3, 3}, {39, 36});
+    const auto hamburger_accent = ImGui::GetColorU32(ImGui::IsMouseHoveringRect(hamburger_activation_rect.Min, hamburger_activation_rect.Max)
                                                          ? ImGui::IsKeyDown(ImGuiKey_MouseLeft)
                                                                ? ImGuiCol_ButtonActive
                                                                : ImGuiCol_ButtonHovered
                                                          : ImGuiCol_Button
     );
+
 
     if (hamburger_width > 0.F)
     {
@@ -219,7 +221,6 @@ void menu::render_ui()
         ImGui::GetWindowDrawList()->AddRectFilled({11, 23}, {41, 28}, hamburger_accent, 4.F);
         ImGui::GetWindowDrawList()->AddRectFilled({11, 33}, {41, 38}, hamburger_accent, 4.F);
 
-
         ImGui::SetCursorPos({3, 3});
         if (ImGui::InvisibleButton("##HamburgerToggleButtonInsideMenu", {39, 36}))
             hamburger_open = !hamburger_open;
@@ -228,7 +229,7 @@ void menu::render_ui()
         const GLuint& settings_button_texture = (settings_open || menu_to_show != 0) ? icons::back_icon : icons::settings_icon;
 
         ImGui::SetCursorPos({173, 7});
-        if (gui::image_button("settingsbutton", settings_button_texture, {40, 30}))
+        if (gui::image_button("settingsbutton", settings_button_texture, {23, 23}))
         {
             if (menu_to_show != 0)
                 menu_to_show = 0;
@@ -276,6 +277,7 @@ void menu::render_ui()
         }
         else
         {
+            ImGui::Spacing();
             gui::color_picker("Menu Accent", &menu::styling::menu_accent, true);
             if (ImGui::Checkbox("Launch With DBD", &ce_vars.launch_with_dbd))
             {
@@ -283,9 +285,9 @@ void menu::render_ui()
                 {
                     char file_name_buffer[MAX_PATH];
                     GetModuleFileNameA(NULL, file_name_buffer, MAX_PATH);
-    
+
                     std::ofstream file_to_write(backend::exe_directory.string() + backend::settings_directory + "dual_load.bat");
-    
+
                     if (file_to_write.is_open())
                     {
                         file_to_write
@@ -293,11 +295,11 @@ void menu::render_ui()
                             << "start \"\" \"" << misc::get_game_root_directory() << "DeadByDaylight.exe\" -provider Steam\n"
                             << "start \"\" \"" << file_name_buffer << "\"\n"
                             << "exit";
-    
+
                         file_to_write.close();
-    
+
                         ml::set_clipboard_text("\"" + backend::exe_directory.string() + backend::settings_directory + "dual_load.bat\" %command%");
-    
+
                         MessageBox(
                             NULL,
                             L"Launch Command Copied\n\nGo To Steam -> Library -> Right Click \"Dead By Daylight\" -> Properties -> In The \"Launch Options\" Box -> Right Click -> Paste",
@@ -306,7 +308,8 @@ void menu::render_ui()
                 }
                 else
                 {
-                    MessageBox(NULL, L"To Disable Dual Loading, Go To Steam -> Library -> Right Click \"Dead By Daylight\" -> Properties -> Clear The \"Launch Options\" Box", L"Notice",
+                    MessageBox(NULL, L"To Disable Dual Loading, Go To Steam -> Library -> Right Click \"Dead By Daylight\" -> Properties -> Clear The \"Launch Options\" Box",
+                               L"Notice",
                                MB_OK);
                 }
             }
@@ -315,30 +318,11 @@ void menu::render_ui()
                 "\n\n"
                 "Note: Due to how steam works, after enabling, you will need to manually add the launch option that gets copied to your clipboard, instructions appear when enabling / disabling."
             );
+            
+            ImGui::SetCursorPos({5, 210});
+            if (gui::image_button("discord_join_button", icons::discord_icon, ImVec2(31, 23)))
+                ShellExecuteA(NULL, "open", "https://discord.gg/vKjjS8yazu", NULL, NULL, SW_SHOWNORMAL);
         }
-
-
-        // if (ImGui::IsKeyPressed(ImGuiKey_Space, false) && !ImGui::IsAnyItemActive())
-        //     styling::show_color_picker = !styling::show_color_picker;
-        //
-        // static bool color_picker_active = false;
-        // if (styling::show_color_picker)
-        // {
-        //     ImGui::SetCursorPos({44.F, 7});
-        //     if (gui::color_picker("Menu Accent", &styling::menu_accent))
-        //     {
-        //         nlohmann::json accent_data;
-        //
-        //         accent_data["menu_accent"]["r"] = styling::menu_accent.r;
-        //         accent_data["menu_accent"]["g"] = styling::menu_accent.g;
-        //         accent_data["menu_accent"]["b"] = styling::menu_accent.b;
-        //         accent_data["menu_accent"]["a"] = styling::menu_accent.a;
-        //
-        //         ml::json_write_data(backend::exe_directory.string() + backend::settings_directory + backend::data_directory + "settings.json", accent_data);
-        //     }
-        //     color_picker_active = ImGui::IsItemActive();
-        // }
-
 
         gui::end_group_box();
 
@@ -393,9 +377,6 @@ void menu::render_ui()
             ShellExecuteA(NULL, "open", "https://discord.gg/vKjjS8yazu", NULL, NULL, SW_SHOWNORMAL);
     }
 
-    if (ImGui::IsItemHovered() && ImGui::IsKeyPressed(ImGuiKey_Enter, false))
-        ShellExecuteA(NULL, "open", "https://discord.gg/vKjjS8yazu", NULL, NULL, SW_SHOWNORMAL);
-
 
     if (backend::update_available)
     {
@@ -410,6 +391,8 @@ void menu::render_ui()
         }
         gui::tool_tip("Update Available\n  Click To Install", 500, false);
     }
+
+    ImGui::SetMouseCursor(ImGui::IsAnyItemHovered() ? ImGuiMouseCursor_Hand : ImGuiMouseCursor_Arrow);
 
     ImGui::End();
 }
