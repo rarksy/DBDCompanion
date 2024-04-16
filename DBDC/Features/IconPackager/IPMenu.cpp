@@ -209,7 +209,7 @@ void ip_menu::display_base_item(std::vector<T>& vec_obj)
         
         const bool is_correct_filter = ml::to_lower(ip_menu::_internal::character_filter[ip_menu::_internal::role_filter_index]) == obj.role;
 
-        if (!is_correct_filter)
+        if (!is_correct_filter && obj.role != "none")
             continue;
 
         if (current_x + 94.F > remaining_width)

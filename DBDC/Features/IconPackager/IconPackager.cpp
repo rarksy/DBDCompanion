@@ -93,6 +93,7 @@ bool perk_packager::setup()
         status_effect e;
 
         e.name = se.first;
+        e.role = "none";
         e.game_file_path = "UI/Icons/StatusEffects/iconStatusEffects_" + se.second + ".png";
         
         all_status_effects.push_back(e);
