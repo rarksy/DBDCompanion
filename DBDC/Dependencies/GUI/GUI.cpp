@@ -325,7 +325,9 @@ bool gui::tab(std::string label, GLuint image)
     float width_scroll_speed_increase = 0.3F;
     float width_scroll_speed_decrease = 0.2F;
 
-    if (ImGui::IsItemHovered())
+    const bool hovered = ImGui::IsItemHovered();
+    const bool active = ImGui::IsItemActive();
+    if (hovered)
     {
         hover_states[label] = true;
         text_color = ImGui::IsItemActive() ? ImGui::GetStyleColorVec4(ImGuiCol_ButtonActive) : ImGui::GetStyleColorVec4(ImGuiCol_ButtonHovered);
@@ -360,7 +362,7 @@ bool gui::tab(std::string label, GLuint image)
     if (line_widths[label] > 0)
     {
         ImGui::GetWindowDrawList()->AddRectFilled({cursor_pos.x - 25, cursor_pos.y + 29}, {cursor_pos.x - 25 + line_widths[label], cursor_pos.y + 33},
-                                                  ImGui::GetColorU32(ImGuiCol_ButtonHovered),
+                                                  ImGui::GetColorU32(active ? ImGuiCol_ButtonActive : ImGuiCol_ButtonHovered),
                                                   5.F);
     }
 
