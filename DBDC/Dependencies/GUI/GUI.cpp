@@ -296,11 +296,77 @@ void gui::end_group_box()
     ImGui::PopStyleColor();
 }
 
-bool gui::tab(GLuint image, std::string label)
+bool gui::tab(std::string label, GLuint image)
 {
     ImGui::PushID(label.c_str());
 
+    ImGui::Image(reinterpret_cast<void*>(image), {23, 23});
+    ImGui::SameLine();
     const auto cursor_pos = ImGui::GetCursorPos();
 
-    return true;
+    ImVec4 default_text_color = ImGui::GetStyleColorVec4(ImGuiCol_Text);
+    ImColor text_color = default_text_color;
+
+    static std::unordered_map<std::string, bool> hover_states;
+    static std::unordered_map<std::string, float> line_widths;
+    static std::unordered_map<std::string, float> anim_timers;
+
+    if (hover_states.find(label) == hover_states.end())
+        hover_states[label] = false;
+    if (line_widths.find(label) == line_widths.end())
+        line_widths[label] = 0.F;
+    if (anim_timers.find(label) == anim_timers.end())
+        anim_timers[label] = 0.F;
+
+    ImGui::SetCursorPos({cursor_pos.x - 32, cursor_pos.y - 1});
+    const auto text_size = ImGui::CalcTextSize(label.c_str());
+    const bool return_value = ImGui::InvisibleButton((label + "tab").c_str(), ImVec2(35 + text_size.x, text_size.y + 13));
+
+    float width_scroll_speed_increase = 0.3F;
+    float width_scroll_speed_decrease = 0.2F;
+
+    if (ImGui::IsItemHovered())
+    {
+        hover_states[label] = true;
+        text_color = ImGui::IsItemActive() ? ImGui::GetStyleColorVec4(ImGuiCol_ButtonActive) : ImGui::GetStyleColorVec4(ImGuiCol_ButtonHovered);
+
+        // Extend the line width to match the width of the invisible button
+        if (line_widths[label] < 25 + text_size.x)
+            line_widths[label] += (text_size.x / width_scroll_speed_increase) * ImGui::GetIO().DeltaTime;
+    }
+    else
+    {
+        hover_states[label] = false;
+        anim_timers[label] = 0.F;
+    }
+
+    // Smoothly decrease line width if not hovered
+    if (!hover_states[label] && line_widths[label] > 0.F)
+    {
+        if (anim_timers[label] <= width_scroll_speed_decrease) // Adjust this value to control the speed of decrease
+        {
+            anim_timers[label] += ImGui::GetIO().DeltaTime;
+            line_widths[label] -= (text_size.x / width_scroll_speed_decrease) * ImGui::GetIO().DeltaTime;
+        }
+        else
+        {
+            line_widths[label] = 0.F;
+        }
+    }
+
+    ImGui::SetCursorPos({cursor_pos.x - 2, cursor_pos.y});
+    ImGui::TextColored(text_color, label.c_str());
+
+    if (line_widths[label] > 0)
+    {
+        ImGui::GetWindowDrawList()->AddRectFilled({cursor_pos.x - 25, cursor_pos.y + 29}, {cursor_pos.x - 25 + line_widths[label], cursor_pos.y + 33},
+                                                  ImGui::GetColorU32(ImGuiCol_ButtonHovered),
+                                                  5.F);
+    }
+
+    ImGui::Dummy(ImVec2(0.0f, 4.0f));
+
+    ImGui::PopID();
+
+    return return_value;
 }

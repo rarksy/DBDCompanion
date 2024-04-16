@@ -38,5 +38,5 @@ namespace gui
     void end_group_box();
 
 
-    bool tab(GLuint image, std::string label);
+    bool tab(std::string label, GLuint image);
 }

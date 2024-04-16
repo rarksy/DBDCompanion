@@ -83,6 +83,11 @@ namespace menu
 
     namespace icons
     {
+        inline GLuint config_editor_icon;
+        inline GLuint icon_packager_icon;
+        inline GLuint crosshair_overlay_icon;
+        inline GLuint on_screen_timers_icon;
+        
         inline GLuint help_icon;
         inline GLuint update_icon;
         inline GLuint settings_icon;

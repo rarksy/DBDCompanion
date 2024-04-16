@@ -73,10 +73,13 @@
     <ClInclude Include="Dependencies\Images\HookTracker\pip.hpp" />
     <ClInclude Include="Dependencies\Images\HookTracker\Stage2.hpp" />
     <ClInclude Include="Dependencies\Images\Icons\BackIcon.hpp" />
-    <ClInclude Include="Dependencies\Images\Icons\ConfigEditor.hpp" />
     <ClInclude Include="Dependencies\Images\Icons\DiscordIcon.hpp" />
     <ClInclude Include="Dependencies\Images\Icons\HelpIcon.hpp" />
     <ClInclude Include="Dependencies\Images\Icons\SettingsIcon.hpp" />
+    <ClInclude Include="Dependencies\Images\Icons\Tabs\ConfigEditor.hpp" />
+    <ClInclude Include="Dependencies\Images\Icons\Tabs\CrosshairOverlay.hpp" />
+    <ClInclude Include="Dependencies\Images\Icons\Tabs\IconPackager.hpp" />
+    <ClInclude Include="Dependencies\Images\Icons\Tabs\OnScreenTimers.hpp" />
     <ClInclude Include="Dependencies\Images\Images.h" />
     <ClInclude Include="Dependencies\Images\ResolutionQuality\100.hpp" />
     <ClInclude Include="Dependencies\Images\ResolutionQuality\60.hpp" />

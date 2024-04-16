@@ -7,8 +7,12 @@
 #include "stb_image.h"
 #include "Exe Icons/256x256.hpp"
 #include "Images/Icons/BackIcon.hpp"
+#include "Images/Icons/Tabs/ConfigEditor.hpp"
 #include "Images/Icons/DiscordIcon.hpp"
 #include "Images/Icons/SettingsIcon.hpp"
+#include "Images/Icons/Tabs/CrosshairOverlay.hpp"
+#include "Images/Icons/Tabs/IconPackager.hpp"
+#include "Images/Icons/Tabs/OnScreenTimers.hpp"
 #include "Images/Updater/UpdateIcon.hpp"
 #include "ImGui/imgui_impl_glfw.h"
 #include "miscLIB/miscLIB.hpp"
@@ -64,6 +68,11 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
     images::load_texture_from_memory(settings_icon_raw_data, sizeof settings_icon_raw_data, &menu::icons::settings_icon);
     images::load_texture_from_memory(back_icon_raw_data, sizeof back_icon_raw_data, &menu::icons::back_icon);
     images::load_texture_from_memory(discord_icon_raw_data, sizeof discord_icon_raw_data, &menu::icons::discord_icon);
+    
+    images::load_texture_from_memory(config_editor_icon_raw_data, sizeof config_editor_icon_raw_data, &menu::icons::config_editor_icon);
+    images::load_texture_from_memory(icon_packager_raw_data, sizeof icon_packager_raw_data, &menu::icons::icon_packager_icon);
+    images::load_texture_from_memory(crosshair_raw_data, sizeof crosshair_raw_data, &menu::icons::crosshair_overlay_icon);
+    images::load_texture_from_memory(on_screen_timers_raw_data, sizeof on_screen_timers_raw_data, &menu::icons::on_screen_timers_icon);
     
     menu::run_loop();
 

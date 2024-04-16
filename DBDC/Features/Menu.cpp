@@ -245,36 +245,30 @@ void menu::render_ui()
             ImGui::SetCursorPosY(50.F);
 
             ImGui::PushFont(styling::child_font);
-            ImGui::SetCursorPosX((ImGui::GetWindowSize().x - ImGui::CalcTextSize("Customization").x) * 0.5F);
             ImGui::TextColored(color(120, 120, 120, 185).to_imvec4(), "Customization");
             ImGui::PopFont();
 
-            if (ImGui::Button("Config Editor", ImVec2(185, 0)))
+            if (gui::tab("Config Editor", icons::config_editor_icon))
                 menu_to_show = 1;
             gui::tool_tip("Allows you to adjust your game settings in\nmore detail than the base game offers");
 
             ImGui::Spacing();
 
-            if (ImGui::Button("Icon Packager", ImVec2(185, 0)))
+            if (gui::tab("Icon Packager", icons::icon_packager_icon))
                 menu_to_show = 2;
-            gui::tool_tip("");
-
-            ImGui::Spacing();
-            ImGui::Spacing();
-            ImGui::Spacing();
+            gui::tool_tip("Allows you to create custom icon packs with ease.");
 
             ImGui::PushFont(styling::child_font);
-            ImGui::SetCursorPosX((ImGui::GetWindowSize().x - ImGui::CalcTextSize("Overlay Features").x) * 0.5F);
             ImGui::TextColored(color(120, 120, 120, 185).to_imvec4(), "Overlay Features");
             ImGui::PopFont();
 
-            if (ImGui::Button("Crosshair Overlay", ImVec2(185, 0)))
+            if (gui::tab("Crosshair Overlay", icons::crosshair_overlay_icon))
                 menu_to_show = 3;
             gui::tool_tip("Allows you to use a crosshair overlay with many customization options");
 
             ImGui::Spacing();
 
-            if (ImGui::Button("On-Screen Timers", ImVec2(185, 0)))
+            if (gui::tab("On-Screen Timers", icons::on_screen_timers_icon))
                 menu_to_show = 4;
             gui::tool_tip("Allows you to setup hotkeys to display timers on your screen for relevant information");
         }
