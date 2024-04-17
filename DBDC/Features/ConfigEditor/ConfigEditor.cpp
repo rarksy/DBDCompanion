@@ -8,7 +8,7 @@
 #include <ShlObj_core.h>
 
 #include "CEMenu.hpp"
-#include "../Menu.h"
+#include "..\..\Menu\Menu.hpp"
 #include "../../Backend/Backend.hpp"
 #include "miscLIB/miscLIB.hpp"
 

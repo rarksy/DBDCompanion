@@ -3,7 +3,7 @@
 #include <string>
 #include "ImGui/imgui.h"
 #include "../Features/ConfigEditor/ConfigEditor.hpp"
-#include "../Features/Menu.h"
+#include "..\..\Menu\Menu.hpp"
 
 struct color;
 

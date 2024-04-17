@@ -1,5 +1,5 @@
 ﻿#include "CEMenu.hpp"
-#include "../Menu.h"
+#include "..\..\Menu\Menu.hpp"
 #include "../Misc/Misc.hpp"
 #include "GUI/GUI.h"
 #include <Windows.h>

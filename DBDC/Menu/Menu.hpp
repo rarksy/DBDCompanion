@@ -2,13 +2,13 @@
 
 #include "GLFW/glfw3.h"
 #include "ImGui/imgui.h"
-#include "Menu.h"
+#include "Menu.hpp"
 #include "stb_image.h"
 #include "../Backend/Backend.hpp"
 #include "Exe Icons/256x256.hpp"
 
-#include "Crosshair/Crosshair.h"
-#include "OnScreenTimers/OnScreenTimers.hpp"
+#include "Features/Crosshair/Crosshair.h"
+#include "Features/OnScreenTimers/OnScreenTimers.hpp"
 #include "miscLIB/miscLIB.hpp"
 #include "color/color.hpp"
 

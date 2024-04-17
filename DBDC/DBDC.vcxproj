@@ -36,9 +36,9 @@
     <ClCompile Include="Features\Crosshair\Crosshair.cpp" />
     <ClCompile Include="Features\HookTracker\HTMenu.cpp" />
     <ClCompile Include="Features\HookTracker\HookTracker.cpp" />
-    <ClCompile Include="Features\Menu.cpp" />
     <ClCompile Include="Features\IconPackager\IconPackager.cpp" />
     <ClCompile Include="Features\IconPackager\IPMenu.cpp" />
+    <ClCompile Include="Menu\Menu.cpp" />
     <ClCompile Include="Misc\Misc.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -463,11 +463,11 @@
     <ClInclude Include="Features\Crosshair\Crosshair.h" />
     <ClInclude Include="Features\HookTracker\HTMenu.h" />
     <ClInclude Include="Features\HookTracker\HookTracker.hpp" />
-    <ClInclude Include="Features\Menu.h" />
     <ClInclude Include="Features\OnScreenTimers\OnScreenTimers.hpp" />
     <ClInclude Include="Features\IconPackager\IconPackager.hpp" />
     <ClInclude Include="Features\IconPackager\IPMenu.hpp" />
     <ClInclude Include="Features\Shrine Of Secrets\ShrineOfSecrets.hpp" />
+    <ClInclude Include="Menu\Menu.hpp" />
     <ClInclude Include="Misc\Misc.hpp" />
   </ItemGroup>
   <ItemGroup>
@@ -527,10 +527,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)build\$(Configuration)\</OutDir>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)build\$(Configuration)\</OutDir>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir);</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -542,7 +544,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>Dependencies;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Dependencies;$(ProjectDir);</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
@@ -565,7 +567,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>Dependencies;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Dependencies;$(ProjectDir);</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
