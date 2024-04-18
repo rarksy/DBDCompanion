@@ -6,6 +6,8 @@
 #include "ImGui/imgui_stdlib.h"
 #include <conio.h>
 
+#include "Overlay/Overlay.hpp"
+
 void onscreen_timers::add_new_timer()
 {
     timer t;
@@ -134,17 +136,17 @@ void onscreen_timers::render_ui()
     {
         if (onscreen_timers::enabled)
         {
-            if (!menu::overlay::is_overlay_created())
+            if (!overlay::is_overlay_created())
             {
-                menu::overlay::create_overlay();
+                overlay::create_overlay();
                 ImGui::SetCurrentContext(menu::main_context);
                 glfwMakeContextCurrent(menu::main_window);
             }
         }
         else
         {
-            if (!menu::overlay::is_overlay_needed())
-                menu::overlay::destroy_overlay();
+            if (!overlay::is_overlay_needed())
+                overlay::destroy_overlay();
 
             active_timers.clear();
         }

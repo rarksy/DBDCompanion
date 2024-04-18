@@ -17,7 +17,6 @@
   <ItemGroup>
     <ClCompile Include="Backend\Backend.cpp" />
     <ClCompile Include="Dependencies\GUI\GUI.cpp" />
-    <ClCompile Include="Dependencies\Images\Images.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui_demo.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui_draw.cpp" />
@@ -29,6 +28,7 @@
     <ClCompile Include="Dependencies\miniz\miniz.c" />
     <ClCompile Include="Features\OnScreenTimers\OnScreenTimers.cpp" />
     <ClCompile Include="Features\Shrine Of Secrets\ShrineOfSecrets.cpp" />
+    <ClCompile Include="Images\Images.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Features\ConfigEditor\CEMenu.cpp" />
     <ClCompile Include="Features\ConfigEditor\ConfigEditor.cpp" />
@@ -40,6 +40,7 @@
     <ClCompile Include="Features\IconPackager\IPMenu.cpp" />
     <ClCompile Include="Menu\Menu.cpp" />
     <ClCompile Include="Misc\Misc.cpp" />
+    <ClCompile Include="Overlay\Overlay.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Backend\Backend.hpp" />
@@ -67,29 +68,6 @@
     <ClInclude Include="Dependencies\GLFW\GL\glxew.h" />
     <ClInclude Include="Dependencies\GLFW\GL\wglew.h" />
     <ClInclude Include="Dependencies\GUI\GUI.h" />
-    <ClInclude Include="Dependencies\Images\AntiAliasing\Off.hpp" />
-    <ClInclude Include="Dependencies\Images\AntiAliasing\On.hpp" />
-    <ClInclude Include="Dependencies\Images\HookTracker\Hook.hpp" />
-    <ClInclude Include="Dependencies\Images\HookTracker\pip.hpp" />
-    <ClInclude Include="Dependencies\Images\HookTracker\Stage2.hpp" />
-    <ClInclude Include="Dependencies\Images\Icons\BackIcon.hpp" />
-    <ClInclude Include="Dependencies\Images\Icons\DiscordIcon.hpp" />
-    <ClInclude Include="Dependencies\Images\Icons\HelpIcon.hpp" />
-    <ClInclude Include="Dependencies\Images\Icons\SettingsIcon.hpp" />
-    <ClInclude Include="Dependencies\Images\Icons\Tabs\ConfigEditor.hpp" />
-    <ClInclude Include="Dependencies\Images\Icons\Tabs\CrosshairOverlay.hpp" />
-    <ClInclude Include="Dependencies\Images\Icons\Tabs\IconPackager.hpp" />
-    <ClInclude Include="Dependencies\Images\Icons\Tabs\OnScreenTimers.hpp" />
-    <ClInclude Include="Dependencies\Images\Images.h" />
-    <ClInclude Include="Dependencies\Images\ResolutionQuality\100.hpp" />
-    <ClInclude Include="Dependencies\Images\ResolutionQuality\60.hpp" />
-    <ClInclude Include="Dependencies\Images\ResolutionQuality\80.hpp" />
-    <ClInclude Include="Dependencies\Images\TextureQuality\High.hpp" />
-    <ClInclude Include="Dependencies\Images\TextureQuality\Low.hpp" />
-    <ClInclude Include="Dependencies\Images\TextureQuality\Medium.hpp" />
-    <ClInclude Include="Dependencies\Images\TextureQuality\Ultra.hpp" />
-    <ClInclude Include="Dependencies\Images\TextureQuality\VeryLow.hpp" />
-    <ClInclude Include="Dependencies\Images\Updater\UpdateIcon.hpp" />
     <ClInclude Include="Dependencies\ImGui\imconfig.h" />
     <ClInclude Include="Dependencies\ImGui\imgui.h" />
     <ClInclude Include="Dependencies\ImGui\imgui_impl_glfw.h" />
@@ -467,8 +445,31 @@
     <ClInclude Include="Features\IconPackager\IconPackager.hpp" />
     <ClInclude Include="Features\IconPackager\IPMenu.hpp" />
     <ClInclude Include="Features\Shrine Of Secrets\ShrineOfSecrets.hpp" />
+    <ClInclude Include="Images\ConfigEditor\AntiAliasing\Off.hpp" />
+    <ClInclude Include="Images\ConfigEditor\AntiAliasing\On.hpp" />
+    <ClInclude Include="Images\ConfigEditor\ResolutionQuality\100.hpp" />
+    <ClInclude Include="Images\ConfigEditor\ResolutionQuality\60.hpp" />
+    <ClInclude Include="Images\ConfigEditor\ResolutionQuality\80.hpp" />
+    <ClInclude Include="Images\ConfigEditor\TextureQuality\High.hpp" />
+    <ClInclude Include="Images\ConfigEditor\TextureQuality\Low.hpp" />
+    <ClInclude Include="Images\ConfigEditor\TextureQuality\Medium.hpp" />
+    <ClInclude Include="Images\ConfigEditor\TextureQuality\Ultra.hpp" />
+    <ClInclude Include="Images\ConfigEditor\TextureQuality\VeryLow.hpp" />
+    <ClInclude Include="Images\HookTracker\Hook.hpp" />
+    <ClInclude Include="Images\HookTracker\pip.hpp" />
+    <ClInclude Include="Images\HookTracker\Stage2.hpp" />
+    <ClInclude Include="Images\Icons\DiscordIcon.hpp" />
+    <ClInclude Include="Images\Icons\Tabs\BackIcon.hpp" />
+    <ClInclude Include="Images\Icons\Tabs\ConfigEditor.hpp" />
+    <ClInclude Include="Images\Icons\Tabs\CrosshairOverlay.hpp" />
+    <ClInclude Include="Images\Icons\Tabs\IconPackager.hpp" />
+    <ClInclude Include="Images\Icons\Tabs\OnScreenTimers.hpp" />
+    <ClInclude Include="Images\Icons\Tabs\SettingsIcon.hpp" />
+    <ClInclude Include="Images\Images.h" />
+    <ClInclude Include="Images\Updater\UpdateIcon.hpp" />
     <ClInclude Include="Menu\Menu.hpp" />
     <ClInclude Include="Misc\Misc.hpp" />
+    <ClInclude Include="Overlay\Overlay.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Content Include=".gitignore" />

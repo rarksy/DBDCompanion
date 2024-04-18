@@ -4,6 +4,7 @@
 #include "../Crosshair/Crosshair.h"
 #include "HookTracker.hpp"
 #include "../ConfigEditor/ConfigEditor.hpp"
+#include "Overlay/Overlay.hpp"
 
 void ht_menu::setup()
 {
@@ -18,9 +19,9 @@ void ht_menu::render_ui()
     {
         if (hook_tracker::ht_vars::enabled)
         {
-            if (!menu::overlay::is_overlay_created())
+            if (!overlay::is_overlay_created())
             {
-                menu::overlay::create_overlay();
+                overlay::create_overlay();
                 ImGui::SetCurrentContext(menu::main_context);
                 glfwMakeContextCurrent(menu::main_window);
             }
@@ -35,7 +36,7 @@ void ht_menu::render_ui()
             hook_tracker::free();
 
             if (!cvars.enabled)
-                menu::overlay::destroy_overlay();
+                overlay::destroy_overlay();
         }
     }
 }

@@ -15,6 +15,7 @@
 #include "Features/IconPackager\IconPackager.hpp"
 #include "Features/IconPackager\IPMenu.hpp"
 #include "Features/Shrine Of Secrets/ShrineOfSecrets.hpp"
+#include "Overlay/Overlay.hpp"
 
 void menu::run_loop()
 {
@@ -63,15 +64,17 @@ void menu::run_loop()
         menu::create_global_style();
         menu::render_ui();
 
+        //ImGui::ShowDemoWindow();
+
         ImGui::Render();
         glClear(GL_COLOR_BUFFER_BIT);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         glfwSwapBuffers(menu::main_window);
 
-        if (menu::overlay::window != nullptr)
+        if (overlay::window != nullptr)
         {
-            glfwMakeContextCurrent(menu::overlay::window);
-            ImGui::SetCurrentContext(menu::overlay::context);
+            glfwMakeContextCurrent(overlay::window);
+            ImGui::SetCurrentContext(overlay::context);
 
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();
@@ -90,7 +93,7 @@ void menu::run_loop()
             ImGui::Render();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-            glfwSwapBuffers(menu::overlay::window);
+            glfwSwapBuffers(overlay::window);
         }
 
         if (onscreen_timers::enabled)
@@ -149,12 +152,12 @@ void menu::render_ui()
         ImGui::BeginChild("Quick Tools Child", ImVec2(180, 0));
         ImGui::SeparatorText("Quick Tools");
         ImGui::SetCursorPosX(2);
-        
+
         if (ImGui::Button("Restart Game", {176, 0}))
             misc::restart_game();
 
         ImGui::EndChild();
-        
+
         shrine_of_secrets::render_ui();
     }
 
@@ -238,7 +241,7 @@ void menu::render_ui()
         static bool settings_open = false;
         const bool show_settings = (settings_open || menu_to_show != 0);
         const GLuint& settings_button_texture = show_settings ? icons::back_icon : icons::settings_icon;
-        const ImVec2 settings_button_size = show_settings ? ImVec2(23, 23) : ImVec2(27,27);
+        const ImVec2 settings_button_size = show_settings ? ImVec2(23, 23) : ImVec2(27, 27);
         const ImVec2 settings_button_pos = show_settings ? ImVec2(171, 6) : ImVec2(168, 6);
 
         ImGui::SetCursorPos(settings_button_pos);
@@ -250,6 +253,7 @@ void menu::render_ui()
                 settings_open = !settings_open;
         }
 
+        static bool is_accent_window_focused = false;
         if (!settings_open)
         {
             ImGui::SetCursorPosY(50.F);
@@ -285,7 +289,18 @@ void menu::render_ui()
         else
         {
             ImGui::Spacing();
-            gui::color_picker("Menu Accent", &menu::styling::menu_accent, true);
+            if (gui::color_picker("Menu Accent", &menu::styling::menu_accent, true))
+            {
+                nlohmann::json data;
+
+                data["menu_accent"]["r"] = styling::menu_accent.r;
+                data["menu_accent"]["g"] = styling::menu_accent.g;
+                data["menu_accent"]["b"] = styling::menu_accent.b;
+                data["menu_accent"]["a"] = styling::menu_accent.a;
+
+                ml::json_write_data(backend::exe_directory.string() + backend::settings_directory + backend::data_directory + "settings.json", data);
+            }
+            is_accent_window_focused = ImGui::IsItemFocused();
             if (ImGui::Checkbox("Launch With DBD", &ce_vars.launch_with_dbd))
             {
                 if (ce_vars.launch_with_dbd)
@@ -325,7 +340,7 @@ void menu::render_ui()
                 "\n\n"
                 "Note: Due to how steam works, after enabling, you will need to manually add the launch option that gets copied to your clipboard, instructions appear when enabling / disabling."
             );
-            
+
             ImGui::SetCursorPos({5, 210});
             if (gui::image_button("discord_join_button", icons::discord_icon, ImVec2(31, 23)))
                 ShellExecuteA(NULL, "open", "https://discord.gg/vKjjS8yazu", NULL, NULL, SW_SHOWNORMAL);
@@ -355,10 +370,13 @@ void menu::render_ui()
             settings_open = false;
         }
 
-        if (!ImGui::IsMouseHoveringRect({0, 0}, {hamburger_width + 5, hamburger_height + 5}) && !ImGui::IsAnyItemActive() && ImGui::IsKeyPressed(ImGuiKey_MouseLeft))
+        if (!ImGui::IsMouseHoveringRect({0, 0}, {hamburger_width + 5, hamburger_height + 5})) // menu bar region
         {
-            hamburger_open = false;
-            settings_open = false;
+            if (!is_accent_window_focused && ImGui::IsKeyPressed(ImGuiKey_MouseLeft))
+            {
+                hamburger_open = false;
+                settings_open = false;
+            }
         }
         ImGui::PopStyleColor();
     }

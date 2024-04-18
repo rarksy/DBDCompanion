@@ -4,6 +4,7 @@
 #include "GUI/GUI.h"
 #include "GLFW/glfw3.h"
 #include "ImGui/imgui.h"
+#include "Overlay/Overlay.hpp"
 
 void CMenu::Setup()
 {
@@ -19,15 +20,15 @@ void CMenu::RenderUI()
     {
         if (cvars.enabled)
         {
-            if (!menu::overlay::is_overlay_created())
+            if (!overlay::is_overlay_created())
             {
-                menu::overlay::create_overlay();
+                overlay::create_overlay();
                 ImGui::SetCurrentContext(menu::main_context);
                 glfwMakeContextCurrent(menu::main_window);
             }
         }
-        else if (!menu::overlay::is_overlay_needed())
-            menu::overlay::destroy_overlay();
+        else if (!overlay::is_overlay_needed())
+            overlay::destroy_overlay();
     }
 
     ImGui::BeginDisabled(!cvars.enabled);

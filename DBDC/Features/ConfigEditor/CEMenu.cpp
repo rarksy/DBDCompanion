@@ -6,6 +6,19 @@
 #include <Images/Images.h>
 #include "ConfigEditor.hpp"
 
+#pragma region ImageIncludes
+#include "Images\ConfigEditor\AntiAliasing\Off.hpp"
+#include "Images\ConfigEditor\AntiAliasing\On.hpp"
+#include "Images\ConfigEditor\ResolutionQuality\100.hpp"
+#include "Images\ConfigEditor\ResolutionQuality\80.hpp"
+#include "Images\ConfigEditor\ResolutionQuality\60.hpp"
+#include "Images\ConfigEditor\TextureQuality\Ultra.hpp"
+#include "Images\ConfigEditor\TextureQuality\High.hpp"
+#include "Images\ConfigEditor\TextureQuality\Medium.hpp"
+#include "Images\ConfigEditor\TextureQuality\Low.hpp"
+#include "Images\ConfigEditor\TextureQuality\VeryLow.hpp"
+#pragma endregion
+
 bool CEMenu::Setup()
 {
     config_editor::load_config();

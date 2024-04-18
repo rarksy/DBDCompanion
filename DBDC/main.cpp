@@ -6,16 +6,9 @@
 #include "Menu\Menu.hpp"
 #include "stb_image.h"
 #include "Exe Icons/256x256.hpp"
-#include "Images/Icons/BackIcon.hpp"
-#include "Images/Icons/Tabs/ConfigEditor.hpp"
-#include "Images/Icons/DiscordIcon.hpp"
-#include "Images/Icons/SettingsIcon.hpp"
-#include "Images/Icons/Tabs/CrosshairOverlay.hpp"
-#include "Images/Icons/Tabs/IconPackager.hpp"
-#include "Images/Icons/Tabs/OnScreenTimers.hpp"
-#include "Images/Updater/UpdateIcon.hpp"
 #include "ImGui/imgui_impl_glfw.h"
 #include "miscLIB/miscLIB.hpp"
+#include "Overlay/Overlay.hpp"
 
 //#define debug_winmain
 #ifndef debug_winmain
@@ -33,8 +26,8 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
     backend::screen_width = ml::get_screen_width();
     backend::screen_height = ml::get_screen_height();
 
-    menu::overlay::window_width = backend::screen_width;
-    menu::overlay::window_height = backend::screen_height;
+    overlay::window_width = backend::screen_width;
+    overlay::window_height = backend::screen_height;
 
     char pathBuffer[MAX_PATH];
     GetModuleFileNameA(NULL, pathBuffer, MAX_PATH);
@@ -64,25 +57,17 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
     });
     update_thread.detach();
     
-    images::load_texture_from_memory(update_icon_raw_data, sizeof update_icon_raw_data, &menu::icons::update_icon);
-    images::load_texture_from_memory(settings_icon_raw_data, sizeof settings_icon_raw_data, &menu::icons::settings_icon);
-    images::load_texture_from_memory(back_icon_raw_data, sizeof back_icon_raw_data, &menu::icons::back_icon);
-    images::load_texture_from_memory(discord_icon_raw_data, sizeof discord_icon_raw_data, &menu::icons::discord_icon);
-    
-    images::load_texture_from_memory(config_editor_icon_raw_data, sizeof config_editor_icon_raw_data, &menu::icons::config_editor_icon);
-    images::load_texture_from_memory(icon_packager_raw_data, sizeof icon_packager_raw_data, &menu::icons::icon_packager_icon);
-    images::load_texture_from_memory(crosshair_raw_data, sizeof crosshair_raw_data, &menu::icons::crosshair_overlay_icon);
-    images::load_texture_from_memory(on_screen_timers_raw_data, sizeof on_screen_timers_raw_data, &menu::icons::on_screen_timers_icon);
+    images::load_all();
     
     menu::run_loop();
 
-    if (menu::overlay::window != nullptr)
+    if (overlay::window != nullptr)
     {
-        menu::overlay::destroy_overlay();
-        ImGui::SetCurrentContext(menu::overlay::context);
+        overlay::destroy_overlay();
+        ImGui::SetCurrentContext(overlay::context);
         ImGui_ImplGlfw_Shutdown();
         ImGui_ImplOpenGL3_Shutdown();
-        ImGui::DestroyContext(menu::overlay::context);
+        ImGui::DestroyContext(overlay::context);
     }
 
     ImGui::SetCurrentContext(menu::main_context);

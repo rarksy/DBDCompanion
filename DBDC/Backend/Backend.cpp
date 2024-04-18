@@ -111,11 +111,11 @@ bool backend::update()
             << "echo Updating DBDC!\n"
             << "taskkill /f /im " << exe_name << "\n"
             << "timeout /t 1 /nobreak >nul" << "\n"
-            << "del " << exe_directory.string() + "\\" + exe_name << "\n"
+            << "del \"" << exe_directory.string() + "\\" + exe_name << "\"\n"
             << "timeout /t 1 /nobreak >nul" << "\n"
-            << "ren " << exe_directory.string() + "\\" + "new_binary.exe " << exe_name << "\n"
+            << "ren \"" << exe_directory.string() + "\\" + "new_binary.exe\" " << exe_name << "\n"
             << "timeout /t 1 /nobreak >nul" << "\n"
-            << "start " << exe_directory.string() + "\\" + exe_name;
+            << "start \"" << exe_directory.string() + "\\" + exe_name + "\"";
 
         file_to_write.close();
     }
