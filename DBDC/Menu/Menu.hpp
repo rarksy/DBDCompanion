@@ -1,14 +1,6 @@
 ﻿#pragma once
-
 #include "GLFW/glfw3.h"
 #include "ImGui/imgui.h"
-#include "Menu.hpp"
-#include "../Backend/Backend.hpp"
-#include "Exe Icons/256x256.hpp"
-
-#include "Features/Crosshair/Crosshair.h"
-#include "Features/OnScreenTimers/OnScreenTimers.hpp"
-#include "miscLIB/miscLIB.hpp"
 #include "color/color.hpp"
 
 namespace menu

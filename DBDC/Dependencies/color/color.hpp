@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include <stdexcept>
 #include <ImGui/imgui.h>
 
 struct color
@@ -26,6 +27,8 @@ struct color
         default:
             break;
         }
+
+        return a;
     }
 
     color() : r(0), g(0), b(0)

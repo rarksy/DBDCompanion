@@ -1,9 +1,7 @@
-#include <cstdio>
-#include <Windows.h>
 #include "Backend/Backend.hpp"
 #include "Images/Images.h"
 #include "ImGui/imgui_impl_opengl3.h"
-#include "Menu\Menu.hpp"
+#include "Menu/Menu.hpp"
 #include "stb_image.h"
 #include "Exe Icons/256x256.hpp"
 #include "ImGui/imgui_impl_glfw.h"
@@ -18,10 +16,10 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
     const char* mutex_name = "com_rarksy_apps_deadbydaylightcompanion";
     HANDLE mutex_handle = CreateMutexA(NULL, TRUE, mutex_name);
     if (ERROR_ALREADY_EXISTS == GetLastError())
-        return(1);
+        return -1;
     
     if (!backend::init_glfw())
-        return -1;
+        return -2;
 
     backend::screen_width = ml::get_screen_width();
     backend::screen_height = ml::get_screen_height();
@@ -39,7 +37,7 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
     menu::main_window = backend::setup_window("Dead By Daylight Companion", menu::styling::menu_width, menu::styling::menu_height);
 
     if (!menu::main_window)
-        return -1;
+        return -3;
 
     int width, height, channels;
     unsigned char* iconData = stbi_load_from_memory(exeIconRawData, sizeof exeIconRawData, &width, &height, &channels, 0);

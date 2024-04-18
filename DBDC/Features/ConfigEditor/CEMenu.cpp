@@ -5,6 +5,7 @@
 #include <Windows.h>
 #include <Images/Images.h>
 #include "ConfigEditor.hpp"
+#include "ImGui/imgui_internal.h"
 
 #pragma region ImageIncludes
 #include "Images\ConfigEditor\AntiAliasing\Off.hpp"

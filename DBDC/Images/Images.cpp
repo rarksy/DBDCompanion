@@ -1,11 +1,5 @@
 ﻿#include "Images.h"
 #include <GLFW/GL/glew.h>
-#include <GLFW/glfw3.h>
-
-#include <iostream>
-#include <ostream>
-#include <vector>
-
 #include "Menu/Menu.hpp"
 
 #include "Images/Icons/Tabs/BackIcon.hpp"

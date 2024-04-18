@@ -241,11 +241,13 @@ void gui::tool_tip(std::string message, float text_wrap_size, bool holdRightClic
 
     if (ImGui::IsItemHovered())
     {
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 5.F);
         ImGui::BeginTooltip();
         ImGui::PushTextWrapPos(text_wrap_size);
         ImGui::TextWrapped(message.c_str());
         ImGui::PopTextWrapPos();
         ImGui::EndTooltip();
+        ImGui::PopStyleVar();
     }
 }
 

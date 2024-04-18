@@ -1,8 +1,8 @@
 ﻿#include <chrono>
 #include <Windows.h>
 #include "HookTracker.hpp"
-#include "../Backend/Backend.hpp"
-#include "../Misc/Misc.hpp"
+#include "Backend/Backend.hpp"
+#include "Misc/Misc.hpp"
 #include "Images/HookTracker/Hook.hpp"
 
 double calculatePercentage(double X, double P) {

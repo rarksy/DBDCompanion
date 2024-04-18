@@ -119,8 +119,6 @@ namespace ml
         if (file_or_directory_exists(file_name))
             return false;
 
-        
-
         std::ofstream file_to_create(file_name);
         file_to_create.close();
 

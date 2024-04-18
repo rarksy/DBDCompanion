@@ -1,6 +1,7 @@
 ﻿#pragma once
-
-#include "miscLIB/miscLIB.hpp"
+#include <vector>
+#include <string>
+#include "nlohmann/json.hpp"
 
 namespace perk_packager
 {

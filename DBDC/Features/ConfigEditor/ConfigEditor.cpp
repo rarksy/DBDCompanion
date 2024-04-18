@@ -1,15 +1,11 @@
 ﻿#include "ConfigEditor.hpp"
-
 #include <regex>
-
-#include "../Misc/Misc.hpp"
+#include "Misc/Misc.hpp"
 #include "mINI/ini.h"
-
 #include <ShlObj_core.h>
-
 #include "CEMenu.hpp"
-#include "..\..\Menu\Menu.hpp"
-#include "../../Backend/Backend.hpp"
+#include "Menu/Menu.hpp"
+#include "Backend/Backend.hpp"
 #include "miscLIB/miscLIB.hpp"
 
 bool config_editor::initialize_config()

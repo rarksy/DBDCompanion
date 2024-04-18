@@ -1,5 +1,9 @@
 ﻿#include "Overlay.hpp"
 #include "stb_image.h"
+#include "Exe Icons/256x256.hpp"
+#include "Features/Crosshair/Crosshair.h"
+#include "Features/OnScreenTimers/OnScreenTimers.hpp"
+
 
 bool overlay::is_overlay_needed()
 {

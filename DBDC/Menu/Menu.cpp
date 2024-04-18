@@ -1,21 +1,19 @@
 ﻿#include "Menu.hpp"
 #include "ImGui/imgui_impl_glfw.h"
 #include "ImGui/imgui_impl_opengl3.h"
-#include <chrono>
-#include <thread>
 #include "Features/ConfigEditor/CEMenu.hpp"
 #include "Features/Crosshair/CMenu.h"
 #include "Features/Crosshair/Crosshair.h"
 #include "GUI/GUI.h"
-#include <Windows.h>
 
 #include "../Misc/Misc.hpp"
-#include "Features/HookTracker\HookTracker.hpp"
+#include "Features/HookTracker/HookTracker.hpp"
 #include "Features/OnScreenTimers/OnScreenTimers.hpp"
-#include "Features/IconPackager\IconPackager.hpp"
-#include "Features/IconPackager\IPMenu.hpp"
+#include "Features/IconPackager/IconPackager.hpp"
+#include "Features/IconPackager/IPMenu.hpp"
 #include "Features/Shrine Of Secrets/ShrineOfSecrets.hpp"
 #include "Overlay/Overlay.hpp"
+#include "miscLIB/miscLIB.hpp"
 
 void menu::run_loop()
 {

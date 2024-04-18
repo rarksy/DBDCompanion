@@ -1,6 +1,6 @@
 ﻿#include "CMenu.h"
 #include "Crosshair.h"
-#include "..\..\Menu\Menu.hpp"
+#include "Menu/Menu.hpp"
 #include "GUI/GUI.h"
 #include "GLFW/glfw3.h"
 #include "ImGui/imgui.h"

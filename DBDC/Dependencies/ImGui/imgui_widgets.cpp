@@ -41,7 +41,8 @@ Index of this file:
 #include <algorithm>
 
 #include "imgui.h"
-#include "..\..\Menu\Menu.hpp"
+#include "Menu\Menu.hpp"
+#include <Windows.h>
 #ifndef IMGUI_DISABLE
 #include "imgui_internal.h"
 

@@ -1,9 +1,9 @@
 ﻿#include "HTMenu.h"
 #include "ImGui/imgui.h"
-#include "..\..\Menu\Menu.hpp"
-#include "../Crosshair/Crosshair.h"
+#include "Menu/Menu.hpp"
+#include "Features/Crosshair/Crosshair.h"
 #include "HookTracker.hpp"
-#include "../ConfigEditor/ConfigEditor.hpp"
+#include "Features/ConfigEditor/ConfigEditor.hpp"
 #include "Overlay/Overlay.hpp"
 
 void ht_menu::setup()
