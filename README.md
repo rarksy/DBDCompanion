@@ -33,11 +33,10 @@ The timer menu features an on-screen timer that appears when you press the key c
 The hook counter will use image recognition to detect when a survivor has been hooked, when a detection is made a pip icon will be rendered next to the corresponding survivors portrait just like when you're playing survivor!  
 This part of DBDC is still in development and not currently available.  
 
-# Icon Pack Packager !( Not Released Yet )!
+# Icon Pack Package
 https://github.com/rarksy/DBDCompanion/assets/70506725/d7ef67c9-a12e-4b49-944c-fbd4e01b5571
 
-The icon packager will take the tediousness out of sorting custom made icons into the right folder with the right name etc, simply select the icon(s) you made, regardless of its file name, and when done, hitting "Create Package" will auto sort everything into the finished folder structure ready to copy to your game files!  
-This part of DBDC is still in development and not currently available.  
+The icon packager takes the tediousness out of sorting custom made icons into the right folder with the right name etc, simply select the icon(s) you made, regardless of its file name, and when done, hitting "Create Package" will auto sort everything into the finished folder structure ready to distribute or apply directly to your game files!
 
 
 # F.A.Q.
