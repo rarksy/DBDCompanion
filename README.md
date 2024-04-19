@@ -13,7 +13,8 @@ The config editor features the most extensive range of options that allow you to
 The config editor is always being updated and plans to feature things i **didn't even know were possible** until looking into them recently ;) stay tuned for that!  
 
 # Crosshair Overlay
-![image](https://github.com/rarksy/DBDCompanion/assets/70506725/b09ecf97-9a3f-46f3-ab1c-62299d2aba0d)
+![image](https://github.com/rarksy/DBDCompanion/assets/70506725/2de809d7-5da3-456c-b5a6-cbfca73d62ce)
+
 
 A basic crosshair overlay allowing you to use and customize a crosshair in game!  
 The crosshair overlay is always open to suggestions for features and other ideas.
