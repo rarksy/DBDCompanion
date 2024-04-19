@@ -5,7 +5,8 @@ DBDC is in early access and still has a long road of updates, features and suppo
 **DBDC is entirely free to use**, although any support is greatly appreciated!  
 # Config Editor
  
-![image](https://github.com/rarksy/DBDCompanion/assets/70506725/d38aa825-949f-49cb-b26d-f0b613b81ad6)
+![image](https://github.com/rarksy/DBDCompanion/assets/70506725/7faec9d3-5765-4736-b6a4-71ae5c0d52ca)
+
 
 
 The config editor features the most extensive range of options that allow you to customize the look and graphical fidelity of your game to your liking!  
@@ -33,9 +34,10 @@ The timer menu features an on-screen timer that appears when you press the key c
 The hook counter will use image recognition to detect when a survivor has been hooked, when a detection is made a pip icon will be rendered next to the corresponding survivors portrait just like when you're playing survivor!  
 This part of DBDC is still in development and not currently available.  
 
-# Icon Pack Package
+# Icon Packager
 
-![image](https://github.com/rarksy/DBDCompanion/assets/70506725/8a8141c0-0462-4f94-be0e-010500de4f8b)
+![image](https://github.com/rarksy/DBDCompanion/assets/70506725/14da8a5d-de7f-48c3-82b8-2a6fb97f2516)
+
 
 The icon packager takes the tediousness out of sorting custom made icons into the right folder with the right name etc, simply select the icon(s) you made, regardless of its file name, and when done, hitting "Create Package" will auto sort everything into the finished folder structure ready to distribute or apply directly to your game files!
 
