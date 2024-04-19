@@ -34,7 +34,8 @@ The hook counter will use image recognition to detect when a survivor has been h
 This part of DBDC is still in development and not currently available.  
 
 # Icon Pack Package
-https://github.com/rarksy/DBDCompanion/assets/70506725/d7ef67c9-a12e-4b49-944c-fbd4e01b5571
+
+![image](https://github.com/rarksy/DBDCompanion/assets/70506725/8a8141c0-0462-4f94-be0e-010500de4f8b)
 
 The icon packager takes the tediousness out of sorting custom made icons into the right folder with the right name etc, simply select the icon(s) you made, regardless of its file name, and when done, hitting "Create Package" will auto sort everything into the finished folder structure ready to distribute or apply directly to your game files!
 
