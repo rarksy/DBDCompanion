@@ -30,6 +30,7 @@ namespace menu
     {
         inline GLuint config_editor_icon;
         inline GLuint icon_packager_icon;
+        inline GLuint hook_tracker_icon;
         inline GLuint crosshair_overlay_icon;
         inline GLuint on_screen_timers_icon;
         

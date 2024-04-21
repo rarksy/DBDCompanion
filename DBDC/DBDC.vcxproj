@@ -462,6 +462,7 @@
     <ClInclude Include="Images\Icons\Tabs\BackIcon.hpp" />
     <ClInclude Include="Images\Icons\Tabs\ConfigEditor.hpp" />
     <ClInclude Include="Images\Icons\Tabs\CrosshairOverlay.hpp" />
+    <ClInclude Include="Images\Icons\Tabs\HookTracker.hpp" />
     <ClInclude Include="Images\Icons\Tabs\IconPackager.hpp" />
     <ClInclude Include="Images\Icons\Tabs\OnScreenTimers.hpp" />
     <ClInclude Include="Images\Icons\Tabs\SettingsIcon.hpp" />
@@ -551,7 +552,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Dependencies\zlib\lib\zlibd.lib;winmm.lib;Dependencies\opencv2\lib\opencv_world481d.lib;opengl32.lib;Dependencies\GLFW\lib\glew32s.lib;Dependencies\GLFW\lib\glfw3.lib;Dependencies\curl\lib\libcurl_debug.lib;glu32.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Dependencies\opencv2\lib\opencv_xfeatures2d481d.lib;Dependencies\zlib\lib\zlibd.lib;winmm.lib;Dependencies\opencv2\lib\opencv_world481d.lib;opengl32.lib;Dependencies\GLFW\lib\glew32s.lib;Dependencies\GLFW\lib\glfw3.lib;Dependencies\curl\lib\libcurl_debug.lib;glu32.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalManifestDependencies>
       </AdditionalManifestDependencies>
     </Link>
@@ -575,7 +576,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Dependencies\zlib\lib\zlib.lib;winmm.lib;Dependencies\opencv2\lib\opencv_world481.lib;opengl32.lib;Dependencies\GLFW\lib\glew32s.lib;Dependencies\GLFW\lib\glfw3.lib;Dependencies\curl\lib\libcurl.lib;glu32.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Dependencies\opencv2\lib\opencv_xfeatures2d481.lib;Dependencies\zlib\lib\zlib.lib;winmm.lib;Dependencies\opencv2\lib\opencv_world481.lib;opengl32.lib;Dependencies\GLFW\lib\glew32s.lib;Dependencies\GLFW\lib\glfw3.lib;Dependencies\curl\lib\libcurl.lib;glu32.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalManifestDependencies></AdditionalManifestDependencies>
     </Link>
   </ItemDefinitionGroup>

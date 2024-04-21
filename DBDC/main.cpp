@@ -1,3 +1,6 @@
+//#define debug_winmain
+#ifndef debug_winmain
+
 #include "Backend/Backend.hpp"
 #include "Images/Images.h"
 #include "ImGui/imgui_impl_opengl3.h"
@@ -7,9 +10,6 @@
 #include "ImGui/imgui_impl_glfw.h"
 #include "miscLIB/miscLIB.hpp"
 #include "Overlay/Overlay.hpp"
-
-//#define debug_winmain
-#ifndef debug_winmain
 
 int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
 {
@@ -85,9 +85,42 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
 }
 #else
 
+#include <Windows.h>
+
+#include <iostream>
+#include "opencv2/highgui.hpp"
+#include "opencv2/features2d.hpp"
+#include "opencv2/xfeatures2d.hpp"
+
+using namespace cv;
+using namespace cv::xfeatures2d;
+using std::cout;
+using std::endl;
+
+
+#include <Windows.h>
+
+#include <iostream>
+#include "opencv2/highgui.hpp"
+#include "opencv2/features2d.hpp"
+#include "opencv2/xfeatures2d.hpp"
+
+using namespace cv;
+using namespace cv::xfeatures2d;
+using std::cout;
+using std::endl;
+
+const char* keys =
+ "{ help h | | Print help message. }"
+ "{ input1 | box.png | Path to input image 1. }"
+ "{ input2 | box_in_scene.png | Path to input image 2. }";
+
 int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int) // alternate winmain used for testing
 {
-
+    Mat resource = imread("C:\\Users\\rarks\\Downloads\\hook.png", IMREAD_GRAYSCALE);
+    Mat scene = imread("C:\\Users\\rarks\\Desktop\\DBDC\\Hooks\\Images\\test frames\\100.png", IMREAD_GRAYSCALE);
+    
+    
     return 0;
 }
 

@@ -186,7 +186,7 @@ void CEMenu::RenderUI()
                 (moviesDir + "AdditionalLoadingScreen").c_str(),
                 (moviesDir + "disabled_AdditionalLoadingScreen").c_str()) != 0)
             {
-                MessageBoxA(nullptr, "Couldn't Disable Intro Cutscene.", "Error...", MB_OK);
+                MessageBoxA(nullptr, ("Couldn't Disable Intro Cutscene: " + std::string(strerror(errno))).c_str(), "Error...", MB_OK);
                 ce_vars.remove_intro_cutscene = false;
             }
         }

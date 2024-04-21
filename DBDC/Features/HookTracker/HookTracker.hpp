@@ -44,7 +44,7 @@ namespace hook_tracker
             }
         };
 
-        inline std::vector<vec2> survivor_regions_1440{{120, 580}, {120, 700}, {120, 820}, {120, 940}};
+        inline std::vector<vec2> survivor_regions_1440{{120, 555}, {120, 675}, {120, 795}, {120, 910}};
     }
 
     inline config_editor::setting in_game_ui_scale(config_editor::files::game_user_settings, config_editor::sections::dbd_game_user_settings, "HudScaleFactor", 100);
@@ -56,7 +56,9 @@ namespace hook_tracker
         _internal::vec2 size = {0, 0};
 
         bool currently_hooked = false;
-        int hook_stage = 0; // 1 = 1st stage | 2 = 2nd stage | 3 = dead 
+        int hook_stage = 0; // 1 = 1st stage | 2 = 2nd stage | 3 = dead
+        std::chrono::steady_clock::time_point rehook_time;
+        
 
         survivor(){}
     };

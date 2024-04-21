@@ -8,6 +8,7 @@
 
 #include "../Misc/Misc.hpp"
 #include "Features/HookTracker/HookTracker.hpp"
+#include "Features/HookTracker/HTMenu.h"
 #include "Features/OnScreenTimers/OnScreenTimers.hpp"
 #include "Features/IconPackager/IconPackager.hpp"
 #include "Features/IconPackager/IPMenu.hpp"
@@ -115,7 +116,7 @@ void menu::render_ui()
     auto& style = ImGui::GetStyle();
     static bool hamburger_open = true;
     static float hamburger_width = 1.F;
-    static float hamburger_height = 240.F;
+    static float hamburger_height = 260.F;
     static float disabled_alpha = 0.01F;
 
     if (hamburger_open)
@@ -126,7 +127,7 @@ void menu::render_ui()
             style.DisabledAlpha = disabled_alpha;
         }
         else style.DisabledAlpha = 0.1F;
-    }
+    } 
     else
     {
         if (disabled_alpha < 1.0F && hamburger_width > 0)
@@ -185,6 +186,14 @@ void menu::render_ui()
 
     else if (menu_to_show == 3)
     {
+        static std::once_flag flag_tracker;
+        std::call_once(flag_tracker, ht_menu::setup);
+
+        ht_menu::render_ui();
+    }
+
+    else if (menu_to_show == 4)
+    {
         static std::once_flag flag_crosshair;
         static std::once_flag flag_menu;
         std::call_once(flag_crosshair, Crosshair::Setup);
@@ -193,7 +202,7 @@ void menu::render_ui()
         CMenu::RenderUI();
     }
 
-    else if (menu_to_show == 4)
+    else if (menu_to_show == 5)
     {
         static std::once_flag flag_load;
         std::call_once(flag_load, onscreen_timers::load_timer_profile);
@@ -263,8 +272,7 @@ void menu::render_ui()
             if (gui::tab("Config Editor", icons::config_editor_icon))
                 menu_to_show = 1;
             gui::tool_tip("Allows you to adjust your game settings in\nmore detail than the base game offers");
-
-            ImGui::Spacing();
+            
 
             if (gui::tab("Icon Packager", icons::icon_packager_icon))
                 menu_to_show = 2;
@@ -274,14 +282,16 @@ void menu::render_ui()
             ImGui::TextColored(color(120, 120, 120, 185).to_imvec4(), "Overlay Features");
             ImGui::PopFont();
 
-            if (gui::tab("Crosshair Overlay", icons::crosshair_overlay_icon))
+            if (gui::tab("Hook Tracker", icons::hook_tracker_icon))
                 menu_to_show = 3;
-            gui::tool_tip("Allows you to use a crosshair overlay with many customization options");
 
-            ImGui::Spacing();
+            if (gui::tab("Crosshair Overlay", icons::crosshair_overlay_icon))
+                menu_to_show = 4;
+            gui::tool_tip("Allows you to use a crosshair overlay with many customization options");
+            
 
             if (gui::tab("On-Screen Timers", icons::on_screen_timers_icon))
-                menu_to_show = 4;
+                menu_to_show = 5;
             gui::tool_tip("Allows you to setup hotkeys to display timers on your screen for relevant information");
         }
         else
@@ -339,11 +349,11 @@ void menu::render_ui()
                 "Note: Due to how steam works, after enabling, you will need to manually add the launch option that gets copied to your clipboard, instructions appear when enabling / disabling."
             );
 
-            ImGui::SetCursorPos({5, 210});
+            ImGui::SetCursorPos({5, hamburger_height - 30});
             if (gui::image_button("discord_join_button", icons::discord_icon, ImVec2(31, 23)))
                 ShellExecuteA(NULL, "open", "https://discord.gg/vKjjS8yazu", NULL, NULL, SW_SHOWNORMAL);
 
-            ImGui::SetCursorPos({175, 213});
+            ImGui::SetCursorPos({175, hamburger_height - 27});
             ImGui::TextColored(ImVec4(0.8F, 0.8F, 0.8F, 0.5F), "(?)");
             if (ImGui::IsItemHovered())
             {

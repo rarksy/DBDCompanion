@@ -2,12 +2,13 @@
 #include "stb_image.h"
 #include "Exe Icons/256x256.hpp"
 #include "Features/Crosshair/Crosshair.h"
+#include "Features/HookTracker/HookTracker.hpp"
 #include "Features/OnScreenTimers/OnScreenTimers.hpp"
 
 
 bool overlay::is_overlay_needed()
 {
-    return (cvars.enabled || onscreen_timers::enabled);
+    return (cvars.enabled || onscreen_timers::enabled || hook_tracker::ht_vars::enabled);
 }
 
 bool overlay::is_overlay_created()
