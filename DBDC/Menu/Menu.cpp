@@ -119,7 +119,7 @@ void menu::render_ui()
     auto& style = ImGui::GetStyle();
     static bool hamburger_open = true;
     static float hamburger_width = 1.F;
-    static float hamburger_height = 270.F;
+    static float hamburger_height = 260.F;
     static float disabled_alpha = 0.01F;
 
     if (hamburger_open)
@@ -235,9 +235,9 @@ void menu::render_ui()
             {5, 5},
             {hamburger_width, hamburger_height},
             ImColor(std::clamp(styling::menu_accent.r - 200, 0, 255), 15, 15),
-            ImColor(15, 13, 13),
-            ImColor(15, 13, 13),
-            ImColor(15, 13, 13)
+            ImColor(23, 18, 18),
+            ImColor(23, 18, 18),
+            ImColor(23, 18, 18)
         );
 
         ImGui::GetWindowDrawList()->AddRectFilled({11, 13}, {41, 18}, hamburger_accent, 4.F);
@@ -351,11 +351,11 @@ void menu::render_ui()
                 "Note: Due to how steam works, after enabling, you will need to manually add the launch option that gets copied to your clipboard, instructions appear when enabling / disabling."
             );
 
-            ImGui::SetCursorPos({5, 210});
+            ImGui::SetCursorPos({5, hamburger_height - 28});
             if (gui::image_button("discord_join_button", icons::discord_icon, ImVec2(31, 23)))
                 ShellExecuteA(NULL, "open", "https://discord.gg/vKjjS8yazu", NULL, NULL, SW_SHOWNORMAL);
 
-            ImGui::SetCursorPos({175, 213});
+            ImGui::SetCursorPos({175, hamburger_height - 25});
             ImGui::TextColored(ImVec4(0.8F, 0.8F, 0.8F, 0.5F), "(?)");
             if (ImGui::IsItemHovered())
             {
