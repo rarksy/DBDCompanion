@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include <map>
 #include <vector>
 
 #include "ImGui/imgui.h"
@@ -29,16 +30,33 @@ namespace hook_tracker
                 return vec2(x + other.x, y + other.y);
             }
         };
-
-        // time to do some hardcoding >:)
-        inline std::vector<vec2> survivor_render_regions_1440_100{{250, 595}, {250, 705}, {250, 815}, {250, 925}};
-        inline std::vector<vec2> survivor_render_regions_1440_95{{235, 635}, {235, 745}, {235, 855}, {235, 965}};
-        inline std::vector<vec2> survivor_render_regions_1440_90{{225, 685}, {225, 785}, {225, 885}, {225, 985}};
-        inline std::vector<vec2> survivor_render_regions_1440_85{{210, 720}, {210, 820}, {210, 920}, {210, 1020}};
-        inline std::vector<vec2> survivor_render_regions_1440_80{{210, 720}, {210, 820}, {210, 920}, {210, 1020}};
-        inline std::vector<vec2> survivor_render_regions_1440_75{{190, 805}, {190, 895}, {190, 985}, {190, 1075}};
-        inline std::vector<vec2> survivor_render_regions_1440_70{{175, 845}, {175, 925}, {175, 1005}, {175, 1085}};
+        
+        inline std::map<int, std::map<int, std::vector<vec2>>> survivor_render_regions = {
+            {
+                1440, {
+                    {100, {{312, 594}, {312, 712}, {312, 805}, {312, 923}}},
+                    {95, {{297, 637}, {297, 749}, {297, 838}, {297, 950}}},
+                    {90, {{281, 679}, {281, 785}, {225, 891}, {225, 997}}},
+                    {85, {{266, 721}, {266, 821}, {266, 921}, {266, 1021}}},
+                    {80, {{250, 764}, {250, 858}, {250, 951}, {250, 1047}}},
+                    {75, {{235, 806}, {235, 894}, {235, 982}, {235, 1070}}},
+                    {70, {{219, 849}, {219, 931}, {219, 1013}, {219, 1096}}}
+                }
+            },
+            {
+                1080, {
+                    {100, {{234, 445}, {234, 514}, {234, 603}, {234, 709}}},
+                    {95, {{222, 477}, {222, 561}, {222, 645}, {222, 729}}},
+                    {90, {{210, 508}, {210, 588}, {210, 667}, {210, 746}}},
+                    {85, {{198, 539}, {198, 614}, {198, 689}, {198, 764}}},
+                    {80, {{186, 571}, {186, 642}, {186, 712}, {186, 783}}},
+                    {75, {{175, 604}, {175, 670}, {175, 736}, {175, 802}}},
+                    {70, {{163, 635}, {163, 696}, {163, 758}, {163, 820}}}
+                }
+            }
+        };
     }
+    
 
 
     struct survivor
@@ -46,9 +64,11 @@ namespace hook_tracker
         _internal::vec2 location = {0, 0};
         int hook_stage = 0; // 1 = 1st stage | 2 = 2nd stage | 3 = dead
         int hotkey = 0;
-        
 
-        survivor(){}
+
+        survivor()
+        {
+        }
     };
 
     void setup();
@@ -56,7 +76,7 @@ namespace hook_tracker
 
     void keypress_loop();
     void render();
-    
+
     bool save();
 
     inline std::vector<survivor> all_survivors;
@@ -65,10 +85,9 @@ namespace hook_tracker
     namespace ht_vars
     {
         using namespace config_editor;
-        
-        inline bool enabled = false;
-        
-        inline setting in_game_ui_scale(files::game_user_settings, sections::dbd_game_user_settings, "HudScaleFactor", 100);
 
+        inline bool enabled = false;
+
+        inline setting in_game_ui_scale(files::game_user_settings, sections::dbd_game_user_settings, "HudScaleFactor", 100);
     }
 }

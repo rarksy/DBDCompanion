@@ -186,12 +186,12 @@ void menu::render_ui()
 
         ip_menu::render_ui();
     }
-    
+
     else if (menu_to_show == 3)
     {
-        static std::once_flag flag_setup ;
+        static std::once_flag flag_setup;
         std::call_once(flag_setup, ht_menu::setup);
-        
+
         ht_menu::render_ui();
     }
 
@@ -275,7 +275,6 @@ void menu::render_ui()
             if (gui::tab("Config Editor", icons::config_editor_icon))
                 menu_to_show = 1;
             gui::tool_tip("Allows you to adjust your game settings in\nmore detail than the base game offers");
-            
 
             if (gui::tab("Icon Packager", icons::icon_packager_icon))
                 menu_to_show = 2;
@@ -285,8 +284,11 @@ void menu::render_ui()
             ImGui::TextColored(color(120, 120, 120, 185).to_imvec4(), "Overlay Features");
             ImGui::PopFont();
 
-            if (gui::tab("Hook Tracker", icons::hook_tracker_icon))
-                menu_to_show = 3;
+            if (backend::screen_height == 1080 || backend::screen_height == 1440)
+            {
+                if (gui::tab("Hook Tracker", icons::hook_tracker_icon))
+                    menu_to_show = 3;
+            }
 
             if (gui::tab("Crosshair Overlay", icons::crosshair_overlay_icon))
                 menu_to_show = 4;

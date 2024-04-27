@@ -4,11 +4,15 @@
 #include "Features/Crosshair/Crosshair.h"
 #include "HookTracker.hpp"
 #include "Features/ConfigEditor/ConfigEditor.hpp"
+#include "GUI/GUI.h"
 #include "Overlay/Overlay.hpp"
 
 void ht_menu::setup()
 {
     config_editor::initialize_config();
+
+    hook_tracker::ht_vars::in_game_ui_scale.load_value();
+
     hook_tracker::setup();
 }
 
@@ -31,11 +35,15 @@ void ht_menu::render_ui()
         {
             for (int i = 0; i < hook_tracker::all_survivors.size(); i++)
                 hook_tracker::all_survivors[i].hook_stage = 0;
-            
+
             if (!overlay::is_overlay_needed())
                 overlay::destroy_overlay();
         }
     }
+
+    if (gui::drop_down_box("In-Game UI Scale", ui_scale_index, UIScales))
+        hook_tracker::setup();
+
 
     const size_t survivors_size = hook_tracker::all_survivors.size();
     for (int i = 0; i < survivors_size; i++)
