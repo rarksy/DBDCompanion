@@ -160,7 +160,7 @@ void onscreen_timers::render_ui()
         const std::string temp_label = "##";
 
         const std::string hotkey_label = temp_label + "Timer" + std::to_string(i);
-        if (ImGui::Hotkey(hotkey_label.c_str(), &t.hotkey, ImVec2(30, 0)))
+        if (ImGui::Hotkey(hotkey_label.c_str(), &t.hotkey))
             save_timer_profile();
         gui::tool_tip("Sets the key used to activate the timer");
 
@@ -191,9 +191,9 @@ void onscreen_timers::render_ui()
 
         ImGui::SameLine();
         const auto cursor_pos = ImGui::GetCursorPos();
-        ImGui::SetCursorPos(ImVec2(cursor_pos.x - 4, cursor_pos.y + 1));
+        ImGui::SetCursorPos(ImVec2(cursor_pos.x - 2, cursor_pos.y + 1));
         ImGui::Text("X");
-        ImGui::SetCursorPos(ImVec2(cursor_pos.x - 5, cursor_pos.y + 4));
+        ImGui::SetCursorPos(ImVec2(cursor_pos.x - 3, cursor_pos.y + 4));
         const std::string button_label = "delete_button" + std::to_string(i);
 
         if (ImGui::InvisibleButton(button_label.c_str(), ImVec2(14, 20)))
