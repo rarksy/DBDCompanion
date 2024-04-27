@@ -8,6 +8,7 @@
 
 #include "../Misc/Misc.hpp"
 #include "Features/HookTracker/HookTracker.hpp"
+#include "Features/HookTracker/HTMenu.h"
 #include "Features/OnScreenTimers/OnScreenTimers.hpp"
 #include "Features/IconPackager/IconPackager.hpp"
 #include "Features/IconPackager/IPMenu.hpp"
@@ -97,6 +98,9 @@ void menu::run_loop()
         if (onscreen_timers::enabled)
             onscreen_timers::keypress_loop();
 
+        if (hook_tracker::ht_vars::enabled)
+            hook_tracker::keypress_loop();
+
         const double end_time = glfwGetTime();
         const double elapsed_time = end_time - start_time;
 
@@ -115,7 +119,7 @@ void menu::render_ui()
     auto& style = ImGui::GetStyle();
     static bool hamburger_open = true;
     static float hamburger_width = 1.F;
-    static float hamburger_height = 240.F;
+    static float hamburger_height = 270.F;
     static float disabled_alpha = 0.01F;
 
     if (hamburger_open)
@@ -182,8 +186,16 @@ void menu::render_ui()
 
         ip_menu::render_ui();
     }
-
+    
     else if (menu_to_show == 3)
+    {
+        static std::once_flag flag_setup ;
+        std::call_once(flag_setup, ht_menu::setup);
+        
+        ht_menu::render_ui();
+    }
+
+    else if (menu_to_show == 4)
     {
         static std::once_flag flag_crosshair;
         static std::once_flag flag_menu;
@@ -193,7 +205,7 @@ void menu::render_ui()
         CMenu::RenderUI();
     }
 
-    else if (menu_to_show == 4)
+    else if (menu_to_show == 5)
     {
         static std::once_flag flag_load;
         std::call_once(flag_load, onscreen_timers::load_timer_profile);
@@ -263,8 +275,7 @@ void menu::render_ui()
             if (gui::tab("Config Editor", icons::config_editor_icon))
                 menu_to_show = 1;
             gui::tool_tip("Allows you to adjust your game settings in\nmore detail than the base game offers");
-
-            ImGui::Spacing();
+            
 
             if (gui::tab("Icon Packager", icons::icon_packager_icon))
                 menu_to_show = 2;
@@ -274,14 +285,15 @@ void menu::render_ui()
             ImGui::TextColored(color(120, 120, 120, 185).to_imvec4(), "Overlay Features");
             ImGui::PopFont();
 
-            if (gui::tab("Crosshair Overlay", icons::crosshair_overlay_icon))
+            if (gui::tab("Hook Tracker", icons::hook_tracker_icon))
                 menu_to_show = 3;
+
+            if (gui::tab("Crosshair Overlay", icons::crosshair_overlay_icon))
+                menu_to_show = 4;
             gui::tool_tip("Allows you to use a crosshair overlay with many customization options");
 
-            ImGui::Spacing();
-
             if (gui::tab("On-Screen Timers", icons::on_screen_timers_icon))
-                menu_to_show = 4;
+                menu_to_show = 5;
             gui::tool_tip("Allows you to setup hotkeys to display timers on your screen for relevant information");
         }
         else

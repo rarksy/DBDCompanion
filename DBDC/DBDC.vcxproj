@@ -462,6 +462,7 @@
     <ClInclude Include="Images\Icons\Tabs\BackIcon.hpp" />
     <ClInclude Include="Images\Icons\Tabs\ConfigEditor.hpp" />
     <ClInclude Include="Images\Icons\Tabs\CrosshairOverlay.hpp" />
+    <ClInclude Include="Images\Icons\Tabs\HookTracker.hpp" />
     <ClInclude Include="Images\Icons\Tabs\IconPackager.hpp" />
     <ClInclude Include="Images\Icons\Tabs\OnScreenTimers.hpp" />
     <ClInclude Include="Images\Icons\Tabs\SettingsIcon.hpp" />

@@ -2,33 +2,58 @@
 #include <Windows.h>
 #include "HookTracker.hpp"
 #include "Backend/Backend.hpp"
-#include "Misc/Misc.hpp"
-#include "Images/HookTracker/Hook.hpp"
+#include "miscLIB/miscLIB.hpp"
+#include "nlohmann/json.hpp"
 
-double calculatePercentage(double X, double P) {
-    return X * (P / 100.0); 
+double calculatePercentage(double X, double P)
+{
+    return X * (P / 100.0);
 }
+
 void hook_tracker::setup()
 {
-    in_game_ui_scale.load_value();
-    const double resize_percentage = 1.0 + (100.0 - (double)in_game_ui_scale.value / 100);
+    ht_vars::in_game_ui_scale.load_value();
 
+    std::vector<_internal::vec2> render_locations;
+    switch (ht_vars::in_game_ui_scale.value)
+    {
+    case 100:
+        render_locations = _internal::survivor_render_regions_1440_100;
+        break;
+    case 95:
+        render_locations = _internal::survivor_render_regions_1440_95;
+        break;
+    case 90:
+        render_locations = _internal::survivor_render_regions_1440_90;
+        break;
+    case 85:
+        render_locations = _internal::survivor_render_regions_1440_85;
+        break;
+    case 80:
+        render_locations = _internal::survivor_render_regions_1440_80;
+        break;
+    case 75:
+        render_locations = _internal::survivor_render_regions_1440_75;
+        break;
+    case 70:
+        render_locations = _internal::survivor_render_regions_1440_70;
+        break;
+    }
+
+    nlohmann::json profile_data = ml::json_get_data_from_file(backend::exe_directory.string() + backend::settings_directory + backend::data_directory + "hook_tracker_profile.json");
+    bool has_profile = !profile_data.empty();
+    
     for (int i = 0; i < 4; i++)
     {
-        hook_tracker::survivor surv;
+        survivor s;
+        
+        s.location = render_locations[i];
 
-        surv.index = i;
+        if (has_profile)
+            s.hotkey = profile_data[i]["hotkey"];
 
-        if (backend::screen_height == 1440)
-        {
-            const auto region = hook_tracker::_internal::survivor_regions_1440[i];
-            double y = region.y * resize_percentage;
-            surv.location.x = region.x;
-            surv.location.y = y;
-            surv.size = hook_tracker::_internal::vec2(300, 100);
-        }
-
-        hook_tracker::all_survivors.push_back(surv);
+        all_survivors.push_back(s);
+        
     }
 }
 
@@ -37,46 +62,24 @@ void hook_tracker::free()
     all_survivors.clear();
 }
 
-bool TemplateMatch(cv::Mat Frame, cv::Mat ElementToFind, double Threshold, cv::Point& Detectedlocation)
+
+void hook_tracker::keypress_loop()
 {
-    auto result = cv::Mat(Frame.rows - ElementToFind.rows + 1, Frame.cols - ElementToFind.cols + 1, CV_32FC1);
-
-    cv::matchTemplate(Frame, ElementToFind, result, cv::TM_CCOEFF_NORMED);
-    cv::threshold(result, result, Threshold, 1.0, cv::THRESH_TOZERO);
-    double AccuracyValue;
-    cv::minMaxLoc(result, NULL, &AccuracyValue, NULL, &Detectedlocation);
-    return AccuracyValue >= Threshold;
-}
-
-void hook_tracker::detection_loop()
-{
-    using hook_tracker::_internal::vec2;
-
-    cv::Mat hook_image;
-
+    for (int i = 0; i < 256; ++i)
     {
-        const std::vector hook_data(hookRawData, hookRawData + sizeof hookRawData);
-        hook_image = cv::imdecode(hook_data, cv::IMREAD_GRAYSCALE);
-    }
+        if (!(GetAsyncKeyState(i) & 1))
+            continue;
 
-    while (ht_vars::enabled)
-    {
-        for (int i = 0; i < 4; i++)
+        for (int j = 0; j < all_survivors.size(); j++)
         {
-            auto& surv = all_survivors[i];
-            const cv::Rect area_to_scan(surv.location.x, surv.location.y, surv.size.x, surv.size.y);
-            const auto frame = misc::get_screenshot(area_to_scan);
+            if (j > all_survivors.size())
+                continue;
 
-            cv::Point detected_location;
-            const bool found_hooked_survivor = TemplateMatch(frame, hook_image, 0.9, detected_location);
-            
-            if (found_hooked_survivor && !surv.currently_hooked)
-            {
-                surv.currently_hooked = true;
-                surv.hook_stage++;
-            }
-            else if (!found_hooked_survivor && surv.currently_hooked)
-                surv.currently_hooked = false;
+            survivor& s = all_survivors[j];
+            if (i != s.hotkey)
+                continue;
+
+            s.hook_stage == 2 ? s.hook_stage = 0 : s.hook_stage++;
         }
     }
 }
@@ -86,19 +89,23 @@ void hook_tracker::render()
     for (int i = 0; i < 4; i++)
     {
         const auto surv = hook_tracker::all_survivors[i];
-        ImGui::GetBackgroundDrawList()->AddRect(surv.location.to_imvec2(), (surv.location + surv.size).to_imvec2(), ImColor(255, 0, 0));
+        auto draw_list = ImGui::GetBackgroundDrawList();
 
-        switch (surv.hook_stage)
-        {
-        default:
-            break;
-
-        case 1:
-            ImGui::GetBackgroundDrawList()->AddText(surv.location.to_imvec2(), ImColor(255, 0, 0), "1");
-            break;
-        case 2:
-            ImGui::GetBackgroundDrawList()->AddText(surv.location.to_imvec2(), ImColor(255, 0, 0), "2");
-            break;
-        }
+        if (surv.hook_stage > 0 && surv.hook_stage != 3)
+            draw_list->AddText(ImVec2(surv.location.x, surv.location.y), ImColor(255, 255, 255), std::to_string(surv.hook_stage).c_str());
     }
+}
+
+bool hook_tracker::save()
+{
+    nlohmann::json data;
+    
+    for (int i = 0; i < 4; i++)
+    {
+        survivor& s = all_survivors[i];
+        
+        data[i]["hotkey"] = s.hotkey;
+    }
+
+    return ml::json_write_data(backend::exe_directory.string() + backend::settings_directory + backend::data_directory + "hook_tracker_profile.json", data);
 }

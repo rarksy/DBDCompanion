@@ -4,20 +4,6 @@
 #include "ImGui/imgui.h"
 #include "../ConfigEditor/ConfigEditor.hpp"
 
-// use math to get portrait x & y 
-/*
-    create hardcoded value for portrait locations ONLY @ 100% UI scale FOR EACH resolution
-    Y found = subtract the difference of (100 - UI scale) from the coordinate
-    X found = hardcode (hate it) 
-*/
-
-// create a scanning region from x, y -> desired w, h
-// scan for hook icon
-// if hook icon IS NOT found and red bar IS NOT found: no hook detected
-// if hook icon found but red bar IS NOT half way: 1st hook is detected
-// if hook icon found AND red bar IS half way: 2nd hook detected
-// profit
-
 namespace hook_tracker
 {
     namespace _internal
@@ -44,19 +30,23 @@ namespace hook_tracker
             }
         };
 
-        inline std::vector<vec2> survivor_regions_1440{{120, 580}, {120, 700}, {120, 820}, {120, 940}};
+        // time to do some hardcoding >:)
+        inline std::vector<vec2> survivor_render_regions_1440_100{{250, 595}, {250, 705}, {250, 815}, {250, 925}};
+        inline std::vector<vec2> survivor_render_regions_1440_95{{235, 635}, {235, 745}, {235, 855}, {235, 965}};
+        inline std::vector<vec2> survivor_render_regions_1440_90{{225, 685}, {225, 785}, {225, 885}, {225, 985}};
+        inline std::vector<vec2> survivor_render_regions_1440_85{{210, 720}, {210, 820}, {210, 920}, {210, 1020}};
+        inline std::vector<vec2> survivor_render_regions_1440_80{{210, 720}, {210, 820}, {210, 920}, {210, 1020}};
+        inline std::vector<vec2> survivor_render_regions_1440_75{{190, 805}, {190, 895}, {190, 985}, {190, 1075}};
+        inline std::vector<vec2> survivor_render_regions_1440_70{{175, 845}, {175, 925}, {175, 1005}, {175, 1085}};
     }
 
-    inline config_editor::setting in_game_ui_scale(config_editor::files::game_user_settings, config_editor::sections::dbd_game_user_settings, "HudScaleFactor", 100);
 
     struct survivor
     {
-        int index;
         _internal::vec2 location = {0, 0};
-        _internal::vec2 size = {0, 0};
-
-        bool currently_hooked = false;
-        int hook_stage = 0; // 1 = 1st stage | 2 = 2nd stage | 3 = dead 
+        int hook_stage = 0; // 1 = 1st stage | 2 = 2nd stage | 3 = dead
+        int hotkey = 0;
+        
 
         survivor(){}
     };
@@ -64,14 +54,21 @@ namespace hook_tracker
     void setup();
     void free();
 
-    void detection_loop();
+    void keypress_loop();
     void render();
+    
+    bool save();
 
     inline std::vector<survivor> all_survivors;
 
 
     namespace ht_vars
     {
+        using namespace config_editor;
+        
         inline bool enabled = false;
+        
+        inline setting in_game_ui_scale(files::game_user_settings, sections::dbd_game_user_settings, "HudScaleFactor", 100);
+
     }
 }

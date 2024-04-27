@@ -13,6 +13,7 @@
 
 #define STB_IMAGE_IMPLEMENTATION    
 #include "../Dependencies/stb_image.h"
+#include "Icons/Tabs/HookTracker.hpp"
 
 void images::load_all()
 {
@@ -23,6 +24,7 @@ void images::load_all()
     
     images::load_texture_from_memory(config_editor_icon_raw_data, sizeof config_editor_icon_raw_data, &menu::icons::config_editor_icon);
     images::load_texture_from_memory(icon_packager_raw_data, sizeof icon_packager_raw_data, &menu::icons::icon_packager_icon);
+    images::load_texture_from_memory(hook_tracker_icon_raw_data, sizeof hook_tracker_icon_raw_data, &menu::icons::hook_tracker_icon);
     images::load_texture_from_memory(crosshair_raw_data, sizeof crosshair_raw_data, &menu::icons::crosshair_overlay_icon);
     images::load_texture_from_memory(on_screen_timers_raw_data, sizeof on_screen_timers_raw_data, &menu::icons::on_screen_timers_icon);
 }
