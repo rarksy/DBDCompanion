@@ -4,6 +4,7 @@
 
 #include "ImGui/imgui.h"
 #include "../ConfigEditor/ConfigEditor.hpp"
+#include "color/color.hpp"
 
 namespace hook_tracker
 {

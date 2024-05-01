@@ -5,6 +5,7 @@
 #include "HookTracker.hpp"
 #include "Features/ConfigEditor/ConfigEditor.hpp"
 #include "GUI/GUI.h"
+#include "nlohmann/json.hpp"
 #include "Overlay/Overlay.hpp"
 
 void ht_menu::setup()
@@ -18,7 +19,10 @@ void ht_menu::setup()
 
 void ht_menu::render_ui()
 {
-    ImGui::SetCursorPosY(45);
+    ImGui::SetCursorPosY(45.F);
+    gui::begin_group_box("hook_tracker_groupbox", ImVec2(275, 0));
+    ImGui::SetCursorPosY(2.F);
+    ImGui::SeparatorText("Main");
 
     if (ImGui::Checkbox("Enabled", &hook_tracker::ht_vars::enabled))
     {
@@ -44,6 +48,8 @@ void ht_menu::render_ui()
     if (gui::drop_down_box("In-Game UI Scale", ui_scale_index, UIScales, true, 40))
         hook_tracker::setup();
 
+    ImGui::SeparatorText("Keybinds");
+
 
     const size_t survivors_size = hook_tracker::all_survivors.size();
     for (int i = 0; i < survivors_size; i++)
@@ -59,4 +65,6 @@ void ht_menu::render_ui()
         ImGui::SameLine();
         ImGui::Text("%s", ("Survivor " + index).c_str());
     }
+
+    gui::end_group_box();
 }

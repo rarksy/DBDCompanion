@@ -95,5 +95,6 @@ bool hook_tracker::save()
         data[i]["hotkey"] = s.hotkey;
     }
 
+
     return ml::json_write_data(backend::exe_directory.string() + backend::settings_directory + backend::data_directory + "hook_tracker_profile.json", data);
 }
