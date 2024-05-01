@@ -38,8 +38,6 @@ void hook_tracker::setup()
 
     for (int i = 0; i < 4; i++)
     {
-        int x = render_locations.size();
-
         survivor s;
 
         s.location = render_locations[i];
