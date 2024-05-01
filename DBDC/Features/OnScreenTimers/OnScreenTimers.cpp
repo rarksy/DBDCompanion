@@ -186,19 +186,17 @@ void onscreen_timers::render_ui()
 
         ImGui::SameLine();
         const auto cursor_pos = ImGui::GetCursorPos();
-        ImGui::SetCursorPos(ImVec2(cursor_pos.x - 2, cursor_pos.y + 1));
-        ImGui::Text("X");
-        ImGui::SetCursorPos(ImVec2(cursor_pos.x - 3, cursor_pos.y + 4));
-        const std::string button_label = "delete_button" + std::to_string(i);
+        ImGui::SetCursorPos(ImVec2(cursor_pos.x - 1, cursor_pos.y + 7));
 
-        if (ImGui::InvisibleButton(button_label.c_str(), ImVec2(14, 20)))
+        if (gui::image_button("##delete_timer_button", menu::icons::x_icon, {13, 13}))
         {
             delete_timer(i);
             break;
         }
         gui::tool_tip("Deletes the timer");
 
-        ImGui::Spacing();
+        for (int i = 0; i < 3; i++)
+            ImGui::Spacing();
     }
 
     if (all_timers.size() < 12)

@@ -41,7 +41,7 @@ void ht_menu::render_ui()
         }
     }
 
-    if (gui::drop_down_box("In-Game UI Scale", ui_scale_index, UIScales))
+    if (gui::drop_down_box("In-Game UI Scale", ui_scale_index, UIScales, true, 40))
         hook_tracker::setup();
 
 

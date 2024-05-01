@@ -466,6 +466,7 @@
     <ClInclude Include="Images\Icons\Tabs\IconPackager.hpp" />
     <ClInclude Include="Images\Icons\Tabs\OnScreenTimers.hpp" />
     <ClInclude Include="Images\Icons\Tabs\SettingsIcon.hpp" />
+    <ClInclude Include="Images\Icons\XIcon.hpp" />
     <ClInclude Include="Images\Images.h" />
     <ClInclude Include="Images\Updater\UpdateIcon.hpp" />
     <ClInclude Include="Menu\Menu.hpp" />

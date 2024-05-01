@@ -38,6 +38,7 @@ namespace menu
         inline GLuint update_icon;
         inline GLuint settings_icon;
         inline GLuint back_icon;
+        inline GLuint x_icon;
         
         inline GLuint discord_icon;
     }
