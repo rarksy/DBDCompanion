@@ -100,7 +100,7 @@ void CEMenu::RenderUI()
     gui::drop_down_box("Post Processing", ce_vars.post_process_quality, qualities);
     gui::tool_tip("Changes the quality of glow related effects (such as fire glow).");
 
-    gui::drop_down_box("Textures", ce_vars.texture_quality, qualities, true, menu::styling::item_width, "Changes the quality of textures & models.",
+    gui::drop_down_box("Textures", ce_vars.texture_quality, qualities, true, 0.F, "Changes the quality of textures & models.",
                        Image::TextureQuality::allTextures,
                        ImVec2(500, 200));
 
@@ -123,7 +123,7 @@ void CEMenu::RenderUI()
     ImGui::SeparatorText("Rendering");
     gui::tool_tip("Features settings that affect the way the game renders.");
     
-    gui::drop_down_box("Window Mode", ce_vars.window_mode, windowModes);
+    gui::drop_down_box("Window Mode", ce_vars.window_mode, windowModes, true, 87);
     gui::tool_tip("Changes the rendering mode used to display the game.");
     
     ImGui::BeginDisabled(ce_vars.window_mode.value);
@@ -225,7 +225,7 @@ void CEMenu::RenderUI()
     gui::checkbox("Terror Radius Visual", ce_vars.terror_radius_visual);
     gui::tool_tip("Adds a visual heartbeat whenever inside the killers terror radius");
     
-    gui::drop_down_box("Colorblind Mode", ce_vars.color_blind_mode, colorBlindModes);
+    gui::drop_down_box("Colorblind Mode", ce_vars.color_blind_mode, colorBlindModes, true, 70.F);
     gui::tool_tip("Adjusts the games color pallet.");
     
     ImGui::BeginDisabled(!ce_vars.color_blind_mode.value);

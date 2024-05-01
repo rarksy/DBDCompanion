@@ -18,7 +18,7 @@ void hook_tracker::setup()
     if (backend::screen_height != 1080 && backend::screen_height != 1440)
     {
         MessageBoxA(nullptr, "you're not supposed to be able to get to this screen, you have an unsupported resolution", "?", MB_OK);
-        
+
         menu::menu_to_show = 0;
         return;
     }
@@ -39,7 +39,7 @@ void hook_tracker::setup()
     for (int i = 0; i < 4; i++)
     {
         int x = render_locations.size();
-        
+
         survivor s;
 
         s.location = render_locations[i];
@@ -57,24 +57,18 @@ void hook_tracker::free()
 }
 
 
-void hook_tracker::keypress_loop()
+void hook_tracker::detect_keypress(const int& key)
 {
-    for (int i = 0; i < 256; ++i)
+    for (int j = 0; j < all_survivors.size(); j++)
     {
-        if (!(GetAsyncKeyState(i) & 1))
+        if (j > all_survivors.size())
             continue;
 
-        for (int j = 0; j < all_survivors.size(); j++)
-        {
-            if (j > all_survivors.size())
-                continue;
+        survivor& s = all_survivors[j];
+        if (key != s.hotkey)
+            continue;
 
-            survivor& s = all_survivors[j];
-            if (i != s.hotkey)
-                continue;
-
-            s.hook_stage == 2 ? s.hook_stage = 0 : s.hook_stage++;
-        }
+        s.hook_stage == 2 ? s.hook_stage = 0 : s.hook_stage++;
     }
 }
 

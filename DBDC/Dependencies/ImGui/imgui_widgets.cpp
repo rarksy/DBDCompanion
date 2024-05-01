@@ -1220,21 +1220,11 @@ bool ImGui::Hotkey(const char* label, int* k, const ImVec2& size_arg)
     {
         strcpy(buf_display, "...");
     }
-
-    const ImRect clip_rect(frame_bb.Min.x, frame_bb.Min.y, frame_bb.Min.x + size.x, frame_bb.Min.y + size.y);
-    ImVec2 render_pos = frame_bb.Min + style.FramePadding;
+    
     RenderTextClipped(frame_bb.Min + style.FramePadding, frame_bb.Max - style.FramePadding, buf_display, NULL, NULL);
 
     if (label_size.x > 0)
         RenderText(ImVec2(frame_bb.Max.x + style.ItemInnerSpacing.x, frame_bb.Min.y + style.FramePadding.y), label);
-
-    return value_changed;
-    //fit the text size
-    ImVec2 adjusted_frame_max = ImVec2(frame_bb.Min.x + label_size.x + style.FramePadding.x * 2.0f, frame_bb.Max.y);
-
-    RenderFrame(frame_bb.Min, adjusted_frame_max, GetColorU32(ImGuiCol_FrameBg), true, style.FrameRounding);
-
-    RenderText(frame_bb.Min + style.FramePadding, buf_display, NULL, NULL);
 
     return value_changed;
 }

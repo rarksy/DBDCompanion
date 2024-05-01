@@ -186,33 +186,40 @@ bool gui::drop_down_box(const char* label, std::string preview_value, int& id, s
     return item_selected;
 }
 
-bool gui::drop_down_box(const char* label, config_editor::setting& setting, std::vector<std::string> items, bool useIndex, float widgetSize, std::string caption,
-                        std::vector<unsigned*> textures, ImVec2 textureSize)
+bool gui::drop_down_box(const char* label, config_editor::setting& setting, std::vector<std::string> items, bool use_index, float widget_size, std::string caption,
+                        std::vector<unsigned*> textures, ImVec2 texture_size)
 {
-    ImGui::SetNextItemWidth(widgetSize);
+    auto it = std::max_element(items.begin(), items.end(),
+                           [](const auto& a, const auto& b) {
+                               return a.size() < b.size();
+                           });
+
+    const std::string longest_item = *it;
+    
+    ImGui::SetNextItemWidth(widget_size == 0.F ? ImGui::CalcTextSize(longest_item.c_str()).x + 10 : widget_size);
     ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(0.1F, 0.1F, 0.1F, 1.F));
 
-    auto it = std::ranges::find_if(items, [&setting](const auto& v)
+    it = std::ranges::find_if(items, [&setting](const auto& v)
     {
         return std::to_string(setting.value) == v;
     });
 
     bool itemSelected = false;
 
-    if (ImGui::BeginCombo(label, useIndex ? items[setting.value].c_str() : it->c_str(), ImGuiComboFlags_NoArrowButton))
+    if (ImGui::BeginCombo(label, use_index ? items[setting.value].c_str() : it->c_str(), ImGuiComboFlags_NoArrowButton))
     {
         for (int i = 0; i < items.size(); i++)
         {
             const bool isSelected = (setting.value == i);
             if (ImGui::Selectable(items[i].c_str(), isSelected))
             {
-                setting.value = useIndex ? i : std::atoi(items[i].c_str());
+                setting.value = use_index ? i : std::atoi(items[i].c_str());
                 setting.set_value();
                 itemSelected = true;
             }
 
             if (!textures.empty())
-                gui::tool_tip(caption, *textures[i], textureSize);
+                gui::tool_tip(caption, *textures[i], texture_size);
         }
 
         ImGui::EndCombo();

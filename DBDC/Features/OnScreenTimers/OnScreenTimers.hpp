@@ -9,7 +9,7 @@ namespace onscreen_timers
 {
     void add_new_timer();
     void delete_timer(const int& index);
-    void keypress_loop();
+    void detect_keypress(const int& key);
     void render_timers();
 
     bool save_timer_profile();

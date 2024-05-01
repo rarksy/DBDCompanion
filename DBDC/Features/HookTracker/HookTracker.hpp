@@ -74,7 +74,7 @@ namespace hook_tracker
     void setup();
     void free();
 
-    void keypress_loop();
+    void detect_keypress(const int& key);
     void render();
 
     bool save();

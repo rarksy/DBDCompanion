@@ -32,27 +32,22 @@ void onscreen_timers::delete_timer(const int& index)
     ml::json_write_data(file_path, data);
 }
 
-void onscreen_timers::keypress_loop()
+void onscreen_timers::detect_keypress(const int& key)
 {
-    for (int i = 0; i < 256; ++i)
+    const size_t all_timers_size = all_timers.size();
+    for (int j = 0; j < all_timers_size; j++)
     {
-        if (!(GetAsyncKeyState(i) & 1))
+        if (j > all_timers.size())
             continue;
 
-        for (int j = 0; j < all_timers.size(); j++)
-        {
-            if (j > all_timers.size())
-                continue;
+        timer t = all_timers[j];
+        if (key != t.hotkey)
+            continue;
 
-            timer t = all_timers[j];
-            if (i != t.hotkey)
-                continue;
+        t.start_time = std::chrono::steady_clock::now();
+        t.end_time = t.start_time + std::chrono::seconds(t.duration);
 
-            t.start_time = std::chrono::steady_clock::now();
-            t.end_time = t.start_time + std::chrono::seconds(t.duration);
-
-            active_timers.push_back(t);
-        }
+        active_timers.push_back(t);
     }
 }
 
@@ -66,14 +61,15 @@ void onscreen_timers::render_timers()
         const auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(t.end_time - time_now);
         double seconds_with_one_decimal = duration.count() / 1000.0;
 
-        if (seconds_with_one_decimal < 0) {
+        if (seconds_with_one_decimal < 0)
+        {
             seconds_with_one_decimal = 0;
         }
 
         std::string timer_string = std::string(t.name) + ": " + std::to_string(seconds_with_one_decimal);
-        
+
         size_t pos = timer_string.find('.');
-        if (pos != std::string::npos && timer_string.length() > pos + 2) 
+        if (pos != std::string::npos && timer_string.length() > pos + 2)
             timer_string = timer_string.substr(0, pos + 2);
 
         ImGui::GetBackgroundDrawList()->AddText(ImVec2(40, (backend::screen_height / 2.75) - (20 * i)), t.text_color.to_imcolor(), timer_string.c_str());
@@ -98,7 +94,6 @@ bool onscreen_timers::save_timer_profile()
 
         for (int j = 0; j < 3; j++)
             data[i]["color"][j] = t.text_color[j];
-        
     }
 
     return ml::json_write_data(backend::exe_directory.string() + backend::settings_directory + backend::data_directory + "timer_profile.json", data);
@@ -171,20 +166,20 @@ void onscreen_timers::render_ui()
         const std::string text_box_label = temp_label + "text_box" + label_index;
         const std::string duration_box_label = temp_label + "duration_box" + label_index;
         const std::string color_picker_label = temp_label + "color_picker" + label_index;
-        
+
         ImGui::SetNextItemWidth(120.F);
         if (ImGui::InputTextWithHint(text_box_label.c_str(), "Timer Name", &t.name))
             save_timer_profile();
         gui::tool_tip("Sets the name that will be displayed when the timer is activated");
 
-        
+
         ImGui::SameLine();
         ImGui::SetNextItemWidth(40.F);
         if (ImGui::InputInt(duration_box_label.c_str(), &t.duration, NULL, NULL))
             save_timer_profile();
         gui::tool_tip("Controls the duration of the timer (numbers only)");
         ImGui::SameLine();
-        
+
         if (gui::color_picker(color_picker_label.c_str(), &t.text_color))
             save_timer_profile();
         gui::tool_tip("Sets the color of the text used to display the timer");
@@ -205,12 +200,12 @@ void onscreen_timers::render_ui()
 
         ImGui::Spacing();
     }
-    
+
     if (all_timers.size() < 12)
     {
         ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPos().x, ImGui::GetCursorPos().y + 6));
         if (ImGui::Button("Add New Timer", ImVec2(260.F, 0.F)) && all_timers.size() < 12)
-            add_new_timer();   
+            add_new_timer();
     }
 
     gui::end_group_box();

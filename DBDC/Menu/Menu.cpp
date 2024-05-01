@@ -95,11 +95,17 @@ void menu::run_loop()
             glfwSwapBuffers(overlay::window);
         }
 
-        if (onscreen_timers::enabled)
-            onscreen_timers::keypress_loop();
+        for (int i = 0; i < 256; ++i)
+        {
+            if (!(GetAsyncKeyState(i) & 1))
+                continue;
 
-        if (hook_tracker::ht_vars::enabled)
-            hook_tracker::keypress_loop();
+            if (onscreen_timers::enabled)
+                onscreen_timers::detect_keypress(i);
+
+            if (hook_tracker::ht_vars::enabled)
+                hook_tracker::detect_keypress(i);
+        }
 
         const double end_time = glfwGetTime();
         const double elapsed_time = end_time - start_time;

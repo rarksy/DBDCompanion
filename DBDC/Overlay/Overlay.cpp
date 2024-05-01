@@ -3,6 +3,7 @@
 #include "Exe Icons/256x256.hpp"
 #include "Features/Crosshair/Crosshair.h"
 #include "Features/OnScreenTimers/OnScreenTimers.hpp"
+#include <Windows.h>
 
 
 bool overlay::is_overlay_needed()
@@ -40,4 +41,21 @@ void overlay::destroy_overlay()
 {
     glfwDestroyWindow(window);
     window = nullptr;
+}
+
+bool overlay::detect_keypress(int key)
+{
+    bool key_pressed = false;
+    for (int i = 0; i < 256; ++i)
+    {
+        if (!(GetAsyncKeyState(i) & 1))
+            continue;
+
+        if (i != key)
+            continue;
+
+        key_pressed = true;
+    }
+
+    return key_pressed;
 }

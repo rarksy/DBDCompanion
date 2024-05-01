@@ -20,8 +20,8 @@ namespace gui
     
     bool slider(const char* label, config_editor::setting& setting, int minValue, int maxValue, bool clampMinMax = true);
     
-    bool drop_down_box(const char* label, config_editor::setting& setting, std::vector<std::string> items, bool useIndex = true, float widgetSize = 100.F,
-                     std::string caption = "", std::vector<unsigned*> textures = {}, ImVec2 textureSize = ImVec2(250, 100));
+    bool drop_down_box(const char* label, config_editor::setting& setting, std::vector<std::string> items, bool use_index = true, float widget_size = 0.F,
+                     std::string caption = "", std::vector<unsigned*> textures = {}, ImVec2 texture_size = ImVec2(250, 100));
     bool drop_down_box(const char* label, int& index, std::vector<std::string> items, bool useIndex = true, float widgetSize = 100.F, std::string caption = "", std::vector<unsigned*> textures = {},
                  ImVec2 textureSize = ImVec2(250, 100));
     bool drop_down_box(const char* label, std::string preview_value, int& id, std::vector<std::string> items, const float& box_width = 100.F);

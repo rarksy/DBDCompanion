@@ -14,4 +14,6 @@ namespace overlay
     bool is_overlay_created();
     void create_overlay();
     void destroy_overlay();
+
+    bool detect_keypress(int key);
 }
