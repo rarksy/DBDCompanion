@@ -51,9 +51,9 @@ void CMenu::RenderUI()
 
                 ImGui::EndCombo();
             }
-            ImGui::SliderInt("Length", &cvars.lineLength, 1, 100);
+            ImGui::SliderInt("Length", &cvars.lineLength, 1, 25);
             ImGui::SliderInt("Thickness", &cvars.lineThickness, 1, 10);
-            ImGui::SliderInt("Gap", &cvars.lineGap, 0, 100);
+            ImGui::SliderInt("Gap", &cvars.lineGap, 0, 30);
 
             ImGui::Spacing();
             ImGui::Spacing();
