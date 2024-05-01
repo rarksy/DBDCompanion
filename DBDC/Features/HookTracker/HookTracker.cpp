@@ -16,12 +16,8 @@ double calculatePercentage(double X, double P)
 void hook_tracker::setup()
 {
     if (backend::screen_height != 1080 && backend::screen_height != 1440)
-    {
-        MessageBoxA(nullptr, "you're not supposed to be able to get to this screen, you have an unsupported resolution", "?", MB_OK);
-
-        menu::menu_to_show = 0;
-        return;
-    }
+        MessageBoxA(nullptr, "You are currently using a resolution not supported by the hook tracker\n\nTracked hooks will render at different spots than usual", "?", MB_OK);
+    
     all_survivors.clear();
 
     const auto it = std::find(ht_menu::UIScales.begin(), ht_menu::UIScales.end(), std::to_string(ht_vars::in_game_ui_scale.value));
