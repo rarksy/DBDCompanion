@@ -374,8 +374,9 @@ bool gui::tab(std::string label, GLuint image)
                                                   ImGui::GetColorU32(active ? ImGuiCol_ButtonActive : ImGuiCol_ButtonHovered),
                                                   5.F);
     }
-
-    ImGui::Dummy(ImVec2(0.0f, 4.0f));
+    
+    ImGui::Spacing();
+    ImGui::Spacing();
 
     ImGui::PopID();
 
