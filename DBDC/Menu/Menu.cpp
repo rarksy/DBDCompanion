@@ -49,7 +49,7 @@ void menu::run_loop()
 
     while (!glfwWindowShouldClose(main_window))
     {
-        const double start_time = glfwGetTime();
+        const double frame_start_time = glfwGetTime();
 
         glfwMakeContextCurrent(menu::main_window);
 
@@ -95,26 +95,26 @@ void menu::run_loop()
             glfwSwapBuffers(overlay::window);
         }
 
-        for (int i = 0; i < 256; ++i)
+        for (int key = 0; key < 256; ++key)
         {
-            if (!(GetAsyncKeyState(i) & 1))
+            if (!(GetAsyncKeyState(key) & 1))
                 continue;
 
             if (onscreen_timers::enabled)
-                onscreen_timers::detect_keypress(i);
+                onscreen_timers::detect_keypress(key);
 
             if (hook_tracker::ht_vars::enabled)
-                hook_tracker::detect_keypress(i);
+                hook_tracker::detect_keypress(key);
         }
 
-        const double end_time = glfwGetTime();
-        const double elapsed_time = end_time - start_time;
+        const double frame_end_time = glfwGetTime();
+        const double frame_elapsed_time = frame_end_time - frame_start_time;
 
         constexpr double target_frame_time = 1.0 / static_cast<double>(80);
 
-        if (elapsed_time < target_frame_time)
+        if (frame_elapsed_time < target_frame_time)
         {
-            const double sleep_time = target_frame_time - elapsed_time;
+            const double sleep_time = target_frame_time - frame_elapsed_time;
             std::this_thread::sleep_for(std::chrono::duration<double>(sleep_time));
         }
     }
@@ -144,7 +144,6 @@ void menu::render_ui()
             disabled_alpha += 0.04F;
             style.DisabledAlpha = disabled_alpha;
         }
-        // figure out widget fade on menu close
     }
 
     ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Once);
@@ -225,10 +224,10 @@ void menu::render_ui()
 
     constexpr ImRect hamburger_activation_rect = ImRect({3, 3}, {39, 36});
     const static auto hamburger_accent = ImGui::GetColorU32(ImGui::IsMouseHoveringRect(hamburger_activation_rect.Min, hamburger_activation_rect.Max)
-                                                         ? ImGui::IsKeyDown(ImGuiKey_MouseLeft)
-                                                               ? ImGuiCol_ButtonActive
-                                                               : ImGuiCol_ButtonHovered
-                                                         : ImGuiCol_Button
+                                                                ? ImGui::IsKeyDown(ImGuiKey_MouseLeft)
+                                                                      ? ImGuiCol_ButtonActive
+                                                                      : ImGuiCol_ButtonHovered
+                                                                : ImGuiCol_Button
     );
 
 
@@ -306,7 +305,7 @@ void menu::render_ui()
             };
 
             const auto overlay_tabs_size = overlay_tabs_info.size();
-            for (int i = 0; i < overlay_tabs_size ; i++)
+            for (int i = 0; i < overlay_tabs_size; i++)
             {
                 const auto tab = overlay_tabs_info.at(i);
 
@@ -443,16 +442,15 @@ void menu::render_ui()
     ImGui::End();
 }
 
-inline ImVec4 RGBToImVec4(int r, int g, int b, int a = 255)
-{
-    return {r / 255.F, g / 255.F, b / 255.F, a / 255.F};
-}
-
-
 void menu::create_global_style()
 {
     ImGuiStyle& style = ImGui::GetStyle();
     auto& colors = style.Colors;
+
+    const auto RGBToImVec4 = [](float r, float g, float b, float a = 255.F) -> ImVec4
+    {
+        return {r / 255.F, g / 255.F, b / 255.F, a / 255.F};
+    };
 
     // Button
     colors[ImGuiCol_Button] = styling::menu_accent.to_imvec4();

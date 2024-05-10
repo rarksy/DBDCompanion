@@ -4,17 +4,48 @@
 #include <ImGui/imgui.h>
 #include <ImGui/imgui_impl_glfw.h>
 #include <ImGui/imgui_impl_opengl3.h>
+
+#include "stb_image.h"
+#include "Exe Icons/256x256.hpp"
 #include "miscLIB/miscLIB.hpp"
+#include "Overlay/Overlay.hpp"
+
+void backend::init()
+{
+    backend::screen_width = ml::get_screen_width();
+    backend::screen_height = ml::get_screen_height();
+
+    overlay::window_width = backend::screen_width;
+    overlay::window_height = backend::screen_height;
+
+    char pathBuffer[MAX_PATH];
+    GetModuleFileNameA(NULL, pathBuffer, MAX_PATH);
+    backend::exe_name = std::filesystem::path(pathBuffer).filename().string();
+    backend::exe_directory = std::filesystem::path(pathBuffer).parent_path();
+
+    ml::create_directory(backend::exe_directory.string() + backend::settings_directory + backend::data_directory);
+}
+
+bool backend::create_mutex()
+{
+    dbdc_mutex_handle = CreateMutexA(NULL, TRUE, dbdc_mutex_label.c_str());
+
+    return GetLastError() != ERROR_ALREADY_EXISTS;
+}
+
+bool backend::destroy_mutex()
+{
+    return (ReleaseMutex(dbdc_mutex_handle) && CloseHandle(dbdc_mutex_handle));
+}
 
 int backend::init_glfw()
 {
     if (!glfwInit())
-    {
-        fprintf(stderr, "Error: Failed to initialize GLFW.\n");
-        return false;
-    }
+        throw std::runtime_error("Couldn't initialize GLFW, error: " + glfwGetError(NULL));
+    
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    
     return true;
 }
 
@@ -29,13 +60,16 @@ GLFWwindow* backend::setup_window(const char* title, int width, int height)
     glfwWindowHint(GLFW_RESIZABLE, false);
     GLFWwindow* window = glfwCreateWindow(width, height, title, NULL, NULL);
     if (!window)
-    {
-        fprintf(stderr, "Error: Failed to create GLFW window.\n");
-        glfwTerminate();
-        return nullptr;
-    }
+        throw std::runtime_error("Couldn't setup glfw window, error: " + glfwGetError(NULL));
+    
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1);
+
+    int icon_width, icon_height, icon_channels;
+    unsigned char* iconData = stbi_load_from_memory(exeIconRawData, sizeof exeIconRawData, &icon_width, &icon_height, &icon_channels, 0);
+    const GLFWimage exeIcon = {width, height, iconData};
+    glfwSetWindowIcon(menu::main_window, 1, &exeIcon);
+    
     return window;
 }
 

@@ -1,12 +1,21 @@
 ﻿#pragma once
 #include <filesystem>
 #include <GLFW/glfw3.h>
+
+#include <Windows.h>
 #include "ImGui/imgui_internal.h"
 
 #define DBDC_VERSION std::string("master_v0.10")
 
 namespace backend
 {
+    void init();
+    
+    inline HANDLE dbdc_mutex_handle;
+    const std::string dbdc_mutex_label = "com_rarksy_apps_deadbydaylightcompanion";
+    bool create_mutex();
+    bool destroy_mutex();
+    
     int init_glfw();
     void shutdown_glfw();
     
