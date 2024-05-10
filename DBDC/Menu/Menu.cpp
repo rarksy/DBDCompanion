@@ -223,8 +223,8 @@ void menu::render_ui()
 
     ImGui::SetCursorPos(ImVec2(5, 5));
 
-    const ImRect hamburger_activation_rect = ImRect({3, 3}, {39, 36});
-    const auto hamburger_accent = ImGui::GetColorU32(ImGui::IsMouseHoveringRect(hamburger_activation_rect.Min, hamburger_activation_rect.Max)
+    constexpr ImRect hamburger_activation_rect = ImRect({3, 3}, {39, 36});
+    const static auto hamburger_accent = ImGui::GetColorU32(ImGui::IsMouseHoveringRect(hamburger_activation_rect.Min, hamburger_activation_rect.Max)
                                                          ? ImGui::IsKeyDown(ImGuiKey_MouseLeft)
                                                                ? ImGuiCol_ButtonActive
                                                                : ImGuiCol_ButtonHovered
