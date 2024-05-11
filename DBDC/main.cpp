@@ -1,12 +1,10 @@
-#include "Backend/Backend.hpp"
-#include "Images/Images.h"
+#include "backend/backend.hpp"
+#include "images/images.h"
 #include "ImGui/imgui_impl_opengl3.h"
-#include "Menu/Menu.hpp"
+#include "menu/menu.hpp"
 #include "stb_image.h"
-#include "Exe Icons/256x256.hpp"
-#include "ImGui/imgui_impl_glfw.h"
 #include "miscLIB/miscLIB.hpp"
-#include "Overlay/Overlay.hpp"
+#include "overlay/overlay.hpp"
 
 //#define debug_winmain
 #ifndef debug_winmain
@@ -37,13 +35,11 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
 
     menu::run_loop();
 
-    if (overlay::window != nullptr)
+    if (overlay::is_overlay_active())
     {
         overlay::destroy_overlay();
         ImGui::SetCurrentContext(overlay::context);
-        ImGui_ImplGlfw_Shutdown();
-        ImGui_ImplOpenGL3_Shutdown();
-        ImGui::DestroyContext(overlay::context);
+        backend::shutdown_imgui();
     }
 
     ImGui::SetCurrentContext(menu::main_context);
