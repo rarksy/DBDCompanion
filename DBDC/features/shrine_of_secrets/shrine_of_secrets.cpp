@@ -1,8 +1,8 @@
-﻿#include "ShrineOfSecrets.hpp"
-#include "Backend/Backend.hpp"
-#include "../../Misc/Misc.hpp"
+﻿#include "shrine_of_secrets.hpp"
+#include "backend/backend.hpp"
+#include "../../misc/misc.hpp"
 #include "GUI/GUI.h"
-#include "Images/Images.h"
+#include "images/images.h"
 #include "ImGui/imgui.h"
 #include "miscLIB/miscLIB.hpp"
 
