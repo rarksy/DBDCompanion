@@ -12,6 +12,8 @@
 #include <ctime>
 #pragma comment(lib, "urlmon.lib")
 
+#include <codecvt>
+
 #include "../curl/curl.h"
 #include "../nlohmann/json.hpp"
 
@@ -41,6 +43,18 @@ namespace ml
         std::transform(temp.begin(), temp.end(), temp.begin(), [](unsigned char c){ return std::tolower(c); });
 
         return temp;
+    }
+
+    inline std::wstring string_t_wstring(const std::string& utf8String) {
+        // Convert std::string to std::wstring
+        std::wstring utf16String(utf8String.begin(), utf8String.end());
+        return utf16String;
+    }
+
+    inline std::string wstring_to_string(const std::wstring& utf16String) {
+        // Convert std::wstring to std::string
+        std::string utf8String(utf16String.begin(), utf16String.end());
+        return utf8String;
     }
 
     inline std::string remove_character(std::string content, char c)
