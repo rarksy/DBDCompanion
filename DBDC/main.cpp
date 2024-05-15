@@ -11,12 +11,13 @@
 
 int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
 {
-    backend::create_mutex();
+    if (!backend::create_mutex())
+        return -1;
 
     backend::init();
 
     if (!backend::init_glfw())
-        return -1;
+        return -2;
 
     menu::main_window = backend::setup_window("Dead By Daylight Companion", menu::styling::menu_width, menu::styling::menu_height);
     
@@ -25,7 +26,7 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PTSTR, int)
     std::thread update_thread([]
     {
         backend::update_available = backend::check_for_update();
-
+    
         if (ml::file_or_directory_exists(backend::exe_directory.string() + "\\update.bat"))
             std::filesystem::remove(backend::exe_directory.string() + "\\update.bat");
     });
