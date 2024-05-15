@@ -37,7 +37,7 @@ void menu::run_loop()
         else
         {
             shrine_of_secrets::init();
-
+    
             if (!shrine_of_secrets::shrine_data.empty())
                 shrine_of_secrets::cache();
         }
@@ -277,41 +277,25 @@ void menu::render_ui()
             ImGui::TextColored(color(120, 120, 120, 185).to_imvec4(), "Customization");
             ImGui::PopFont();
 
-            const static std::vector<std::pair<std::string, std::pair<std::string, GLuint>>> customization_tabs_info{
+            if (gui::tab("Config Editor", icons::config_editor_icon))
+                menu_to_show = 1;
 
-                {"Config Editor", {"Allows you to adjust your game settings in\nmore detail than the base game offers", icons::config_editor_icon}},
-                {"Icon Packager", {"Allows you to create custom icon packs with ease", icons::icon_packager_icon}},
-
-            };
-
-            const auto customization_tabs_size = customization_tabs_info.size();
-            for (int i = 0; i < customization_tabs_size; i++)
-            {
-                const auto tab = customization_tabs_info.at(i);
-
-                if (gui::tab(tab.first, tab.second.second))
-                    menu_to_show = i + 1;
-            }
+            if (gui::tab("Icon Packager", icons::icon_packager_icon))
+                menu_to_show = 2;
 
             ImGui::PushFont(styling::child_font);
             ImGui::TextColored(color(120, 120, 120, 185).to_imvec4(), "Overlay Features");
             ImGui::PopFont();
 
-            const static std::vector<std::pair<std::string, std::pair<std::string, GLuint>>> overlay_tabs_info{
+            if (gui::tab("Hook Tracker", icons::hook_tracker_icon))
+                menu_to_show = 3;
 
-                {"Hook Tracker", {"Allows you to track the amount of times each survivor has been hooked", icons::hook_tracker_icon}},
-                {"Crosshair Overlay", {"Allows you to create custom icon packs with ease", icons::crosshair_overlay_icon}},
-                {"On-Screen Timers", {"Allows you to setup hotkeys to display timers on your screen for relevant information", icons::on_screen_timers_icon}},
-            };
+            if (gui::tab("Crosshair Overlay", icons::crosshair_overlay_icon))
+                menu_to_show = 4;
 
-            const auto overlay_tabs_size = overlay_tabs_info.size();
-            for (int i = 0; i < overlay_tabs_size; i++)
-            {
-                const auto tab = overlay_tabs_info.at(i);
-
-                if (gui::tab(tab.first, tab.second.second))
-                    menu_to_show = customization_tabs_size + i + 1;
-            }
+            if (gui::tab("On-Screen Timers", icons::on_screen_timers_icon))
+                menu_to_show = 5;
+            
         }
         else
         {
