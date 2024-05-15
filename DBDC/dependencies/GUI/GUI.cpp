@@ -1,6 +1,7 @@
 ﻿#include "GUI.h"
 #include  "..\..\menu\menu.hpp"
 #include "..\..\features\config_editor\config_editor.hpp"
+#include "miscLIB/miscLIB.hpp"
 
 
 bool gui::begin_hamburger_menu(bool& open, float& width, float& height, const ImColor* color)
@@ -265,27 +266,17 @@ void gui::tool_tip(std::wstring message, float text_wrap_size, bool holdRightCli
 
     if (ImGui::IsItemHovered())
     {
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 5.F);
         ImGui::BeginTooltip();
-        ImGui::Text("%s", );
+        ImGui::PushTextWrapPos(text_wrap_size);
+        ImGui::TextWrapped(ml::wstring_to_string(message).c_str());
+        ImGui::PopTextWrapPos();
         ImGui::EndTooltip();
+        ImGui::PopStyleVar();
     }
 }
 
 void gui::tool_tip(std::string message, unsigned int texture, const ImVec2& size, bool holdRightClick)
-{
-    if (holdRightClick && (!ImGui::IsKeyDown(ImGuiKey_MouseRight)))
-        return;
-
-    if (ImGui::IsItemHovered())
-    {
-        ImGui::BeginTooltip();
-        ImGui::Text("%s", message.c_str());
-        ImGui::Image(reinterpret_cast<void*>(texture), size);
-        ImGui::EndTooltip();
-    }
-}
-
-void gui::tool_tip(std::wstring message, unsigned texture, const ImVec2& size, bool holdRightClick)
 {
     if (holdRightClick && (!ImGui::IsKeyDown(ImGuiKey_MouseRight)))
         return;
