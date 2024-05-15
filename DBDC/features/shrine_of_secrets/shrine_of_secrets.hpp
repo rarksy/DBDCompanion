@@ -9,7 +9,7 @@ namespace shrine_of_secrets
     {
         std::string id;
         std::string name;
-        std::wstring description;
+        std::string description;
         std::string image_path;
     };
 

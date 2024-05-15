@@ -15,79 +15,26 @@ bool perk_packager::setup()
         {"items", _internal::all_items_data},
         {"perks", _internal::all_perks_data},
     };
+
     const size_t endpoints_size = endpoints_data.size();
-    for (int i = 0; i < endpoints_size; i++)
+    for (size_t i = 0; i < endpoints_size; i++)
     {
-        const auto& pair = endpoints_data[i];
-        _internal::unavailable = !get_endpoint_data(pair.first, pair.second);
-
-        if (_internal::unavailable)
-            return false;
-
-        if (pair.first == "offerings")
-            load_instance_data(&all_offerings, pair.second);
-        else if (pair.first == "addons")
-            load_instance_data(&all_addons, pair.second);
-        else if (pair.first == "items")
-            load_instance_data(&all_items, pair.second);
-        else if (pair.first == "perks")
-        {
-            _internal::unavailable = !get_endpoint_data("characters", _internal::all_characters_data);
-            _internal::unavailable = !get_endpoint_data("perks", _internal::all_perks_data);
-
-            for (const auto& character : _internal::all_characters_data)
-            {
-                if (character["name"].is_null() || character["role"].is_null() || character["image"].is_null())
-                    continue;
-
-                portrait po;
-                po.name = character["name"];
-                po.game_file_path = character["image"];
-                po.role = character["role"];
-
-                all_portraits.push_back(po);
-
-                for (int j = 0; j < 3; j++)
-                {
-                    const auto perk_info = _internal::all_perks_data[character["perks"][j]];
-                    perk p;
-                    p.owner = character["name"];
-                    p.name = perk_info["name"];
-                    p.id = character["perks"][j];
-                    p.game_file_path = perk_info["image"];
-                    p.role = perk_info["role"];
-
-                    all_perks.push_back(p);
-                }
-            }
-
-            for (const auto& general_surv_perk_id : _internal::all_survivor_general_perks)
-            {
-                perk p;
-                const auto perk_info = _internal::all_perks_data[general_surv_perk_id];
-
-                p.name = perk_info["name"];
-                p.role = perk_info["role"];
-                p.game_file_path = perk_info["image"];
-                p.id = general_surv_perk_id;
-
-                all_perks.push_back(p);
-            }
-
-            for (const auto& general_killer_perk_id : _internal::all_killer_general_perks)
-            {
-                perk p;
-                const auto perk_info = _internal::all_perks_data[general_killer_perk_id];
-
-                p.name = perk_info["name"];
-                p.role = perk_info["role"];
-                p.game_file_path = perk_info["image"];
-                p.id = general_killer_perk_id;
-
-                all_perks.push_back(p);
-            }
-        }
+        auto& endpoint_data = endpoints_data[i];
+        _internal::unavailable = !get_endpoint_data(endpoint_data.first, endpoint_data.second);
     }
+
+    if (_internal::unavailable)
+        return false;
+
+    load_instance_data(&all_offerings, _internal::all_offerings_data);
+    load_instance_data(&all_addons, _internal::all_addons_data);
+    load_instance_data(&all_items, _internal::all_items_data);
+
+    /*
+     * status effects need to be handled manually
+     * due to the api not having an endpoint supplying
+     * details for them.
+     */
 
     for (const auto& se : _internal::all_status_effects_data)
     {
@@ -96,8 +43,78 @@ bool perk_packager::setup()
         e.name = se.first;
         e.role = "none";
         e.game_file_path = "UI/Icons/StatusEffects/iconStatusEffects_" + se.second + ".png";
-        
+
         all_status_effects.push_back(e);
+    }
+
+    _internal::unavailable = !get_endpoint_data("characters", _internal::all_characters_data);
+    _internal::unavailable = !get_endpoint_data("perks", _internal::all_perks_data);
+
+    for (const auto& character_data : _internal::all_characters_data)
+    {
+        portrait _portrait;
+
+        if (character_data.contains("name") && !character_data["name"].is_null())
+            _portrait.name = character_data["name"];
+
+        if (character_data.contains("id") && !character_data["id"].is_null())
+        {
+            _portrait.id = character_data["id"];
+
+            const size_t perks_size = character_data["perks"].size();
+            for (int i = 0; i < perks_size; i++)
+            {
+                const auto perk_id = character_data["perks"][i];
+                const auto perk_data = _internal::all_perks_data[perk_id];
+                
+                perk _perk;
+                
+                if (perk_data.contains("name") && !perk_data["name"].is_null())
+                    _perk.name = perk_data["name"];
+                
+                if (perk_data.contains("role") && !perk_data["role"].is_null())
+                    _perk.role = perk_data["role"];
+                
+                if (perk_data.contains("image") && !perk_data["image"].is_null())
+                    _perk.game_file_path = perk_data["image"];
+                
+                all_perks.push_back(_perk);
+            }
+        }
+
+        if (character_data.contains("role") && !character_data["role"].is_null())
+            _portrait.role = character_data["role"];
+
+        if (character_data.contains("image") && !character_data["image"].is_null())
+            _portrait.game_file_path = character_data["image"];
+
+        all_portraits.push_back(_portrait);
+    }
+
+    for (const auto& general_surv_perk_id : _internal::all_survivor_general_perks)
+    {
+        perk p;
+        const auto perk_info = _internal::all_perks_data[general_surv_perk_id];
+    
+        p.name = perk_info["name"];
+        p.role = perk_info["role"];
+        p.game_file_path = perk_info["image"];
+        p.id = general_surv_perk_id;
+    
+        all_perks.push_back(p);
+    }
+    
+    for (const auto& general_killer_perk_id : _internal::all_killer_general_perks)
+    {
+        perk p;
+        const auto perk_info = _internal::all_perks_data[general_killer_perk_id];
+    
+        p.name = perk_info["name"];
+        p.role = perk_info["role"];
+        p.game_file_path = perk_info["image"];
+        p.id = general_killer_perk_id;
+    
+        all_perks.push_back(p);
     }
 
     return true;
@@ -150,24 +167,29 @@ bool perk_packager::get_endpoint_data(const std::string& endpoint, nlohmann::jso
 template <typename T>
 void perk_packager::load_instance_data(std::vector<T>* vec_obj, const nlohmann::json& data)
 {
+    const std::vector<std::string> variables = {"name", "id", "role", "image"};
+
     for (const auto& entry : data)
     {
-        if (entry["name"].is_null() || entry["role"].is_null() || entry["image"].is_null())
-            continue;
-
         T obj;
 
-        if (entry.contains("name"))
-            obj.name = entry["name"];
+        for (const auto& variable : variables)
+        {
+            if (!entry.contains(variable) || entry[variable].is_null())
+                continue;
 
-        if (entry.contains("id"))
-            obj.id = entry["id"];
+            if (variable == "name")
+                obj.name = entry[variable];
 
-        if (entry.contains("role"))
-            obj.role = entry["role"];
+            else if (variable == "id")
+                obj.id = entry[variable];
 
-        if (entry.contains("image"))
-            obj.game_file_path = entry["image"];
+            else if (variable == "role")
+                obj.role = entry[variable];
+
+            else if (variable == "image")
+                obj.game_file_path = entry[variable];
+        }
 
         vec_obj->push_back(obj);
     }
