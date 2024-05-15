@@ -407,7 +407,7 @@ namespace ml
         );
     }
 
-    inline std::wstring html_formatter(std::string html_content)
+    inline std::string html_formatter(std::string html_content)
     {
         size_t pos = 0;
 
@@ -435,7 +435,7 @@ namespace ml
             pos = html_content.find('%', pos + 2); // Move past the inserted "%%"
         }
         
-        return std::wstring(html_content.begin(), html_content.end());
+        return std::string(html_content.begin(), html_content.end());
     }
 
     inline size_t write_data(void *ptr, size_t size, size_t nmemb, std::ofstream& stream) {
