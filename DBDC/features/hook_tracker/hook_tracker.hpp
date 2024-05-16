@@ -3,8 +3,7 @@
 #include <vector>
 
 #include "ImGui/imgui.h"
-#include "..\config_editor\config_editor.hpp"
-#include "color/color.hpp"
+#include "../config_editor/config_editor.hpp"
 
 namespace hook_tracker
 {
