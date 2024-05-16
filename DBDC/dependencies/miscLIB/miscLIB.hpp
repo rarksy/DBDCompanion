@@ -40,18 +40,20 @@ namespace ml
     {
         std::string temp = content;
 
-        std::transform(temp.begin(), temp.end(), temp.begin(), [](unsigned char c){ return std::tolower(c); });
+        std::transform(temp.begin(), temp.end(), temp.begin(), [](unsigned char c) { return std::tolower(c); });
 
         return temp;
     }
 
-    inline std::wstring string_t_wstring(const std::string& utf8String) {
+    inline std::wstring string_t_wstring(const std::string& utf8String)
+    {
         // Convert std::string to std::wstring
         std::wstring utf16String(utf8String.begin(), utf8String.end());
         return utf16String;
     }
 
-    inline std::string wstring_to_string(const std::wstring& utf16String) {
+    inline std::string wstring_to_string(const std::wstring& utf16String)
+    {
         // Convert std::wstring to std::string
         std::string utf8String(utf16String.begin(), utf16String.end());
         return utf8String;
@@ -83,15 +85,16 @@ namespace ml
     {
         int len;
         int slength = (int)wstr.length() + 1;
-        len = WideCharToMultiByte(CP_ACP, 0, wstr.c_str(), slength, 0, 0, 0, 0); 
+        len = WideCharToMultiByte(CP_ACP, 0, wstr.c_str(), slength, 0, 0, 0, 0);
         char* buf = new char[len];
-        WideCharToMultiByte(CP_ACP, 0, wstr.c_str(), slength, buf, len, 0, 0); 
+        WideCharToMultiByte(CP_ACP, 0, wstr.c_str(), slength, buf, len, 0, 0);
         std::string r(buf);
         delete[] buf;
         return r;
     }
-    
-    inline std::string open_file_dialog() {
+
+    inline std::string open_file_dialog()
+    {
         OPENFILENAME ofn;
         wchar_t szFile[260];
 
@@ -107,10 +110,13 @@ namespace ml
         ofn.nMaxFileTitle = 0;
         ofn.lpstrInitialDir = NULL;
         ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
-        
-        if (GetOpenFileName(&ofn) == TRUE) {
+
+        if (GetOpenFileName(&ofn) == TRUE)
+        {
             return wide_str_to_str(ofn.lpstrFile);
-        } else {
+        }
+        else
+        {
             return "";
         }
     }
@@ -316,7 +322,7 @@ namespace ml
         curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &http_code);
         if (http_code != 200)
         {
-            curl_easy_cleanup(curl);    
+            curl_easy_cleanup(curl);
             curl_global_cleanup();
             return {};
         }
@@ -331,7 +337,7 @@ namespace ml
     {
         if (!file_or_directory_exists(file_path))
             return -1;
-        
+
         struct stat result;
 
         if (stat(file_path.c_str(), &result) == 0)
@@ -345,20 +351,6 @@ namespace ml
         return -1;
     }
 
-    inline bool json_write_data(const std::string& file_path, nlohmann::json json_data)
-    {
-        std::ofstream file_to_write(file_path);
-
-        if (file_to_write.is_open())
-        {
-            file_to_write << json_data.dump(4);
-            file_to_write.close();
-
-            return true;
-        }
-        return false;
-    }
-
     inline nlohmann::json json_get_data_from_file(const std::string& file_path)
     {
         std::ifstream file_to_read(file_path);
@@ -367,7 +359,7 @@ namespace ml
         {
             if (std::filesystem::is_empty(file_path))
                 return nullptr;
-            
+
             nlohmann::json data;
 
             file_to_read >> data;
@@ -379,6 +371,32 @@ namespace ml
 
         return nullptr;
     }
+
+    inline bool json_write_data(const std::string& file_path, const nlohmann::json& json_data) {
+        std::ifstream file_to_read(file_path);
+        nlohmann::json existing_data;
+
+        // Read existing data from the file
+        if (file_to_read.is_open()) {
+            file_to_read >> existing_data;
+            file_to_read.close();
+        }
+
+        // Merge existing data with new data
+        existing_data.merge_patch(json_data);
+
+        std::ofstream file_to_write(file_path);
+
+        // Write merged data back to the file
+        if (file_to_write.is_open()) {
+            file_to_write << std::setw(4) << existing_data << std::endl;
+            file_to_write.close();
+            return true;
+        }
+    
+        return false;
+    }
+
 
     inline std::string unix_format_number(time_t num)
     {
@@ -434,11 +452,12 @@ namespace ml
             html_content.replace(pos, 1, "%%");
             pos = html_content.find('%', pos + 2); // Move past the inserted "%%"
         }
-        
+
         return std::string(html_content.begin(), html_content.end());
     }
 
-    inline size_t write_data(void *ptr, size_t size, size_t nmemb, std::ofstream& stream) {
+    inline size_t write_data(void* ptr, size_t size, size_t nmemb, std::ofstream& stream)
+    {
         stream.write(static_cast<const char*>(ptr), size * nmemb);
         return size * nmemb;
     }
