@@ -73,8 +73,10 @@ void hook_tracker::render()
         const auto surv = hook_tracker::all_survivors[i];
         auto draw_list = ImGui::GetBackgroundDrawList();
 
+        const auto color = surv.hook_stage == 1 ? ht_menu::stage_1_color: ht_menu::stage_2_color;
+
         if (surv.hook_stage > 0 && surv.hook_stage != 3)
-            draw_list->AddText(ImVec2(surv.location.x, surv.location.y), ImColor(255, 255, 255), std::to_string(surv.hook_stage).c_str());
+            draw_list->AddText(ImVec2(surv.location.x, surv.location.y), color.to_imcolor(), std::to_string(surv.hook_stage).c_str());
     }
 }
 
