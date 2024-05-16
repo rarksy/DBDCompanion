@@ -84,6 +84,7 @@ bool perk_packager::setup()
 
         if (character_data.contains("role") && !character_data["role"].is_null())
             _portrait.role = character_data["role"];
+        
 
         if (character_data.contains("image") && !character_data["image"].is_null())
             _portrait.game_file_path = character_data["image"];
@@ -129,7 +130,6 @@ void perk_packager::clear_images()
     clear_instance_images(all_portraits);
     clear_instance_images(all_status_effects);
 }
-
 
 void perk_packager::reload()
 {

@@ -136,7 +136,7 @@ void ip_menu::render_ui()
                 ml::create_directory(root_directory + destination.parent_path().string());
 
                 std::filesystem::copy_file(source, root_directory + destination.string(), std::filesystem::copy_options::overwrite_existing);
-            }   
+            }
         }
     }
     gui::tool_tip("Will Apply The Current Package To Your Game");
@@ -155,7 +155,7 @@ void ip_menu::render_ui()
             const std::filesystem::path file_path = backend::exe_directory.string() + backend::settings_directory +
                 _internal::package_selector::package_data_directory + _internal::package_selector::loaded_package_name + ".json";
 
-            std::filesystem::remove(file_path);   
+            std::filesystem::remove(file_path);
         }
     }
     gui::tool_tip("Will Delete The Current Package", 500, false);
@@ -164,7 +164,8 @@ void ip_menu::render_ui()
     ImGui::SetCursorPos({195, 10});
     gui::begin_group_box("perk display", ImVec2({540, 0}), NULL);
 
-    switch (_internal::type_filter_index) {
+    switch (_internal::type_filter_index)
+    {
     case 0:
         display_base_item(perk_packager::all_perks);
         break;
@@ -184,7 +185,7 @@ void ip_menu::render_ui()
         display_base_item(perk_packager::all_status_effects);
         break;
     default:
-            break;
+        break;
     }
 
     gui::end_group_box();
@@ -207,7 +208,7 @@ void ip_menu::display_base_item(std::vector<T>& vec_obj)
 
         if (!found_searched_item && (ml::to_lower(obj.owner).find(ml::to_lower(searched_item)) == std::string::npos))
             continue;
-        
+
         const bool is_correct_filter = ml::to_lower(ip_menu::_internal::character_filter[ip_menu::_internal::role_filter_index]) == obj.role;
 
         if (!is_correct_filter && obj.role != "none")
@@ -239,25 +240,34 @@ void ip_menu::display_base_item(std::vector<T>& vec_obj)
             ImGui::SetCursorPos({30, 50});
             if (ImGui::InvisibleButton("##AddImage", ImVec2(32, 32)))
             {
-                obj.local_image_path = ml::open_file_dialog();
-                obj.game_file_path = perk_packager::_internal::all_perks_data[obj.id]["image"];
-
-                if (!obj.local_image_path.empty())
+                if (ip_menu::_internal::package_selector::loaded_package_name.empty())
                 {
-                    images::load_texture_from_file(obj.local_image_path, &obj.image);
-                    obj.has_selected_image = true;
-
-                    perk_packager::_internal::package_data[obj.name]["game_file_path"] = obj.game_file_path;
-                    perk_packager::_internal::package_data[obj.name]["local_file_path"] = obj.local_image_path;
-
-                    if (!ip_menu::_internal::package_selector::loaded_package_name.empty())
-                        ml::json_write_data(
-                            backend::exe_directory.string() + backend::settings_directory + ip_menu::_internal::package_selector::package_data_directory +
-                            ip_menu::_internal::package_selector::loaded_package_name + ".json",
-
-                            perk_packager::_internal::package_data
-                        );
+                    MessageBoxA(NULL, "No Package Loaded, Please Create/Load One Before Continuing.", "Note...", MB_OK);
+                    gui::end_group_box();
+                    continue;
                 }
+
+                obj.local_image_path = ml::open_file_dialog();
+
+                if (obj.local_image_path.empty())
+                {
+                    gui::end_group_box();
+                    continue;
+                }
+
+                images::load_texture_from_file(obj.local_image_path, &obj.image);
+                obj.has_selected_image = true;
+
+                perk_packager::_internal::package_data[obj.name]["game_file_path"] = obj.game_file_path;
+                perk_packager::_internal::package_data[obj.name]["local_file_path"] = obj.local_image_path;
+
+                if (!ip_menu::_internal::package_selector::loaded_package_name.empty())
+                    ml::json_write_data(
+                        backend::exe_directory.string() + backend::settings_directory + ip_menu::_internal::package_selector::package_data_directory +
+                        ip_menu::_internal::package_selector::loaded_package_name + ".json",
+
+                        perk_packager::_internal::package_data
+                    );
             }
         }
         else
@@ -290,7 +300,7 @@ void ip_menu::display_base_item(std::vector<T>& vec_obj)
         gui::tool_tip(
             "Type: " + obj.base_type +
             "\n"
-            );
+        );
 
         if (i == 0)
             ImGui::SameLine();
