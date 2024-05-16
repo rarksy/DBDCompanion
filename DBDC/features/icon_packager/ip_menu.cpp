@@ -215,6 +215,9 @@ void ip_menu::display_base_item(std::vector<T>& vec_obj)
     {
         auto& obj = vec_obj[i];
 
+        if (obj.name.empty())
+            continue;
+
         const std::string searched_item = ml::to_lower(ip_menu::_internal::searched_text);
         const bool found_searched_item = ml::to_lower(obj.name).find(ml::to_lower(searched_item)) != std::string::npos;
 
