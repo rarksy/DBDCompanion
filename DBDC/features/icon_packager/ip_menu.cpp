@@ -93,6 +93,12 @@ void ip_menu::render_ui()
 
     if (ImGui::Button("Compile Package", {170, 0}))
     {
+        if (_internal::package_selector::loaded_package_name.empty())
+        {
+            MessageBoxA(NULL, "No Package Selected", "Note...", MB_OK);
+            return;
+        }
+        
         const std::string root_directory = backend::exe_directory.string() + backend::settings_directory + _internal::package_selector::package_directory +
             _internal::package_selector::loaded_package_name + "\\DeadByDaylight\\Content\\";
 
@@ -145,6 +151,12 @@ void ip_menu::render_ui()
 
     if (ImGui::Button("Delete Package", {170, 0}))
     {
+        if (_internal::package_selector::loaded_package_name.empty())
+        {
+            MessageBoxA(NULL, "No Package Selected.", "Error...", MB_OK);
+            return;
+        }
+        
         const auto result = MessageBoxA(NULL, "Are You Sure?", "Note...", MB_YESNO);
 
         if (result == IDYES)
@@ -158,7 +170,7 @@ void ip_menu::render_ui()
             std::filesystem::remove(file_path);
         }
     }
-    gui::tool_tip("Will Delete The Current Package", 500, false);
+    gui::tool_tip("Will Delete The Current Package", 500);
 
     ImGui::EndColumns();
     ImGui::SetCursorPos({195, 10});
