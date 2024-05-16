@@ -21,7 +21,8 @@ The crosshair overlay is always open to suggestions for features and other ideas
 
 # On-Screen Timers
 
-![image](https://cdn.discordapp.com/attachments/1224595291018362972/1225363590668750890/DBDC_pA84aUu0VL.gif?ex=6620dbc6&is=660e66c6&hm=835d8d7ded55c785313923c2225342846ba74a1f25578b851c5a68424ca57e7a&)
+![image](https://github.com/rarksy/DBDCompanion/assets/70506725/668343a8-d696-49f9-9197-4f25c496f06d)
+
 
 The timer menu features an on-screen timer that appears when you press the key currently bound to the relevant timer, customization includes:  
 - Timer name
