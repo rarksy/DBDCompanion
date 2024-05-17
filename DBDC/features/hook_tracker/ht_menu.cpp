@@ -36,7 +36,7 @@ void ht_menu::setup()
 void ht_menu::render_ui()
 {
     ImGui::SetCursorPosY(45.F);
-    gui::begin_group_box("hook_tracker_groupbox", ImVec2(275, 0));
+    gui::begin_group_box("hook_tracker_groupbox", ImVec2(275, 0), false);
     ImGui::SetCursorPosY(2.F);
     ImGui::SeparatorText("Main");
 

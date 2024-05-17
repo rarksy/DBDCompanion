@@ -172,9 +172,9 @@ void ip_menu::render_ui()
     }
     gui::tool_tip("Will Delete The Current Package", 500);
 
-    ImGui::EndColumns();
+    ImGui::EndColumns(); 
     ImGui::SetCursorPos({195, 10});
-    gui::begin_group_box("perk display", ImVec2({540, 0}), NULL);
+    gui::begin_group_box("perk display", ImVec2({540, 0}), true, NULL);
 
     switch (_internal::type_filter_index)
     {
