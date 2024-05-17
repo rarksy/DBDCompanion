@@ -69,6 +69,8 @@ bool perk_packager::setup()
                 
                 perk _perk;
                 
+                _perk.owner = _portrait.name;
+                
                 if (perk_data.contains("name") && !perk_data["name"].is_null())
                     _perk.name = perk_data["name"];
                 
@@ -167,7 +169,7 @@ bool perk_packager::get_endpoint_data(const std::string& endpoint, nlohmann::jso
 template <typename T>
 void perk_packager::load_instance_data(std::vector<T>* vec_obj, const nlohmann::json& data)
 {
-    const std::vector<std::string> variables = {"name", "id", "role", "image"};
+    const std::vector<std::string> variables = {"owner", "name", "id", "role", "image"};
 
     for (const auto& entry : data)
     {
@@ -178,7 +180,10 @@ void perk_packager::load_instance_data(std::vector<T>* vec_obj, const nlohmann::
             if (!entry.contains(variable) || entry[variable].is_null())
                 continue;
 
-            if (variable == "name")
+            if (variable == "owner")
+                obj.owner = entry[variable];
+            
+            else if (variable == "name")
                 obj.name = entry[variable];
 
             else if (variable == "id")

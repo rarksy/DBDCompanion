@@ -98,7 +98,7 @@ void ip_menu::render_ui()
             MessageBoxA(NULL, "No Package Selected", "Note...", MB_OK);
             return;
         }
-        
+
         const std::string root_directory = backend::exe_directory.string() + backend::settings_directory + _internal::package_selector::package_directory +
             _internal::package_selector::loaded_package_name + "\\DeadByDaylight\\Content\\";
 
@@ -156,7 +156,7 @@ void ip_menu::render_ui()
             MessageBoxA(NULL, "No Package Selected.", "Error...", MB_OK);
             return;
         }
-        
+
         const auto result = MessageBoxA(NULL, "Are You Sure?", "Note...", MB_YESNO);
 
         if (result == IDYES)
@@ -172,7 +172,7 @@ void ip_menu::render_ui()
     }
     gui::tool_tip("Will Delete The Current Package", 500);
 
-    ImGui::EndColumns(); 
+    ImGui::EndColumns();
     ImGui::SetCursorPos({195, 10});
     gui::begin_group_box("perk display", ImVec2({540, 0}), true, NULL);
 
@@ -219,7 +219,10 @@ void ip_menu::display_base_item(std::vector<T>& vec_obj)
             continue;
 
         const std::string searched_item = ml::to_lower(ip_menu::_internal::searched_text);
-        const bool found_searched_item = ml::to_lower(obj.name).find(ml::to_lower(searched_item)) != std::string::npos;
+        
+        const bool found_searched_item =
+            ml::to_lower(obj.name).find(ml::to_lower(searched_item)) != std::string::npos ||
+            ml::to_lower(obj.owner).find(ml::to_lower(searched_item)) != std::string::npos;
 
         if (!found_searched_item && (ml::to_lower(obj.owner).find(ml::to_lower(searched_item)) == std::string::npos))
             continue;
