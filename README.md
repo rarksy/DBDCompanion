@@ -30,11 +30,10 @@ The timer menu features an on-screen timer that appears when you press the key c
 - Timer text color
 - Setting multiple timers to the same key for dual activation (for relevant things such as unhook endurance and Decisive Strike activating at the same time)  
 
-# Hook Counter !( Not Released Yet )!
-![image](https://github.com/rarksy/DBDCompanion/assets/70506725/2cd129f0-403b-4cbc-a5fc-9ba781babb66)
+# Hook Counter
+![image](https://github.com/rarksy/DBDCompanion/assets/70506725/f020e55c-e3cd-40ea-8c93-9a48173935f3)
 
-The hook counter will use image recognition to detect when a survivor has been hooked, when a detection is made a pip icon will be rendered next to the corresponding survivors portrait just like when you're playing survivor!  
-This part of DBDC is still in development and not currently available.  
+Set a keybind for each survivor, upon hitting the bind a number will appear next to the survivor indicating their hook stage, pressing it again will increment the number to reflect the new stage, an automatic system is in development but due to many edge case complications it's not currently available.
 
 # Icon Packager
 
