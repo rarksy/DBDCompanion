@@ -311,7 +311,7 @@ bool gui::color_picker(const char* label, color* col, bool show_label)
     return valueChanged;
 }
 
-void gui::begin_group_box(const char* group_name, ImVec2 size, ImGuiWindowFlags flags)
+void gui::begin_group_box(const char* group_name, ImVec2 size, bool show_box, ImGuiWindowFlags flags)
 {
     ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.01f, 0.01f, 0.01f, 0.01f));
     ImGui::BeginChild(group_name, size, true, flags);
