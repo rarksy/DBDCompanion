@@ -195,7 +195,7 @@ void onscreen_timers::render_ui()
         }
         gui::tool_tip("Deletes the timer");
 
-        for (int i = 0; i < 3; i++)
+        for (int j = 0; j < 3; j++)
             ImGui::Spacing();
     }
 
