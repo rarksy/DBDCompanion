@@ -27,7 +27,7 @@ void onscreen_timers::delete_timer(const int& index)
 
     nlohmann::json data = ml::json_get_data_from_file(file_path);
 
-    data.erase(index);
+    data["timers"].erase(index);
 
     ml::json_write_data(file_path, data);
 }
@@ -54,7 +54,7 @@ void onscreen_timers::detect_keypress(const int& key)
 void onscreen_timers::render_timers()
 {
     const auto time_now = std::chrono::steady_clock::now();
-
+    
     for (int i = 0; i < active_timers.size(); i++)
     {
         const timer& t = active_timers[i];
@@ -72,28 +72,34 @@ void onscreen_timers::render_timers()
         if (pos != std::string::npos && timer_string.length() > pos + 2)
             timer_string = timer_string.substr(0, pos + 2);
 
-        ImGui::GetBackgroundDrawList()->AddText(ImVec2(40, (backend::screen_height / 2.75) - (20 * i)), t.text_color.to_imcolor(), timer_string.c_str());
+        ImGui::GetBackgroundDrawList()->AddText(ImVec2(x_render_location, y_render_location - (20 * i)), t.text_color.to_imcolor(), timer_string.c_str());
 
         if (t.end_time < time_now)
             active_timers.erase(active_timers.begin() + i);
     }
+
+    if (show_temp_timer && active_timers.empty())
+        ImGui::GetBackgroundDrawList()->AddText(ImVec2(x_render_location, y_render_location), ImColor(255, 255, 255), "Timer: 15.0");
 }
 
 bool onscreen_timers::save_timer_profile()
 {
     nlohmann::json data;
 
+    data["render_x_location"] = x_render_location;
+    data["render_y_location"] = y_render_location;
+
     const size_t timers_size = all_timers.size();
     for (int i = 0; i < timers_size; i++)
     {
         timer& t = all_timers[i];
 
-        data[i]["name"] = t.name;
-        data[i]["duration"] = t.duration;
-        data[i]["hotkey"] = t.hotkey;
+        data["timers"][i]["name"] = t.name;
+        data["timers"][i]["duration"] = t.duration;
+        data["timers"][i]["hotkey"] = t.hotkey;
 
         for (int j = 0; j < 3; j++)
-            data[i]["color"][j] = t.text_color[j];
+            data["timers"][i]["color"][j] = t.text_color[j];
     }
 
     return ml::json_write_data(backend::exe_directory.string() + backend::settings_directory + backend::data_directory + "timer_profile.json", data);
@@ -103,7 +109,16 @@ void onscreen_timers::load_timer_profile()
 {
     nlohmann::json data = ml::json_get_data_from_file(backend::exe_directory.string() + backend::settings_directory + backend::data_directory + "timer_profile.json");
 
-    for (const auto& t : data)
+    if (data.contains("render_x_location"))
+        onscreen_timers::x_render_location = data["render_x_location"];
+
+    if (data.contains("render_y_location"))
+        onscreen_timers::y_render_location = data["render_y_location"];
+    else
+        y_render_location = backend::screen_height / 2.75;
+
+
+    for (const auto& t : data["timers"])
     {
         timer _timer;
 
@@ -121,11 +136,10 @@ void onscreen_timers::load_timer_profile()
 void onscreen_timers::render_ui()
 {
     ImGui::SetCursorPosY(45.F);
-    gui::begin_group_box("onscreen_timer_groupbox", ImVec2(275, 0));
-    ImGui::SetCursorPosY(2.F);
-    ImGui::SeparatorText("Timer Creation");
+    gui::begin_group_box("onscreen_timer_main_groupbox", ImVec2(250, 0));
 
-    ImGui::SetCursorPosY(25.F);
+    ImGui::SeparatorText("Main");
+
     if (ImGui::Checkbox("Enable", &onscreen_timers::enabled))
     {
         if (onscreen_timers::enabled)
@@ -146,6 +160,27 @@ void onscreen_timers::render_ui()
         }
     }
     gui::tool_tip("Allows timers to be displayed\nNote: Disabling this will disable any currently running timers");
+
+    if (ImGui::Button("Disable Active Timers", {184.F, 0.F}))
+        active_timers.clear();
+    gui::tool_tip("Will Disable Any Currently Running Timers");
+
+    if (ImGui::SliderInt("Timer X Location", &x_render_location, 0, backend::screen_width))
+        save_timer_profile();
+
+    if (ImGui::SliderInt("Timer Y Location", &y_render_location, 0, backend::screen_height))
+        save_timer_profile();
+
+    show_temp_timer = (ImGui::GetID("Timer X Location") == ImGui::GetActiveID() || ImGui::GetID("Timer Y Location") == ImGui::GetActiveID());
+
+
+    gui::end_group_box();
+
+    ImGui::SameLine();
+
+    gui::begin_group_box("onscreen_timer_creation_group_box", {275.F, 0});
+
+    ImGui::SeparatorText("Timer Creation");
 
     const size_t timers_size = all_timers.size();
     for (int i = 0; i < timers_size; i++)
@@ -188,7 +223,7 @@ void onscreen_timers::render_ui()
         const auto cursor_pos = ImGui::GetCursorPos();
         ImGui::SetCursorPos(ImVec2(cursor_pos.x - 1, cursor_pos.y + 7));
 
-        if (gui::image_button("##delete_timer_button", menu::icons::x_icon, {13, 13}))
+        if (gui::image_button(std::string("##delete_timer_button" + std::to_string(i)).c_str(), menu::icons::x_icon, {13, 13}))
         {
             delete_timer(i);
             break;
@@ -199,10 +234,10 @@ void onscreen_timers::render_ui()
             ImGui::Spacing();
     }
 
-    if (all_timers.size() < 12)
+    if (all_timers.size() < 11)
     {
         ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPos().x, ImGui::GetCursorPos().y + 6));
-        if (ImGui::Button("Add New Timer", ImVec2(260.F, 0.F)) && all_timers.size() < 12)
+        if (ImGui::Button("Add New Timer", ImVec2(260.F, 0.F)))
             add_new_timer();
     }
 

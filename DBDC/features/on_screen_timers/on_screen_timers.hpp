@@ -29,6 +29,10 @@ namespace onscreen_timers
     };
 
     inline bool enabled;
+    inline bool show_temp_timer = false;
+    
+    inline int x_render_location = 40;
+    inline int y_render_location = 0;
     
     inline std::vector<timer> all_timers;
     inline std::vector<timer> active_timers;
