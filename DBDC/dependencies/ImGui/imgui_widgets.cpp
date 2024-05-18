@@ -3558,7 +3558,7 @@ bool ImGui::SliderScalar(const char* label, ImGuiDataType data_type, void* p_dat
     ImRect filledBarRect(frame_bb.Min, ImVec2(frame_bb.Min.x + (frame_bb.Max.x - frame_bb.Min.x) * (clampedValue - *(float*)p_min) / (*(float*)p_max - *(float*)p_min),
                                               frame_bb.Max.y));
 
-    if (*(float*)p_data != *(float*)p_min)
+    if (*(float*)p_data > *(float*)p_min - 1)
         window->DrawList->AddRectFilled(filledBarRect.Min, filledBarRect.Max, GetColorU32(ImGuiCol_SliderGrab), style.GrabRounding);
 
 

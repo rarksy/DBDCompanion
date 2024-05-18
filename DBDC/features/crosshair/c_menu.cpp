@@ -51,9 +51,9 @@ void CMenu::RenderUI()
 
                 ImGui::EndCombo();
             }
-            ImGui::SliderInt("Length", &cvars.lineLength, 1, 25);
-            ImGui::SliderInt("Thickness", &cvars.lineThickness, 1, 10);
-            ImGui::SliderInt("Gap", &cvars.lineGap, 0, 30);
+            gui::slider("Length", cvars.lineLength, 1, 25);
+            gui::slider("Thickness", cvars.lineThickness, 1, 10);
+            gui::slider("Gap", cvars.lineGap, 0, 30);
 
             ImGui::Spacing();
             ImGui::Spacing();
@@ -62,7 +62,7 @@ void CMenu::RenderUI()
             ImGui::CheckboxWithColorPicker("Outline", "Outline Color", &cvars.enableOutline, cvars.outlineColor);
             ImGui::BeginDisabled(!cvars.enableOutline);
             {
-                ImGui::SliderInt("Thickness##", &cvars.outlineThickness, 1, 10);
+                gui::slider("Thickness##", cvars.outlineThickness, 1, 10);
             }
             ImGui::EndDisabled();
         }
@@ -77,11 +77,11 @@ void CMenu::RenderUI()
         ImGui::BeginDisabled(!cvars.enableCenterDot);
         {
             ImGui::Checkbox("Filled", &cvars.filledCenterDot);
-            ImGui::SliderInt("Size", &cvars.centerDotSize, 1, 20);
+            gui::slider("Size", cvars.centerDotSize, 1, 20);
             ImGui::BeginDisabled(cvars.filledCenterDot);
-            ImGui::SliderInt("Thickness###", &cvars.centerDotThickness, 1, 5);
+            gui::slider("Thickness###", cvars.centerDotThickness, 1, 5);
             ImGui::EndDisabled();
-            ImGui::SliderInt("Segments", &cvars.centerDotSegments, 4, 48);
+            gui::slider("Segments", cvars.centerDotSegments, 4, 48);
             ImGui::Spacing();
         }
         ImGui::EndDisabled();
@@ -102,7 +102,7 @@ void CMenu::RenderUI()
             Crosshair::all_center_points[0].x++;
         ImGui::SameLine();
         ImGui::SetNextItemWidth(80);
-        ImGui::SliderFloat("X", &Crosshair::all_center_points[0].x, 0, backend::screen_width, "%.0f");
+        gui::slider("X", Crosshair::all_center_points[0].x, 0, backend::screen_width);
 
 
         if (ImGui::Button("Reset##"))
@@ -117,7 +117,7 @@ void CMenu::RenderUI()
             Crosshair::all_center_points[0].y++;
         ImGui::SameLine();
         ImGui::SetNextItemWidth(80);
-        ImGui::SliderFloat("Y", &Crosshair::all_center_points[0].y, 0, backend::screen_height, "%.0f");
+        gui::slider("Y", Crosshair::all_center_points[0].y, 0, backend::screen_height);
 
         ImGui::EndDisabled();
 

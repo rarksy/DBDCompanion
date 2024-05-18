@@ -165,10 +165,10 @@ void onscreen_timers::render_ui()
         active_timers.clear();
     gui::tool_tip("Will Disable Any Currently Running Timers");
 
-    if (ImGui::SliderInt("Timer X Location", &x_render_location, 0, backend::screen_width))
+    if (gui::slider("Timer X Location", x_render_location, 0, backend::screen_width))
         save_timer_profile();
 
-    if (ImGui::SliderInt("Timer Y Location", &y_render_location, 0, backend::screen_height))
+    if (gui::slider("Timer Y Location", y_render_location, 0, backend::screen_height))
         save_timer_profile();
 
     show_temp_timer = (ImGui::GetID("Timer X Location") == ImGui::GetActiveID() || ImGui::GetID("Timer Y Location") == ImGui::GetActiveID());

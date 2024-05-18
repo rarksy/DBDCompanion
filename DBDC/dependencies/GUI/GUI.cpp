@@ -116,12 +116,56 @@ bool gui::slider(const char* label, config_editor::setting& setting, int minValu
 {
     ImGui::SetNextItemWidth(static_cast<float>(menu::styling::item_width));
 
-    const bool valueChanged = ImGui::SliderInt(label, &setting.value, minValue, maxValue, "%d", clampMinMax ? ImGuiSliderFlags_AlwaysClamp : 0);
+    bool value_changed = ImGui::SliderInt(label, &setting.value, minValue, maxValue, "%d", clampMinMax ? ImGuiSliderFlags_AlwaysClamp : 0);
 
-    if (valueChanged)
+    if (ImGui::IsItemHovered())
+    {
+        if (ImGui::IsKeyPressed(ImGuiKey_LeftArrow) && setting.value > minValue)
+        {
+            setting.value--;
+            value_changed = true;
+        }
+        else if (ImGui::IsKeyPressed(ImGuiKey_RightArrow) && setting.value < maxValue)
+        {
+            setting.value++;
+            value_changed = true;
+        }
+    }
+
+    if (value_changed)
         setting.set_value();
 
-    return valueChanged;
+    return value_changed;
+}
+
+bool gui::slider(const char* label, int& v, int min_value, int max_value, bool clamp_min_max)
+{
+    const bool value_changed = ImGui::SliderInt(label, &v, min_value, max_value, "%d", clamp_min_max ? ImGuiSliderFlags_AlwaysClamp : 0);
+
+    if (ImGui::IsItemHovered())
+    {
+        if (ImGui::IsKeyPressed(ImGuiKey_LeftArrow) && v > min_value)
+            v--;
+        else if (ImGui::IsKeyPressed(ImGuiKey_RightArrow) && v < max_value)
+            v++;
+    }
+
+    return value_changed;
+}
+
+bool gui::slider(const char* label, float& v, float minValue, float maxValue, bool clampMinMax)
+{
+    const bool value_changed = ImGui::SliderFloat(label, &v, minValue, maxValue, "%d", clampMinMax ? ImGuiSliderFlags_AlwaysClamp : 0);
+
+    if (ImGui::IsItemHovered() && v > minValue)
+    {
+        if (ImGui::IsKeyPressed(ImGuiKey_LeftArrow) && v > minValue)
+            v--;
+        else if (ImGui::IsKeyPressed(ImGuiKey_RightArrow) && v < maxValue)
+            v++;
+    }
+
+    return value_changed;
 }
 
 bool gui::drop_down_box(const char* label, int& index, std::vector<std::string> items, bool useIndex, float widgetSize, std::string caption, std::vector<unsigned*> textures,
@@ -191,12 +235,13 @@ bool gui::drop_down_box(const char* label, config_editor::setting& setting, std:
                         std::vector<unsigned*> textures, ImVec2 texture_size)
 {
     auto it = std::max_element(items.begin(), items.end(),
-                           [](const auto& a, const auto& b) {
-                               return a.size() < b.size();
-                           });
+                               [](const auto& a, const auto& b)
+                               {
+                                   return a.size() < b.size();
+                               });
 
     const std::string longest_item = *it;
-    
+
     ImGui::SetNextItemWidth(widget_size == 0.F ? ImGui::CalcTextSize(longest_item.c_str()).x + 10 : widget_size);
     ImGui::PushStyleColor(ImGuiCol_PopupBg, ImVec4(0.1F, 0.1F, 0.1F, 1.F));
 
@@ -298,7 +343,7 @@ bool gui::color_picker(const char* label, color* col, bool show_label)
     auto flags = ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoTooltip;
     if (!show_label)
         flags |= ImGuiColorEditFlags_NoLabel;
-        
+
     const bool valueChanged = ImGui::ColorEdit4(label, &colorVec4.x, flags);
 
     if (valueChanged)
@@ -392,7 +437,7 @@ bool gui::tab(std::string label, GLuint image)
                                                   ImGui::GetColorU32(active ? ImGuiCol_ButtonActive : ImGuiCol_ButtonHovered),
                                                   5.F);
     }
-    
+
     ImGui::Spacing();
     ImGui::Spacing();
 

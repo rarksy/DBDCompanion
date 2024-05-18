@@ -19,6 +19,8 @@ namespace gui
     bool image_button(const char* label, GLuint image_texture, const ImVec2& size);
     
     bool slider(const char* label, config_editor::setting& setting, int minValue, int maxValue, bool clampMinMax = true);
+    bool slider(const char* label, int& v, int min_value, int max_value, bool clamp_min_max = true);
+    bool slider(const char* label, float& v, float minValue, float maxValue, bool clampMinMax = true);
     
     bool drop_down_box(const char* label, config_editor::setting& setting, std::vector<std::string> items, bool use_index = true, float widget_size = 0.F,
                      std::string caption = "", std::vector<unsigned*> textures = {}, ImVec2 texture_size = ImVec2(250, 100));
