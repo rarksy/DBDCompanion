@@ -13,6 +13,7 @@
 #pragma comment(lib, "urlmon.lib")
 
 #include <codecvt>
+#include <ShlObj_core.h>
 
 #include "../curl/curl.h"
 #include "../nlohmann/json.hpp"
@@ -468,6 +469,52 @@ namespace ml
 
         return result == S_OK;
     }
+
+    inline bool create_desktop_shortcut(const char* shortcutName) {
+
+        if (FAILED(CoInitialize(NULL))) {
+            return false;
+        }
+        
+        char desktopPath[MAX_PATH];
+        if (FAILED(SHGetFolderPathA(NULL, CSIDL_DESKTOP, NULL, 0, desktopPath))) {
+            CoUninitialize();
+            return false;
+        }
+        
+        char shortcutPath[MAX_PATH];
+        snprintf(shortcutPath, MAX_PATH, "%s\\%s.lnk", desktopPath, shortcutName);
+        
+        IShellLinkA* pShellLink = NULL;
+        HRESULT hr = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_IShellLinkA, (void**)&pShellLink);
+        if (FAILED(hr)) {
+            CoUninitialize();
+            return false;
+        }
+
+        IPersistFile* pPersistFile = NULL;
+        hr = pShellLink->QueryInterface(IID_IPersistFile, (void**)&pPersistFile);
+        if (FAILED(hr)) {
+            pShellLink->Release();
+            CoUninitialize();
+            return false;
+        }
+        
+        char pathBuffer[MAX_PATH];
+        GetModuleFileNameA(NULL, pathBuffer, MAX_PATH);
+        pShellLink->SetPath(std::string(std::filesystem::path(pathBuffer).string()).c_str());
+        
+        wchar_t wsz[MAX_PATH];
+        MultiByteToWideChar(CP_ACP, 0, shortcutPath, -1, wsz, MAX_PATH);
+        hr = pPersistFile->Save(wsz, TRUE);
+        
+        pPersistFile->Release();
+        pShellLink->Release();
+        CoUninitialize();
+
+        return SUCCEEDED(hr);
+    }
+
 
     // inline bool extract_file_from_zip(const char* archive_path, const char* file_path, const char* destination)
     // {
