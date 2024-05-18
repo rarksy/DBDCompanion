@@ -5,21 +5,24 @@ DBDC is in early access and still has a long road of updates, features and suppo
 **DBDC is entirely free to use**, although any support is greatly appreciated!  
 # Config Editor
  
-![image](https://github.com/rarksy/DBDCompanion/assets/70506725/d38aa825-949f-49cb-b26d-f0b613b81ad6)
+![image](https://github.com/rarksy/DBDCompanion/assets/70506725/7faec9d3-5765-4736-b6a4-71ae5c0d52ca)
+
 
 
 The config editor features the most extensive range of options that allow you to customize the look and graphical fidelity of your game to your liking!  
 The config editor is always being updated and plans to feature things i **didn't even know were possible** until looking into them recently ;) stay tuned for that!  
 
 # Crosshair Overlay
-![image](https://github.com/rarksy/DBDCompanion/assets/70506725/b09ecf97-9a3f-46f3-ab1c-62299d2aba0d)
+![image](https://github.com/rarksy/DBDCompanion/assets/70506725/2de809d7-5da3-456c-b5a6-cbfca73d62ce)
+
 
 A basic crosshair overlay allowing you to use and customize a crosshair in game!  
 The crosshair overlay is always open to suggestions for features and other ideas.
 
 # On-Screen Timers
 
-![image](https://cdn.discordapp.com/attachments/1224595291018362972/1225363590668750890/DBDC_pA84aUu0VL.gif?ex=6620dbc6&is=660e66c6&hm=835d8d7ded55c785313923c2225342846ba74a1f25578b851c5a68424ca57e7a&)
+![image](https://github.com/rarksy/DBDCompanion/assets/70506725/668343a8-d696-49f9-9197-4f25c496f06d)
+
 
 The timer menu features an on-screen timer that appears when you press the key currently bound to the relevant timer, customization includes:  
 - Timer name
@@ -27,17 +30,17 @@ The timer menu features an on-screen timer that appears when you press the key c
 - Timer text color
 - Setting multiple timers to the same key for dual activation (for relevant things such as unhook endurance and Decisive Strike activating at the same time)  
 
-# Hook Counter !( Not Released Yet )!
-![image](https://github.com/rarksy/DBDCompanion/assets/70506725/2cd129f0-403b-4cbc-a5fc-9ba781babb66)
+# Hook Counter
+![image](https://github.com/rarksy/DBDCompanion/assets/70506725/f020e55c-e3cd-40ea-8c93-9a48173935f3)
 
-The hook counter will use image recognition to detect when a survivor has been hooked, when a detection is made a pip icon will be rendered next to the corresponding survivors portrait just like when you're playing survivor!  
-This part of DBDC is still in development and not currently available.  
+Set a keybind for each survivor, upon hitting the bind a number will appear next to the survivor indicating their hook stage, pressing it again will increment the number to reflect the new stage, an automatic system is in development but due to many edge case complications it's not currently available.
 
-# Icon Pack Packager !( Not Released Yet )!
-https://github.com/rarksy/DBDCompanion/assets/70506725/d7ef67c9-a12e-4b49-944c-fbd4e01b5571
+# Icon Packager
 
-The icon packager will take the tediousness out of sorting custom made icons into the right folder with the right name etc, simply select the icon(s) you made, regardless of its file name, and when done, hitting "Create Package" will auto sort everything into the finished folder structure ready to copy to your game files!  
-This part of DBDC is still in development and not currently available.  
+![image](https://github.com/rarksy/DBDCompanion/assets/70506725/14da8a5d-de7f-48c3-82b8-2a6fb97f2516)
+
+
+The icon packager takes the tediousness out of sorting custom made icons into the right folder with the right name etc, simply select the icon(s) you made, regardless of its file name, and when done, hitting "Create Package" will auto sort everything into the finished folder structure ready to distribute or apply directly to your game files!
 
 
 # F.A.Q.
