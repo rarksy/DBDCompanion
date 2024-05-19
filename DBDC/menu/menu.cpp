@@ -19,14 +19,20 @@
 void menu::run_loop()
 {
     {
-        const auto accent_data = ml::json_get_data_from_file(backend::exe_directory.string() + backend::settings_directory + backend::data_directory + "settings.json");
+        const auto settings_data = ml::json_get_data_from_file(backend::exe_directory.string() + backend::settings_directory + backend::data_directory + "settings.json");
 
-        if (accent_data.contains("menu_accent"))
+        if (settings_data.contains("menu_accent"))
         {
-            styling::menu_accent.r = accent_data["menu_accent"]["r"];
-            styling::menu_accent.g = accent_data["menu_accent"]["g"];
-            styling::menu_accent.b = accent_data["menu_accent"]["b"];
-            styling::menu_accent.a = accent_data["menu_accent"]["a"];
+            styling::menu_accent.r = settings_data["menu_accent"]["r"];
+            styling::menu_accent.g = settings_data["menu_accent"]["g"];
+            styling::menu_accent.b = settings_data["menu_accent"]["b"];
+            styling::menu_accent.a = settings_data["menu_accent"]["a"];
+        }
+
+        if (settings_data.contains("default_menu"))
+        {
+            menu_to_show = settings_data["default_menu"];
+            default_menu_to_show = menu_to_show;
         }
     }
 
@@ -37,7 +43,7 @@ void menu::run_loop()
         else
         {
             shrine_of_secrets::init();
-    
+
             if (!shrine_of_secrets::shrine_data.empty())
                 shrine_of_secrets::cache();
         }
@@ -126,7 +132,10 @@ void menu::render_ui()
     static bool hamburger_open = true;
     static float hamburger_width = 1.F;
     const static float hamburger_max_width = 200.F;
-    const static float hamburger_height = 260.F;
+    const static float hamburger_max_settings_width = 250.F;
+    static float hamburger_height = 260.F;
+    const static float hamburger_max_height = 260.F;
+    const static float hamburger_max_settings_height = 460.F;
     static float disabled_alpha = 0.01F;
 
     if (hamburger_open)
@@ -225,10 +234,10 @@ void menu::render_ui()
 
     constexpr ImRect hamburger_activation_rect = ImRect({3, 3}, {39, 36});
     const auto hamburger_accent = ImGui::GetColorU32(ImGui::IsMouseHoveringRect(hamburger_activation_rect.Min, hamburger_activation_rect.Max)
-                                                                ? ImGui::IsKeyDown(ImGuiKey_MouseLeft)
-                                                                      ? ImGuiCol_ButtonActive
-                                                                      : ImGuiCol_ButtonHovered
-                                                                : ImGuiCol_Button
+                                                         ? ImGui::IsKeyDown(ImGuiKey_MouseLeft)
+                                                               ? ImGuiCol_ButtonActive
+                                                               : ImGuiCol_ButtonHovered
+                                                         : ImGuiCol_Button
     );
 
 
@@ -250,15 +259,19 @@ void menu::render_ui()
         ImGui::GetWindowDrawList()->AddRectFilled({11, 23}, {41, 28}, hamburger_accent, 4.F);
         ImGui::GetWindowDrawList()->AddRectFilled({11, 33}, {41, 38}, hamburger_accent, 4.F);
 
+        static bool settings_open = false;
         ImGui::SetCursorPos({3, 3});
         if (ImGui::InvisibleButton("##HamburgerToggleButtonInsideMenu", {39, 36}))
+        {
             hamburger_open = !hamburger_open;
 
-        static bool settings_open = false;
+            if (!hamburger_open)
+                settings_open = false;
+        }
         const bool show_settings = (settings_open || menu_to_show != 0);
         const GLuint& settings_button_texture = show_settings ? icons::back_icon : icons::settings_icon;
         const ImVec2 settings_button_size = show_settings ? ImVec2(23, 23) : ImVec2(27, 27);
-        const ImVec2 settings_button_pos = show_settings ? ImVec2(171, 6) : ImVec2(168, 6);
+        const ImVec2 settings_button_pos = ImVec2(hamburger_width - 30, 6);
 
         ImGui::SetCursorPos(settings_button_pos);
         if (gui::image_button("settingsbutton", settings_button_texture, settings_button_size))
@@ -272,6 +285,12 @@ void menu::render_ui()
         static bool is_accent_window_focused = false;
         if (!settings_open)
         {
+            if (hamburger_width > hamburger_max_width)
+                hamburger_width -= 10;
+
+            if (hamburger_height > hamburger_max_height)
+                hamburger_height -= 10;
+
             ImGui::SetCursorPosY(50.F);
 
             ImGui::PushFont(styling::child_font);
@@ -296,10 +315,15 @@ void menu::render_ui()
 
             if (gui::tab("On-Screen Timers", icons::on_screen_timers_icon))
                 menu_to_show = 5;
-            
         }
         else
         {
+            if (hamburger_width < hamburger_max_settings_width)
+                hamburger_width += 10;
+
+            if (hamburger_height < hamburger_max_settings_height)
+                hamburger_height += 10;
+
             ImGui::Spacing();
             if (gui::color_picker("Menu Accent", &menu::styling::menu_accent, true))
             {
@@ -353,16 +377,24 @@ void menu::render_ui()
                 "Note: Due to how steam works, after enabling, you will need to manually add the launch option that gets copied to your clipboard, instructions appear when enabling / disabling."
             );
 
-            if (ImGui::Button("Create Shortcut", {185, 0}))
+            if (ImGui::Button("Create Desktop Shortcut"))
                 ml::create_desktop_shortcut("DBD Companion");
             gui::tool_tip("Creates a desktop shortcut for DBDC.");
-            
+
+            if (gui::drop_down_box("Default Menu", default_menu_to_show, all_menus))
+            {
+                nlohmann::json data;
+                data["default_menu"] = default_menu_to_show;
+
+                ml::json_write_data(backend::exe_directory.string() + backend::settings_directory + backend::data_directory + "settings.json", data);
+            }
+            gui::tool_tip("Sets the default menu shown when DBDC is opened.");
 
             ImGui::SetCursorPos({5, hamburger_height - 28});
             if (gui::image_button("discord_join_button", icons::discord_icon, ImVec2(31, 23)))
                 ShellExecuteA(NULL, "open", "https://discord.gg/vKjjS8yazu", NULL, NULL, SW_SHOWNORMAL);
 
-            ImGui::SetCursorPos({175, hamburger_height - 25});
+            ImGui::SetCursorPos({hamburger_width - 25, hamburger_height - 25});
             ImGui::TextColored(ImVec4(0.8F, 0.8F, 0.8F, 0.5F), "(?)");
             if (ImGui::IsItemHovered())
             {

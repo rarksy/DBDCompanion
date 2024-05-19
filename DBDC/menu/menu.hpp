@@ -1,4 +1,6 @@
 ﻿#pragma once
+#include <vector>
+
 #include "GLFW/glfw3.h"
 #include "ImGui/imgui.h"
 #include "color/color.hpp"
@@ -45,6 +47,9 @@ namespace menu
 
 
     inline int menu_to_show = 0;
+    inline int default_menu_to_show = 0;
+
+    inline std::vector<std::string> all_menus = {"Home", "Config Editor", "Icon Packager", "Hook Tracker", "Crosshair Overlay", "On-Screen Timers"};
 
     inline constexpr ImGuiWindowFlags menu_flags =
         ImGuiWindowFlags_NoResize |
